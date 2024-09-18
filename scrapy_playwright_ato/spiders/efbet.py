@@ -157,7 +157,6 @@ class XMLSpider(scrapy.Spider):
                                 PageMethod(
                                     method="wait_for_selector",
                                     selector="//div[@class='market-categories']",
-                                    # timeout=40000
                                 ),
                             ],
                         )
