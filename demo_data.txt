@@ -1,0 +1,100 @@
+{'Competition_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list',
+ 'Match_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list&event=36920187.1',
+ 'error_message': 'UnknownError',
+ 'extraction_time_utc': datetime.datetime(2024, 9, 18, 13, 58),
+ 'proxy_ip': '115.124.36.119'}
+{'Competition_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list',
+ 'Match_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list&event=36920187.1',
+ 'error_message': 'UnknownError',
+ 'extraction_time_utc': datetime.datetime(2024, 9, 18, 13, 58),
+ 'proxy_ip': '115.124.36.119'}
+{'Competition_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list',
+ 'Match_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list&event=36920187.1',
+ 'error_message': 'UnknownError',
+ 'extraction_time_utc': datetime.datetime(2024, 9, 18, 13, 58),
+ 'proxy_ip': '115.124.36.119'}
+{'Competition_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list',
+ 'Match_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list&event=36920187.1',
+ 'error_message': 'UnknownError',
+ 'extraction_time_utc': datetime.datetime(2024, 9, 18, 13, 58),
+ 'proxy_ip': '115.124.36.119'}
+{'Competition_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list',
+ 'Match_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list&event=36920187.1',
+ 'error_message': 'UnknownError',
+ 'extraction_time_utc': datetime.datetime(2024, 9, 18, 13, 58),
+ 'proxy_ip': '115.124.36.119'}
+{'Competition_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list',
+ 'Match_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list&event=36920187.1',
+ 'error_message': 'UnknownError',
+ 'extraction_time_utc': datetime.datetime(2024, 9, 18, 13, 58),
+ 'proxy_ip': '115.124.36.119'}
+{'Competition_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list',
+ 'Match_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list&event=36920187.1',
+ 'error_message': 'UnknownError',
+ 'extraction_time_utc': datetime.datetime(2024, 9, 18, 13, 58),
+ 'proxy_ip': '115.124.36.119'}
+{'Competition_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list',
+ 'Match_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list&event=36920187.1',
+ 'error_message': 'UnknownError',
+ 'extraction_time_utc': datetime.datetime(2024, 9, 18, 13, 58),
+ 'proxy_ip': '115.124.36.119'}
+{'Competition_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list',
+ 'Match_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list&event=36920187.1',
+ 'error_message': 'UnknownError',
+ 'extraction_time_utc': datetime.datetime(2024, 9, 18, 13, 58),
+ 'proxy_ip': '115.124.36.119'}
+{'Competition_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list',
+ 'Match_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list&event=36920187.1',
+ 'error_message': 'UnknownError',
+ 'extraction_time_utc': datetime.datetime(2024, 9, 18, 13, 58),
+ 'proxy_ip': '115.124.36.119'}
+{'Competition_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list',
+ 'Match_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list&event=36920187.1',
+ 'error_message': 'UnknownError',
+ 'extraction_time_utc': datetime.datetime(2024, 9, 18, 13, 58),
+ 'proxy_ip': '115.124.36.119'}
+{'Competition_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list',
+ 'Match_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list&event=36920187.1',
+ 'error_message': 'UnknownError',
+ 'extraction_time_utc': datetime.datetime(2024, 9, 18, 13, 58),
+ 'proxy_ip': '115.124.36.119'}
+{'Competition_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list',
+ 'Match_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list&event=36920187.1',
+ 'error_message': 'UnknownError',
+ 'extraction_time_utc': datetime.datetime(2024, 9, 18, 13, 58),
+ 'proxy_ip': '115.124.36.119'}
+{'Competition_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list',
+ 'Match_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list&event=36920187.1',
+ 'error_message': 'UnknownError',
+ 'extraction_time_utc': datetime.datetime(2024, 9, 18, 13, 58),
+ 'proxy_ip': '115.124.36.119'}
+{'Competition_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list',
+ 'Match_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list&event=36920187.1',
+ 'error_message': 'UnknownError',
+ 'extraction_time_utc': datetime.datetime(2024, 9, 18, 13, 58),
+ 'proxy_ip': '115.124.36.119'}
+{'Competition_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list',
+ 'Match_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list&event=36920187.1',
+ 'error_message': 'UnknownError',
+ 'extraction_time_utc': datetime.datetime(2024, 9, 18, 13, 58),
+ 'proxy_ip': '115.124.36.119'}
+{'Competition_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list',
+ 'Match_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list&event=36920187.1',
+ 'error_message': 'UnknownError',
+ 'extraction_time_utc': datetime.datetime(2024, 9, 18, 13, 58),
+ 'proxy_ip': '115.124.36.119'}
+{'Competition_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list',
+ 'Match_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list&event=36920187.1',
+ 'error_message': 'UnknownError',
+ 'extraction_time_utc': datetime.datetime(2024, 9, 18, 13, 58),
+ 'proxy_ip': '115.124.36.119'}
+{'Competition_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list',
+ 'Match_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list&event=36920187.1',
+ 'error_message': 'UnknownError',
+ 'extraction_time_utc': datetime.datetime(2024, 9, 18, 13, 58),
+ 'proxy_ip': '115.124.36.119'}
+{'Competition_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list',
+ 'Match_Url': 'https://www.efbet.es/ES/sports#bo-navigation=282241.1,480530.1,480710.1&action=market-group-list&event=36920187.1',
+ 'error_message': 'UnknownError',
+ 'extraction_time_utc': datetime.datetime(2024, 9, 18, 13, 58),
+ 'proxy_ip': '115.124.36.119'}
