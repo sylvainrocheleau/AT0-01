@@ -166,7 +166,7 @@ class XMLSpider(scrapy.Spider):
                         # raise CloseSpider('Timeout reached')
                         sys.exit("SHUT DOWN EVERYTHING!")
                         print('close spider line 168')
-                    print("error on line 151")
+                    print("error on line 152")
                     continue
 
     async def parse_match_markets(self, response):
