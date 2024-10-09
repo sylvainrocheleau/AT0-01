@@ -51,7 +51,7 @@ class TwoStepsSpider(scrapy.Spider):
 
     async def match_requests(self,response):
         xpath_results = response.xpath(
-            "//div[contains(@class, 'item-content catcomp item-bloc-type-1 event')]").extract()
+            "//div[contains(@class, 'item-content catcomp item-bloc-')]").extract()
         match_infos = []
         for xpath_result in xpath_results:
             try:
@@ -93,13 +93,16 @@ class TwoStepsSpider(scrapy.Spider):
                 start_date=match_info["date"],
             )
 
-            # if match_info["url"] == "https://www.zebet.es/es/event/upc03-mallorca_sevilla":
-            yield scrapy.Request(
-                url=match_info["url"],
-                callback=self.parse_match,
-                meta=params,
-                errback=self.errback,
-            )
+            # if match_info["url"] == "https://www.zebet.es/es/event/s0a03-boston_celtics_new_york_knicks":
+            try:
+                yield scrapy.Request(
+                    url=match_info["url"],
+                    callback=self.parse_match,
+                    meta=params,
+                    errback=self.errback,
+                )
+            except Exception as e:
+                pass
 
     async def parse_match(self, response):
         item = ScrapersItem()
@@ -163,7 +166,6 @@ class TwoStepsSpider(scrapy.Spider):
 
             elif response.meta.get("sport") == "Basketball":
                 selection_keys = response.xpath("//div[contains(@class, \"uk-accordion-wrapper\")]").extract()
-                # selection_keys = response.xpath("//div[contains(@class, \"bet-question\")]").extract()
                 odds = []
                 trigger_stop = False
                 for selection_key in selection_keys:

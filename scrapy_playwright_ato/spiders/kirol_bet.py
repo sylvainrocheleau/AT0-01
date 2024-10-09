@@ -16,8 +16,8 @@ def get_scrapeops_url(url):
     proxy_url = 'https://proxy.scrapeops.io/v1/?' + urlencode(payload)
     return proxy_url
 
-bookie_name = "KirolBet"
-list_of_competitions = bookie_config(bookie_name)
+
+# list_of_competitions = bookie_config(bookie_name)
 # list_of_competitions = [
 #     {'bookie': 'KirolBet',
 #      'url': 'https://apuestas.kirolbet.es/esp/Sport/Competicion/352',
@@ -27,16 +27,18 @@ list_of_competitions = bookie_config(bookie_name)
 # ]
 
 class TwoStepsSpider(scrapy.Spider):
-    name = bookie_name
+    name = "KirolBet"
     custom_settings = {
         # "DOWNLOAD_DELAY": 5,
         "DOWNLOAD_TIMEOUT": 120,
         "DOWNLOAD_DELAY": 0,
-        "CONCURRENT_REQUESTS": 5,
+        # "CONCURRENT_REQUESTS": 20,
+        "CONCURRENT_REQUESTS_PER_DOMAIN": 10,
+        "AUTOTHROTTLE_ENABLED": False,
     }
 
     def start_requests(self):
-        for data in list_of_competitions:
+        for data in bookie_config(self.name):
             yield scrapy.Request(
                 url=get_scrapeops_url(data["url"]),
                 callback=self.match_requests,
@@ -235,7 +237,7 @@ class TwoStepsSpider(scrapy.Spider):
                 odds, response.meta.get("sport"),item["Home_Team"], item["Away_Team"]
             )
             # item["Bets"] = odds
-            item["extraction_time_utc"] = datetime.datetime.utcnow().replace(second=0, microsecond=0)
+            item["extraction_time_utc"] = datetime.datetime.now().replace(second=0, microsecond=0)
             item["Sport"] = response.meta.get("sport")
             item["Competition"] = response.meta.get("competition")
             item["Date"] = response.meta.get("start_date")
@@ -261,4 +263,4 @@ class TwoStepsSpider(scrapy.Spider):
         # print(response.meta["playwright_page"])
     def closed(self, reason):
         # Step 3: Send a post request to notify the webhook that the spider has run
-        requests.post("https://data.againsttheodds.es/Zyte.php?bookie=" + bookie_name+ "&project_id=643480")
+        requests.post("https://data.againsttheodds.es/Zyte.php?bookie=" + self.name+ "&project_id=643480")

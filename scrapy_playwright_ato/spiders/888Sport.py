@@ -16,6 +16,7 @@ from ..items import ScrapersItem
 from ..settings import get_custom_playwright_settings, soltia_user_name, soltia_password
 from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables
 from ..parsing_logic import parse_match as pm_logic
+from ..utilities import check_job_status
 
 
 
@@ -29,7 +30,7 @@ class TwoStepsSpider(scrapy.Spider):
 
     def start_requests(self):
         context_infos = get_context_infos(bookie_name=self.name)
-        self.context_infos = [x for x in context_infos if x["proxy_ip"] not in []]
+        self.context_infos = [x for x in context_infos if x["proxy_ip"] not in ["185.212.86.69", "185.159.43.180"]]
         for data in bookie_config(self.name):
             context_info = random.choice(self.context_infos)
             self.proxy_ip = context_info["proxy_ip"]
@@ -41,6 +42,7 @@ class TwoStepsSpider(scrapy.Spider):
                     callback=self.match_requests,
                     errback=self.errback,
                     meta=dict(
+                        proxy_ip=self.proxy_ip,
                         sport= data["sport"],
                         competition = data["competition"],
                         list_of_markets = data["list_of_markets"],
@@ -53,7 +55,7 @@ class TwoStepsSpider(scrapy.Spider):
                             "java_script_enabled": False,
                             "ignore_https_errors": True,
                             "proxy": {
-                                "server": "http://"+context_info["proxy_ip"]+":58542/",
+                                "server": "http://"+self.proxy_ip+":58542/",
                                 "username": soltia_user_name,
                                 "password": soltia_password,
                             },
@@ -78,36 +80,39 @@ class TwoStepsSpider(scrapy.Spider):
 
         match_infos = []
         url_prefix = "https://spectate-web.888sport.es/spectate/sportsbook/getEventData/"
-        for key, value in json_responses["events"].items():
-            try:
-                match_url_to_post = url_prefix + value["sport_slug"] + "/" + value["category_slug"] + "/" + value[
-                    "tournament_slug"] + "/" + value["slug"] + "/" + key
-                web_match_url = "https://www.888sport.es/" + value["sport_slug_i18n"] + "/" + value[
-                    "category_slug_i18n"] + "/" + value["tournament_slug_i18n"] + "/" + value[
-                                    "event_slug_i18n"] + "/" + "-e-" + key
-                for key_02, value_02 in value["competitors"].items():
-                    if value_02["is_home_team"] is True:
-                        home_team = value_02["name"]
-                    elif value_02["is_home_team"] is False:
-                        away_team = value_02["name"]
-                date = dateparser.parse(''.join(value["start_time"]))
+        if "events" in json_responses and isinstance(json_responses["events"], dict):
+            for key, value in json_responses["events"].items():
+                try:
+                    match_url_to_post = url_prefix + value["sport_slug"] + "/" + value["category_slug"] + "/" + value[
+                        "tournament_slug"] + "/" + value["slug"] + "/" + key
+                    web_match_url = "https://www.888sport.es/" + value["sport_slug_i18n"] + "/" + value[
+                        "category_slug_i18n"] + "/" + value["tournament_slug_i18n"] + "/" + value[
+                                        "event_slug_i18n"] + "/" + "-e-" + key
+                    for key_02, value_02 in value["competitors"].items():
+                        if value_02["is_home_team"] is True:
+                            home_team = value_02["name"]
+                        elif value_02["is_home_team"] is False:
+                            away_team = value_02["name"]
+                    date = dateparser.parse(''.join(value["start_time"]))
 
-                match_infos.append(
-                    {"url": match_url_to_post, "web_match_url": web_match_url, "date": date,
-                     "home_team": home_team, "away_team": away_team,
-                     }
-                )
-            except IndexError as e:
-                continue
-            except Exception as e:
-                continue
+                    match_infos.append(
+                        {"url": match_url_to_post, "web_match_url": web_match_url, "date": date,
+                         "home_team": home_team, "away_team": away_team,
+                         }
+                    )
+                except IndexError as e:
+                    continue
+                except Exception as e:
+                    continue
 
         await page.close()
         await page.context.close()
 
         for match_info in match_infos:
             context_info = random.choice(self.context_infos)
+            self.proxy_ip = context_info["proxy_ip"]
             params = dict(
+                proxy_ip=self.proxy_ip,
                 sport=response.meta.get("sport"),
                 competition=response.meta.get("competition"),
                 list_of_markets=response.meta.get("list_of_markets"),
@@ -125,7 +130,7 @@ class TwoStepsSpider(scrapy.Spider):
                     "java_script_enabled": False,
                     "ignore_https_errors": True,
                     "proxy": {
-                        "server": "http://" + context_info["proxy_ip"] + ":58542/",
+                        "server": "http://" + self.proxy_ip + ":58542/",
                         "username": soltia_user_name,
                         "password": soltia_password,
                     },
@@ -139,8 +144,8 @@ class TwoStepsSpider(scrapy.Spider):
             )
 
 
-            self.match_url = match_info["url"]
-            self.proxy_ip = context_info["proxy_ip"]
+            # self.match_url = match_info["url"]
+            # self.proxy_ip = context_info["proxy_ip"]
             self.cookies = json.loads(context_info["cookies"])
             # if "https://spectate-web.888sport.es/spectate/sportsbook/getEventData/football/spain/spain-primera-division/sevilla-v-villarreal/4489565" == match_info["url"]:
             try:
@@ -269,17 +274,18 @@ class TwoStepsSpider(scrapy.Spider):
     async def errback(self, failure):
         item = ScrapersItem()
         print("### errback triggered")
-        item["proxy_ip"] = self.proxy_ip
+        item["proxy_ip"] = failure.request.meta.get("proxy_ip")
         try:
-            item["Competition_Url"] = self.comp_url
+            item["Competition_Url"] = failure.request.meta.get("competition_url")
         except:
             pass
         try:
-            item["Match_Url"] = self.match_url
+            item["Match_Url"] = failure.request.meta.get("match_url")
         except:
             pass
         item["extraction_time_utc"] = datetime.datetime.utcnow().replace(second=0, microsecond=0)
         try:
+
             if failure.check(HttpError):
                 response = failure.value.response
                 error = "HttpError_" + str(response.status)
@@ -292,10 +298,9 @@ class TwoStepsSpider(scrapy.Spider):
 
             elif failure.check(TimeoutError):
                 error = "TimeoutError"
-            try:
-                error = failure.value.response
-            except:
+            else:
                 error = "UnknownError"
+
             item["error_message"] = error
         except Exception as e:
             item["error_message"] = "error on the function errback " + str(e)
@@ -304,7 +309,7 @@ class TwoStepsSpider(scrapy.Spider):
             page = failure.request.meta["playwright_page"]
             print("Closing page on error")
             await page.close()
-            print("closing context on error")
+            print("Closing context on error")
             await page.context.close()
         except Exception:
             print("Unable to close page or context")

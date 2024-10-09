@@ -39,7 +39,6 @@ class TwoStepsSpider(scrapy.Spider):
         for data in bookie_config(self.name):
             if len(data["url"]) < 5:
                 continue
-            # print("### SENDING COMP REQUEST", data["url"], "COMP:", data["competition"])
             self.comp_url=data["url"]
             yield scrapy.Request(
                 url=data["url"],
@@ -68,21 +67,21 @@ class TwoStepsSpider(scrapy.Spider):
             )
 
     async def match_requests(self,response):
-        # print("### SENDING MATCH REQUEST")
-        # print("response.status", response.status, "url", response.url)
-        xpath_results = response.xpath("//li[@class='jlink jev module__events-item']").extract()
+        xpath_results = response.xpath("//li[@class='jlink jev event__item']").extract()
         match_infos = []
         for xpath_result in xpath_results:
             try:
                 xpath_result = Selector(xpath_result)
                 home_team = xpath_result.xpath("//@title").extract()[0].split(" - ")[0]
                 away_team = xpath_result.xpath("//@title").extract()[0].split(" - ")[1]
-                url = xpath_result.xpath("//li[@class='jlink jev module__events-item']/@data-u").extract()[0]
-                date = xpath_result.xpath("//span[@class='module__event-day']/text()").extract()[0]
-                time = xpath_result.xpath("//span[@class='module__event-time']/text()").extract()[0]
+                url = xpath_result.xpath("//li[@class='jlink jev event__item']/@data-u").extract()[0]
+                date = xpath_result.xpath("//span[@class='event__day']/text()").extract()[0]
+                time = xpath_result.xpath("//span[@class='event__time']/text()").extract()[0]
                 date = dateparser.parse(''.join(date + " " + time))
                 if "/live/" not in url:
-                    match_infos.append({"url":"https://apuestas.retabet.es"+ url, "home_team": home_team, "away_team": away_team, "date": date})
+                    match_infos.append(
+                        {"url": "https://apuestas.retabet.es" + url, "home_team": home_team, "away_team": away_team,
+                         "date": date})
             except Exception as e:
                 continue
                 # print(e)
@@ -126,8 +125,6 @@ class TwoStepsSpider(scrapy.Spider):
             )
 
     async def parse_match(self, response):
-        # print("### PARSING MATCHES RESPONSE")
-        # print("### Parsing ", response.url)
         html_cleaner = re.compile("<.*?>")
         item = ScrapersItem()
         try:

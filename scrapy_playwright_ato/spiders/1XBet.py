@@ -70,7 +70,6 @@ class TwoStepsSpider(scrapy.Spider):
                 continue
 
     async def match_requests(self,response):
-        # print("### SENDING MATCH REQUEST")
         page = response.meta["playwright_page"]
         json_responses = response.text.split("<pre>")[1]
         json_responses = json_responses.split("</pre>")[0]
@@ -87,9 +86,8 @@ class TwoStepsSpider(scrapy.Spider):
                     {"url": url_prefix + url, "home_team": home_team, "away_team": away_team, "date": date})
             except IndexError:
                 continue
-        # print("Closing page for comp", response.meta.get("competition"))
+
         await page.close()
-        # print("closing context for comp", response.meta.get("competition"))
         await page.context.close()
 
         if self.mode == "comp_only":
@@ -132,8 +130,7 @@ class TwoStepsSpider(scrapy.Spider):
                     },
                 )
 
-                # if "https://apuestas.olybet.es/es/evento/7782582-manchester-city-luton-town" == match_info["url"]:
-                # print("request for", match_info["url"])
+                # if "https://1xbet.es/LineFeed/GetGameZip?lng=es&cfview=0&isSubGames=true&GroupEvents=true&allEventsGroupSubGames=true&countevents=250&partner=229&id=231754197" == match_info["url"]:
                 self.match_url = match_info["url"]
                 self.proxy_ip = context_info["proxy_ip"]
                 try:
@@ -149,7 +146,6 @@ class TwoStepsSpider(scrapy.Spider):
 
     async def parse_match(self, response):
         page = response.meta["playwright_page"]
-        # print("### PARSING MATCHES RESPONSE", response.meta.get("playwright_context"))
         json_responses = response.text.split("<pre>")[1]
         json_responses = json_responses.split("</pre>")[0]
         json_responses = json.loads(json_responses)
@@ -166,9 +162,10 @@ class TwoStepsSpider(scrapy.Spider):
                             if (
                                 (bet["T"] == 1 and response.meta.get("sport") == "Football")
                                 or bet["T"] == 401):
+
                                 odds.append(
                                     {"Market": "Ganador del partido",
-                                     "Result": item["Home_Team"],
+                                     "Result": response.meta.get("home_team"),
                                      "Odds": bet["C"]
                                      }
                                 )
@@ -185,18 +182,30 @@ class TwoStepsSpider(scrapy.Spider):
                             ):
                                 odds.append(
                                     {"Market": "Ganador del partido",
-                                     "Result": item["Away_Team"],
+                                     "Result": response.meta.get("away_team"),
                                      "Odds": bet["C"]
                                      }
                                 )
-                            elif bet["T"] == 9:
+                            elif bet["T"] == 9 and ".5" in str(bet["P"]):
                                 odds.append(
                                     {"Market": "Mas/menos goles totales",
                                      "Result": "Más de " + str(bet["P"]),
                                      "Odds": bet["C"]
                                      }
                                 )
-                            elif bet["T"] == 10:
+                            elif bet["T"] == 10  and ".5" in str(bet["P"]):
+                                odds.append(
+                                    {"Market": "Mas/menos goles totales",
+                                     "Result": "Menos de " + str(bet["P"]),
+                                     "Odds": bet["C"]
+                                     }
+                                )
+                            # elif (
+                            #     bet["P"] >= 200
+                            #     and bet["P"] <= 240
+                            #     and ".5" in str(bet["P"])
+                            #     and response.meta.get("sport") == "Basketball"
+                            # ):
                                 odds.append(
                                     {"Market": "Mas/menos goles totales",
                                      "Result": "Menos de " + str(bet["P"]),
@@ -215,7 +224,8 @@ class TwoStepsSpider(scrapy.Spider):
                                      }
                                 )
                         except KeyError as e:
-                            # print("error", e)
+                            # import traceback
+                            # print(traceback.format_exc())
                             continue
 
             item["Sport"] = response.meta.get("sport")
@@ -227,6 +237,7 @@ class TwoStepsSpider(scrapy.Spider):
             item["Competition_Url"] = response.meta.get("competition_url")
             item["Match_Url"] = "https://1xbet.es/line/" + response.meta.get("url_part_02")
             item["Bets"] = normalize_odds_variables(odds, item["Sport"], item["Home_Team"], item["Away_Team"])
+            # item["Bets"] = odds
             yield item
 
         # print("Closing page for", response.url)

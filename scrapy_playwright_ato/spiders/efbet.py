@@ -1,12 +1,11 @@
 import random
 import scrapy
 import re
-import requests
 import datetime
-# import time
+import dateparser
+import requests
 import os
-import json
-from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
+from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 from scrapy_playwright.page import PageMethod
 from parsel import Selector
 from scrapy.spidermiddlewares.httperror import HttpError
@@ -23,11 +22,13 @@ class TwoStepsSpider(scrapy.Spider):
     proxy_ip = str
     user_agent_hash = int
     custom_settings = get_custom_playwright_settings(browser="Chrome", rotate_headers=False)
+    custom_settings.update({"CONCURRENT_REQUESTS_PER_DOMAIN":3})
 
     def start_requests(self):
         context_infos = get_context_infos(bookie_name=self.name)
         self.context_infos = [x for x in context_infos if x["proxy_ip"] not in []]
         for data in bookie_config(self.name):
+            # print("processing com", data["url"] )
             context_info = random.choice(self.context_infos)
             self.proxy_ip = context_info["proxy_ip"]
             if len(data["url"]) < 5 or "https://" not in data["url"]:
@@ -36,8 +37,9 @@ class TwoStepsSpider(scrapy.Spider):
                 self.comp_url=data["url"]
                 try:
                     yield scrapy.Request(
+                        dont_filter=True,
                         url=data["url"],
-                        callback=self.raw_html,
+                        callback=self.match_requests,
                         errback=self.errback,
                         meta=dict(
                             sport= data["sport"],
@@ -46,7 +48,7 @@ class TwoStepsSpider(scrapy.Spider):
                             competition_url = data["url"],
                             playwright = True,
                             playwright_include_page = True,
-                            playwright_context = data["url"],
+                            playwright_context = data["url"]+str(context_info["user_agent_hash"]),
                             playwright_context_kwargs = {
                                 "user_agent": context_info["user_agent"],
                                 "java_script_enabled": True,
@@ -56,47 +58,66 @@ class TwoStepsSpider(scrapy.Spider):
                                     "username": soltia_user_name,
                                     "password": soltia_password,
                                 },
-                                "storage_state" : {
-                                    "cookies": json.loads(context_info["cookies"])
-                                },
+                                # "storage_state" : {
+                                #     "cookies": json.loads(context_info["cookies"])
+                                # },
                             },
                             playwright_accept_request_predicate = {
                                 'activate': True,
                                 # 'position': 1
                             },
+                            playwright_page_methods=[
+                                PageMethod(
+                                    method="wait_for_selector",
+                                    selector="//tr[@class='row1']",
+                                ),
+                            ]
                     ),
                     )
                 except PlaywrightTimeoutError:
-                    # print("Time out out on ", self.match_url)
                     continue
 
     async def match_requests(self,response):
         page = response.meta["playwright_page"]
-        xpath_results = response.xpath("//a[@class='scoreboardInfoNames']").extract()
+        if response.meta.get("sport") == "Football":
+            away_team_index = 2
+        else:
+            away_team_index = 1
+        xpath_results = response.xpath("//tr[@class='row1' or @class='row0']").extract()
         match_infos = []
+        url_prefix = response.meta.get("competition_url")+"&event="
         for xpath_result in xpath_results:
             try:
                 xpath_result = Selector(xpath_result)
-                away_team = xpath_result.xpath("//span[contains(@class, 'teamNameFirstPart teamNameAway')]/text()").extract()[0]
-                home_team = xpath_result.xpath("//span[contains(@class, 'teamNameFirstPart teamNameHome')]/text()").extract()[0]
-                url = xpath_result.xpath("//a[@class='scoreboardInfoNames']/@href").extract()[0]
-                date = None
-                match_infos.append({"url": url, "home_team": home_team, "away_team": away_team, "date": date})
+                home_team = xpath_result.xpath(
+                    "//a[@behavior.id='SelectionClick']/@behavior.selectionclick.selectionname").extract()[0]
+                away_team = \
+                    xpath_result.xpath(
+                        "//a[@behavior.id='SelectionClick']/@behavior.selectionclick.selectionname").extract()[away_team_index]
+                url = xpath_result.xpath("//a[@behavior.id='ShowEvent']/@behavior.showevent.idfoevent").extract()[0]
+                url = url_prefix+url
+                date = xpath_result.xpath("//td[@class='date']/text()").extract()
+                date = dateparser.parse(''.join(date))
+                match_infos.append(dict(
+                    url=url, web_url=url, home_team=home_team, away_team=away_team, date=date,
+                    competition_id=response.meta.get("competition").replace(" ", ""),
+                    bookie_id=self.name, sport=response.meta.get("sport")
+                )
+                )
             except IndexError as e:
                 # print("indexerror", e)
                 continue
             except Exception as e:
                 # print("Exceptions", e)
                 continue
-        # print("Closing page for comp", response.meta.get("competition"))
+
         await page.close()
-        # print("closing context for comp", response.meta.get("competition"))
         await page.context.close()
 
+        context_count = 0
         for match_info in match_infos:
             context_info = random.choice(self.context_infos)
             self.proxy_ip = context_info["proxy_ip"]
-            # //div[@class='eventMarketsLayout']
             params = dict(
                 sport=response.meta.get("sport"),
                 competition=response.meta.get("competition"),
@@ -108,7 +129,7 @@ class TwoStepsSpider(scrapy.Spider):
                 start_date=match_info["date"],
                 playwright=True,
                 playwright_include_page=True,
-                playwright_context=match_info["url"],
+                playwright_context=match_info["url"]+str(context_info["user_agent_hash"]),
                 playwright_context_kwargs={
                     "user_agent": context_info["user_agent"],
                     "java_script_enabled": True,
@@ -118,103 +139,155 @@ class TwoStepsSpider(scrapy.Spider):
                         "username": soltia_user_name,
                         "password": soltia_password,
                     },
-                    "storage_state": {
-                        "cookies": json.loads(context_info["cookies"])
-                    },
+                    # "storage_state": {
+                    #     "cookies": json.loads(context_info["cookies"])
+                    # },
                 },
                 playwright_accept_request_predicate={
                     'activate': True,
                     # 'position': 1
                 },
             )
-            params.update(
-                dict(
-                    playwright_page_methods= [
-                            PageMethod("wait_for_selector", selector="//div[@class='eventMarketsLayout']")
-                        #//span/text() ='Aceptar todo'
-                    ]
+            if response.meta.get("sport") == "Football":
+                params.update(
+                    dict(
+                        playwright_page_methods= [
+                            PageMethod(
+                                method="click",
+                                selector="//*[text()='Todos']",
+                            ),
+                            PageMethod(
+                                method="click",
+                                selector="//div[@class='container']"
+                            ),
+                            PageMethod(
+                                method="click",
+                                selector="//div[@class='container']"
+                            ),
+                            PageMethod(
+                                method="click",
+                                selector="//div[@class='container']"
+                            ),
+                            PageMethod(
+                                method="click",
+                                selector="//div[@class='container']"
+                            ),
+                            PageMethod(
+                                method="click",
+                                selector="//*[text()='Resultado Exacto']",
+                            ),
+                            PageMethod(
+                                method="wait_for_timeout",
+                                timeout=2000
+                            )
+                        ]
+                    )
                 )
-            )
+            elif response.meta.get("sport") == "Basketball":
+                params.update(
+                    dict(
+                        playwright_page_methods=[
+                            PageMethod(
+                                method="click",
+                                selector="//div[@class='container']",
+                            ),
+                            PageMethod(
+                                method="click",
+                                selector="//div[@class='container']",
+                            ),
+                            PageMethod(
+                                method="click",
+                                selector="//div[@class='container']",
+                            ),
+                            PageMethod(
+                                method="click",
+                                selector="//div[@class='container']",
+                            ),
+                            PageMethod(
+                                method="click",
+                                selector="//div[@class='container']",
+                            ),
+                            PageMethod(
+                                method="click",
+                                selector="//div[@class='container']",
+                            ),
+                            PageMethod(
+                                method="click",
+                                selector="//div[@class='container']",
+                            ),
+                            PageMethod(
+                                method="click",
+                                selector="//div[@class='container']",
+                            ),
+                            PageMethod(
+                                method="wait_for_timeout",
+                                timeout=2000
+                            )
+                        ]
+                    )
+                )
 
-            # if "https://betway.es/es/sports/evt/13557092" == match_info["url"]:
-            # print("request for", match_info["url"])
+            # if "https://www.efbet.es/ES/sports#bo-navigation=281982.1,282013.1,474525.1&action=market-group-list&event=36924434.1" == match_info["url"]:
             self.match_url = match_info["url"]
+            # print("processing match from", response.meta.get("competition"), match_info["url"])
             try:
                 yield scrapy.Request(
+                    dont_filter=True,
                     url=match_info["url"],
                     callback=self.parse_match,
-                    meta=params,
                     errback=self.errback,
+                    meta=params,
                 )
             except PlaywrightTimeoutError:
-                # print("Time out out on ", self.match_url)
+                print("Time out out on ", self.match_url)
                 continue
 
     async def parse_match(self, response):
         page = response.meta["playwright_page"]
-        # print("### PARSING MATCHES RESPONSE", response.meta.get("playwright_context"))
-        # print("### Parsing ", response.url)
         html_cleaner = re.compile("<.*?>")
         item = ScrapersItem()
-        selection_keys = response.xpath("//div[@class='collapsablePanel']").extract()
+        selection_keys = response.xpath("//div[@class='container expanded infoLoaded']").extract()
         odds = []
-        try:
-            for selection_key in selection_keys:
-                selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t", "")
-                clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
-                clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
-                stop_words = ["Cash Out", "Cancelado"]
-                teams = []
-                # print(clean_selection_keys)
-                for selection_key02 in clean_selection_keys:
-                    if clean_selection_keys[0] in response.meta.get("list_of_markets"):
-                        market = clean_selection_keys[0]
-                        # print("market", market)
-
-                    else:
-                        market = "empty"
+        for selection_key in selection_keys:
+            selection_key = selection_key.replace("  ", "").replace("\n", "").replace("...", "")
+            clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
+            clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) > 2]
+            for selection_key02 in clean_selection_keys:
+                if clean_selection_keys[0] in response.meta.get("list_of_markets"):
+                    market = clean_selection_keys[0]
+                else:
+                    market = "empty"
+                    continue
+                if (
+                    (
+                        re.search('[a-zA-Z]', selection_key02) is not None
+                        or ":" in selection_key02
+                    )
+                    and "¿" not in selection_key02
+                    and market in response.meta.get("list_of_markets")
+                ):
+                    result = selection_key02
+                elif (
+                    re.search('[a-zA-Z]', selection_key02) is None
+                    and market in response.meta.get("list_of_markets")
+                ):
+                    odd = selection_key02
+                try:
+                    if (
+                        market in response.meta.get("list_of_markets")
+                        and result != "empty"
+                        and odd != "empty"
+                    ):
+                        # if market == "¿Resultado exacto?":
+                        #     result = result.replace(response.meta.get("home_team"), "").replace(response.meta.get("away_team"), "")
+                        odds.append({"Market": market, "Result": result, "Odds": odd})
                         result = "empty"
                         odd = "empty"
-
-                    if (
-                        selection_key02 != market
-                        # and selection_key02 not in teams
-                        and selection_key02 not in stop_words
-                        and market in response.meta.get("list_of_markets")
-                        and re.search('[a-zA-Z]', selection_key02) is not None
-                        or "-" in selection_key02
-                    ):
-                        result = selection_key02
-                        if market == "Puntos totales":
-                            total = [x for x in clean_selection_keys if "," in x and float(x.replace(",", ".")) > 100][
-                                0]
-                            result = result + " " + total
-                        odd = "empty"
-                        # if market == "Resultado del partido":
-                        #     teams.append(result)
-                        # print("result", result)
-
-                    elif (
-                        re.search("[a-zA-Z]", selection_key02) is None
-                        and "-" not in selection_key02
-                        and "," in selection_key02
-                        and market in response.meta.get("list_of_markets")
-                        and float(selection_key02.replace(",", ".")) < 100
-                    ):
-
-                        odd = selection_key02
-                        # print("odd", odd)
-                    try:
-                        if (
-                            market in response.meta.get("list_of_markets")
-                            and result != "empty"
-                            and odd != "empty"
-                        ):
-                            odds.append({"Market": market, "Result": result, "Odds": odd})
-                            result = "empty"
-                            odd = "empty"
-                    except UnboundLocalError:
-                        pass
+                except UnboundLocalError as e:
+                    pass
+                except NameError:
+                    pass
+        try:
             item["Home_Team"] = response.meta.get("home_team")
             item["Away_Team"] = response.meta.get("away_team")
             item["Bets"] = normalize_odds_variables(
@@ -235,10 +308,7 @@ class TwoStepsSpider(scrapy.Spider):
             item["error_message"] = str(e)
             yield item
 
-
-        # print("Closing page for match", response.url)
         await page.close()
-        # print("closing context for match", response.url)
         await page.context.close()
 
     def raw_html(self, response):
@@ -247,8 +317,9 @@ class TwoStepsSpider(scrapy.Spider):
         # print(response.text)
         print("Proxy_ip", self.proxy_ip)
         parent = os.path.dirname(os.getcwd())
-        with open(parent + "/scrapy_playwright_ato/" + self.name + "_response" + ".py", "w") as f:
-            f.write(response.text) # response.meta["playwright_page"]
+        with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/" + self.name + "_response" + ".txt", "w") as f:
+            f.write(response.text)  # response.meta["playwright_page"]
+
         # print("custom setting", self.custom_settings)
         # print(response.meta["playwright_page"])
 
@@ -305,9 +376,12 @@ class TwoStepsSpider(scrapy.Spider):
         except Exception:
             print("Unable to close page or context")
             pass
-        yield item
+        # yield item
 
     def closed(self, reason):
-        requests.post(
-            "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name+ "&project_id=643480")
+        try:
+            requests.post(
+                "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480", timeout=60)
+        except requests.exceptions.RequestException as e:
+            print("request error", e)
 

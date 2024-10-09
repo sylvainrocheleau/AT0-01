@@ -71,29 +71,33 @@ class TwoStepsSpider(scrapy.Spider):
             page = response.meta["playwright_page"]
             html_cleaner = re.compile("<.*?>")
             xpath_results = response.xpath(
-                "//li[@class='com-coupon-line-new-layout betbutton-layout avb-row avb-table market-avb quarter-template market-2-columns']").extract()
+                "//li[contains(@class, 'com-coupon-line-new-layout betbutton-layout avb-row avb-table market-avb')]").extract()
             match_infos = []
             for xpath_result in xpath_results:
                 # print(xpath_result)
                 try:
                     xpath_result = Selector(xpath_result)
-                    home_team = xpath_result.xpath("//span[@class='team-name']//@title").extract()[0]
-                    away_team = xpath_result.xpath("//span[@class='team-name']//@title").extract()[1]
+                    home_team = xpath_result.xpath("//span[@class='team-name']//@title").extract()[0].replace("@ ", "")
+                    away_team = xpath_result.xpath("//span[@class='team-name']//@title").extract()[1].replace("@ ", "")
                     url = xpath_result.xpath(
                         "//a[@class=\"ui-nav markets-number-arrow ui-top event-link ui-gtm-click\"]/@href").extract()[0]
                     date = xpath_result.xpath("//span[@class='date ui-countdown']").extract()[0]
                     date = re.sub(html_cleaner, "", date)
                     date = dateparser.parse(''.join(date))
-                    match_infos.append(
-                        {"url": "https://www.betfair.es" + url, "home_team": home_team, "away_team": away_team,
-                         "date": date})
+                    if response.meta.get("competition") == "NBA":
+                        match_infos.append(
+                            {"url": "https://www.betfair.es" + url, "home_team": away_team, "away_team": home_team,
+                             "date": date})
+                    else:
+                        match_infos.append(
+                            {"url": "https://www.betfair.es" + url, "home_team": home_team, "away_team": away_team,
+                             "date": date})
                 except IndexError as e:
                     continue
                 except Exception as e:
                     continue
             await page.close()
             await page.context.close()
-
             for match_info in match_infos:
                 context_info = random.choice(self.context_infos)
                 self.match_url = match_info["url"]
@@ -129,7 +133,7 @@ class TwoStepsSpider(scrapy.Spider):
                         # 'position': 1
                     },
                 )
-                # if match_info["url"] == "https://www.betfair.es/sport/football/argentina-primera-divisi%C3%B3n/sarmiento-de-junin-lan%C3%BAs/33511495":
+                # if match_info["url"] == "https://www.betfair.es/sport/basketball/euroliga-masculina/as-monaco-maccabi-tel-aviv/33665181":
                 yield scrapy.Request(
                     url=match_info["url"],
                     callback=self.parse_match,
@@ -173,6 +177,10 @@ class TwoStepsSpider(scrapy.Spider):
                     for r, o in zip(result, odd):
                         odds.append({"Market": clean_selection_keys[0], "Result": r, "Odds": o})
                 elif clean_selection_keys[0] in potential_winners_markets:
+                    try:
+                        clean_selection_keys.remove("Suspendido")
+                    except Exception as e:
+                        pass
                     target_element = "Se clasifica (Prórroga y penaltis incluidos)"
                     try:
                         target_index = clean_selection_keys.index(target_element)

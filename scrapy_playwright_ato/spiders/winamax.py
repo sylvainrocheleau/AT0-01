@@ -65,7 +65,7 @@ class TwoStepsSpider(scrapy.Spider):
             except Exception as e:
                 print(e)
                 continue
-
+        # print("match_infos###", match_infos)
         for match_info in match_infos:
             context_info = random.choice(self.context_infos)
             self.match_url = match_info["url"]
@@ -84,9 +84,7 @@ class TwoStepsSpider(scrapy.Spider):
                 start_date=match_info["date"],
             )
 
-        #     # if match_info["url"] == "https://eu-offering.kambicdn.org/offering/v2018/caes/betoffer/event/1020370871.json?lang=es_ES&market=ES":
-        #     # print("request for", match_info["url"])
-        #
+            # if match_info["url"] == "https://www.winamax.es/apuestas-deportivas/match/50852299":
             yield scrapy.Request(
                 url=match_info["url"],
                 callback=self.parse_match,
@@ -110,26 +108,33 @@ class TwoStepsSpider(scrapy.Spider):
                         try:
                             available_bets = value_02["bets"]
                         except KeyError as e:
+                            available_bets = []
                             continue
 
-                if key == "bets":
+                if key == "bets" and len(available_bets) > 0:
                     for key_03, value_03 in value.items():
-                        # print(value_03["betTitle"])
-                        if value_03["betTitle"] in response.meta.get("list_of_markets") and value_03[
-                            "betId"] in available_bets:
-                            for key_04, value_04 in data_02["outcomes"].items():
-                                if int(key_04) in value_03["outcomes"]:
-                                    if value_03["betTitle"] == "Resultado":
-                                        market = "Ganador del partido"
-                                    else:
-                                        market = value_03["betTitle"]
+                        try:
+                            if (
+                                value_03["betTitle"] in response.meta.get("list_of_markets")
+                                and value_03["betId"] in available_bets
+                            ):
+                                for key_04, value_04 in data_02["outcomes"].items():
+                                    if int(key_04) in value_03["outcomes"]:
+                                        if value_03["betTitle"] == "Resultado":
+                                            market = "Ganador del partido"
+                                        else:
+                                            market = value_03["betTitle"]
 
-                                    odds.append(
-                                        {"Market": market,
-                                         "Result": value_04["label"],
-                                         "Odds": data_02["odds"][key_04]
-                                         }
-                                    )
+                                        odds.append(
+                                            {"Market": market,
+                                             "Result": value_04["label"],
+                                             "Odds": data_02["odds"][key_04]
+                                             }
+                                        )
+                        except Exception as e:
+                            import traceback
+                            print("error 2", traceback.format_exc())
+                            continue
 
             item["Home_Team"] = response.meta.get("home_team")
             item["Away_Team"] = response.meta.get("away_team")
@@ -145,7 +150,8 @@ class TwoStepsSpider(scrapy.Spider):
             item["Match_Url"] = response.meta.get("match_url")
             item["Competition_Url"] = response.meta.get("competition_url")
             item["proxy_ip"] = self.proxy_ip
-            yield item
+            if len(odds) > 0:
+                yield item
 
         except Exception as e:
             item["Competition_Url"] = response.meta.get("competition_url")

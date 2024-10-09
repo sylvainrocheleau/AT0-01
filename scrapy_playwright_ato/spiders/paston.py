@@ -11,6 +11,7 @@ from twisted.internet.error import DNSLookupError, TimeoutError
 from ..items import ScrapersItem
 from ..settings import get_custom_playwright_settings, soltia_user_name, soltia_password
 from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables
+from ..utilities import check_job_status
 
 
 class TwoStepsSpider(scrapy.Spider):
@@ -73,26 +74,27 @@ class TwoStepsSpider(scrapy.Spider):
         json_responses = json.loads(json_responses)
         match_infos = []
         url_prefix = "https://sb2frontend-altenar2.biahosted.com/api/Sportsbook/GetEventDetails?langId=4&skinName=paston&configId=20&culture=es-es&countryCode=ES&integration=paston&eventId="
-        for match in json_responses["Result"]["Items"][0]["Events"]:
-            if not match["IsLiveEvent"]:
-                try:
-                    url = str(match["Id"])
-                    home_team = match["Competitors"][0]["Name"]
-                    away_team = match["Competitors"][1]["Name"]
-                    date = dateparser.parse(''.join(match["EventDate"]))
-                    comp_url = "https://www.paston.es/apuestas-deportivas.html#/sport/" + str(
-                                match["SportId"]) + "/category/" + str(match["CategoryId"]) + "/championship/" + str(
-                                match["ChampId"])
-                    match_infos.append(
-                        {
-                            "url": url_prefix + url, "home_team": home_team,
-                            "away_team": away_team, "date": date,
-                            "match_url": comp_url+ "/event/" + str(match["Id"]),
-                            "comp_url": comp_url
-                        }
-                    )
-                except IndexError:
-                    continue
+        if len(json_responses["Result"]["Items"]) > 0:
+            for match in json_responses["Result"]["Items"][0]["Events"]:
+                if not match["IsLiveEvent"]:
+                    try:
+                        url = str(match["Id"])
+                        home_team = match["Competitors"][0]["Name"]
+                        away_team = match["Competitors"][1]["Name"]
+                        date = dateparser.parse(''.join(match["EventDate"]))
+                        comp_url = "https://www.paston.es/apuestas-deportivas.html#/sport/" + str(
+                                    match["SportId"]) + "/category/" + str(match["CategoryId"]) + "/championship/" + str(
+                                    match["ChampId"])
+                        match_infos.append(
+                            {
+                                "url": url_prefix + url, "home_team": home_team,
+                                "away_team": away_team, "date": date,
+                                "match_url": comp_url+ "/event/" + str(match["Id"]),
+                                "comp_url": comp_url
+                            }
+                        )
+                    except IndexError:
+                        continue
 
         await page.close()
         await page.context.close()
@@ -255,5 +257,5 @@ class TwoStepsSpider(scrapy.Spider):
 
     def closed(self, reason):
         requests.post(
-            "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name+ "&project_id=643480")
+            "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
 

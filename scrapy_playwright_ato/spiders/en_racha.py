@@ -43,21 +43,22 @@ class TwoStepsSpider(scrapy.Spider):
     async def match_requests(self,response):
         jsonresponse = json.loads(response.text)
         match_infos = []
-        for match in jsonresponse["events"]:
-            try:
-                home_team = match["event"]["homeName"]
-                away_team = match["event"]["awayName"]
-                url = "https://eu-offering.kambicdn.org/offering/v2018/rankes/betoffer/event/" + str(
-                    match["event"]["id"]) + ".json?lang=es_ES&market=ES"
-                web_url = "https://www.enracha.es/apuestas-deportivas#event/" + str(match["event"]["id"])
-                date = match["event"]["start"]
-                match_infos.append(
-                    {"url": url, "web_url": web_url, "home_team": home_team, "away_team": away_team,
-                     "date": date})
-            except IndexError as e:
-                continue
-            except Exception as e:
-                continue
+        if "events" in jsonresponse:
+            for match in jsonresponse["events"]:
+                try:
+                    home_team = match["event"]["homeName"]
+                    away_team = match["event"]["awayName"]
+                    url = "https://eu-offering.kambicdn.org/offering/v2018/rankes/betoffer/event/" + str(
+                        match["event"]["id"]) + ".json?lang=es_ES&market=ES"
+                    web_url = "https://www.enracha.es/apuestas-deportivas#event/" + str(match["event"]["id"])
+                    date = match["event"]["start"]
+                    match_infos.append(
+                        {"url": url, "web_url": web_url, "home_team": home_team, "away_team": away_team,
+                         "date": date})
+                except IndexError as e:
+                    continue
+                except Exception as e:
+                    continue
 
         for match_info in match_infos:
             context_info = random.choice(self.context_infos)

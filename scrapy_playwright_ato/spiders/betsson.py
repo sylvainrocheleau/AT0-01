@@ -16,93 +16,100 @@ from ..settings import USER_PROXY_03, list_of_headers
 
 # logging.getLogger("websockets").setLevel(logging.INFO)
 sports_to_scrape = ["Fútbol", "Basket"] # Tenis
-list_of_markets = ["Correct Score", "Total Goals", "Match Result", "Match Winner"] #
+list_of_markets = ["Correct Score", "Total Goals", "Total Points", "Match Result", "Match Winner"] #
 # list_of_competitions = {x["url"] : {"ato_name": x["competition"]} for x in bookie_config("Betsson")}
 
-list_of_competitions = [
-    {
-        'bookie': 'Betsson',
-        'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=541&region=900001&game=25376757',
-        'sport': 'Football',
-        'competition': 'Bundesliga Alemana'
-    },
-{
-    'bookie': 'Betsson',
-    'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=545&region=2150001&game=25444986',
-    'sport': 'Football',
-    'competition': 'La Liga Española'
-},
-{
-    'bookie': 'Betsson',
-    'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=1685&region=180001&game=25490276',
-    'sport': 'Football',
-    'competition': 'Argentina - Primera división'
-},
-{
-    'bookie': 'Betsson',
-    'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=548&region=830001&game=25466480',
-    'sport': 'Football',
-    'competition': 'Ligue 1 Francesa'
-},
+# list_of_competitions = [
+#     {
+#         'bookie': 'Betsson',
+#         'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=541&region=900001&game=25376757',
+#         'sport': 'Football',
+#         'competition': 'Bundesliga Alemana'
+#     },
 # {
 #     'bookie': 'Betsson',
-#     'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=541&region=900001&game=25376757',
-#     'sport': 'Football', 'competition': 'América - Clasificación Mundial FIFA'
+#     'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=545&region=2150001&game=25444986',
+#     'sport': 'Football',
+#     'competition': 'La Liga Española'
 # },
-{
-    'bookie': 'Betsson',
-    'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=538&region=1850001&game=24824196',
-    'sport': 'Football',
-    'competition': 'Premier League Inglesa'
-},
-{
-    'bookie': 'Betsson',
-    'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=543&region=1170001&game=25032029',
-    'sport': 'Football',
-    'competition': 'Serie A Italiana'
-},
-{
-    'bookie': 'Betsson',
-    'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=1792&region=390001&game=25440083',
-    'sport': 'Football',
-    'competition': 'Serie A Brasil'
-},
-{
-    'bookie': 'Betsson',
-    'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=27420&region=20001&game=24957478',
-    'sport': 'Football',
-    'competition': 'Liga de Naciones UEFA'
-}
-]
+# {
+#     'bookie': 'Betsson',
+#     'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=1685&region=180001&game=25490276',
+#     'sport': 'Football',
+#     'competition': 'Argentina - Primera división'
+# },
+# {
+#     'bookie': 'Betsson',
+#     'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=548&region=830001&game=25466480',
+#     'sport': 'Football',
+#     'competition': 'Ligue 1 Francesa'
+# },
+# # {
+# #     'bookie': 'Betsson',
+# #     'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=541&region=900001&game=25376757',
+# #     'sport': 'Football', 'competition': 'América - Clasificación Mundial FIFA'
+# # },
+# {
+#     'bookie': 'Betsson',
+#     'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=538&region=1850001&game=24824196',
+#     'sport': 'Football',
+#     'competition': 'Premier League Inglesa'
+# },
+# {
+#     'bookie': 'Betsson',
+#     'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=543&region=1170001&game=25032029',
+#     'sport': 'Football',
+#     'competition': 'Serie A Italiana'
+# },
+# {
+#     'bookie': 'Betsson',
+#     'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=1792&region=390001&game=25440083',
+#     'sport': 'Football',
+#     'competition': 'Serie A Brasil'
+# },
+# {
+#     'bookie': 'Betsson',
+#     'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=27420&region=20001&game=24957478',
+#     'sport': 'Football',
+#     'competition': 'Liga de Naciones UEFA'
+# }
+# ]
 
-list_of_competitions_dict = {}
+# list_of_competitions_dict = {}
 
-for x in list_of_competitions:
-    try:
-        list_of_competitions_dict.update({
-        x["competition"] :
-            {
-                "ato_name": x["competition"],
-                "id": int(x["url"].split("competition=")[1].split("&region=")[0]),
-                "region": int(x["url"].split("&region=")[1].split("&game=")[0]),
-                "sport_id": x["sport"],
-            } for x in list_of_competitions}
-        )
-    except Exception:
-        pass
+
 
 
 class WebsocketsSpider(Spider):
     name = "Betsson"
+    list_of_competitions_dict = {}
+    list_of_competitions = bookie_config(name)
+    for x in list_of_competitions:
+        try:
+            list_of_competitions_dict.update({
+                x["competition"]:
+                    {
+                        "ato_name": x["competition"],
+                        "id": int(x["url"].split("competition=")[1].split("&")[0]),
+                        "region": int(x["url"].split("&region=")[1].split("&")[0]),
+                        "sport_id": x["sport"],
+                    } for x in list_of_competitions}
+            )
+        except Exception as e:
+            print(e)
+            pass
+    # print("list_of_competitions", list_of_competitions)
     random_number = randint(9361, 145000, 1)
     rid = datetime.datetime.now().timestamp()
     rid = str(int(rid)) + str(random_number[0])
+    # rid = "172745797813024"
+    # print("rid", rid)
     start_urls = ["data:,"]  # avoid making an actual upstream request
     custom_settings = {"TWISTED_REACTOR": "twisted.internet.asyncioreactor.AsyncioSelectorReactor"}
     payloads = {
         "connect_to_socket": {"command": "request_session",
                               "params": {"language": "spa", "site_id": "735", "release_date": "20/10/2022-18:12"},
-                              "rid": "17190020389361"},
+                              "rid": "17274592162671"},
         "get_comp_list": {
             "command": "get",
             "params": {
@@ -133,8 +140,9 @@ class WebsocketsSpider(Spider):
                 await ws.send(json.dumps(values))
                 competitions = await ws.recv()
 
-            for key_05, value_05 in list_of_competitions_dict.items():
+            for key_05, value_05 in self.list_of_competitions_dict.items():
                 # GET GAMES IDs FROM COMPETITIONS
+                # print("key_05, value_05", key_05, value_05)
                 if "id" in value_05:
                     await ws.send(json.dumps({
                         "command": "get",
@@ -153,13 +161,15 @@ class WebsocketsSpider(Spider):
                     matches = await ws.recv()
                     matches = matches.replace("null", '0').replace("true", '0').replace("false", '0')
                     matches = eval(matches)
+                    # print("matches", matches)
                     for key_06, value_06 in matches["data"]["data"]["game"].items():
-                        if "games" not in list_of_competitions_dict[key_05]:
-                            list_of_competitions_dict[key_05].update({"games": [int(key_06)]})
+                        if "games" not in self.list_of_competitions_dict[key_05]:
+                            self.list_of_competitions_dict[key_05].update({"games": [int(key_06)]})
                         else:
-                            list_of_competitions_dict[key_05]["games"].append(int(key_06))
+                            self.list_of_competitions_dict[key_05]["games"].append(int(key_06))
 
-            for key_07, value_07 in list_of_competitions_dict.items():
+                # print("list_of_competitions_dict", self.list_of_competitions_dict)
+            for key_07, value_07 in self.list_of_competitions_dict.items():
                 try:
                     if value_07["sport_id"] == "Football":
                         sport_id = 1
@@ -168,6 +178,8 @@ class WebsocketsSpider(Spider):
                     # GET ODDS FROM MATCHES
                     if "games" in value_07:
                         for match_id in value_07["games"]:
+                            # print("match_id", match_id, "sport_id", sport_id, "region", value_07["region"],
+                            #       "competiton", value_07["id"])
                             await ws.send(json.dumps({
                                 "command": "get",
                                 "params": {
@@ -181,14 +193,16 @@ class WebsocketsSpider(Spider):
                                         "game": {"id": match_id},
                                         "sport": {"id": sport_id},
                                         "region": {"id": value_07["region"]},
+                                        # "region": {"id": 2570001},
                                         "competition": {"id": value_07["id"]}
                                     },
-                                    "subscribe": False},
+                                    "subscribe": True},
                                 "rid": self.rid
                             },
                             )
                             )
                             markets = await ws.recv()
+                            # print("markets", markets)
                             markets = markets.replace("null", '0').replace("true", '0').replace("false", '0')
                             markets = eval(markets)
 
@@ -200,8 +214,13 @@ class WebsocketsSpider(Spider):
                                         for key_03, values_03 in values_02.items():
                                             # print("key and value", key_03, values_03)
                                             date = values_03["start_ts"]
+                                            # if value_07["ato_name"] == "NBA":
+                                            #     home_team = values_03["team2_name"]
+                                            #     away_team = values_03["team1_name"]
+                                            # else:
                                             home_team = values_03["team1_name"]
                                             away_team = values_03["team2_name"]
+
                                             for key_04, values_04 in values_03["market"].items():
                                                 if (
                                                     values_04["name_template"] in list_of_markets
@@ -237,16 +256,20 @@ class WebsocketsSpider(Spider):
 
                                             item["Bets"] = normalize_odds_variables(odds, item["Sport"], item["Home_Team"],
                                                                                     item["Away_Team"])
+                                            if value_07["ato_name"] == "NBA":
+                                                item["Home_Team"] = away_team
+                                                item["Away_Team"] = home_team
+
                                             if len(item["Bets"]) > 0:
-                                                print(item["Match_Url"])
+                                                # print(item["Match_Url"])
                                                 yield item
                                             else:
                                                 print("NO ITEMS")
-                except KeyError:
+                except KeyError as e:
+                    print("ERROR", e)
                     pass
 
-    def closed(self, reason):
-        time.sleep(30)
-        requests.post(
-            "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name+ "&project_id=643480")
+    # def closed(self, reason):
+    #     requests.post(
+    #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name+ "&project_id=643480")
 

@@ -48,15 +48,23 @@ class TwoStepsSpider(scrapy.Spider):
     async def match_requests(self,response):
         xpath_results = response.xpath("//div[@class='btmarket']").extract()
         match_infos = []
+        if response.meta.get("sport") == "Football":
+            separator = " v "
+            home_index = 0
+            away_index = 1
+        elif response.meta.get("sport") == "Basketball":
+            separator = " @ "
+            home_index = 1
+            away_index = 0
         for xpath_result in xpath_results:
             try:
                 xpath_result = Selector(xpath_result)
                 home_team = xpath_result.xpath(
                     "//div[@class='btmarket__link-name btmarket__link-name--ellipsis show-for-desktop-medium']/text()").extract()[
-                    0].split(" v ")[0]
+                    0].split(separator)[home_index]
                 away_team = xpath_result.xpath(
                     "//div[@class='btmarket__link-name btmarket__link-name--ellipsis show-for-desktop-medium']/text()").extract()[
-                    0].split(" v ")[1]
+                    0].split(separator)[away_index]
                 url = xpath_result.xpath("//a[@class=\"btmarket__name btmarket__more-bets-counter\"]/@href").extract()[
                     0]
                 if "â‚‹-" in url:
@@ -176,7 +184,7 @@ class TwoStepsSpider(scrapy.Spider):
             item["Date"] = response.meta.get("start_date")
             item["Match_Url"] = response.meta.get("match_url")
             item["Competition_Url"] = response.meta.get("competition_url")
-            item["proxy_ip"] = self.proxy_ip
+            item["proxy_ip"] = response.meta.get("proxy_ip")
             yield item
 
         except Exception as e:
@@ -206,7 +214,7 @@ class TwoStepsSpider(scrapy.Spider):
         print("### errback triggered")
         # print("cookies:", self.cookies)
         print("user_gent_hash", self.user_agent_hash)
-        item["proxy_ip"] = self.proxy_ip
+        item["proxy_ip"] = failure.request.meta.get("proxy_ip")
         try:
             item["Competition_Url"] = self.comp_url
         except:
@@ -239,7 +247,7 @@ class TwoStepsSpider(scrapy.Spider):
         except Exception as e:
             item["error_message"] = "error on the function errback " + str(e)
 
-        yield item
+        # yield item
 
     def closed(self, reason):
         requests.post(

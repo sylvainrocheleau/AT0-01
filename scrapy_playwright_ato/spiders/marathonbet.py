@@ -7,6 +7,7 @@ import time
 import os
 import traceback
 import dateparser
+# from dbus.decorators import method
 from scrapy_playwright.page import PageMethod
 from parsel import Selector
 from scrapy.spidermiddlewares.httperror import HttpError
@@ -16,6 +17,7 @@ from twisted.internet.error import DNSLookupError, TimeoutError
 from ..items import ScrapersItem
 from ..settings import get_custom_playwright_settings, soltia_user_name, soltia_password
 from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables
+
 
 
 class TwoStepsSpider(scrapy.Spider):
@@ -92,19 +94,42 @@ class TwoStepsSpider(scrapy.Spider):
                     if response.meta.get("sport") == "Football":
                         home_team = \
                         xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-name").extract()[0].split(" vs ")[0]
-                    elif response.meta.get("sport") == "Basketball":
-                        home_team = \
-                            xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-name").extract()[0].split(
-                                " @ ")[0]
-                    home_team = home_team.strip()
-                    if response.meta.get("sport") == "Football":
-                        away_team = \
-                        xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-name").extract()[0].split(" vs ")[1]
-                    elif response.meta.get("sport") == "Basketball":
                         away_team = \
                             xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-name").extract()[0].split(
-                                " @ ")[1]
+                                " vs ")[1]
 
+                    elif response.meta.get("competition") == "NBA":
+                        try:
+                            home_team = \
+                                xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-name").extract()[0].split(
+                                    " @ ")[1]
+                            away_team = \
+                                xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-name").extract()[0].split(
+                                    " @ ")[0]
+                        except IndexError:
+                            home_team = \
+                            xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-name").extract()[0].split(
+                                " vs ")[1]
+                            away_team = \
+                            xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-name").extract()[0].split(
+                                " vs ")[0]
+                    elif response.meta.get("sport") == "Basketball":
+                        try:
+                            home_team = \
+                                xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-name").extract()[0].split(
+                                    " @ ")[0]
+                            away_team = \
+                                xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-name").extract()[0].split(
+                                    " @ ")[1]
+                        except IndexError:
+                            home_team = \
+                                xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-name").extract()[0].split(
+                                    " vs ")[0]
+                            away_team = \
+                                xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-name").extract()[0].split(
+                                    " vs ")[1]
+
+                    home_team = home_team.strip()
                     away_team = away_team.strip()
                     url = xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-path").extract()[0]
                     date = xpath_result.xpath("//div[@class='score-and-time']").extract()[0]
@@ -125,10 +150,10 @@ class TwoStepsSpider(scrapy.Spider):
                     continue
                 except Exception as e:
                     continue
-
             await page.close()
             await page.context.close()
 
+            # print("Match_infos", match_infos)
             for match_info in match_infos:
                 context_info = random.choice(self.context_infos)
                 self.match_url = match_info["url"]
@@ -168,7 +193,7 @@ class TwoStepsSpider(scrapy.Spider):
                     ],
                 )
 
-                # if 'https://www.marathonbet.es/es/betting/Football/Internationals/UEFA+Euro/2024/Final+Tournament/Germany/Group+Stage/Georgia+vs+Czech+Republic+-+18682705' == match_info["url"]:
+                # if 'https://www.marathonbet.es/es/betting/Basketball/Clubs.+International/EuroLeague/Men/Barcelona+vs+Alba+Berlin+-+19755773' == match_info["url"]:
                 try:
                     yield scrapy.Request(
                         url=match_info["url"],
@@ -177,13 +202,11 @@ class TwoStepsSpider(scrapy.Spider):
                         errback=self.errback,
                     )
                 except PlaywrightTimeoutError:
-                    # print("Time out out on ", self.match_url)
                     continue
-            else:
-                # print("Closing page for comp", response.meta.get("competition"))
-                await page.close()
-                # print("closing context for comp", response.meta.get("competition"))
-                await page.context.close()
+        else:
+            print("rejected")
+            await page.close()
+            await page.context.close()
 
     async def parse_match(self, response):
         if time.time() - self.start_time > 4800:
@@ -193,15 +216,18 @@ class TwoStepsSpider(scrapy.Spider):
         dynamic_list_of_markets = response.meta.get("list_of_markets")
         try:
             selection_keys = response.xpath("//@data-selection-key").extract()
+            selection_keys = list(set(selection_keys))
             odds = []
             for selection_key in selection_keys:
                 market_and_result = re.sub(r'^.*?@', '', selection_key)
                 market = ''.join(i for i in market_and_result.split(".")[0] if not i.isdigit())
                 result = market_and_result.replace(market_and_result.split(".")[0], "")
                 if market + result in dynamic_list_of_markets and result[1:] not in [x["Result"] for x in odds]:
-                    if result == ".HB_H":
+                    if response.meta.get("competition") == "Euroliga" or response.meta.get("competition") == "ACB":
+                        result_switch = result[1:]
+                    elif result == ".HB_H" or result == ".3" or result == ".2":
                         result_switch = ".HB_AWAY"
-                    elif result == ".HB_A":
+                    elif result == ".HB_A" or result == ".1":
                         result_switch = ".HB_H"
                     else:
                         result_switch = result[1:]

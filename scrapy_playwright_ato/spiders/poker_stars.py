@@ -67,7 +67,7 @@ class TwoStepsSpider(scrapy.Spider):
             for xpath_result in xpath_results:
                 try:
                     xpath_result = Selector(xpath_result)
-                    if response.meta.get("competition") == "ACB":
+                    if response.meta.get("competition") == "ACB" or response.meta.get("competition") == "Euroliga":
                         home_team = xpath_result.xpath("//a[@class='_3c5be94']/text()").extract()[0]
                         away_team = xpath_result.xpath("//a[@class='_3c5be94']/text()").extract()[1]
                     else:

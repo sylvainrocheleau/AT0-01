@@ -73,25 +73,26 @@ class TwoStepsSpider(scrapy.Spider):
         json_responses = json.loads(json_responses)
         match_infos = []
         url_prefix = "https://sb2frontend-altenar2.biahosted.com/api/Sportsbook/GetEventDetails?langId=4&skinName=casinogranmadrid&configId=1&culture=es-ES&countryCode=ES&integration=casinogranmadrid&eventId="
-        for match in json_responses["Result"]["Items"][0]["Events"]:
-            if not match["IsLiveEvent"]:
-                try:
-                    url = str(match["Id"])
-                    home_team = match["Competitors"][0]["Name"]
-                    away_team = match["Competitors"][1]["Name"]
-                    date = dateparser.parse(''.join(match["EventDate"]))
-                    match_infos.append(
-                        {
-                            "url": url_prefix + url, "home_team": home_team,
-                            "away_team": away_team, "date": date,
-                            "match_url": "https://www.casinogranmadridonline.es/apuestas-deportivas#/event/" + str(match["Id"]),
-                            "comp_url": "https://www.casinogranmadridonline.es/apuestas-deportivas#/sport/" + str(
-                                match["SportId"]) + "/category/" + str(match["CategoryId"]) + "/championship/" + str(
-                                match["ChampId"])
-                        }
-                    )
-                except IndexError:
-                    continue
+        if len(json_responses["Result"]["Items"]) > 0:
+            for match in json_responses["Result"]["Items"][0]["Events"]:
+                if not match["IsLiveEvent"]:
+                    try:
+                        url = str(match["Id"])
+                        home_team = match["Competitors"][0]["Name"]
+                        away_team = match["Competitors"][1]["Name"]
+                        date = dateparser.parse(''.join(match["EventDate"]))
+                        match_infos.append(
+                            {
+                                "url": url_prefix + url, "home_team": home_team,
+                                "away_team": away_team, "date": date,
+                                "match_url": "https://www.casinogranmadridonline.es/apuestas-deportivas#/event/" + str(match["Id"]),
+                                "comp_url": "https://www.casinogranmadridonline.es/apuestas-deportivas#/sport/" + str(
+                                    match["SportId"]) + "/category/" + str(match["CategoryId"]) + "/championship/" + str(
+                                    match["ChampId"])
+                            }
+                        )
+                    except IndexError:
+                        continue
 
         await page.close()
         await page.context.close()

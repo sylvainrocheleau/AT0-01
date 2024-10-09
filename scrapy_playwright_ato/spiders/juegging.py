@@ -28,8 +28,10 @@ class TwoStepsSpider(scrapy.Spider):
         # "DOWNLOAD_DELAY": 5,
         "DOWNLOAD_TIMEOUT": 120,
         "DOWNLOAD_DELAY": 0,
-        "CONCURRENT_REQUESTS": 5,
-        "CLOSESPIDER_TIMEOUT": 60 * 100
+        # "CONCURRENT_REQUESTS": 20,
+        # "CLOSESPIDER_TIMEOUT": 60 * 100,
+        "CONCURRENT_REQUESTS_PER_DOMAIN": 10,
+        "AUTOTHROTTLE_ENABLED": False,
     }
 
     def start_requests(self):
@@ -258,5 +260,4 @@ class TwoStepsSpider(scrapy.Spider):
         # print("custom setting", self.custom_settings)
         # print(response.meta["playwright_page"])
     def closed(self, reason):
-        # Step 3: Send a post request to notify the webhook that the spider has run
         requests.post("https://data.againsttheodds.es/Zyte.php?bookie=" + bookie_name+ "&project_id=643480")

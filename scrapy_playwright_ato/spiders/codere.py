@@ -63,7 +63,7 @@ class TwoStepsSpider(scrapy.Spider):
                         pass
                 url = "https://m.apuestas.codere.es/NavigationService/Game/GetGamesNoLiveByCategoryInfo?parentid=" + str(
                     match["NodeId"]) + "&categoryInfoId=99"
-                web_url = "https://www.codere.es/"
+                web_url = "https://m.apuestas.codere.es/deportesEs/#/HomePage"
                 date = int(match["StartDate"].replace("/Date(", "").replace(")/", "")) / 1000
                 date = datetime.datetime.fromtimestamp(date)
                 match_infos.append(
@@ -102,10 +102,9 @@ class TwoStepsSpider(scrapy.Spider):
         try:
             jsonresponse = response.text.replace("false", "False").replace("true", "True").replace("null", "None")
             jsonresponse = eval(jsonresponse)
-            list_of_markets = ["1X2", "Más/Menos Total Goles", "Resultado Final"]
             odds = []
             for market in jsonresponse:
-                if market["Name"] in list_of_markets and not market["Locked"]:
+                if market["Name"] in response.meta.get("list_of_markets") and not market["Locked"]:
                     for result in market["Results"]:
                         if not result["Locked"]:
                             odds.append(

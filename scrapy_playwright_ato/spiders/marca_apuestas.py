@@ -42,7 +42,6 @@ class TwoStepsSpider(scrapy.Spider):
             )
 
     def match_requests(self,response):
-        # Step 2: This scrapes a URL for a particular match
         if (
                 response.meta.get("sport") == "Football"
                 or response.meta.get("sport") == "Tennis"
@@ -62,6 +61,7 @@ class TwoStepsSpider(scrapy.Spider):
             self.match_url = url,
             self.proxy_ip = proxy_prefix+context_info["proxy_ip"]+proxy_suffix
             self.user_agent_hash = context_info["user_agent_hash"]
+            # if url == "https://deportes.marcaapuestas.es/es/e/22973290/New-York-Knicks-%40-Boston-Celtics":
             yield scrapy.Request(
                 url=url,
                 callback=self.parse_match,
@@ -92,6 +92,7 @@ class TwoStepsSpider(scrapy.Spider):
         markets = response.css('div.expander.mkt')
 
         for market in markets:
+            # print("MARKETZ", market)
             try:
                 if market.css('span.mkt-name::text').get() is not None:
                     market_name = market.css('span.mkt-name::text').get().strip()
@@ -103,21 +104,32 @@ class TwoStepsSpider(scrapy.Spider):
                             odd = bet.css('td.mkt-sort')[-1].css('span.price.dec::text').get().strip()
                             odds.append({'Market': market_name, 'Result': result, 'Odds': odd})
                     else:
-                        for bet in market.css("button.price"):
-                            if "Total" in market_name:
+                        for bet in market.css('button[name="add-to-slip"]'):
+                            if (
+                                "Total" in market_name
+                                and bet.css('span.seln-name::text').get() is not None
+                                and (
+                                "Menos" in bet.css('span.seln-name::text').get()
+                                or "Más" in bet.css('span.seln-name::text').get()
+                            )
+                            ):
                                 result = bet.css('span.seln-name::text').get()+" "+bet.css('span.seln-hcap::text').get()
-                            else:
+                                odd = float(bet.css('span.price.dec::text').get())
+                                odds.append({"Market": market_name, "Result": result, "Odds": odd})
+
+                            elif bet.css('span.seln-name::text').get() is not None:
                                 result = bet.css('span.seln-name::text').get()
-                            if result is None:
+                                odd = float(bet.css('span.price.dec::text').get())
+                                odds.append({"Market": market_name, "Result": result, "Odds": odd})
+                            if result is None and "Total" not in market_name:
                                 result = "draw"
-                            odd = float(bet.css('span.price.dec::text').get())
-                            odds.append({"Market": market_name, "Result": result, "Odds": odd})
+                                odd = float(bet.css('span.price.dec::text').get())
+                                odds.append({"Market": market_name, "Result": result, "Odds": odd})
             except Exception as e:
-                # print(e)
-                pass
+                continue
         if response.meta.get("sport") == "Football":
             response_xpath = response.xpath(
-                "//div[contains(@class, \"expander expander-collapsed fetch-on-expand no-child-update efav-section\")]").extract()
+                "//div[contains(@class, 'expander expander-collapsed fetch-on-expand no-child-update efav-section')]").extract()
             for selection_keys in response_xpath:
                 if "Resultado Exacto" in selection_keys:
                     url_suffix = selection_keys.split("data-fetch_url=\"")[1]

@@ -103,9 +103,7 @@ class TwoStepsSpider(scrapy.Spider):
             except Exception as e:
                 continue
 
-        # print("Closing page for comp", response.meta.get("competition"))
         await page.close()
-        # print("closing context for comp", response.meta.get("competition"))
         await page.context.close()
 
         for match_info in match_infos:
@@ -169,8 +167,6 @@ class TwoStepsSpider(scrapy.Spider):
                         # selector="//div[@class='ta-FlexPane ta-ExpandableView ta-AggregatedMarket ta-MarketName-1X2']",
                         timeout=1000
                     ),
-
-
                 ],
                 )
                 )
@@ -178,13 +174,16 @@ class TwoStepsSpider(scrapy.Spider):
                 params.update(dict(playwright_page_methods=[
                     PageMethod(
                         method="wait_for_selector",
-                        selector="//div[@class='ta-FlexPane ta-ExpandableView ta-AggregatedMarket ta-MarketName-Gamelines']",
-                        # timeout=40000
+                        selector="//div[@class='ta-FlexPane ta-MarketsContainer']",
+                    ),
+                    PageMethod(
+                        method="wait_for_timeout",
+                        timeout=1000
                     ),
                 ],
                 )
                 )
-            # if 'https://apuestasdeportivas.versus.es/sports/soccer/events/9833112693' == match_info["url"]:
+            # if 'https://apuestasdeportivas.versus.es/sports/basketball/events/9752865058' == match_info["url"]:
             try:
                 yield scrapy.Request(
                     url=match_info["url"],
@@ -200,8 +199,6 @@ class TwoStepsSpider(scrapy.Spider):
         if time.time() - self.start_time > 4800:
             raise CloseSpider('Timeout reached')
         page = response.meta["playwright_page"]
-        # print("### PARSING MATCHES RESPONSE")
-        # print("### Parsing ", response.url)
         html_cleaner = re.compile("<.*?>")
         item = ScrapersItem()
         try:
@@ -209,59 +206,65 @@ class TwoStepsSpider(scrapy.Spider):
                 "//div[contains(@class, 'ta-FlexPane ta-ExpandableView ta-AggregatedMarket ta-MarketName-')]").extract()
             odds = []
             for selection_key in selection_keys:
-                selection_key = selection_key.replace("  ", "").replace("\n", "")
-
+                selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\u200b","")
                 clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
                 clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
+                if response.meta.get("sport") == "Football":
+                    for selection_key02 in clean_selection_keys:
+                        if clean_selection_keys[0] in response.meta.get("list_of_markets"):
+                            market = clean_selection_keys[0]
 
-                # if clean_selection_keys[0] == "Total de goles Más/Menos":
-                #     new_totales = ["Total de goles Más/Menos"]
-                #     del clean_selection_keys[1:4]
-                #     for index, value in enumerate(clean_selection_keys):
-                #         if int(index + 1) % 3 == 0:
-                #             new_totales.append(clean_selection_keys[int(index - 1)] + " " + value)
-                #             new_totales.append(clean_selection_keys[int(index + 1)])
-                #
-                #     del clean_selection_keys[0:]
-                #     for x in new_totales:
-                #         clean_selection_keys.append(x)
-
-                for selection_key02 in clean_selection_keys:
-                    if clean_selection_keys[0] in response.meta.get("list_of_markets"):
-                        market = clean_selection_keys[0]
-
-                    else:
-                        market = "empty"
-                        continue
-                    if (
-                        (
-                            re.search('[a-zA-Z]', selection_key02) is not None
-                            or ":" in selection_key02
-                        )
-                        and market in response.meta.get("list_of_markets")
-                    ):
-                        result = selection_key02
-
-                    elif (
-                        re.search('[a-zA-Z]', selection_key02) is None
-                        and market in response.meta.get("list_of_markets")
-                    ):
-                        odd = selection_key02
-                    try:
+                        else:
+                            market = "empty"
+                            continue
                         if (
-                            market in response.meta.get("list_of_markets")
-                            and result != "empty"
-                            and odd != "empty"
+                            (
+                                re.search('[a-zA-Z]', selection_key02) is not None
+                                or ":" in selection_key02
+                            )
+                            and market in response.meta.get("list_of_markets")
                         ):
-                            odds.append({"Market": market, "Result": result, "Odds": odd})
-                            result = "empty"
-                            odd = "empty"
-                    except UnboundLocalError as e:
-                        # print("unbound", e)
-                        pass
-                    except NameError as e:
-                        # print("name", e)
-                        pass
+                            result = selection_key02
+
+                        elif (
+                            re.search('[a-zA-Z]', selection_key02) is None
+                            and market in response.meta.get("list_of_markets")
+                        ):
+                            odd = selection_key02
+                        try:
+                            if (
+                                market in response.meta.get("list_of_markets")
+                                and result != "empty"
+                                and odd != "empty"
+                            ):
+                                odds.append({"Market": market, "Result": result, "Odds": odd})
+                                result = "empty"
+                                odd = "empty"
+                        except UnboundLocalError as e:
+                            # print("unbound", e)
+                            pass
+                        except NameError as e:
+                            # print("name", e)
+                            pass
+                elif response.meta.get("sport") == "Basketball":
+                    for selection_key in selection_keys:
+                        selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\u200b", "")
+                        clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
+                        clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
+                        if "Líneas de Juego" == clean_selection_keys[0]:
+                            odds.append(
+                                {"Market": "Partido", "Result": clean_selection_keys[1],
+                                 "Odds": clean_selection_keys[5]})
+                            odds.append(
+                                {"Market": "Partido", "Result": clean_selection_keys[3],
+                                 "Odds": clean_selection_keys[6]})
+                        if "Totales" in clean_selection_keys:
+                            odds.append(
+                                {"Market": "Total de Goles", "Result": clean_selection_keys[8],
+                                 "Odds": clean_selection_keys[9]})
+                            odds.append(
+                                {"Market": "Total de Goles", "Result": clean_selection_keys[10],
+                                 "Odds": clean_selection_keys[11]})
 
             item["Home_Team"] = response.meta.get("home_team")
             item["Away_Team"] = response.meta.get("away_team")
@@ -287,9 +290,7 @@ class TwoStepsSpider(scrapy.Spider):
             yield item
 
         finally:
-            # print("Closing page for", response.url)
             await page.close()
-            # print("Closing context for", response.url)
             await page.context.close()
 
 

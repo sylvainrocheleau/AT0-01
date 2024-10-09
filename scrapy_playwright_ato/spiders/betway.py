@@ -81,7 +81,10 @@ class TwoStepsSpider(scrapy.Spider):
                 home_team = xpath_result.xpath("//span[contains(@class, 'teamNameFirstPart teamNameHome')]/text()").extract()[0]
                 url = xpath_result.xpath("//a[@class='scoreboardInfoNames']/@href").extract()[0]
                 date = None
-                match_infos.append({"url": url, "home_team": home_team, "away_team": away_team, "date": date})
+                if response.meta.get("competition") == "NBA":
+                    match_infos.append({"url": url, "home_team": away_team, "away_team": home_team, "date": date})
+                else:
+                    match_infos.append({"url": url, "home_team": home_team, "away_team": away_team, "date": date})
             except IndexError as e:
                 # print("indexerror", e)
                 continue
@@ -130,13 +133,15 @@ class TwoStepsSpider(scrapy.Spider):
             params.update(
                 dict(
                     playwright_page_methods= [
-                            PageMethod("wait_for_selector", selector="//div[@class='eventMarketsLayout']")
-                        #//span/text() ='Aceptar todo'
+                            PageMethod(
+                                "wait_for_selector",
+                                selector="//div[@class='collapsablePanel']"
+                            )
                     ]
                 )
             )
 
-            # if "https://betway.es/es/sports/evt/13557092" == match_info["url"]:
+            # if "https://betway.es/es/sports/evt/14548433" == match_info["url"]:
             # print("request for", match_info["url"])
             self.match_url = match_info["url"]
             try:

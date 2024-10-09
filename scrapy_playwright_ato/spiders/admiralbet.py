@@ -132,7 +132,9 @@ class TwoStepsSpider(scrapy.Spider):
                     'activate': True,
                     # 'position': 1
                 },
-                playwright_page_methods=[
+            )
+            if response.meta.get("sport") == "Football":
+                params.update(dict(playwright_page_methods = [
                     PageMethod(
                         method="wait_for_selector",
                         selector="//div[@class='d-flex w-100 px-2 px-lg-0 ng-star-inserted']",
@@ -145,10 +147,24 @@ class TwoStepsSpider(scrapy.Spider):
                         method="click",
                         selector="//*[text()=' Resultado ']",
                     ),
-
+                    ],
+                )
+                )
+            elif response.meta.get("sport") == "Basketball":
+                params.update(dict(playwright_page_methods=[
+                    PageMethod(
+                        method="wait_for_selector",
+                        selector="//div[@class='d-flex w-100 px-2 px-lg-0 ng-star-inserted']",
+                    ),
+                    PageMethod(
+                        method="click",
+                        selector="//button[@id='onetrust-reject-all-handler']"
+                    ),
                 ],
-            )
-            # if match_info["url"] == "https://www.admiralbet.es/es/apuestas/deportes/futbol/inglaterra/premier-league/aston-villa-vs-wolves?t=17269272&tab=filter_1":
+                )
+                )
+
+            # if match_info["url"] == "https://www.admiralbet.es/es/apuestas/deportes/baloncesto/estados-unidos/nba/boston-celtics-vs-new-york-knicks?t=17296398&tab=filter_1":
             yield scrapy.Request(
                 url=match_info["url"],
                 callback=self.parse_match,

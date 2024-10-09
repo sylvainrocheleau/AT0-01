@@ -70,11 +70,9 @@ class TwoStepsSpider(scrapy.Spider):
                             PageMethod(
                                 method="wait_for_selector",
                                 selector="//div[@class='ta-FlexPane ta-EventListGroups']",
-                                # timeout=40000,
                             ),
                         ],
                 ),
-
                 )
             except PlaywrightTimeoutError:
                 if time.time() - self.start_time > 4800:
@@ -112,7 +110,6 @@ class TwoStepsSpider(scrapy.Spider):
             if time.time() - self.start_time > 4800:
                 raise CloseSpider('Timeout reached')
             pass
-
 
         for match_info in match_infos:
             context_info = random.choice(self.context_infos)
@@ -155,12 +152,6 @@ class TwoStepsSpider(scrapy.Spider):
                         method="click",
                         selector="//button[@class='btn acceptCookies']"
                     ),
-                    # PageMethod(
-                    #     method="wait_for_selector",
-                    #     selector="//div[@class='ta-FlexPane ta-ExpandableView ta-AggregatedMarket ta-MarketName-Ganador1X2']",
-                    #     # timeout=40000
-                    # ),
-
                     PageMethod(
                         method="click",
                         selector=".ta-all"
@@ -176,19 +167,16 @@ class TwoStepsSpider(scrapy.Spider):
                     ),
                     PageMethod(
                         method="click",
-                        # selector="//div[@class='ta-Button ta-ButtonBarItem ta-selected']"
-                        selector="div.ta-ButtonBarItem:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1)",
-
+                        selector="//*[text()[contains(.,'Todos (')]]",
                     ),
                     PageMethod(
                         method="wait_for_selector",
-                        selector="//div[@class='ta-FlexPane ta-ExpandableView ta-AggregatedMarket ta-MarketName-GanadordelPartido']",
-                        # timeout=40000
+                        selector="//div[@class='headerText' and text()='Puntos Totales (Prórroga incl.)']",
                     ),
-                ],
+                ]
                 )
                 )
-            # if 'https://www.sportium.es/apuestas/sports/soccer/events/15822713' == match_info["url"]:
+            # if 'https://www.sportium.es/apuestas/sports/soccer/events/15879374' == match_info["url"]:
             try:
                 yield scrapy.Request(
                     url=match_info["url"],
@@ -205,15 +193,15 @@ class TwoStepsSpider(scrapy.Spider):
         if time.time() - self.start_time > 4800:
             raise CloseSpider('Timeout reached')
         page = response.meta["playwright_page"]
-        html_cleaner = re.compile("<.*?>")
         item = ScrapersItem()
+        html_cleaner = re.compile("<.*?>")
+
         try:
             selection_keys = response.xpath(
-                "//div[contains(@class, 'ta-FlexPane ta-ExpandableView ta-AggregatedMarket ta-MarketName-')]").extract()
+                "//div[contains(@class, 'ta-FlexPane ta-ExpandableView ta-AggregatedMarket')]").extract()
             odds = []
             for selection_key in selection_keys:
-                selection_key = selection_key.replace("  ", "").replace("\n", "").replace("...", "").replace("\u200b",
-                                                                                                             "")
+                selection_key = selection_key.replace("  ", "").replace("\n", "").replace("...", "").replace("\u200b","")
                 clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
                 clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) > 2]
                 for selection_key02 in clean_selection_keys:
@@ -321,6 +309,7 @@ class TwoStepsSpider(scrapy.Spider):
             raise CloseSpider('Timeout reached')
         item = ScrapersItem()
         print("### errback_comp triggered")
+        print(failure.value.response)
         print(self.comp_url)
         print("user_gent_hash", self.user_agent_hash)
         item["proxy_ip"] = self.proxy_ip
@@ -414,7 +403,7 @@ class TwoStepsSpider(scrapy.Spider):
         except Exception:
             print("Unable to close page or context")
             pass
-        yield item
+        # yield item
 
 
     def closed(self, reason):

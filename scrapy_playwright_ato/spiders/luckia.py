@@ -1,20 +1,10 @@
 import requests
 import re
 import scrapy
-from urllib.parse import urlencode
+import os
 from ..items import ScrapersItem
 from ..bookies_configurations import bookie_config, normalize_odds_variables
 
-
-# API_KEY = "d3566962-a316-410d-be3d-5b4a24a33a3b"
-
-# def get_scrapeops_url(url):
-#     payload = {'api_key': API_KEY, 'url': url, 'country': 'es','bypass': 'generic_level_4'}
-#     proxy_url = 'https://proxy.scrapeops.io/v1/?' + urlencode(payload)
-#     return proxy_url
-#
-# bookie_name = "Luckia"
-# list_of_competitions = bookie_config(bookie_name)
 
 
 class TwoStepsSpider(scrapy.Spider):
@@ -40,7 +30,6 @@ class TwoStepsSpider(scrapy.Spider):
     }
 
     def start_requests(self):
-        # Step 1: This uses "list_of_competitions" get a list of all the matches for a particular type of competition
         for data in bookie_config(self.name):
             if len(data["url"]) < 5:
                 continue
@@ -57,22 +46,11 @@ class TwoStepsSpider(scrapy.Spider):
                     "zyte_api_automap": {
                         "geolocation": "ES",
                         "browserHtml": True,
-                        # "actions": [
-                        #     {
-                        #         "action": "waitForSelector",
-                        #         "selector": {
-                        #             "type": "xpath",
-                        #             "value": "//article[@class='module__list-events']",
-                        #             "state": "visible",
-                        #         }
-                        #     }
-                        # ]
                     },
                 },
             )
 
     def match_requests(self,response):
-        # Step 2: This scrapes a URL for a particular match
         if response.request.url != "https://apuestas.luckia.es/":
             urls = response.xpath("//a[@class='lp-event__teams']/@href").extract()
             participants = response.xpath("//span[@class='lp-event__team-name-text']/text()").extract()
@@ -80,7 +58,7 @@ class TwoStepsSpider(scrapy.Spider):
             count = 0
             count_02 = 0
             for url in urls:
-                # if url in "https://apuestas.luckia.es/apuestas/eventos/inglaterra-premier-league-fulham-manchester-city/10450737/":
+
                 yield scrapy.Request(
                     url="https://apuestas.luckia.es"+url,
                     callback=self.parse_match,
@@ -113,7 +91,6 @@ class TwoStepsSpider(scrapy.Spider):
                 count_02 += 1
 
     def parse_match(self, response):
-        # Step 3: Once the page is scraped this function extracts the fields as needed
         html_cleaner = re.compile("<.*?>")
         item = ScrapersItem()
         try:
@@ -273,6 +250,17 @@ class TwoStepsSpider(scrapy.Spider):
             item["error_message"] = "No odds were found"
             yield(item)
 
+
+    def raw_html(self, response):
+        print("### TEST OUTPUT")
+        print("Headers", response.headers)
+        print(response.url)
+        # print("Proxy_ip", self.proxy_ip)
+        parent = os.path.dirname(os.getcwd())
+        with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/" + self.name + "_response" + ".txt", "w") as f:
+            f.write(response.text) # response.meta["playwright_page"]
+        # print("custom setting", self.custom_settings)
+        # print(response.meta["playwright_page"])
+
     def closed(self, reason):
-        # Step 3: Send a post request to notify the webhook that the spider has run
         requests.post("https://data.againsttheodds.es/Zyte.php?bookie=" + self.name+ "&project_id=643480")
