@@ -174,16 +174,16 @@ class TwoStepsSpider(scrapy.Spider):
                 )
                 )
 
-            # if "https://sports.bwin.es/es/sports/eventos/suecia-azerbaiy%C3%A1n-2:7511872" == match_info["url"]:
-            try:
-                yield scrapy.Request(
-                    url=match_info["url"],
-                    callback=self.parse_match,
-                    meta=params,
-                    errback=self.errback,
-                )
-            except PlaywrightTimeoutError:
-                continue
+            if "https://sports.bwin.es/es/sports/eventos/granada-eibar-2:7609147" == match_info["url"]:
+                try:
+                    yield scrapy.Request(
+                        url=match_info["url"],
+                        callback=self.raw_html,
+                        meta=params,
+                        errback=self.errback,
+                    )
+                except PlaywrightTimeoutError:
+                    continue
 
     async def parse_match(self, response):
         page = response.meta["playwright_page"]
