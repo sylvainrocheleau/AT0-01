@@ -6,7 +6,7 @@ import os
 import re
 import requests
 from difflib import SequenceMatcher
-from pymongo import MongoClient
+# from pymongo import MongoClient
 # from scrapy_playwright_ato.settings import SYSTEM_VERSION
 from scrapy_playwright_ato.utilities import Connect, Helpers
 
