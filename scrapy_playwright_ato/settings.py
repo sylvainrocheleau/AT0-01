@@ -2,6 +2,7 @@ import random
 import os
 from playwright.async_api import Request
 from scrapy.http.headers import Headers
+# from scrapy.settings.default_settings import CONCURRENT_ITEMS
 
 # scrapy settings
 #################
@@ -12,26 +13,37 @@ SPIDER_MODULES = ["scrapy_playwright_ato.spiders"]
 NEWSPIDER_MODULE = "scrapy_playwright_ato.spiders"
 ROBOTSTXT_OBEY = False
 TELNETCONSOLE_ENABLED = False
-CONCURRENT_REQUESTS = 100
-CONCURRENT_REQUESTS_PER_DOMAIN = 2
+CONCURRENT_REQUESTS = 200
+CONCURRENT_REQUESTS_PER_DOMAIN = 2 # equals the number of units divided by 2
+CONCURRENT_ITEMS = 500
 LOG_LEVEL = "INFO"
 # DOWNLOAD_DELAY = 5
 DOWNLOAD_TIMEOUT = 200
 CLOSESPIDER_TIMEOUT = 60*80
 COOKIES_ENABLED = True
 COOKIES_DEBUG = False
+REDIRECT_ENABLED = False
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 ITEM_PIPELINES = {
    'scrapy_playwright_ato.pipelines.ScrapersPipeline': 300,
 }
 
 
-
 # ATO settings
 ###################
-TEST_ENV = "local"
-SQL_USER = "scrapy_rw"
-SQL_PWD = "JQT3PT^c01VhNPrX"
+try:
+    if os.environ["USER"] == "sylvain":
+        TEST_ENV = "server"
+        # TEST_ENV = "local"
+        PLAYWRIGHT_HEADLESS = False
+except KeyError:
+    TEST_ENV = "server"
+    PLAYWRIGHT_HEADLESS = True
+
+# ALL_SPORTS_API_KEY = "uNqyISH2ausxwgyW2rhoRZHUWIMd7GYU"
+ALL_SPORTS_API_KEY = "uNqyISH2ausxwgyW2rhoRZHUWIMd7GYU" # free plan
+SQL_USER = "spider_rw_03"
+SQL_PWD = "43&trdGhqLlM"
 mongo_user = "ATO_01"
 mongo_password = "GFT6&&acs!"
 ATO_DB_01 = "mongodb://"+mongo_user+":"+mongo_password+"@172.105.28.151:27017/ATO"
@@ -41,11 +53,13 @@ list_of_proxies = [
 ]
 soltia_user_name = "pY33k6KH6t"
 soltia_password = "eLHvfC5BZq"
+proxy_prefix_http = "http://pY33k6KH6t:eLHvfC5BZq@"
 proxy_prefix = "https://pY33k6KH6t:eLHvfC5BZq@"
 proxy_suffix = ":58542"
 USER_PROXY_02 = "https://pY33k6KH6t:eLHvfC5BZq@"+random.choice(list_of_proxies)+":58542"
 USER_PROXY_03 = "http://pY33k6KH6t:eLHvfC5BZq@"+random.choice(list_of_proxies)+":58542"
 SCRAPE_OPS_API_KEY = "d3566962-a316-410d-be3d-5b4a24a33a3b"
+ZYTE_PROXY_MODE = "http://0ef225b8366548fb84767f6bf5e74653:@api.zyte.com:8011/"
 
 list_of_headers =[
 {'Accept': '*/*', 'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5; rv:60.5.2) Gecko/20100101 Firefox/60.5.2'} ,
@@ -166,6 +180,7 @@ def custom_headers_chrome(browser_type: str, playwright_request: Request, scrapy
     # header = header_per_browser(browser="Chrome")
     return {"User-Agent": header_per_browser(browser="Chrome")["User-Agent"], "Accept-Language": "es-ES,en;q=0.9",}
 
+
 def custom_headers_firefox(browser_type: str, playwright_request: Request, scrapy_headers: Headers) -> dict:
     return {"User-Agent": header_per_browser(browser="Firefox")["User-Agent"], "Accept-Language": "es-ES,en;q=0.9",}
 
@@ -208,7 +223,7 @@ def should_abort_request(request):
 
 
         # extensions
-        '.woff2' '.woff',  '.ttf', '.webp',
+        '.woff2' '.woff',  '.ttf', '.webp', '.jpg', '.jpeg', '.gif', '.webm', '.mp4', '.mp3',
         # '.png',
         #'.svg'
     ]
@@ -218,7 +233,6 @@ def should_abort_request(request):
     )
 
 PLAYWRIGHT_ABORT_REQUEST = should_abort_request
-
 page_method_time_out = 120*1000
 
 
@@ -232,38 +246,39 @@ def get_custom_playwright_settings(browser, rotate_headers):
         if rotate_headers is True:
             custom_settings.update({"PLAYWRIGHT_PROCESS_REQUEST_HEADERS": custom_headers_chrome})
         playwright_browser_type = "chromium"
-    try:
-        if os.environ["USER"] == "sylvain":
-            custom_settings.update(
-                {"PLAYWRIGHT_LAUNCH_OPTIONS":
-                     {
-                         "headless": False,
-                         "timeout": 100*1000, # 25000 * 1000,
-                     }
-                 },
-            )
-            print("")
-    except KeyError:
-        custom_settings.update(
-            {"PLAYWRIGHT_LAUNCH_OPTIONS":
-                 {"headless": True,
-                  # "executable_path": {
-                  #     "chromium": "/ms-playwright/chromium/chrome-linux/chrome",
-                      # "firefox": "/ms-playwright/firefox/firefox/firefox",
-                      # "webkit": "/ms-playwright/webkit/pw_run.sh",
-                  # }[playwright_browser_type],
-                  "timeout": 100*1000, # 100*1000
-                  "args": ["--no-sandbox"],
-                  },
-             }
-        )
+    # try:
+    #     # TODO try removing this
+    #     if TEST_ENV == "local":
+    #         custom_settings.update(
+    #             {"PLAYWRIGHT_LAUNCH_OPTIONS":
+    #                  {
+    #                      "headless": PLAYWRIGHT_HEADLESS,
+    #                      "timeout": 100*1000, # 25000 * 1000,
+    #                  }
+    #              },
+    #         )
+    # except KeyError:
+    custom_settings.update(
+        {"PLAYWRIGHT_LAUNCH_OPTIONS":
+             {"headless": PLAYWRIGHT_HEADLESS,
+              # "executable_path": {
+              #     "chromium": "/ms-playwright/chromium/chrome-linux/chrome",
+                  # "firefox": "/ms-playwright/firefox/firefox/firefox",
+                  # "webkit": "/ms-playwright/webkit/pw_run.sh",
+              # }[playwright_browser_type],
+              "timeout": 100*1000, # 100*1000
+              "args": ["--no-sandbox"],
+              },
+         }
+    )
 
     custom_settings.update({
     #     "EXTENSIONS" : {
     #     "scrapy.extensions.memusage.MemoryUsage": None,
     #     "scrapy_playwright.memusage.ScrapyPlaywrightMemoryUsageExtension": 0,
     # },
-        "PLAYWRIGHT_MAX_CONTEXTS": 20,
+        "PLAYWRIGHT_MAX_CONTEXTS": 8,
+        # "PLAYWRIGHT_MAX_CONTEXTS": 10,
         "PLAYWRIGHT_MAX_PAGES_PER_CONTEXT": 10,
         "COOKIES_DEBUG": False,
         "USER_AGENT": None,

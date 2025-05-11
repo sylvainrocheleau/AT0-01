@@ -25,7 +25,7 @@ class TwoStepsSpider(scrapy.Spider):
 
     def start_requests(self):
         context_infos = get_context_infos(bookie_name=self.name)
-        self.context_infos = [x for x in context_infos if x["proxy_ip"] not in []]
+        self.context_infos = [x for x in context_infos if x["proxy_ip"] not in ["46.226.144.182"]]
         for data in bookie_config(self.name):
             if len(data["url"]) < 5:
                 continue
@@ -43,6 +43,7 @@ class TwoStepsSpider(scrapy.Spider):
                     competition = data["competition"],
                     list_of_markets = data["list_of_markets"],
                     competition_url = data["url"],
+                    proxy_ip = self.proxy_ip,
                     playwright = True,
                     playwright_include_page = True,
                     playwright_context = data["url"],
@@ -107,6 +108,7 @@ class TwoStepsSpider(scrapy.Spider):
                 away_team=match_info["away_team"],
                 match_url=match_info["url"],
                 competition_url=response.meta.get("competition_url"),
+                proxy_ip=self.proxy_ip,
                 start_date=match_info["date"],
                 playwright=True,
                 playwright_include_page=True,
@@ -139,8 +141,11 @@ class TwoStepsSpider(scrapy.Spider):
 
     async def parse_match(self, response):
         page = response.meta["playwright_page"]
-        html_cleaner = re.compile("<.*?>")
+        await page.close()
+        await page.context.close()
+
         item = ScrapersItem()
+        html_cleaner = re.compile("<.*?>")
         try:
             if response.meta.get("sport") == "Football" or response.meta.get("sport") == "Basketball":
                 selection_keys = response.xpath("//div[@class='parent-container-event open']").extract()
@@ -207,8 +212,7 @@ class TwoStepsSpider(scrapy.Spider):
             item["error_message"] = str(e)
             yield item
 
-        await page.close()
-        await page.context.close()
+
 
 
     def raw_html(self, response):
@@ -238,18 +242,21 @@ class TwoStepsSpider(scrapy.Spider):
         item = ScrapersItem()
         print("### errback triggered")
         # print("cookies:", self.cookies)
-        print("user_gent_hash", self.user_agent_hash)
-        item["proxy_ip"] = self.proxy_ip
+        item["proxy_ip"] = failure.request.meta["proxy_ip"]
         try:
-            item["Competition_Url"] = self.comp_url
+            item["Competition_Url"] = failure.request.meta["competition_url"]
         except:
             pass
         try:
-            item["Match_Url"] = self.match_url
+            item["Match_Url"] = failure.request.meta["match_url"]
         except:
             pass
-        item["extraction_time_utc"] = datetime.datetime.utcnow().replace(second=0, microsecond=0)
+        item["extraction_time_utc"] = datetime.datetime.now().replace(second=0, microsecond=0)
         try:
+            try:
+                error = failure.value.response
+            except:
+                error = "UnknownError"
             if failure.check(HttpError):
                 response = failure.value.response
                 error = "HttpError_" + str(response.status)
@@ -262,11 +269,8 @@ class TwoStepsSpider(scrapy.Spider):
 
             elif failure.check(TimeoutError):
                 error = "TimeoutError"
-            try:
-                error = failure.value.response
-            except:
-                error = "UnknownError"
-            item["error_message"] = error
+
+            item["error_message"] = str(error)
 
             # await page.context.close()
         except Exception as e:
@@ -283,6 +287,12 @@ class TwoStepsSpider(scrapy.Spider):
         yield item
 
     def closed(self, reason):
+        # try:
+        #     if os.environ.get("USER") == "sylvain":
+        #         pass
+        # except Exception as e:
+        #     requests.post(
+        #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
         requests.post(
             "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
 

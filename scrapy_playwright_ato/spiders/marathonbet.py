@@ -74,7 +74,6 @@ class TwoStepsSpider(scrapy.Spider):
                             PageMethod(
                                 method="wait_for_selector",
                                 selector="//div[@class='bg coupon-row']",
-                                # timeout=40000,
                             ),
                         ],
                 ),
@@ -102,32 +101,32 @@ class TwoStepsSpider(scrapy.Spider):
                         try:
                             home_team = \
                                 xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-name").extract()[0].split(
-                                    " @ ")[1]
+                                    " @ ")[0]
                             away_team = \
                                 xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-name").extract()[0].split(
-                                    " @ ")[0]
+                                    " @ ")[1]
                         except IndexError:
                             home_team = \
                             xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-name").extract()[0].split(
-                                " vs ")[1]
+                                " vs ")[0]
                             away_team = \
                             xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-name").extract()[0].split(
-                                " vs ")[0]
+                                " vs ")[1]
                     elif response.meta.get("sport") == "Basketball":
                         try:
                             home_team = \
                                 xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-name").extract()[0].split(
-                                    " @ ")[0]
+                                    " @ ")[1]
                             away_team = \
                                 xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-name").extract()[0].split(
-                                    " @ ")[1]
+                                    " @ ")[0]
                         except IndexError:
                             home_team = \
                                 xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-name").extract()[0].split(
-                                    " vs ")[0]
+                                    " vs ")[1]
                             away_team = \
                                 xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-name").extract()[0].split(
-                                    " vs ")[1]
+                                    " vs ")[0]
 
                     home_team = home_team.strip()
                     away_team = away_team.strip()
@@ -223,7 +222,8 @@ class TwoStepsSpider(scrapy.Spider):
                 market = ''.join(i for i in market_and_result.split(".")[0] if not i.isdigit())
                 result = market_and_result.replace(market_and_result.split(".")[0], "")
                 if market + result in dynamic_list_of_markets and result[1:] not in [x["Result"] for x in odds]:
-                    if response.meta.get("competition") == "Euroliga" or response.meta.get("competition") == "ACB":
+                    # if response.meta.get("competition") == "Euroliga masculina" or response.meta.get("competition") == "Liga ACB":
+                    if response.meta.get("sport") == "Basketball":
                         result_switch = result[1:]
                     elif result == ".HB_H" or result == ".3" or result == ".2":
                         result_switch = ".HB_AWAY"
@@ -339,6 +339,12 @@ class TwoStepsSpider(scrapy.Spider):
         yield item
 
     def closed(self, reason):
+        # try:
+        #     if os.environ.get("USER") == "sylvain":
+        #         pass
+        # except Exception as e:
+        #     requests.post(
+        #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
         requests.post(
             "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
 

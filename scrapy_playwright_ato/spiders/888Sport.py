@@ -1,6 +1,5 @@
 import random
 import scrapy
-# import re
 import requests
 import datetime
 import time
@@ -8,16 +7,11 @@ import os
 import json
 import dateparser
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
-from scrapy_playwright.page import PageMethod
-from parsel import Selector
 from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError, TimeoutError
 from ..items import ScrapersItem
 from ..settings import get_custom_playwright_settings, soltia_user_name, soltia_password
 from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables
-from ..parsing_logic import parse_match as pm_logic
-from ..utilities import check_job_status
-
 
 
 class TwoStepsSpider(scrapy.Spider):
@@ -73,6 +67,7 @@ class TwoStepsSpider(scrapy.Spider):
 
 
     async def match_requests(self,response):
+        # print(response.text)
         page = response.meta["playwright_page"]
         json_responses = response.text.split("<pre>")[1]
         json_responses = json_responses.split("</pre>")[0]
@@ -162,69 +157,70 @@ class TwoStepsSpider(scrapy.Spider):
         page = response.meta["playwright_page"]
         item = ScrapersItem()
         try:
-            odds = pm_logic(self.name, response, response.meta.get("sport"), response.meta.get("list_of_markets"))
-        # json_responses = response.text.split("<pre>")[1]
-        # json_responses = json_responses.split("</pre>")[0]
-        # json_responses = json_responses.replace("""&gt;""", "")
-        # json_responses = json.loads(json_responses)
-        #
-        # odds = []
-        # market = json_responses["event"]["markets"]["markets_selections"]
-        # try:
-        #     for key, value in market.items():
-        #         if response.meta.get("sport") == "Football":
-        #             if "'market_name': '3-Way'" in str(value):
-        #                 for three_way_bet in value:
-        #                     odds.append(
-        #                         {
-        #                             "Market": three_way_bet["market_name"],
-        #                             "Result": three_way_bet["name"],
-        #                             "Odds": three_way_bet["decimal_price"]
-        #                         }
-        #                     )
-        #             elif (
-        #                 "'market_name': 'Total Goals Over/Under'" in str(value)
-        #                 or "'market_name': 'Correct Score'" in str(value)
-        #             ):
-        #                 for key_02, value_02 in value.items():
-        #                     if isinstance(value_02, dict):
-        #                         for key_03, value_03 in value_02.items():
-        #                             # print(value_03["market_name"], value_03["name"], value_03["decimal_price"])
-        #                             odds.append(
-        #                                 {
-        #                                     "Market": value_03["market_name"],
-        #                                     "Result": value_03["name"],
-        #                                     "Odds": value_03["decimal_price"]
-        #                                 }
-        #                             )
-        #         elif response.meta.get("sport") == "Basketball":
-        #
-        #             if key == "gameLineMarket":
-        #                 for key_02, value_02 in value.items():
-        #                     if key_02 == "selections":
-        #                         for data in value_02:
-        #                             for key_03, value_03 in data.items():
-        #                                 for money_line in value_03:
-        #                                     if "'market_name': 'Money Line'" in str(money_line):
-        #                                         odds.append(
-        #                                             {
-        #                                                 "Market": money_line["market_name"],
-        #                                                 "Result": money_line["name"],
-        #                                                 "Odds": money_line["decimal_price"]
-        #                                             }
-        #                                         )
-        #             if key.isdigit() and "'market_name': 'Total Points'" in str(value):
-        #                 for key_02, value_02 in value["selections"].items():
-        #                     for key_03, value_03 in value_02.items():
-        #                         for total_points in value_03:
-        #                             odds.append(
-        #                                 {
-        #                                     "Market": total_points["market_name"],
-        #                                     "Result": total_points["name"],
-        #                                     "Odds": total_points["decimal_price"]
-        #                                 }
-        #                             )
+            # odds = pm_logic(self.name, response, response.meta.get("sport"), response.meta.get("list_of_markets"))
+            json_responses = response.text.split("<pre>")[1]
+            json_responses = json_responses.split("</pre>")[0]
+            json_responses = json_responses.replace("""&gt;""", "")
+            json_responses = json.loads(json_responses)
 
+            odds = []
+            market = json_responses["event"]["markets"]["markets_selections"]
+            try:
+                for key, value in market.items():
+                    if response.meta.get("sport") == "Football":
+                        if "'market_name': '3-Way'" in str(value):
+                            for three_way_bet in value:
+                                odds.append(
+                                    {
+                                        "Market": three_way_bet["market_name"],
+                                        "Result": three_way_bet["name"],
+                                        "Odds": three_way_bet["decimal_price"]
+                                    }
+                                )
+                        elif (
+                            "'market_name': 'Total Goals Over/Under'" in str(value)
+                            or "'market_name': 'Correct Score'" in str(value)
+                        ):
+                            for key_02, value_02 in value.items():
+                                if isinstance(value_02, dict):
+                                    for key_03, value_03 in value_02.items():
+                                        # print(value_03["market_name"], value_03["name"], value_03["decimal_price"])
+                                        odds.append(
+                                            {
+                                                "Market": value_03["market_name"],
+                                                "Result": value_03["name"],
+                                                "Odds": value_03["decimal_price"]
+                                            }
+                                        )
+                    elif response.meta.get("sport") == "Basketball":
+
+                        if key == "gameLineMarket":
+                            for key_02, value_02 in value.items():
+                                if key_02 == "selections":
+                                    for data in value_02:
+                                        for key_03, value_03 in data.items():
+                                            for money_line in value_03:
+                                                if "'market_name': 'Money Line'" in str(money_line):
+                                                    odds.append(
+                                                        {
+                                                            "Market": money_line["market_name"],
+                                                            "Result": money_line["name"],
+                                                            "Odds": money_line["decimal_price"]
+                                                        }
+                                                    )
+                        if key.isdigit() and "'market_name': 'Total Points'" in str(value):
+                            for key_02, value_02 in value["selections"].items():
+                                for key_03, value_03 in value_02.items():
+                                    for total_points in value_03:
+                                        odds.append(
+                                            {
+                                                "Market": total_points["market_name"],
+                                                "Result": total_points["name"],
+                                                "Odds": total_points["decimal_price"]
+                                            }
+                                        )
+            except Exception as e:
+                pass
             item["Home_Team"] = response.meta.get("home_team")
             item["Away_Team"] = response.meta.get("away_team")
             item["Bets"] = normalize_odds_variables(

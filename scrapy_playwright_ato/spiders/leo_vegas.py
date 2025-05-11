@@ -22,7 +22,7 @@ class TwoStepsJsonSpider(scrapy.Spider):
     def start_requests(self):
         context_infos = get_context_infos(bookie_name=self.name)
         self.context_infos = [x for x in context_infos if x["proxy_ip"] not in []]
-        for data in bookie_config("EnRacha"):
+        for data in bookie_config(self.name):
             context_info = random.choice(self.context_infos)
             self.proxy_ip = proxy_prefix+context_info["proxy_ip"]+proxy_suffix
             self.comp_url=data["url"]
@@ -41,14 +41,14 @@ class TwoStepsJsonSpider(scrapy.Spider):
             )
 
     async def match_requests(self,response):
-        jsonresponse = json.loads(response.text)
         match_infos = []
+        jsonresponse = json.loads(response.text)
         if "events" in jsonresponse:
             for match in jsonresponse["events"]:
                 try:
                     home_team = match["event"]["homeName"]
                     away_team = match["event"]["awayName"]
-                    url = "https://eu-offering.kambicdn.org/offering/v2018/leoes/betoffer/event/" + str(
+                    url = "https://eu1.offering-api.kambicdn.com/offering/v2018/leoes/betoffer/event/" + str(
                         match["event"]["id"]) + ".json?lang=es_ES&market=ES"
                     web_url = "https://www.leovegas.es/es-es/apuestas-deportivas#event/" + str(match["event"]["id"])
                     date = match["event"]["start"]
@@ -194,7 +194,12 @@ class TwoStepsJsonSpider(scrapy.Spider):
         yield item
 
     def closed(self, reason):
-        print("sending web hook to ATO")
+        # try:
+        #     if os.environ.get("USER") == "sylvain":
+        #         pass
+        # except Exception as e:
+        #     requests.post(
+        #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
         requests.post(
             "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
 

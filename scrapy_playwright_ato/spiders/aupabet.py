@@ -4,42 +4,45 @@ import re
 import requests
 import dateparser
 import datetime
-# from scrapy_splash import SplashRequest
-# from w3lib.http import basic_auth_header
+import random
+from scrapy.spidermiddlewares.httperror import HttpError
+from twisted.internet.error import DNSLookupError, TimeoutError
 from parsel import Selector
-from urllib.parse import urlencode
+# from urllib.parse import urlencode
 from ..items import ScrapersItem
-from ..bookies_configurations import bookie_config, normalize_odds_variables
+from ..bookies_configurations import bookie_config, normalize_odds_variables, get_context_infos
 
-# Checkout Undetected Playwright
 
-API_KEY = "d3566962-a316-410d-be3d-5b4a24a33a3b"
-
-def get_scrapeops_url(url):
-    payload = {'api_key': API_KEY, 'url': url, 'country': 'es',}
-    proxy_url = 'https://proxy.scrapeops.io/v1/?' + urlencode(payload)
-    return proxy_url
-
-bookie_name = "AupaBet"
-list_of_competitions = bookie_config(bookie_name)
 
 class TwoStepsSpider(scrapy.Spider):
-    name = bookie_name
+    name = "AupaBet"
+    header = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'Connection': 'keep-alive',
+              'User-Agent': '', 'Accept-Encoding': 'gzip, deflate, br, zstd',
+              'Accept-Language': 'es-ES;q=0.5,en;q=0.3',
+              'Upgrade-Insecure-Requests': '1', 'Referer': 'https://www.aupabet.es/',
+              'Sec-Fetch-Dest': 'document',
+              'Sec-Fetch-Mode': 'navigate',
+              'Sec-Fetch-Site': 'same-origin',
+              'Sec-Fetch-User': '?1', 'Sec-GPC': '1', 'Priority': 'u=0, i'
+              }
     custom_settings = {
-        # "DOWNLOAD_DELAY": 5,
-        "DOWNLOAD_TIMEOUT": 120,
-        "DOWNLOAD_DELAY": 0,
-        # "CONCURRENT_REQUESTS": 100,
-        "CONCURRENT_REQUESTS_PER_DOMAIN": 10,
-        "AUTOTHROTTLE_ENABLED": False,
+        "COOKIES_ENABLED": True,
     }
 
     def start_requests(self):
-        for data in list_of_competitions:
+        context_infos = get_context_infos(bookie_name=self.name)
+        self.context_infos = [x for x in context_infos if x["proxy_ip"] not in []]
+        for data in bookie_config(self.name):
+            print("Competition", data["competition"])
             yield scrapy.Request(
-                url=get_scrapeops_url(data["url"]),
+                url=data["url"],
                 callback=self.match_requests,
+                dont_filter=True,
+                # headers=self.header,
                 meta={
+                    "dont_merge_cookies": True,
+                    "headers": self.header,
+                    "proxy": "http://0ef225b8366548fb84767f6bf5e74653:@api.zyte.com:8011/",
                     "sport": data["sport"],
                     "competition": data["competition"],
                     "list_of_markets": data["list_of_markets"],
@@ -61,14 +64,21 @@ class TwoStepsSpider(scrapy.Spider):
                 match_infos.append(
                     {"url": "https://www.aupabet.es" + url, "home_team": home_team, "away_team": away_team,
                      "date": date})
-            except IndexError:
+            except IndexError as e:
+                # print("IndexError", e)
                 continue
-
+        # print("Match_infos", match_infos)
         for match_info in match_infos:
+            context_info = random.choice(self.context_infos)
+            self.header["Referer"] = response.meta.get("competition")
             yield scrapy.Request(
-                url=get_scrapeops_url(match_info["url"]),
+                url=match_info["url"],
                 callback=self.parse_match,
+                errback=self.errback,
+                dont_filter=True,
+                headers=self.header,
                 meta={
+                    "proxy": "http://0ef225b8366548fb84767f6bf5e74653:@api.zyte.com:8011/",
                     "sport": response.meta.get("sport"),
                     "competition": response.meta.get("competition"),
                     "list_of_markets": response.meta.get("list_of_markets"),
@@ -244,6 +254,8 @@ class TwoStepsSpider(scrapy.Spider):
             item["error_message"] = e
         if len(odds) > 1:
             yield item
+        else:
+            print("No odds found for", response.meta.get("match_url"))
 
     def raw_html(self, response):
         print("### TEST OUTPUT")
@@ -255,5 +267,43 @@ class TwoStepsSpider(scrapy.Spider):
             f.write(response.text) # response.meta["playwright_page"]
         # print("custom setting", self.custom_settings)
         # print(response.meta["playwright_page"])
+
+    async def errback(self, failure):
+        item = ScrapersItem()
+        print("### errback triggered")
+        try:
+            item["Competition_Url"] = failure.meta.get("competition_url")
+        except:
+            pass
+        try:
+            item["Match_Url"] = failure.meta.get("competition_url")
+        except:
+            pass
+        item["extraction_time_utc"] = datetime.datetime.now(tz=datetime.timezone.utc).replace(second=0, microsecond=0)
+        try:
+            if failure.check(HttpError):
+                response = failure.value.response
+                error = "HttpError_" + str(response.status)
+
+            elif failure.check(TimeoutError):
+                error = "Timeout"
+
+            elif failure.check(DNSLookupError):
+                error = "DNSLookupError"
+
+            elif failure.check(TimeoutError):
+                error = "TimeoutError"
+            try:
+                error = failure.value.response
+            except:
+                error = "UnknownError"
+            item["error_message"] = error
+
+            # await page.context.close()
+        except Exception as e:
+            item["error_message"] = "error on the function errback " + str(e)
+        yield item
+
     def closed(self, reason):
-        requests.post("https://data.againsttheodds.es/Zyte.php?bookie=" + bookie_name+ "&project_id=643480")
+        requests.post(
+            "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")

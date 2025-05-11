@@ -116,7 +116,7 @@ class TwoStepsSpider(scrapy.Spider):
                     }
                 ]
 
-            # if match_info["url"] == "https://apuestas.retabet.es/deportes/boston-celtics-indiana-pacers-ev24389371":
+            # if match_info["url"] == "https://apuestas.retabet.es/deportes/st-pauli-bayer-leverkusen-ev29583972":
             yield scrapy.Request(
                 url=match_info["url"],
                 callback=self.parse_match,
@@ -125,8 +125,8 @@ class TwoStepsSpider(scrapy.Spider):
             )
 
     async def parse_match(self, response):
-        html_cleaner = re.compile("<.*?>")
         item = ScrapersItem()
+        html_cleaner = re.compile("<.*?>")
         try:
             if response.meta.get("sport") == "Football" or response.meta.get("sport") == "Basketball":
                 selection_keys = response.xpath("//div[@class='bets__wrapper jbgroup jgroup']").extract()
@@ -246,6 +246,12 @@ class TwoStepsSpider(scrapy.Spider):
         yield item
 
     def closed(self, reason):
+        # try:
+        #     if os.environ.get("USER") == "sylvain":
+        #         pass
+        # except Exception as e:
+        #     requests.post(
+        #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
         requests.post(
             "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
 

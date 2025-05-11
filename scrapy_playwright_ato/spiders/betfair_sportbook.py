@@ -67,8 +67,8 @@ class TwoStepsSpider(scrapy.Spider):
             )
 
     async def match_requests(self,response):
+        page = response.meta["playwright_page"]
         if response.url not in ["https://www.betfair.es/sport/basketball", "https://www.betfair.es/sport/football"]:
-            page = response.meta["playwright_page"]
             html_cleaner = re.compile("<.*?>")
             xpath_results = response.xpath(
                 "//li[contains(@class, 'com-coupon-line-new-layout betbutton-layout avb-row avb-table market-avb')]").extract()
@@ -98,6 +98,7 @@ class TwoStepsSpider(scrapy.Spider):
                     continue
             await page.close()
             await page.context.close()
+
             for match_info in match_infos:
                 context_info = random.choice(self.context_infos)
                 self.match_url = match_info["url"]
@@ -140,11 +141,14 @@ class TwoStepsSpider(scrapy.Spider):
                     meta=params,
                     errback=self.errback,
                 )
+        else:
+            await page.close()
+            await page.context.close()
 
     async def parse_match(self, response):
         page = response.meta["playwright_page"]
-        html_cleaner = re.compile("<.*?>")
         item = ScrapersItem()
+        html_cleaner = re.compile("<.*?>")
         try:
             markets_to_clean = response.xpath("//div[contains(@id, \"-container\")]").extract()
             markets_to_clean = list(dict.fromkeys(markets_to_clean))
@@ -239,40 +243,37 @@ class TwoStepsSpider(scrapy.Spider):
 
 
     def raw_html(self, response):
-        print("### TEST OUTPUT")
         print("Headers", response.headers)
-        # print(response.text)
         print("Proxy_ip", self.proxy_ip)
         parent = os.path.dirname(os.getcwd())
         with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/" + self.name + "_response" + ".txt", "w") as f:
-            f.write(response.text) # response.meta["playwright_page"]
-        # print("custom setting", self.custom_settings)
-        # print(response.meta["playwright_page"])
+            f.write(response.text)
 
     async def parse_headers(self, response):
         page = response.meta["playwright_page"]
         storage_state = await page.context.storage_state()
         time.sleep(15)
         await page.close()
+        await page.context.close()
 
         print("Cookies sent: ", response.request.headers.get("Cookie"))
         print("Response cookies: ", response.headers.getlist("Set-Cookie"))
         # print("Page cookies: ", storage_state["cookies"])
         print("Response.headers: ", response.headers)
-        print("Cookie from db: ", self.cookies)
+        # print("Cookie from db: ", self.cookies)
 
     async def errback(self, failure):
         item = ScrapersItem()
         print("### errback triggered")
         # print("cookies:", self.cookies)
-        print("user_gent_hash", self.user_agent_hash)
-        item["proxy_ip"] = self.proxy_ip
+        # print("user_gent_hash", self.user_agent_hash)
+        item["proxy_ip"] = failure.request.meta["proxy_ip"]
         try:
-            item["Competition_Url"] = self.comp_url
+            item["Competition_Url"] = failure.request.meta["competition_url"]
         except:
             pass
         try:
-            item["Match_Url"] = self.match_url
+            item["Match_Url"] = failure.request.meta["match_url"]
         except:
             pass
         item["extraction_time_utc"] = datetime.datetime.utcnow().replace(second=0, microsecond=0)
@@ -310,6 +311,12 @@ class TwoStepsSpider(scrapy.Spider):
         yield item
 
     def closed(self, reason):
+        # try:
+        #     if os.environ.get("USER") == "sylvain":
+        #         pass
+        # except Exception as e:
+        #     requests.post(
+        #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
         requests.post(
             "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
 

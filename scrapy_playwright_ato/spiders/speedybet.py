@@ -4,8 +4,6 @@ import requests
 import datetime
 import os
 import json
-import dateparser
-from parsel import Selector
 from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError, TimeoutError
 from ..items import ScrapersItem
@@ -14,7 +12,7 @@ from ..bookies_configurations import get_context_infos, bookie_config, normalize
 
 
 class TwoStepsSpider(scrapy.Spider):
-    name = "PokerStars"
+    name = "SpeedyBet"
     match_url = str
     comp_url = str
     proxy_ip = str
@@ -43,30 +41,26 @@ class TwoStepsSpider(scrapy.Spider):
             )
 
     async def match_requests(self,response):
+        jsonresponse = json.loads(response.text)
         match_infos = []
-        data = response.text.split("\"events\":{")[1].split("\"eventTypes\":{")[0]
-        data = "{\"events\":{" + data + "}"
-        data = data.replace("false", "False").replace("true", "True")
-        data = eval(data)
-        for key, value in data["events"].items():
-            if response.meta.get("competition") == "NBA":
-                home_team = value["participants"][1]
-                away_team = value["participants"][0]
-            else:
-                home_team = value["participants"][0]
-                away_team = value["participants"][1]
-            date = dateparser.parse(''.join(value["eventStartTime"])).replace(tzinfo=None)
-            url = value["eventSlug"] + "/" + key + "/"
-            url = response.meta.get("competition_url") + url
-            try:
-                match_infos.append(
-                    {"url": url, "web_url": url, "home_team": home_team, "away_team": away_team,
-                     "date": date})
-            except IndexError as e:
-                print("indexerror", e)
-                continue
-            except Exception as e:
-                print("Exceptions", e)
+        if "events" in jsonresponse:
+            for match in jsonresponse["events"]:
+                try:
+                    home_team = match["event"]["homeName"]
+                    away_team = match["event"]["awayName"]
+                    url = "https://eu1.offering-api.kambicdn.com/offering/v2018/pafspeedybetes/betoffer/event/" + str(
+                        match["event"]["id"]) + ".json?lang=es_ES&market=ES"
+                    # https://eu-offering.kambicdn.org/offering/v2018/caes/betoffer/event/
+                    web_url = "https://www.speedybet.es/betting#event/" + str(match["event"]["id"])
+                    date = match["event"]["start"]
+                    match_infos.append(
+                        {"url": url, "web_url": web_url, "home_team": home_team, "away_team": away_team,
+                         "date": date})
+                except IndexError as e:
+                    continue
+                except Exception as e:
+                    continue
+
         for match_info in match_infos:
             context_info = random.choice(self.context_infos)
             self.match_url = match_info["url"]
@@ -80,12 +74,13 @@ class TwoStepsSpider(scrapy.Spider):
                 list_of_markets=response.meta.get("list_of_markets"),
                 home_team=match_info["home_team"],
                 away_team=match_info["away_team"],
-                match_url=match_info["url"],
+                match_url=match_info["web_url"],
                 competition_url=response.meta.get("competition_url"),
                 start_date=match_info["date"],
             )
 
-            # if match_info["url"] == "https://www.pokerstars.es/sports/baloncesto/7522/nba/10547864/oklahoma-city-thunder-orlando-magic/33869775/":
+            # if match_info["url"] == "https://eu-offering.kambicdn.org/offering/v2018/caes/betoffer/event/1020370871.json?lang=es_ES&market=ES":
+            # print("request for", match_info["url"])
             yield scrapy.Request(
                 url=match_info["url"],
                 callback=self.parse_match,
@@ -95,45 +90,46 @@ class TwoStepsSpider(scrapy.Spider):
 
     async def parse_match(self, response):
         item = ScrapersItem()
-        jsonresponse = response.text.split("Object.assign(window.__INITIAL_STATE__['isp-sports-widget-event-page'] || {}, ")[1]
-        jsonresponse = jsonresponse.split("); window.__INITIAL_STATE__")[0]
-        jsonresponse = jsonresponse.replace("undefined", str("\"undefineds\"")).replace("false", "False").replace("true", "True")
-        jsonresponse = eval(jsonresponse)
         try:
-            odds = []
-            for key, value in jsonresponse.items():
-                if key == "markets":
-                    for key_02, value_02 in value.items():
-                        # print(value_02["marketName"])
-                        if value_02["marketName"] in response.meta.get("list_of_markets"):
-                            for bet in value_02["runners"]:
-                                if response.meta.get("sport") == "Football":
-                                    result = bet["runnerName"]
-                                elif response.meta.get("sport") == "Basketball":
-                                    result = bet["runnerName"] + " " + str(bet["handicap"])
-                                odds.append(
-                                    {
-                                        "Market": value_02["marketName"],
-                                        "Result": result,
-                                        "Odds": bet["winRunnerOdds"]["TrueOdds"]["decimalOdds"]["decimalOdds"]
-                                    }
-                                )
+            jsonresponse = json.loads(response.text)
+            if jsonresponse["events"][0]["state"] == "NOT_STARTED":
+                for key, values in jsonresponse.items():
+                    odds = []
+                    if key == "betOffers":
+                        for field in values:
+                            if field["criterion"]["label"] in response.meta.get("list_of_markets"):
+                                for bet in field["outcomes"]:
+                                    try:
+                                        result = bet["label"] + " " + str(bet["line"] / 1000)
 
-            item["Home_Team"] = response.meta.get("home_team")
-            item["Away_Team"] = response.meta.get("away_team")
-            item["Bets"] = normalize_odds_variables(
-                odds, response.meta.get("sport"),item["Home_Team"], item["Away_Team"]
-            )
-            # item["Bets"] = odds
-            item["extraction_time_utc"] = datetime.datetime.utcnow()
-            item["date_confidence"] = 1
-            item["Sport"] = response.meta.get("sport")
-            item["Competition"] = response.meta.get("competition")
-            item["Date"] = response.meta.get("start_date")
-            item["Match_Url"] = response.meta.get("match_url")
-            item["Competition_Url"] = response.meta.get("competition_url")
-            item["proxy_ip"] = self.proxy_ip
-            yield item
+                                    except KeyError:
+                                        result = bet["label"]
+
+                                    if bet["status"] == "OPEN":
+                                        odd = float(bet["odds"] / 1000)
+                                        odd = round(odd, 2)
+                                        odds.append(
+                                            {"Market": field["criterion"]["label"],
+                                             "Result": result,
+                                             "Odds": odd
+                                             }
+                                        )
+
+                        item["Home_Team"] = response.meta.get("home_team")
+                        item["Away_Team"] = response.meta.get("away_team")
+                        item["Bets"] = normalize_odds_variables(
+                            odds, response.meta.get("sport"),item["Home_Team"], item["Away_Team"]
+                        )
+                        # item["Bets"] = odds
+                        item["extraction_time_utc"] = datetime.datetime.utcnow()
+                        item["date_confidence"] = 3
+                        item["Sport"] = response.meta.get("sport")
+                        item["Competition"] = response.meta.get("competition")
+                        item["Date"] = response.meta.get("start_date")
+                        item["Match_Url"] = response.meta.get("match_url")
+                        item["Competition_Url"] = response.meta.get("competition_url")
+                        item["proxy_ip"] = self.proxy_ip
+                        yield item
 
         except Exception as e:
             item["Competition_Url"] = response.meta.get("competition_url")

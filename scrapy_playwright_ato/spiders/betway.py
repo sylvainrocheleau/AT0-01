@@ -23,12 +23,13 @@ class TwoStepsSpider(scrapy.Spider):
     proxy_ip = str
     user_agent_hash = int
     custom_settings = get_custom_playwright_settings(browser="Chrome", rotate_headers=False)
+    custom_settings.update({"CONCURRENT_REQUESTS_PER_DOMAIN": 3})
 
     def start_requests(self):
         context_infos = get_context_infos(bookie_name=self.name)
         self.context_infos = [x for x in context_infos if x["proxy_ip"] not in []]
         for data in bookie_config(self.name):
-            context_info = random.choice(self.context_infos)
+            context_info = random.choice([x for x in self.context_infos if x["cookies"] is not None])
             self.proxy_ip = context_info["proxy_ip"]
             if len(data["url"]) < 5 or "https://" not in data["url"]:
                 continue
@@ -97,7 +98,7 @@ class TwoStepsSpider(scrapy.Spider):
         await page.context.close()
 
         for match_info in match_infos:
-            context_info = random.choice(self.context_infos)
+            context_info = random.choice([x for x in self.context_infos if x["cookies"] is not None])
             self.proxy_ip = context_info["proxy_ip"]
             # //div[@class='eventMarketsLayout']
             params = dict(
@@ -313,6 +314,12 @@ class TwoStepsSpider(scrapy.Spider):
         yield item
 
     def closed(self, reason):
+        # try:
+        #     if os.environ.get("USER") == "sylvain":
+        #         pass
+        # except Exception as e:
+        #     requests.post(
+        #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
         requests.post(
-            "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name+ "&project_id=643480")
+            "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
 

@@ -7,6 +7,7 @@ import time
 import os
 import json
 import dateparser
+import traceback
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 from scrapy_playwright.page import PageMethod
 from parsel import Selector
@@ -15,7 +16,6 @@ from twisted.internet.error import DNSLookupError, TimeoutError
 from ..items import ScrapersItem
 from ..settings import get_custom_playwright_settings, soltia_user_name, soltia_password
 from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables
-from ..parsing_logic import parse_match as pm_logic
 
 class TwoStepsSpider(scrapy.Spider):
     name = "Bet777"
@@ -32,9 +32,7 @@ class TwoStepsSpider(scrapy.Spider):
             context_info = random.choice(self.context_infos)
             self.proxy_ip = context_info["proxy_ip"]
             self.comp_url=data["url"]
-            # self.cookies = json.loads(context_info["cookies"])
             self.user_agent_hash = context_info["user_agent_hash"]
-            # print("comp", self.user_agent_hash)
             yield scrapy.Request(
                 url=data["url"],
                 callback=self.match_requests,
@@ -67,13 +65,9 @@ class TwoStepsSpider(scrapy.Spider):
                         # 'position': 1
                     },
                     playwright_page_methods=[
-                        # PageMethod(
-                        #     method="wait_for_timeout",
-                        #     timeout=2000
-                        # ),
                         PageMethod(
                             method="wait_for_selector",
-                            selector="//div[@class='mt-0']",
+                            selector="//div[@class='flex flex-col bg-gray-800 rounded-lg mb-3 p-1']",
                         ),
                     ],
             ),
@@ -81,8 +75,10 @@ class TwoStepsSpider(scrapy.Spider):
 
     async def match_requests(self,response):
         page = response.meta["playwright_page"]
+        await page.close()
+        await page.context.close()
         html_cleaner = re.compile("<.*?>")
-        xpath_results = response.xpath("//div[@class='flex flex-row']").extract()
+        xpath_results = response.xpath("//div[@class='flex flex-col w-full sm:flex-row ']").extract()
         match_infos = []
         for xpath_result in xpath_results:
             try:
@@ -105,20 +101,19 @@ class TwoStepsSpider(scrapy.Spider):
                         {"url": "https://www.bet777.es" + url, "home_team": home_team, "away_team": away_team,
                          "date": date})
             except IndexError as e:
+                # print(traceback.format_exc())
                 continue
             except Exception as e:
+                # print(traceback.format_exc())
                 continue
+        # print("match_infos", match_infos)
 
-        await page.close()
-        await page.context.close()
 
         for match_info in match_infos:
             context_info = random.choice(self.context_infos)
             self.match_url = match_info["url"]
             self.proxy_ip = context_info["proxy_ip"]
             self.user_agent_hash = context_info["user_agent_hash"]
-            # print("match", self.user_agent_hash)
-            # self.cookies = json.loads(context_info["cookies"])
             params = dict(
                 sport=response.meta.get("sport"),
                 competition=response.meta.get("competition"),
@@ -129,8 +124,8 @@ class TwoStepsSpider(scrapy.Spider):
                 competition_url=response.meta.get("competition_url"),
                 user_agent=context_info["user_agent"],
                 # user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36",
-                # proxy_ip=self.proxy_ip,
-                proxy_ip= "46.226.144.182",
+                proxy_ip=self.proxy_ip,
+                # proxy_ip= "46.226.144.182",
                 start_date=match_info["date"],
                 playwright=True,
                 playwright_include_page=True,
@@ -179,52 +174,52 @@ class TwoStepsSpider(scrapy.Spider):
         html_cleaner = re.compile("<.*?>")
         item = ScrapersItem()
         try:
-            odds = pm_logic(self.name, response, response.meta.get("sport"), response.meta.get("list_of_markets"))
-            # if response.meta.get("sport") == "Football" or response.meta.get("sport") == "Basketball":
-            #     selection_keys = response.xpath("//div[@class='mx-0']").extract()
-            #     odds = []
-            #     for selection_key in selection_keys:
-            #         selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t","")
-            #         clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
-            #         clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
-            #         clean_selection_keys = list(filter(None, clean_selection_keys))
-            #
-            #         for selection_key02 in clean_selection_keys:
-            #             if clean_selection_keys[0] in response.meta.get("list_of_markets"):
-            #                 if clean_selection_keys[0] == "Resultado del Partido":
-            #                     del clean_selection_keys[8:]
-            #                 market = clean_selection_keys[0]
-            #             else:
-            #                 market = "empty"
-            #
-            #             if (
-            #                 selection_key02 != market
-            #                 and market in response.meta.get("list_of_markets")
-            #                 and re.search('[a-zA-Z]', selection_key02) is not None
-            #                 or "-" in selection_key02
-            #             ):
-            #                 result = selection_key02
-            #                 odd = "empty"
-            #
-            #             elif (
-            #                 re.search("[a-zA-Z]", selection_key02) is None
-            #                 and "." in selection_key02
-            #                 and market in response.meta.get("list_of_markets")
-            #             ):
-            #                 odd = selection_key02
-            #             try:
-            #                 if (
-            #                     market in response.meta.get("list_of_markets")
-            #                     and result != "empty"
-            #                     and odd != "empty"
-            #                 ):
-            #                     odds.append({"Market": market, "Result": result, "Odds": odd})
-            #                     result = "empty"
-            #                     odd = "empty"
-            #             except UnboundLocalError:
-            #                 continue
-            #             except NameError:
-            #                 continue
+            # odds = pm_logic(self.name, response, response.meta.get("sport"), response.meta.get("list_of_markets"))
+            if response.meta.get("sport") == "Football" or response.meta.get("sport") == "Basketball":
+                selection_keys = response.xpath("//div[@class='mx-0']").extract()
+                odds = []
+                for selection_key in selection_keys:
+                    selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t","")
+                    clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
+                    clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
+                    clean_selection_keys = list(filter(None, clean_selection_keys))
+
+                    for selection_key02 in clean_selection_keys:
+                        if clean_selection_keys[0] in response.meta.get("list_of_markets"):
+                            if clean_selection_keys[0] == "Resultado del Partido":
+                                del clean_selection_keys[8:]
+                            market = clean_selection_keys[0]
+                        else:
+                            market = "empty"
+
+                        if (
+                            selection_key02 != market
+                            and market in response.meta.get("list_of_markets")
+                            and re.search('[a-zA-Z]', selection_key02) is not None
+                            or "-" in selection_key02
+                        ):
+                            result = selection_key02
+                            odd = "empty"
+
+                        elif (
+                            re.search("[a-zA-Z]", selection_key02) is None
+                            and "." in selection_key02
+                            and market in response.meta.get("list_of_markets")
+                        ):
+                            odd = selection_key02
+                        try:
+                            if (
+                                market in response.meta.get("list_of_markets")
+                                and result != "empty"
+                                and odd != "empty"
+                            ):
+                                odds.append({"Market": market, "Result": result, "Odds": odd})
+                                result = "empty"
+                                odd = "empty"
+                        except UnboundLocalError:
+                            continue
+                        except NameError:
+                            continue
 
             item["Home_Team"] = response.meta.get("home_team")
             item["Away_Team"] = response.meta.get("away_team")
@@ -232,7 +227,7 @@ class TwoStepsSpider(scrapy.Spider):
                 odds, response.meta.get("sport"),item["Home_Team"], item["Away_Team"]
             )
             # item["Bets"] = odds
-            item["extraction_time_utc"] = datetime.datetime.utcnow()
+            item["extraction_time_utc"] = datetime.datetime.now(tz=datetime.timezone.utc).replace(second=0, microsecond=0)
             item["date_confidence"] = 1
             item["Sport"] = response.meta.get("sport")
             item["Competition"] = response.meta.get("competition")
@@ -327,6 +322,12 @@ class TwoStepsSpider(scrapy.Spider):
         yield item
 
     def closed(self, reason):
+        # try:
+        #     if os.environ.get("USER") == "sylvain":
+        #         pass
+        # except Exception as e:
+        #     requests.post(
+        #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
         requests.post(
             "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
 

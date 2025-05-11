@@ -42,14 +42,15 @@ class TwoStepsJsonSpider(scrapy.Spider):
             )
 
     async def match_requests(self,response):
-        jsonresponse = json.loads(response.text)
         match_infos = []
+        jsonresponse = json.loads(response.text)
         if "events" in jsonresponse:
             for match in jsonresponse["events"]:
                 try:
                     home_team = match["event"]["homeName"]
                     away_team = match["event"]["awayName"]
-                    url = "https://eu-offering.kambicdn.org/offering/v2018/pafes/betoffer/event/" + str(
+                    # https://eu1.offering-api.kambicdn.com/offering/v2018/pafes/betoffer/event/1021921004.json?lang=es_ES&market=ES
+                    url = "https://eu1.offering-api.kambicdn.com/offering/v2018/pafes/betoffer/event/" + str(
                         match["event"]["id"]) + ".json?lang=es_ES&market=ES"
                     web_url = "https://www.paf.es/betting#/event/" + str(match["event"]["id"])
                     date = match["event"]["start"]
@@ -195,7 +196,12 @@ class TwoStepsJsonSpider(scrapy.Spider):
         yield item
 
     def closed(self, reason):
-        # time.sleep(30)
+        # try:
+        #     if os.environ.get("USER") == "sylvain":
+        #         pass
+        # except Exception as e:
+        #     requests.post(
+        #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
         requests.post(
             "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
 

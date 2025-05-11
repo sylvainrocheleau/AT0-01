@@ -6,8 +6,10 @@ COPY . /app
 ENV PLAYWRIGHT_BROWSERS_PATH=/playwright-browsers
 
 RUN apt-get update \
-    && pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt \
+#    && pip install --no-cache-dir --upgrade pip \
+    && pip install pip\
+#    && pip install --no-cache-dir -r requirements.txt \
+    && pip install -r requirements.txt \
     && playwright install --with-deps chromium \
     && chmod -Rf 777 $PLAYWRIGHT_BROWSERS_PATH
 

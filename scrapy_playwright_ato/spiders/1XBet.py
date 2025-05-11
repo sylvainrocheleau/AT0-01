@@ -6,6 +6,7 @@ import os
 import json
 from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 from scrapy.spidermiddlewares.httperror import HttpError
+from scrapy_playwright.page import PageMethod
 from twisted.internet.error import DNSLookupError, TimeoutError
 from ..items import ScrapersItem
 from ..settings import get_custom_playwright_settings, soltia_user_name, soltia_password
@@ -26,7 +27,6 @@ class TwoStepsSpider(scrapy.Spider):
         context_infos = get_context_infos(bookie_name=self.name)
         self.context_infos = [x for x in context_infos if x["proxy_ip"] not in []]
         for data in bookie_config(self.name):
-            # print("### SENDING COMP REQUEST", data["url"], "COMP:", data["competition"])
             context_info = random.choice(self.context_infos)
             self.proxy_ip = context_info["proxy_ip"]
             if len(data["url"]) < 5:
@@ -63,6 +63,13 @@ class TwoStepsSpider(scrapy.Spider):
                             'activate': True,
                             # 'position': 1
                         },
+                        playwright_page_methods=[
+                            PageMethod(
+                                method="wait_for_timeout",
+                                timeout=5000,
+                            ),
+                        ],
+
                 ),
                 )
             except PlaywrightTimeoutError:
@@ -71,81 +78,98 @@ class TwoStepsSpider(scrapy.Spider):
 
     async def match_requests(self,response):
         page = response.meta["playwright_page"]
+        await page.close()
+        await page.context.close()
         json_responses = response.text.split("<pre>")[1]
         json_responses = json_responses.split("</pre>")[0]
         json_responses = json.loads(json_responses)
+        # competition_id = response.meta.get("competition_url")
+        # competition_id = competition_id.split("champs=")[1].split("&")[0]
+
         match_infos = []
-        url_prefix = "https://1xbet.es/LineFeed/GetGameZip?lng=es&cfview=0&isSubGames=true&GroupEvents=true&allEventsGroupSubGames=true&countevents=250&partner=229&id="
-        for match in json_responses["Value"]:
+        url_prefix = "https://1xbet.es/service/LineFeed/GetGameZip?lng=es&isSubGames=true&GroupEvents=true&allEventsGroupSubGames=true&countevents=2500&partner=229&grMode=4&marketType=1&id="
+        for data_01 in json_responses["Value"]:
+            for key, value in data_01.items():
+                if isinstance(value, list):
+                    for data_02 in value:
+                        for key_02, value_02 in data_02.items():
+                            if key_02 == "G":
+                                for match in value_02:
+                                    try:
+                                        url = str(match["I"])
+                                        url = url_prefix + url
+                                        home_team = match["O1"]
+                                        away_team = match["O2"]
+                                        date = datetime.datetime.fromtimestamp(match["S"])
+                                        web_url = "https://1xbet.es/line/" + str(
+                                            match["SE"] + "/" + str(match["LI"]) + "-"
+                                            + match["LE"].replace(".", "") + "/" + str(
+                                                match["CI"]) + "-" + match[
+                                                "O1E"] + "-" + match["O2E"]).replace(" ", "-")
+                                        # if competition_id in web_url:
+                                        match_infos.append(
+                                            {"url": url, "web_url": web_url, "home_team": home_team,
+                                             "away_team": away_team, "date": date})
+                                    except IndexError:
+                                        continue
+                                    except:
+                                        # print(traceback.format_exc())
+                                        continue
+
+
+        for match_info in match_infos:
+            context_info = random.choice(self.context_infos)
+            self.proxy_ip = context_info["proxy_ip"]
+            params = dict(
+                sport=response.meta.get("sport"),
+                competition=response.meta.get("competition"),
+                list_of_markets=response.meta.get("list_of_markets"),
+                home_team=match_info["home_team"],
+                away_team=match_info["away_team"],
+                match_url=match_info["url"],
+                competition_url=response.meta.get("competition_url"),
+                start_date=match_info["date"],
+                web_url=match_info["web_url"],
+                playwright=True,
+                playwright_include_page=True,
+                playwright_context=match_info["url"],
+                playwright_context_kwargs={
+                    "user_agent": context_info["user_agent"],
+                    "java_script_enabled": False,
+                    "ignore_https_errors": True,
+                    "proxy": {
+                        "server": "http://"+context_info["proxy_ip"]+":58542/",
+                        "username": soltia_user_name,
+                        "password": soltia_password,
+                    },
+                    # "storage_state": {
+                    #     "cookies": json.loads(context_info["cookies"])
+                    # },
+                },
+                playwright_accept_request_predicate={
+                    'activate': True,
+                    # 'position': 1
+                },
+            )
+
+            # if "https://1xbet.es/LineFeed/GetGameZip?lng=es&cfview=0&isSubGames=true&GroupEvents=true&allEventsGroupSubGames=true&countevents=250&partner=229&id=231754197" == match_info["url"]:
+            self.match_url = match_info["url"]
+            self.proxy_ip = context_info["proxy_ip"]
             try:
-                url = str(match["CI"])
-                home_team = match["O1E"]
-                away_team = match["O2E"]
-                date = datetime.datetime.fromtimestamp(match["S"])
-                match_infos.append(
-                    {"url": url_prefix + url, "home_team": home_team, "away_team": away_team, "date": date})
-            except IndexError:
-                continue
-
-        await page.close()
-        await page.context.close()
-
-        if self.mode == "comp_only":
-            print(match_infos)
-        else:
-            for match_info in match_infos:
-                context_info = random.choice(self.context_infos)
-                self.proxy_ip = context_info["proxy_ip"]
-                params = dict(
-                    sport=response.meta.get("sport"),
-                    competition=response.meta.get("competition"),
-                    list_of_markets=response.meta.get("list_of_markets"),
-                    home_team=match_info["home_team"],
-                    away_team=match_info["away_team"],
-                    match_url=match_info["url"],
-                    competition_url=response.meta.get("competition_url"),
-                    start_date=match_info["date"],
-                    url_part_02= str(
-                    match["SE"] + "/" + str(match["LI"]) + "-" + match["LE"].replace(".", "") + "/" + str(
-                        match["CI"]) + "-" + match["O1E"] + "-" + match["O2E"]).replace(" ", "-"),
-                    playwright=True,
-                    playwright_include_page=True,
-                    playwright_context=match_info["url"],
-                    playwright_context_kwargs={
-                        "user_agent": context_info["user_agent"],
-                        "java_script_enabled": False,
-                        "ignore_https_errors": True,
-                        "proxy": {
-                            "server": "http://"+context_info["proxy_ip"]+":58542/",
-                            "username": soltia_user_name,
-                            "password": soltia_password,
-                        },
-                        # "storage_state": {
-                        #     "cookies": json.loads(context_info["cookies"])
-                        # },
-                    },
-                    playwright_accept_request_predicate={
-                        'activate': True,
-                        # 'position': 1
-                    },
+                yield scrapy.Request(
+                    url=match_info["url"],
+                    callback=self.parse_match,
+                    meta=params,
+                    errback=self.errback,
                 )
-
-                # if "https://1xbet.es/LineFeed/GetGameZip?lng=es&cfview=0&isSubGames=true&GroupEvents=true&allEventsGroupSubGames=true&countevents=250&partner=229&id=231754197" == match_info["url"]:
-                self.match_url = match_info["url"]
-                self.proxy_ip = context_info["proxy_ip"]
-                try:
-                    yield scrapy.Request(
-                        url=match_info["url"],
-                        callback=self.parse_match,
-                        meta=params,
-                        errback=self.errback,
-                    )
-                except PlaywrightTimeoutError:
-                    # print("Time out out on ", self.match_url)
-                    continue
+            except PlaywrightTimeoutError:
+                # print("Time out out on ", self.match_url)
+                continue
 
     async def parse_match(self, response):
         page = response.meta["playwright_page"]
+        await page.close()
+        await page.context.close()
         json_responses = response.text.split("<pre>")[1]
         json_responses = json_responses.split("</pre>")[0]
         json_responses = json.loads(json_responses)
@@ -200,12 +224,7 @@ class TwoStepsSpider(scrapy.Spider):
                                      "Odds": bet["C"]
                                      }
                                 )
-                            # elif (
-                            #     bet["P"] >= 200
-                            #     and bet["P"] <= 240
-                            #     and ".5" in str(bet["P"])
-                            #     and response.meta.get("sport") == "Basketball"
-                            # ):
+
                                 odds.append(
                                     {"Market": "Mas/menos goles totales",
                                      "Result": "Menos de " + str(bet["P"]),
@@ -233,21 +252,19 @@ class TwoStepsSpider(scrapy.Spider):
             item["Home_Team"] = response.meta.get("home_team")
             item["Away_Team"] = response.meta.get("away_team")
             item["Date"] = response.meta.get("start_date")
-            item["date_confidence"] = 3
             item["Competition_Url"] = response.meta.get("competition_url")
-            item["Match_Url"] = "https://1xbet.es/line/" + response.meta.get("url_part_02")
+            item["Match_Url"] = response.meta.get("web_url")
             item["Bets"] = normalize_odds_variables(odds, item["Sport"], item["Home_Team"], item["Away_Team"])
-            # item["Bets"] = odds
-            yield item
+            if len(item["Bets"]) > 0:
+                yield item
 
-        # print("Closing page for", response.url)
-        await page.close()
-        # print("closing context for match", response.url)
-        await page.context.close()
 
-    def raw_html(self, response):
+    async def raw_html(self, response):
         print("### TEST OUTPUT")
         print("Headers", response.headers)
+        page = response.meta["playwright_page"]
+        await page.close()
+        await page.context.close()
         # print("JSON", response.json)
         # print(response.text)
         json_response = response.text.split("<pre>")[1]
@@ -255,7 +272,7 @@ class TwoStepsSpider(scrapy.Spider):
         json_response = json.loads(json_response)
         print("Proxy_ip", self.proxy_ip)
         parent = os.path.dirname(os.getcwd())
-        with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/" + self.name + "_response" + ".py", "w") as f:
+        with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/" + self.name + "_response" + ".txt", "w") as f:
             f.write(str(json_response)) # response.meta["playwright_page"]
         # print("custom setting", self.custom_settings)
         # print(response.meta["playwright_page"])
@@ -319,5 +336,5 @@ class TwoStepsSpider(scrapy.Spider):
 
     def closed(self, reason):
         requests.post(
-            "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name+ "&project_id=643480")
+            "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
 

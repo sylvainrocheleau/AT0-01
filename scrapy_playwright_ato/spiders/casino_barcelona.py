@@ -4,8 +4,9 @@ import re
 import requests
 import datetime
 import os
-import json
+# import json
 import dateparser
+from scrapy_playwright.page import PageMethod
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 from parsel import Selector
 from scrapy.spidermiddlewares.httperror import HttpError
@@ -31,7 +32,7 @@ class TwoStepsSpider(scrapy.Spider):
 
     def start_requests(self):
         context_infos = get_context_infos(bookie_name=self.name)
-        self.context_infos = [x for x in context_infos if x["proxy_ip"] not in []]
+        self.context_infos = [x for x in context_infos if x["proxy_ip"] not in ["46.226.144.182"]]
         for data in bookie_config(self.name):
         # for data in list_of_competitions:
             context_info = random.choice(self.context_infos)
@@ -49,6 +50,7 @@ class TwoStepsSpider(scrapy.Spider):
                         competition = data["competition"],
                         list_of_markets = data["list_of_markets"],
                         competition_url = data["url"],
+                        proxy_ip = context_info["proxy_ip"],
                         playwright = True,
                         playwright_include_page = True,
                         playwright_context = data["url"],
@@ -69,6 +71,13 @@ class TwoStepsSpider(scrapy.Spider):
                             'activate': True,
                             # 'position': 1
                         },
+                        # playwright_page_methods=[
+                        #     PageMethod(
+                        #         method="click",
+                        #         selector="//li[@class='' or not(@class)]/a[contains(text(), 'Partidos')]",
+                        #     ),
+                        # ],
+                        #
                 ),
                     errback=self.errback,
                 )
@@ -109,6 +118,7 @@ class TwoStepsSpider(scrapy.Spider):
                 away_team=match_info["away_team"],
                 match_url=match_info["url"],
                 competition_url=response.meta.get("competition_url"),
+                proxy_ip=self.proxy_ip,
                 start_date=match_info["date"],
                 playwright=True,
                 playwright_include_page=True,
@@ -131,8 +141,8 @@ class TwoStepsSpider(scrapy.Spider):
                     # 'position': 1
                 },
             )
-
-            # if "https://apuestas.olybet.es/es/evento/7782582-manchester-city-luton-town" == match_info["url"]:
+            # print("match_info", match_info)
+            # if "https://apuestas.casinobarcelona.es/evento/8469548-werder-bremen-bayer-04-leverkusen" == match_info["url"]:
             # print("request for", match_info["url"])
             self.match_url = match_info["url"]
             self.proxy_ip = context_info["proxy_ip"]
@@ -247,17 +257,23 @@ class TwoStepsSpider(scrapy.Spider):
     async def errback(self, failure):
         item = ScrapersItem()
         print("### errback triggered")
-        item["proxy_ip"] = self.proxy_ip
+        item["proxy_ip"] = failure.request.meta["proxy_ip"]
         try:
-            item["Competition_Url"] = self.comp_url
+            item["Competition_Url"] = failure.request.meta["competition_url"]
+            print("Competition_Url", item["Competition_Url"])
         except:
             pass
         try:
-            item["Match_Url"] = self.match_url
+            item["Match_Url"] = failure.request.meta["match_url"]
+            print("Match_Url", item["Match_Url"])
         except:
             pass
         item["extraction_time_utc"] = datetime.datetime.utcnow().replace(second=0, microsecond=0)
         try:
+            try:
+                error = failure.value.response
+            except:
+                error = "UnknownError"
             if failure.check(HttpError):
                 response = failure.value.response
                 error = "HttpError_"+str(response.status)
@@ -270,13 +286,9 @@ class TwoStepsSpider(scrapy.Spider):
 
             elif failure.check(TimeoutError):
                 error = "TimeoutError"
-            try:
-                error = failure.value.response
-            except:
-                error = "UnknownError"
-            item["error_message"] = error
 
-            # await page.context.close()
+            item["error_message"] = str(error)
+
         except Exception as e:
             item["error_message"] = "error on the function errback "+str(e)
         try:
@@ -291,6 +303,12 @@ class TwoStepsSpider(scrapy.Spider):
         yield item
 
     def closed(self, reason):
+        # try:
+        #     if os.environ.get("USER") == "sylvain":
+        #         pass
+        # except Exception as e:
+        #     requests.post(
+        #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
         requests.post(
             "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
 

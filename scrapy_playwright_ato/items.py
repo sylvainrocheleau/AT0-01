@@ -14,10 +14,11 @@ class ScrapersItem(scrapy.Item):
     extraction_time_utc = scrapy.Field()
     date_confidence = scrapy.Field()
     error_message = scrapy.Field()
-    error_details = scrapy.Field()
     proxy_ip = scrapy.Field()
     browser = scrapy.Field()
-    proxy_ip = scrapy.Field()
     updated_on = scrapy.Field()
     user_agent_hash = scrapy.Field()
+    user_agent = scrapy.Field
+    data_dict = scrapy.Field()
+    pipeline_type = scrapy.Field()
     pass

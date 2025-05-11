@@ -1,371 +1,376 @@
-import random
-import scrapy
+import json
 import re
-import requests
 import datetime
-import time
+import random
 import os
+import requests
+import time
 import traceback
-import dateparser
-from scrapy_playwright.page import PageMethod
-from parsel import Selector
-from scrapy.spidermiddlewares.httperror import HttpError
-from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
-from scrapy.exceptions import CloseSpider
-from twisted.internet.error import DNSLookupError, TimeoutError
+import asyncio
+import scrapy
+from websockets_proxy import Proxy, proxy_connect
+# from websockets.exceptions import ConnectionClosedError
+from scrapy import Spider
 from ..items import ScrapersItem
-from ..settings import get_custom_playwright_settings, soltia_user_name, soltia_password
-from ..bookies_configurations import get_context_infos,bookie_config, normalize_odds_variables
+from ..parsing_logic import parse_competition, parse_match
+from ..bookies_configurations import normalize_odds_variables, bookie_config, list_of_markets_V2, get_context_infos
+from ..utilities import Helpers
+from ..settings import proxy_prefix_http, proxy_suffix
 
 
-class TwoStepsSpider(scrapy.Spider):
+class WebsocketsSpider(Spider):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            if os.environ["USER"] == "sylvain":
+                self.debug = True
+                # self.competitions = [x for x in bookie_config(bookie=["Versus"]) if x["competition_id"] == "Premier League Inglesa"]
+                # self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", "Premier League Inglesa"]}
+
+                self.competitions = bookie_config(bookie=["Versus"])
+                self.match_filter = {"type": "bookie_id", "params": ["Versus"]}
+        except:
+            self.competitions = bookie_config(bookie=["Versus"])
+            self.match_filter = {"type": "bookie_id", "params": ["Versus"]}
+            self.debug = False
     name = "Versus"
-    match_url = str
-    comp_url = str
-    proxy_ip = str
-    user_agent_hash = int
-    custom_settings = get_custom_playwright_settings(browser="Chrome", rotate_headers=False)
+    start_urls = ["data:,"]
+    custom_settings = {"TWISTED_REACTOR": "twisted.internet.asyncioreactor.AsyncioSelectorReactor"}
+    context_infos = get_context_infos(bookie_name=["Versus"])
+    map_matches_urls = [x[0] for x in Helpers().load_matches_urls(name)]
+    map_matches = {}
+    for match in Helpers().load_matches():
+        try:
+            map_matches[match[6]].append(match[0])
+        except KeyError:
+            map_matches.update({match[6]: [match[0]]})
+    all_competitions = Helpers().load_competitions_urls_and_sports()
+    all_competitions = {x[1]: {"competition_name_es": x[2], "competition_url_id": x[0] } for x in all_competitions if x[4] == "Versus"}
+    match_filter_enabled = True
+    v2 = True
 
-    def start_requests(self):
-        self.start_time = time.time()
-        context_infos = get_context_infos(bookie_name=self.name)
-        self.context_infos = [x for x in context_infos if x["proxy_ip"] not in []]
-        for data in bookie_config(self.name):
-            if len(data["url"]) < 5:
-                continue
-            context_info = random.choice(self.context_infos)
-            self.proxy_ip = context_info["proxy_ip"]
-            self.comp_url=data["url"]
-            # self.cookies = json.loads(context_info["cookies"])
-            self.user_agent_hash = context_info["user_agent_hash"]
-            try:
-                yield scrapy.Request(
-                    url=data["url"],
-                    callback=self.match_requests,
-                    meta=dict(
-                        sport= data["sport"],
-                        competition = data["competition"],
-                        list_of_markets = data["list_of_markets"],
-                        competition_url = data["url"],
-                        playwright = True,
-                        playwright_include_page = True,
-                        playwright_context = data["url"],
-                        playwright_context_kwargs = {
-                            "user_agent": context_info["user_agent"],
-                            "java_script_enabled": True,
-                            "ignore_https_errors": True,
-                            "proxy": {
-                                "server": "http://"+self.proxy_ip+":58542/",
-                                "username": soltia_user_name,
-                                "password": soltia_password,
-                            },
-                            # "storage_state" : {
-                            #     "cookies": self.cookies,
-                            # },
-                        },
-                        playwright_accept_request_predicate = {
-                            'activate': True,
-                            # 'position': 1
-                        },
-                        playwright_page_methods=[
-                            PageMethod(
-                                method="wait_for_selector",
-                                selector="//div[@class='ta-FlexPane ta-EventListGroups']",
-                                timeout=40000,
-                            ),
-                        ],
-                ),
-                    errback=self.errback,
-                )
-            except PlaywrightTimeoutError:
-                # print("Time out out on ", self.match_url)
-                continue
+    # async def connect_to_api(self):
+    #     context_info = random.choice(self.context_infos)
+    #     proxy = Proxy.from_url(proxy_prefix_http + context_info.get("proxy_ip") + proxy_suffix)
+    #     async with proxy_connect(
+    #         'wss://sportswidget.versus.es/api/websocket',
+    #         proxy=proxy,
+    #         user_agent_header=context_info.get("user_agent")
+    #     ) as self.ws:
+    #         connect_message = """CONNECT
+    #     protocol-version:1.5
+    #     accept-version:1.2,1.1,1.0
+    #     heart-beat:10000,10000
+    #
+    #     \x00"""
+    #         await self.ws.send(connect_message)
+    #         response = await self.ws.recv()
+    #         if self.debug:
+    #             print(f"Connected to API: {response}")
+    #
+    #         await self.ws.send("""SUBSCRIBE
+    #     id:/user/request-response
+    #     destination:/user/request-response
+    #
+    #     \x00""")
+    #         response = await self.ws.recv()
+    #         if self.debug:
+    #             print(f"Subscribed to API: {response}")
+    #     return self.ws
 
-    async def match_requests(self,response):
-        page = response.meta["playwright_page"]
-        xpath_results = response.xpath("//div[@class='ta-FlexPane ta-EventListItem']").extract()
-        match_infos = []
-        for xpath_result in xpath_results:
+    async def keep_alive(self, interval=5):
+        while True:
             try:
-                xpath_result = Selector(xpath_result)
-                home_team = xpath_result.xpath("//div[@class='ta-participantName']/text()").extract()[0]
-                home_team = home_team.strip()
-                away_team = xpath_result.xpath("///div[@class='ta-participantName']/text()").extract()[1]
-                away_team = away_team.strip()
-                url = xpath_result.xpath("//a[@class='ta-Button EventListItemDetails']//@href").extract()[0]
-                date = xpath_result.xpath("//div[contains(@style, 'font-size: 12px;')]/text()").extract()[0]
-                date = dateparser.parse(''.join(date))
-                match_infos.append(
-                    {"url": "https://apuestasdeportivas.versus.es" + url, "home_team": home_team, "away_team": away_team,
-                     "date": date})
-            except IndexError as e:
-                continue
+                ping = await self.ws.send("")
+                print("PING sent at", datetime.datetime.now())
+                await asyncio.sleep(interval)
             except Exception as e:
-                continue
+                print(f"Error sending PING: {e}")
+                break
 
-        await page.close()
-        await page.context.close()
+    async def parse(self, response):
+        item = ScrapersItem()
+        context_info = random.choice(self.context_infos)
+        proxy = Proxy.from_url(proxy_prefix_http+context_info.get("proxy_ip")+proxy_suffix)
+        async with proxy_connect(
+            'wss://sportswidget.versus.es/api/websocket',
+            proxy=proxy,
+            user_agent_header=context_info.get("user_agent")
+        ) as self.ws:
+            connect_message = """CONNECT
+protocol-version:1.5
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
 
-        for match_info in match_infos:
-            # print(match_info["url"])
-            context_info = random.choice(self.context_infos)
-            self.match_url = match_info["url"]
-            self.proxy_ip = context_info["proxy_ip"]
-            # self.cookies = json.loads(context_info["cookies"])
-            self.user_agent_hash = context_info["user_agent_hash"]
-            params = dict(
-                sport=response.meta.get("sport"),
-                competition=response.meta.get("competition"),
-                list_of_markets=response.meta.get("list_of_markets"),
-                home_team=match_info["home_team"],
-                away_team=match_info["away_team"],
-                match_url=match_info["url"],
-                competition_url=response.meta.get("competition_url"),
-                start_date=match_info["date"],
-                playwright=True,
-                playwright_include_page=True,
-                playwright_context=match_info["url"],
-                playwright_context_kwargs={
-                    "user_agent": context_info["user_agent"],
-                    # "viewport": {"width": 1920, "height": 1080},
-                    "java_script_enabled": True,
-                    "ignore_https_errors": True,
-                    "proxy": {
-                        "server": "http://" + self.proxy_ip+ ":58542/",
-                        "username": soltia_user_name,
-                        "password": soltia_password,
-                    },
-                    # "storage_state": {
-                    #     "cookies": self.cookies,
-                    # },
-                },
-                playwright_accept_request_predicate={
-                    'activate': True,
-                },
-            )
-            if response.meta.get("sport") == "Football":
-                params.update(dict(playwright_page_methods=[
-                    PageMethod(
-                        method="click",
-                        selector="//button[@id='onetrust-accept-btn-handler']"
-                    ),
-                    PageMethod(
-                        method="click",
-                        selector="//*[text()='Crea tu Apuesta']",
-                    ),
-                    PageMethod(
-                        method="click",
-                        selector="//*[text()='Resultado Exacto']",
-                    ),
-                    PageMethod(
-                        method="click",
-                        selector="//*[text()='Todo']",
-                    ),
+\x00"""
+            await self.ws.send(connect_message)
+            message = await self.ws.recv()
+            if self.debug:
+                print(f"Connected to API: {message}")
 
-                    PageMethod(
-                        method="wait_for_timeout",
-                        # selector="//div[@class='ta-FlexPane ta-ExpandableView ta-AggregatedMarket ta-MarketName-1X2']",
-                        timeout=1000
-                    ),
-                ],
+            await self.ws.send("""SUBSCRIBE
+id:/user/request-response
+destination:/user/request-response
+
+\x00""")
+            message = await self.ws.recv()
+            if self.debug:
+                print(f"Subscribed to API: {message}")
+
+            keep_alive_task = asyncio.create_task(self.keep_alive())
+
+            for competition in self.competitions:
+                competition_id = competition["competition_url_id"].split("/")[-1]
+                await self.ws.send(f"""SUBSCRIBE
+id:/api/eventgroups/{competition_id}-all-match-events
+locale:es
+destination:/api/eventgroups/{competition_id}-all-match-events
+
+\x00""")
+                match_ids = await self.ws.recv()
+                try:
+                    match_ids = re.search(r'\{.*\}', match_ids, re.DOTALL).group()
+                    match_ids = json.loads(match_ids)
+                except Exception as e:
+                    continue
+                try:
+                    match_ids = [event['id'] for group in match_ids['groups'] for event in group['events']]
+                    # print("match_ids", match_ids)
+                except KeyError:
+                    print(f"error in match_ids for {competition['competition_id']}")
+                    continue
+                matches_details = []
+                for match_id in match_ids:
+                    await self.ws.send(f"""SUBSCRIBE
+id:/api/events/{match_id}
+locale:es
+destination:/api/events/{match_id}
+
+\x00""")
+                    match_details = await self.ws.recv()
+                    match_details = re.search(r'\{.*\}', match_details, re.DOTALL).group()
+                    match_details = json.loads(match_details)
+                    matches_details.append(match_details)
+
+                match_infos = parse_competition(
+                    response=matches_details,
+                    bookie_id=self.name,
+                    competition_id=competition["competition_id"],
+                    competition_url_id=competition["competition_url_id"],
+                    sport_id=competition["sport_id"],
+                    map_matches_urls=self.map_matches_urls,
+                    debug=self.debug
                 )
-                )
-            elif response.meta.get("sport") == "Basketball":
-                params.update(dict(playwright_page_methods=[
-                    PageMethod(
-                        method="wait_for_selector",
-                        selector="//div[@class='ta-FlexPane ta-MarketsContainer']",
-                    ),
-                    PageMethod(
-                        method="wait_for_timeout",
-                        timeout=1000
-                    ),
-                ],
-                )
-                )
-            # if 'https://apuestasdeportivas.versus.es/sports/basketball/events/9752865058' == match_info["url"]:
-            try:
-                yield scrapy.Request(
-                    url=match_info["url"],
-                    callback=self.parse_match,
-                    meta=params,
-                    errback=self.errback,
-                )
-            except PlaywrightTimeoutError:
-                # print("Time out out on ", self.match_url)
-                continue
+
+                try:
+                    if len(match_infos) > 0:
+                        match_infos = Helpers().normalize_team_names(
+                            match_infos=match_infos,
+                            competition_id=competition["competition_id"],
+                            bookie_id=competition["bookie_id"],
+                            debug=self.debug
+                        )
+                        if competition["competition_id"] in self.map_matches.keys():
+                            item["data_dict"] = {
+                                "map_matches": self.map_matches[competition["competition_id"]],
+                                "match_infos": match_infos,
+                                "comp_infos": [
+                                    {
+                                        "competition_url_id": competition["competition_url_id"],
+                                        "http_status": 200,
+                                        "updated_date": Helpers().get_time_now("UTC")
+                                    },
+                                ]
+                            }
+                            item["pipeline_type"] = ["match_urls"]
+                            yield item
+                        else:
+                            error = f"{competition['bookie_id']} {competition['competition_id']} comp not in map_matches "
+                            if self.debug:
+                                print(error)
+                            Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
+                    else:
+                        item["data_dict"] = {
+                            "map_matches": self.map_matches[competition['competition_id']],
+                            "match_infos": match_infos,
+                            "comp_infos": [
+                                {
+                                    "competition_url_id": competition["competition_url_id"],
+                                    "http_status": 200,
+                                    "updated_date": Helpers().get_time_now("UTC")
+                                },
+                            ]
+                        }
+                        item["pipeline_type"] = ["match_urls"]
+                        yield item
+                        error = f"{competition['bookie_id']} {competition['competition_id']} comp has no new match "
+                        Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
+                except Exception as e:
+                    print(traceback.format_exc())
+                    Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
+
+            print("closing connection")
+            keep_alive_task.cancel()
+            await self.ws.close()
+            await asyncio.sleep(5)
+            # async for item in self.parse_match():
+            #     yield item
 
     async def parse_match(self, response):
-        if time.time() - self.start_time > 4800:
-            raise CloseSpider('Timeout reached')
-        page = response.meta["playwright_page"]
-        html_cleaner = re.compile("<.*?>")
-        item = ScrapersItem()
+        # item = ScrapersItem()
         try:
-            selection_keys = response.xpath(
-                "//div[contains(@class, 'ta-FlexPane ta-ExpandableView ta-AggregatedMarket ta-MarketName-')]").extract()
-            odds = []
-            for selection_key in selection_keys:
-                selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\u200b","")
-                clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
-                clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
-                if response.meta.get("sport") == "Football":
-                    for selection_key02 in clean_selection_keys:
-                        if clean_selection_keys[0] in response.meta.get("list_of_markets"):
-                            market = clean_selection_keys[0]
+            if os.environ["USER"] == "sylvain":
+                self.debug = True
+        except:
+            pass
+        context_info = random.choice(self.context_infos)
+        proxy = Proxy.from_url(proxy_prefix_http + context_info.get("proxy_ip") + proxy_suffix)
+        matches_details_and_urls = Helpers().matches_details_and_urls(
+            filter=self.match_filter_enabled,
+            filter_data=self.match_filter
+        )
+        matches_details_and_urls = {k: [v for v in lst if v['to_delete'] != 1] for k, lst in
+                                    matches_details_and_urls.items() if any(v['to_delete'] != 1 for v in lst)}
 
-                        else:
-                            market = "empty"
-                            continue
-                        if (
-                            (
-                                re.search('[a-zA-Z]', selection_key02) is not None
-                                or ":" in selection_key02
+        async with proxy_connect(
+            'wss://sportswidget.versus.es/api/websocket',
+            proxy=proxy,
+            user_agent_header=context_info.get("user_agent")
+        ) as self.ws:
+            connect_message = """CONNECT
+protocol-version:1.5
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+\x00"""
+            await self.ws.send(connect_message)
+            message = await self.ws.recv()
+            if self.debug:
+                print(f"Connected to API: {message}")
+
+            await self.ws.send("""SUBSCRIBE
+id:/user/request-response
+destination:/user/request-response
+
+\x00""")
+            message = await self.ws.recv()
+            if self.debug:
+                print(f"Subscribed to API: {message}")
+
+            keep_alive_task = asyncio.create_task(self.keep_alive())
+
+            for key, value in matches_details_and_urls.items():
+                for data in value:
+                    if data["sport_id"] == "1":
+                        suffix = "-TOPFT"
+                    elif data["sport_id"] == "2":
+                        suffix = "-TOPBK"
+    #
+                    await self.ws.send(f"""SUBSCRIBE
+id:/api/marketgroup/{data['match_url_id'].split('/')[-1]}{suffix}
+locale:es
+destination:/api/marketgroup/{data['match_url_id'].split('/')[-1]}{suffix}
+
+\x00""")
+                    match_market_ids = await self.ws.recv()
+                    match_market_ids = re.search(r'\{.*\}', match_market_ids, re.DOTALL).group()
+                    match_market_ids = json.loads(match_market_ids)
+                    if isinstance(match_market_ids, dict) and len(match_market_ids) > 0 and "aggregatedMarkets" in match_market_ids.keys():
+                        filtered_match_market_ids = []
+                        for x in match_market_ids["aggregatedMarkets"]:
+                            if x["name"] in list_of_markets_V2[data["bookie_id"]][data["sport_id"]]:
+                                filtered_match_market_ids.append(x["marketIds"])
+                            else:
+                                pass
+                        filtered_match_market_ids = ';'.join(
+                            [item for sublist in filtered_match_market_ids for item in sublist])
+    #
+                        await self.ws.send(f"""SUBSCRIBE
+id:/api/markets/multi
+locale:es
+mid:{filtered_match_market_ids};
+key:{filtered_match_market_ids}
+destination:/api/markets/multi
+
+\x00""")
+                        response_odds = await self.ws.recv()
+                        if response_odds is not None:
+                            response_odds = re.search(r'\{.*\}', response_odds, re.DOTALL).group()
+                            response_odds = json.loads(response_odds)
+
+                            odds = parse_match(
+                                bookie_id=data["bookie_id"],
+                                response=response_odds,
+                                sport_id=data["sport_id"],
+                                list_of_markets=list_of_markets_V2[data["bookie_id"]][data["sport_id"]],
+                                home_team=data["home_team"],
+                                away_team=data["away_team"],
+                                debug=self.debug
                             )
-                            and market in response.meta.get("list_of_markets")
-                        ):
-                            result = selection_key02
+                            item = ScrapersItem()
+                            item["Home_Team"] = data["home_team"]
+                            item["Away_Team"] = data["away_team"]
+                            item["Bets"] = normalize_odds_variables(odds, data["sport_id"], data["home_team"], data["away_team"])
+                            item["extraction_time_utc"] = datetime.datetime.utcnow()
+                            if data["sport_id"] == "1":
+                                sport = "Football"
+                            elif data["sport_id"] == "2":
+                                sport = "Basketball"
+                            item["Sport"] = sport
+                            item["Competition"] = self.all_competitions[data["competition_id"]]["competition_name_es"]
+                            item["Date"] = data['date']
+                            item["Match_Url"] = data["match_url_id"]
+                            item["Competition_Url"] = self.all_competitions[data["competition_id"]]["competition_url_id"]
+                            item["pipeline_type"] = ["v1"]
+                            if len(item["Bets"]) > 0:
+                                yield item
+                            if self.v2:
+                                item = ScrapersItem()
+                                # print("YIELDING v2")
+                                odds = Helpers().build_ids(
+                                    id_type="bet_id",
+                                    data={
+                                        "match_id": data["match_id"],
+                                        "odds": normalize_odds_variables(
+                                            odds,
+                                            data["sport_id"],
+                                            data["home_team"],
+                                            data["away_team"],
+                                        )
+                                    }
+                                )
+                                item["data_dict"] = {
+                                    "match_id": data["match_id"],
+                                    "bookie_id": data["bookie_id"],
+                                    "odds": odds,
+                                    "updated_date": Helpers().get_time_now(country="UTC"),
+                                    "web_url": data["web_url"],
+                                    "http_status": response.status,
+                                    "match_url_id": data["match_url_id"],
+                                }
 
-                        elif (
-                            re.search('[a-zA-Z]', selection_key02) is None
-                            and market in response.meta.get("list_of_markets")
-                        ):
-                            odd = selection_key02
-                        try:
-                            if (
-                                market in response.meta.get("list_of_markets")
-                                and result != "empty"
-                                and odd != "empty"
-                            ):
-                                odds.append({"Market": market, "Result": result, "Odds": odd})
-                                result = "empty"
-                                odd = "empty"
-                        except UnboundLocalError as e:
-                            # print("unbound", e)
-                            pass
-                        except NameError as e:
-                            # print("name", e)
-                            pass
-                elif response.meta.get("sport") == "Basketball":
-                    for selection_key in selection_keys:
-                        selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\u200b", "")
-                        clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
-                        clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
-                        if "Líneas de Juego" == clean_selection_keys[0]:
-                            odds.append(
-                                {"Market": "Partido", "Result": clean_selection_keys[1],
-                                 "Odds": clean_selection_keys[5]})
-                            odds.append(
-                                {"Market": "Partido", "Result": clean_selection_keys[3],
-                                 "Odds": clean_selection_keys[6]})
-                        if "Totales" in clean_selection_keys:
-                            odds.append(
-                                {"Market": "Total de Goles", "Result": clean_selection_keys[8],
-                                 "Odds": clean_selection_keys[9]})
-                            odds.append(
-                                {"Market": "Total de Goles", "Result": clean_selection_keys[10],
-                                 "Odds": clean_selection_keys[11]})
-
-            item["Home_Team"] = response.meta.get("home_team")
-            item["Away_Team"] = response.meta.get("away_team")
-            item["Bets"] = normalize_odds_variables(
-                odds, response.meta.get("sport"),item["Home_Team"], item["Away_Team"]
-            )
-            # item["Bets"] = odds
-            item["extraction_time_utc"] = datetime.datetime.utcnow()
-            item["date_confidence"] = 1
-            item["Sport"] = response.meta.get("sport")
-            item["Competition"] = response.meta.get("competition")
-            item["Date"] = response.meta.get("start_date")
-            item["Match_Url"] = response.meta.get("match_url")
-            item["Competition_Url"] = response.meta.get("competition_url")
-            item["proxy_ip"] = self.proxy_ip
-            yield item
-
-        except Exception as e:
-            print(traceback.format_exc())
-            item["Competition_Url"] = response.meta.get("competition_url")
-            item["Match_Url"] = response.meta.get("match_url")
-            item["error_message"] = str(e)
-            yield item
-
-        finally:
-            await page.close()
-            await page.context.close()
-
-
-    def raw_html(self, response):
-        print("### TEST OUTPUT")
-        print("Headers", response.headers)
-        # print(response.text)
-        print("Proxy_ip", self.proxy_ip)
-        parent = os.path.dirname(os.getcwd())
-        with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/" + self.name + "_response" + ".txt", "w") as f:
-            f.write(response.text) # response.meta["playwright_page"]
-        # print("custom setting", self.custom_settings)
-        # print(response.meta["playwright_page"])
-
-    async def parse_headers(self, response):
-        page = response.meta["playwright_page"]
-        storage_state = await page.context.storage_state()
-        time.sleep(15)
-        await page.close()
-
-        print("Cookies sent: ", response.request.headers.get("Cookie"))
-        print("Response cookies: ", response.headers.getlist("Set-Cookie"))
-        # print("Page cookies: ", storage_state["cookies"])
-        print("Response.headers: ", response.headers)
-        print("Cookie from db: ", self.cookies)
-
-    async def errback(self, failure):
-        item = ScrapersItem()
-        print("### errback triggered")
-        # print("cookies:", self.cookies)
-        print("user_gent_hash", self.user_agent_hash)
-        item["proxy_ip"] = self.proxy_ip
-        try:
-            item["Competition_Url"] = self.comp_url
-        except:
-            pass
-        try:
-            item["Match_Url"] = self.match_url
-        except:
-            pass
-        item["extraction_time_utc"] = datetime.datetime.utcnow().replace(second=0, microsecond=0)
-        try:
-            if failure.check(HttpError):
-                response = failure.value.response
-                error = "HttpError_" + str(response.status)
-
-            elif failure.check(TimeoutError):
-                error = "Timeout"
-
-            elif failure.check(DNSLookupError):
-                error = "DNSLookupError"
-
-            elif failure.check(TimeoutError):
-                error = "TimeoutError"
-            try:
-                error = failure.value.response
-            except:
-                error = "UnknownError"
-            item["error_message"] = error
-
-            # await page.context.close()
-        except Exception as e:
-            item["error_message"] = "error on the function errback " + str(e)
-        try:
-            page = failure.request.meta["playwright_page"]
-            print("Closing page on error")
-            await page.close()
-            print("closing context on error")
-            await page.context.close()
-        except Exception:
-            print("Unable to close page or context")
-            pass
-        yield item
+                                item["pipeline_type"] = ["match_odds"]
+                                yield item
+                    else:
+                        print("match_market_ids is", type(match_market_ids))
+                        print("match_market_ids lenght", len(match_market_ids))
+                        print("match_market_ids keys", match_market_ids.keys())
+                        print(match_market_ids)
+                        error = f"error with match_market_ids on {data['bookie_id']} {data['competition_id']}"
+                        if self.debug:
+                            print(error)
+                        Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
 
     def closed(self, reason):
-        requests.post(
+        if self.debug:
+            pass
+        else:
+            requests.post(
             "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
 
+    def start_requests(self):
+        try:
+            if self.parser == "comp":
+                yield scrapy.Request(url="data:,", callback=self.parse)
+        except AttributeError:
+            yield scrapy.Request(url="data:,", callback=self.parse_match)

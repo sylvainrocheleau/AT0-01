@@ -1,111 +1,61 @@
 # import logging
 import json
-import time
-
-# import websockets
+import traceback
+import os
 import random
 import datetime
 import requests
+import scrapy
 from numpy.random import randint
 from websockets_proxy import Proxy, proxy_connect
 from scrapy import Spider
 from ..items import ScrapersItem
-from ..bookies_configurations import normalize_odds_variables, bookie_config
-from ..settings import USER_PROXY_03, list_of_headers
+from ..bookies_configurations import normalize_odds_variables, bookie_config, get_context_infos, list_of_markets_V2
+from ..parsing_logic import parse_competition, parse_match
+from ..settings import proxy_prefix_http, proxy_suffix
+from ..utilities import Helpers
 
 
 # logging.getLogger("websockets").setLevel(logging.INFO)
-sports_to_scrape = ["Fútbol", "Basket"] # Tenis
-list_of_markets = ["Correct Score", "Total Goals", "Total Points", "Match Result", "Match Winner"] #
-# list_of_competitions = {x["url"] : {"ato_name": x["competition"]} for x in bookie_config("Betsson")}
-
-# list_of_competitions = [
-#     {
-#         'bookie': 'Betsson',
-#         'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=541&region=900001&game=25376757',
-#         'sport': 'Football',
-#         'competition': 'Bundesliga Alemana'
-#     },
-# {
-#     'bookie': 'Betsson',
-#     'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=545&region=2150001&game=25444986',
-#     'sport': 'Football',
-#     'competition': 'La Liga Española'
-# },
-# {
-#     'bookie': 'Betsson',
-#     'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=1685&region=180001&game=25490276',
-#     'sport': 'Football',
-#     'competition': 'Argentina - Primera división'
-# },
-# {
-#     'bookie': 'Betsson',
-#     'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=548&region=830001&game=25466480',
-#     'sport': 'Football',
-#     'competition': 'Ligue 1 Francesa'
-# },
-# # {
-# #     'bookie': 'Betsson',
-# #     'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=541&region=900001&game=25376757',
-# #     'sport': 'Football', 'competition': 'América - Clasificación Mundial FIFA'
-# # },
-# {
-#     'bookie': 'Betsson',
-#     'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=538&region=1850001&game=24824196',
-#     'sport': 'Football',
-#     'competition': 'Premier League Inglesa'
-# },
-# {
-#     'bookie': 'Betsson',
-#     'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=543&region=1170001&game=25032029',
-#     'sport': 'Football',
-#     'competition': 'Serie A Italiana'
-# },
-# {
-#     'bookie': 'Betsson',
-#     'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=1792&region=390001&game=25440083',
-#     'sport': 'Football',
-#     'competition': 'Serie A Brasil'
-# },
-# {
-#     'bookie': 'Betsson',
-#     'url': 'https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=27420&region=20001&game=24957478',
-#     'sport': 'Football',
-#     'competition': 'Liga de Naciones UEFA'
-# }
-# ]
-
-# list_of_competitions_dict = {}
-
-
+# sports_to_scrape = ["Fútbol", "Basket"] # Tenis
+# list_of_markets = ["Correct Score", "Total Goals", "Total Points", "Match Result", "Match Winner"] #
 
 
 class WebsocketsSpider(Spider):
-    name = "Betsson"
-    list_of_competitions_dict = {}
-    list_of_competitions = bookie_config(name)
-    for x in list_of_competitions:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         try:
-            list_of_competitions_dict.update({
-                x["competition"]:
-                    {
-                        "ato_name": x["competition"],
-                        "id": int(x["url"].split("competition=")[1].split("&")[0]),
-                        "region": int(x["url"].split("&region=")[1].split("&")[0]),
-                        "sport_id": x["sport"],
-                    } for x in list_of_competitions}
-            )
-        except Exception as e:
-            print(e)
-            pass
-    # print("list_of_competitions", list_of_competitions)
+            if os.environ["USER"] == "sylvain":
+                self.debug = True
+                # self.competitions = [x for x in bookie_config(bookie=["Betsson"]) if x["competition_id"] == "UEFAChampionsLeague"]
+                # self.match_filter = {"type": "bookie_and_comp", "params": ["Betsson", "UEFAChampionsLeague"]}
+
+                self.competitions = bookie_config(bookie=["Betsson"])
+                self.match_filter = {"type": "bookie_id", "params": ["Betsson"]}
+        except:
+            self.competitions = bookie_config(bookie=["Betsson"])
+            self.match_filter = {"type": "bookie_id", "params": ["Betsson"]}
+            self.debug = False
+    name = "Betsson"
+    start_urls = ["data:,"]
+    custom_settings = {"TWISTED_REACTOR": "twisted.internet.asyncioreactor.AsyncioSelectorReactor"}
+    context_infos = get_context_infos(bookie_name=["Betsson"])
+    map_matches_urls = [x[0] for x in Helpers().load_matches_urls(name)]
+    map_matches = {}
+    for match in Helpers().load_matches():
+        try:
+            map_matches[match[6]].append(match[0])
+        except KeyError:
+            map_matches.update({match[6]: [match[0]]})
+    all_competitions = Helpers().load_competitions_urls_and_sports()
+    all_competitions = {x[1]: {"competition_name_es": x[2], "competition_url_id": x[0]} for x in all_competitions if
+                        x[4] == "Betsson"}
+    match_filter_enabled = True
+    v2 = True
     random_number = randint(9361, 145000, 1)
     rid = datetime.datetime.now().timestamp()
     rid = str(int(rid)) + str(random_number[0])
-    # rid = "172745797813024"
-    # print("rid", rid)
     start_urls = ["data:,"]  # avoid making an actual upstream request
-    custom_settings = {"TWISTED_REACTOR": "twisted.internet.asyncioreactor.AsyncioSelectorReactor"}
     payloads = {
         "connect_to_socket": {"command": "request_session",
                               "params": {"language": "spa", "site_id": "735", "release_date": "20/10/2022-18:12"},
@@ -129,147 +79,221 @@ class WebsocketsSpider(Spider):
     }
 
     async def parse(self, response):
-        # item = ScrapersItem()
-        proxy = Proxy.from_url(USER_PROXY_03)
+        item = ScrapersItem()
+        context_info = random.choice(self.context_infos)
+        proxy = Proxy.from_url(proxy_prefix_http + context_info.get("proxy_ip") + proxy_suffix)
         async with proxy_connect(
             'wss://eu-swarm-ws-re.betconstruct.com/',
             proxy=proxy,
-            user_agent_header=random.choice(list_of_headers)["User-Agent"]
+            user_agent_header=context_info.get("user_agent")
         ) as ws:
             for key,values in self.payloads.items():
                 await ws.send(json.dumps(values))
-                competitions = await ws.recv()
+                await ws.recv()
 
-            for key_05, value_05 in self.list_of_competitions_dict.items():
-                # GET GAMES IDs FROM COMPETITIONS
-                # print("key_05, value_05", key_05, value_05)
-                if "id" in value_05:
-                    await ws.send(json.dumps({
-                        "command": "get",
-                        "params": {
-                            "source": "betting",
-                            "what": {
-                                "game": ["id"],
-                                "market": "@count"},
-                            "where": {
-                                "competition":
-                                    {"id": value_05["id"]}},
-                            "subscribe": False},
-                        "rid": self.rid},
-                    )
-                    )
-                    matches = await ws.recv()
-                    matches = matches.replace("null", '0').replace("true", '0').replace("false", '0')
-                    matches = eval(matches)
-                    # print("matches", matches)
-                    for key_06, value_06 in matches["data"]["data"]["game"].items():
-                        if "games" not in self.list_of_competitions_dict[key_05]:
-                            self.list_of_competitions_dict[key_05].update({"games": [int(key_06)]})
-                        else:
-                            self.list_of_competitions_dict[key_05]["games"].append(int(key_06))
+            for competition in self.competitions:
+                betsson_competition_id = int(competition["competition_url_id"].split("competition=")[1].split("&")[0])
+                if competition["sport_id"] == "1":
+                    betsson_sport_id = 1
+                elif competition["sport_id"] == "2":
+                    betsson_sport_id = 3
+                await ws.send(json.dumps({
+                    "command": "get",
+                    "params": {
+                        "source": "betting",
+                        "what": {
+                            "game": ["id", "team1_name", "team2_name", "start_ts", "is_live"],
+                            # "market": "@count"
+                        },
+                        "where": {
+                            "competition":
+                                {"id": betsson_competition_id},
+                        }
+                            ,
+                        "subscribe": False},
+                    "rid": self.rid},
+                )
+                )
+                matches_details = await ws.recv()
+                matches_details = matches_details.replace("null", '0').replace("true", '0').replace("false", '0')
+                matches_details = eval(matches_details)
+                matches_details.update({"betsson_competition_id": betsson_competition_id, "betsson_sport_id": betsson_sport_id})
+                # print("matches", matches_details)
+                # url example https://sportsbook.betsson.es/#/sport/?type=0&region=20001&competition=566&sport=1&game=27082038
 
-                # print("list_of_competitions_dict", self.list_of_competitions_dict)
-            for key_07, value_07 in self.list_of_competitions_dict.items():
+                match_infos = parse_competition(
+                    response=matches_details,
+                    bookie_id=self.name,
+                    competition_id=competition["competition_id"],
+                    competition_url_id=competition["competition_url_id"],
+                    sport_id=competition["sport_id"],
+                    map_matches_urls=self.map_matches_urls,
+                    debug=self.debug
+                )
                 try:
-                    if value_07["sport_id"] == "Football":
-                        sport_id = 1
-                    elif value_07["sport_id"] == "Basketball":
-                        sport_id = 3
-                    # GET ODDS FROM MATCHES
-                    if "games" in value_07:
-                        for match_id in value_07["games"]:
-                            # print("match_id", match_id, "sport_id", sport_id, "region", value_07["region"],
-                            #       "competiton", value_07["id"])
-                            await ws.send(json.dumps({
-                                "command": "get",
-                                "params": {
-                                    "source": "betting",
-                                    "what": {
-                                        "game": ["start_ts", "is_live", "text_info","team1_name", "team2_name",],
-                                        "market": ["name_template","group_name",],
-                                        "event": ["type","name","price","base",]
+                    if len(match_infos) > 0:
+                        match_infos = Helpers().normalize_team_names(
+                            match_infos=match_infos,
+                            competition_id=competition["competition_id"],
+                            bookie_id=competition["bookie_id"],
+                            debug=self.debug
+                        )
+                        if competition["competition_id"] in self.map_matches.keys():
+                            item["data_dict"] = {
+                                "map_matches": self.map_matches[competition["competition_id"]],
+                                "match_infos": match_infos,
+                                "comp_infos": [
+                                    {
+                                        "competition_url_id": competition["competition_url_id"],
+                                        "http_status": 200,
+                                        "updated_date": Helpers().get_time_now("UTC")
                                     },
-                                    "where": {
-                                        "game": {"id": match_id},
-                                        "sport": {"id": sport_id},
-                                        "region": {"id": value_07["region"]},
-                                        # "region": {"id": 2570001},
-                                        "competition": {"id": value_07["id"]}
-                                    },
-                                    "subscribe": True},
-                                "rid": self.rid
-                            },
-                            )
-                            )
-                            markets = await ws.recv()
-                            # print("markets", markets)
-                            markets = markets.replace("null", '0').replace("true", '0').replace("false", '0')
-                            markets = eval(markets)
+                                ]
+                            }
+                            item["pipeline_type"] = ["match_urls"]
+                            yield item
+                        else:
+                            error = f"{competition['bookie_id']} {competition['competition_id']} comp not in map_matches "
+                            if self.debug:
+                                print(error)
+                            Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
+                    else:
+                        item["data_dict"] = {
+                            "map_matches": self.map_matches[competition['competition_id']],
+                            "match_infos": match_infos,
+                            "comp_infos": [
+                                {
+                                    "competition_url_id": competition["competition_url_id"],
+                                    "http_status": 200,
+                                    "updated_date": Helpers().get_time_now("UTC")
+                                },
+                            ]
+                        }
+                        item["pipeline_type"] = ["match_urls"]
+                        yield item
+                        error = f"{competition['bookie_id']} {competition['competition_id']} comp has no new match "
+                        Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
+                except Exception as e:
+                    print(traceback.format_exc())
+                    Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
 
-                            odds = []
+            await ws.close()
 
-                            for key, values in markets.items():
-                                if key == "data":
-                                    for key_02, values_02 in values["data"].items():
-                                        for key_03, values_03 in values_02.items():
-                                            # print("key and value", key_03, values_03)
-                                            date = values_03["start_ts"]
-                                            # if value_07["ato_name"] == "NBA":
-                                            #     home_team = values_03["team2_name"]
-                                            #     away_team = values_03["team1_name"]
-                                            # else:
-                                            home_team = values_03["team1_name"]
-                                            away_team = values_03["team2_name"]
+    async def parse_match(self, response):
+        try:
+            if os.environ["USER"] == "sylvain":
+                self.debug = True
+        except:
+            pass
+        context_info = random.choice(self.context_infos)
+        proxy = Proxy.from_url(proxy_prefix_http + context_info.get("proxy_ip") + proxy_suffix)
+        matches_details_and_urls = Helpers().matches_details_and_urls(
+            filter=self.match_filter_enabled,
+            filter_data=self.match_filter
+        )
+        matches_details_and_urls = {k: [v for v in lst if v['to_delete'] != 1] for k, lst in
+                                    matches_details_and_urls.items() if any(v['to_delete'] != 1 for v in lst)}
+        async with proxy_connect(
+            'wss://eu-swarm-ws-re.betconstruct.com/',
+            proxy=proxy,
+            user_agent_header=context_info.get("user_agent")
+        ) as ws:
+            for key,values in self.payloads.items():
+                await ws.send(json.dumps(values))
+                await ws.recv()
+            for key, value in matches_details_and_urls.items():
+                for data in value:
+                    if data["sport_id"] == "1":
+                        betsson_sport_id = 1
+                    elif data["sport_id"] == "2":
+                        betsson_sport_id = 3
+                    await ws.send(json.dumps(
+                        {"command": "get",
+                         "params": {
+                             "source": "betting",
+                             "what": {
+                                 "game": ["id", "start_ts", "is_live", "text_info","team1_name", "team2_name",],
+                                 "market": ["name_template","group_name",],
+                                 "event": ["type", "name", "price", "base", ]
+                             },
+                             "where": {
+                                "game": {"id": int(data["match_url_id"].split("game=")[-1])},
+                                "sport": {"id": betsson_sport_id},
+                             },
+                             "subscribe": True
+                         },
+                         "rid": self.rid}
+                        )
+                    )
+                    response_odds = await ws.recv()
 
-                                            for key_04, values_04 in values_03["market"].items():
-                                                if (
-                                                    values_04["name_template"] in list_of_markets
-                                                    and values_03["is_live"] == 0
-                                                ):
-                                                    for key_05, values_05 in values_04["event"].items():
-                                                        market = values_04["name_template"]
-                                                        result = values_05["name"]
-                                                        try:
-                                                            result = result + str(values_05["base"])
-                                                        except KeyError as e:
-                                                            pass
-                                                        odds.append(
-                                                            {"Market": market,
-                                                             "Result": result,
-                                                             "Odds": values_05["price"],
-                                                             }
-                                                        )
+                    odds = parse_match(
+                        bookie_id=data["bookie_id"],
+                        response=response_odds,
+                        sport_id=data["sport_id"],
+                        list_of_markets=list_of_markets_V2[data["bookie_id"]][data["sport_id"]],
+                        home_team=data["home_team"],
+                        away_team=data["away_team"],
+                        debug=self.debug
+                    )
+                    item = ScrapersItem()
+                    if data["sport_id"] == "1":
+                        sport = "Football"
+                    elif data["sport_id"] == "2":
+                        sport = "Basketball"
+                    item["Sport"] = sport
+                    item["Competition"] = self.all_competitions[data["competition_id"]]["competition_name_es"]
+                    item["Home_Team"] = data["home_team"]
+                    item["Away_Team"] = data["away_team"]
+                    item["Date"] = data['date']
+                    item["extraction_time_utc"] = datetime.datetime.now(tz=datetime.timezone.utc).replace(second=0,
+                                                                                     microsecond=0)
+                    item["Competition_Url"] = self.all_competitions[data["competition_id"]]["competition_url_id"]
+                    item["Match_Url"] = data["match_url_id"]
+                    item["Competition_Url"] = self.all_competitions[data["competition_id"]]["competition_url_id"]
 
-                                            item = ScrapersItem()
-                                            item["Sport"] = value_07["sport_id"]
-                                            item["Competition"] = value_07["ato_name"]
-                                            item["Home_Team"] = home_team
-                                            item["Away_Team"] = away_team
-                                            item["Date"] = date
-                                            item["date_confidence"] = 3
-                                            item["extraction_time_utc"] = datetime.datetime.utcnow().replace(second=0,
-                                                                                                             microsecond=0)
-                                            item["Competition_Url"] = "https://sportsbook.betsson.es/#/sport/?type=0&region="\
-                                                                +str(value_07["region"])+"&competition="+str(value_07["id"])\
-                                                                +"&sport="+str(sport_id)
-                                            item["Match_Url"] = item["Competition_Url"]+"&game="+str(match_id)
+                    item["Bets"] = normalize_odds_variables(odds, item["Sport"], item["Home_Team"], item["Away_Team"])
+                    item["pipeline_type"] = ["v1"]
+                    if len(item["Bets"]) > 0:
+                        yield item
+                    if self.v2:
+                        item = ScrapersItem()
+                        # print("YIELDING v2")
+                        odds = Helpers().build_ids(
+                            id_type="bet_id",
+                            data={
+                                "match_id": data["match_id"],
+                                "odds": normalize_odds_variables(
+                                    odds,
+                                    data["sport_id"],
+                                    data["home_team"],
+                                    data["away_team"],
+                                )
+                            }
+                        )
+                        item["data_dict"] = {
+                            "match_id": data["match_id"],
+                            "bookie_id": data["bookie_id"],
+                            "odds": odds,
+                            "updated_date": Helpers().get_time_now(country="UTC"),
+                            "web_url": data["web_url"],
+                            "http_status": response.status,
+                            "match_url_id": data["match_url_id"],
+                        }
 
-                                            item["Bets"] = normalize_odds_variables(odds, item["Sport"], item["Home_Team"],
-                                                                                    item["Away_Team"])
-                                            if value_07["ato_name"] == "NBA":
-                                                item["Home_Team"] = away_team
-                                                item["Away_Team"] = home_team
+                        item["pipeline_type"] = ["match_odds"]
+                        yield item
 
-                                            if len(item["Bets"]) > 0:
-                                                # print(item["Match_Url"])
-                                                yield item
-                                            else:
-                                                print("NO ITEMS")
-                except KeyError as e:
-                    print("ERROR", e)
-                    pass
+    def closed(self, reason):
+        if self.debug is True:
+            pass
+        else:
+            requests.post(
+                "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
 
-    # def closed(self, reason):
-    #     requests.post(
-    #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name+ "&project_id=643480")
-
+    def start_requests(self):
+        try:
+            if self.parser == "comp":
+                yield scrapy.Request(url="data:,", callback=self.parse)
+        except AttributeError:
+            yield scrapy.Request(url="data:,", callback=self.parse_match)

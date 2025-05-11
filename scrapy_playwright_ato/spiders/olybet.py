@@ -8,6 +8,7 @@ import json
 import dateparser
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 from parsel import Selector
+from scrapy_playwright.page import PageMethod
 from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError, TimeoutError
 from ..items import ScrapersItem
@@ -22,57 +23,67 @@ class TwoStepsSpider(scrapy.Spider):
     proxy_ip = str
     user_agent_hash = int
     custom_settings = get_custom_playwright_settings(browser="Chrome", rotate_headers=False)
+    custom_settings.update({"CONCURRENT_REQUESTS_PER_DOMAIN": 3})
 
     def start_requests(self):
         context_infos = get_context_infos(bookie_name=self.name)
-        self.context_infos = [x for x in context_infos if x["proxy_ip"] not in []]
+        self.context_infos = [x for x in context_infos if x["proxy_ip"] not in ["46.226.144.182"]]
         for data in bookie_config(self.name):
-            context_info = random.choice(self.context_infos)
-            self.proxy_ip = context_info["proxy_ip"]
-            if len(data["url"]) < 5:
-                continue
-
-            self.comp_url=data["url"]
-            try:
-                yield scrapy.Request(
-                    url=data["url"],
-                    callback=self.match_requests,
-                    meta=dict(
-                        sport= data["sport"],
-                        competition = data["competition"],
-                        list_of_markets = data["list_of_markets"],
-                        competition_url = data["url"],
-                        playwright = True,
-                        playwright_include_page = True,
-                        playwright_context = data["url"],
-                        playwright_context_kwargs = {
-                            "user_agent": context_info["user_agent"],
-                            "java_script_enabled": True,
-                            "ignore_https_errors": True,
-                            "proxy": {
-                                "server": "http://"+context_info["proxy_ip"]+":58542/",
-                                "username": soltia_user_name,
-                                "password": soltia_password,
+            if data["url"] != "https://apuestas.olybet.es/es/competicion/12044-euroliga":
+                print("### START REQUESTS", data["url"])
+                context_info = random.choice([x for x in self.context_infos if x["cookies"] is not None])
+                self.proxy_ip = context_info["proxy_ip"]
+                if len(data["url"]) < 5:
+                    continue
+                self.comp_url=data["url"]
+                try:
+                    yield scrapy.Request(
+                        url=data["url"],
+                        callback=self.match_requests,
+                        errback=self.errback,
+                        meta=dict(
+                            sport= data["sport"],
+                            competition = data["competition"],
+                            list_of_markets = data["list_of_markets"],
+                            competition_url = data["url"],
+                            proxy_ip = self.proxy_ip,
+                            playwright = True,
+                            playwright_include_page = True,
+                            playwright_context = data["url"],
+                            playwright_context_kwargs = {
+                                "user_agent": context_info["user_agent"],
+                                "java_script_enabled": True,
+                                "ignore_https_errors": True,
+                                "proxy": {
+                                    "server": "http://"+context_info["proxy_ip"]+":58542/",
+                                    "username": soltia_user_name,
+                                    "password": soltia_password,
+                                },
+                                "storage_state" : {
+                                    "cookies": json.loads(context_info["cookies"])
+                                },
                             },
-                            "storage_state" : {
-                                "cookies": json.loads(context_info["cookies"])
+                            playwright_accept_request_predicate = {
+                                'activate': True,
+                                # 'position': 1
                             },
-                        },
-                        playwright_accept_request_predicate = {
-                            'activate': True,
-                            # 'position': 1
-                        },
-                ),
-                    errback=self.errback,
-                )
-            except PlaywrightTimeoutError:
-                # print("Time out out on ", self.match_url)
-                continue
+                            playwright_page_methods=[
+                                PageMethod(
+                                    method="wait_for_selector",
+                                    selector="//div[@class='lines']",
+                                ),
+                            ],
+                    ),
+                    )
+                except PlaywrightTimeoutError:
+                    print("Time out out on ", data["url"])
+                    continue
 
     async def match_requests(self,response):
-        # print("### SENDING MATCH REQUEST")
-        # print("response.status", response.status, "url", response.url)
+        # print("### MATCH REQUESTS")
         page = response.meta["playwright_page"]
+        await page.close()
+        await page.context.close()
         html_cleaner = re.compile("<.*?>")
         xpath_results = response.xpath("//div[@class='lines']").extract()
         match_infos = []
@@ -89,13 +100,9 @@ class TwoStepsSpider(scrapy.Spider):
                 match_infos.append({"url": "https://apuestas.olybet.es"+url, "home_team": home_team, "away_team": away_team, "date": date})
             except IndexError:
                 continue
-        # print("Closing page for comp", response.meta.get("competition"))
-        await page.close()
-        # print("closing context for comp", response.meta.get("competition"))
-        await page.context.close()
 
         for match_info in match_infos:
-            context_info = random.choice(self.context_infos)
+            context_info = random.choice([x for x in self.context_infos if x["cookies"] is not None])
             self.proxy_ip = context_info["proxy_ip"]
             params = dict(
                 sport=response.meta.get("sport"),
@@ -105,6 +112,7 @@ class TwoStepsSpider(scrapy.Spider):
                 away_team=match_info["away_team"],
                 match_url=match_info["url"],
                 competition_url=response.meta.get("competition_url"),
+                proxy_ip=self.proxy_ip,
                 start_date=match_info["date"],
                 playwright=True,
                 playwright_include_page=True,
@@ -128,7 +136,7 @@ class TwoStepsSpider(scrapy.Spider):
                 },
             )
 
-            # if "https://apuestas.olybet.es/es/evento/7782582-manchester-city-luton-town" == match_info["url"]:
+            # if "https://apuestas.olybet.es/es/evento/9093523-werder-bremen-vfl-bochum" == match_info["url"]:
             # print("request for", match_info["url"])
             self.match_url = match_info["url"]
             self.proxy_ip = context_info["proxy_ip"]
@@ -144,16 +152,16 @@ class TwoStepsSpider(scrapy.Spider):
                 continue
 
     async def parse_match(self, response):
+        # print("### PARSE MATCH")
         page = response.meta["playwright_page"]
-        # print("### PARSING MATCHES RESPONSE", response.meta.get("playwright_context"))
-        # print("### Parsing ", response.url)
-        # html_cleaner = re.compile("<.*?>")
+        await page.close()
+        await page.context.close()
+
         item = ScrapersItem()
         try:
             datas = response.text.split("{question:")
             odds = []
             for data in datas:
-                data_brut = data
                 try:
                     market = data.split("{label:\"")[1].split("\",short_label:")[0].replace("\\u002F", "/")
                 except Exception as e:
@@ -190,8 +198,12 @@ class TwoStepsSpider(scrapy.Spider):
                                              }
                                         )
                                 elif response.meta.get("sport") == "Basketball":
-                                    odds.append(({"Market": market, "Result": bets["actor"]["actorLabel"],
-                                                  "Odds": bets["oddsDisplay"]}))
+                                    odds.append(
+                                        {"Market": market,
+                                         "Result": bets["actor"]["actorLabel"],
+                                         "Odds": bets["oddsDisplay"]
+                                         }
+                                    )
 
 
                     except Exception as e:
@@ -220,10 +232,7 @@ class TwoStepsSpider(scrapy.Spider):
             item["error_message"] = str(e)
             yield item
 
-        # print("Closing page for", response.url)
-        await page.close()
-        # print("closing context for match", response.url)
-        await page.context.close()
+
 
     def raw_html(self, response):
         print("### TEST OUTPUT")
@@ -248,19 +257,24 @@ class TwoStepsSpider(scrapy.Spider):
         print("Cookie from db: ", self.cookie_to_send_from_db)
 
     async def errback(self, failure):
+        # print("### ERRBACK")
         item = ScrapersItem()
         print("### errback triggered")
-        item["proxy_ip"] = self.proxy_ip
+        item["proxy_ip"] = failure.request.meta["proxy_ip"]
         try:
-            item["Competition_Url"] = self.comp_url
+            item["Competition_Url"] = failure.request.meta["competition_url"]
         except:
             pass
         try:
-            item["Match_Url"] = self.match_url
+            item["Match_Url"] = failure.request.meta["match_url"]
         except:
             pass
-        item["extraction_time_utc"] = datetime.datetime.utcnow().replace(second=0, microsecond=0)
+        item["extraction_time_utc"] = datetime.datetime.now().replace(second=0, microsecond=0)
         try:
+            try:
+                error = failure.value.response
+            except:
+                error = "UnknownError"
             if failure.check(HttpError):
                 response = failure.value.response
                 error = "HttpError_"+str(response.status)
@@ -273,13 +287,8 @@ class TwoStepsSpider(scrapy.Spider):
 
             elif failure.check(TimeoutError):
                 error = "TimeoutError"
-            try:
-                error = failure.value.response
-            except:
-                error = "UnknownError"
-            item["error_message"] = error
+            item["error_message"] = str(error)
 
-            # await page.context.close()
         except Exception as e:
             item["error_message"] = "error on the function errback "+str(e)
         try:
@@ -294,6 +303,12 @@ class TwoStepsSpider(scrapy.Spider):
         yield item
 
     def closed(self, reason):
+        # try:
+        #     if os.environ.get("USER") == "sylvain":
+        #         pass
+        # except Exception as e:
+        #     requests.post(
+        #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
         requests.post(
             "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
 

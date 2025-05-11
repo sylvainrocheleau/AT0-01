@@ -244,8 +244,8 @@ class TwoStepsSpider(scrapy.Spider):
 
     async def parse_match(self, response):
         page = response.meta["playwright_page"]
-        html_cleaner = re.compile("<.*?>")
         item = ScrapersItem()
+        html_cleaner = re.compile("<.*?>")
         selection_keys = response.xpath("//div[@class='container expanded infoLoaded']").extract()
         odds = []
         for selection_key in selection_keys:
@@ -379,9 +379,12 @@ class TwoStepsSpider(scrapy.Spider):
         # yield item
 
     def closed(self, reason):
-        try:
-            requests.post(
-                "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480", timeout=60)
-        except requests.exceptions.RequestException as e:
-            print("request error", e)
+        # try:
+        #     if os.environ.get("USER") == "sylvain":
+        #         pass
+        # except Exception as e:
+        #     requests.post(
+        #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
+        requests.post(
+            "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
 

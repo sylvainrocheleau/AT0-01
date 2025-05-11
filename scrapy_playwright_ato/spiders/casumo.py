@@ -18,6 +18,7 @@ class TwoStepsSpider(scrapy.Spider):
     proxy_ip = str
     user_agent_hash = int
     # custom_settings = get_custom_playwright_settings(browser="Chrome", rotate_headers=False)
+    # custom_settings = {"SYSTEM_VERSION": "V1"}
 
     def start_requests(self):
         context_infos = get_context_infos(bookie_name=self.name)
@@ -48,7 +49,7 @@ class TwoStepsSpider(scrapy.Spider):
                 try:
                     home_team = match["event"]["homeName"]
                     away_team = match["event"]["awayName"]
-                    url = "https://eu-offering.kambicdn.org/offering/v2018/caes/betoffer/event/" + str(
+                    url = "https://eu1.offering-api.kambicdn.com/offering/v2018/caes/betoffer/event/" + str(
                         match["event"]["id"]) + ".json?lang=es_ES&market=ES"
                     web_url = "https://www.casumo.es/sports/#event/" + str(match["event"]["id"])
                     date = match["event"]["start"]
@@ -194,6 +195,13 @@ class TwoStepsSpider(scrapy.Spider):
         yield item
 
     def closed(self, reason):
+        # try:
+        #     if os.environ.get("USER") == "sylvain":
+        #         pass
+        # except Exception as e:
+        #     requests.post(
+        #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
         requests.post(
             "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
+
 

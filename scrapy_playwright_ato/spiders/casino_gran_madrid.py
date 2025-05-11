@@ -66,36 +66,39 @@ class TwoStepsSpider(scrapy.Spider):
                 continue
 
     async def match_requests(self,response):
-        # print("### SENDING MATCH REQUEST")
-        page = response.meta["playwright_page"]
-        json_responses = response.text.split("<pre>")[1]
-        json_responses = json_responses.split("</pre>")[0]
-        json_responses = json.loads(json_responses)
-        match_infos = []
-        url_prefix = "https://sb2frontend-altenar2.biahosted.com/api/Sportsbook/GetEventDetails?langId=4&skinName=casinogranmadrid&configId=1&culture=es-ES&countryCode=ES&integration=casinogranmadrid&eventId="
-        if len(json_responses["Result"]["Items"]) > 0:
-            for match in json_responses["Result"]["Items"][0]["Events"]:
-                if not match["IsLiveEvent"]:
-                    try:
-                        url = str(match["Id"])
-                        home_team = match["Competitors"][0]["Name"]
-                        away_team = match["Competitors"][1]["Name"]
-                        date = dateparser.parse(''.join(match["EventDate"]))
-                        match_infos.append(
-                            {
-                                "url": url_prefix + url, "home_team": home_team,
-                                "away_team": away_team, "date": date,
-                                "match_url": "https://www.casinogranmadridonline.es/apuestas-deportivas#/event/" + str(match["Id"]),
-                                "comp_url": "https://www.casinogranmadridonline.es/apuestas-deportivas#/sport/" + str(
-                                    match["SportId"]) + "/category/" + str(match["CategoryId"]) + "/championship/" + str(
-                                    match["ChampId"])
-                            }
-                        )
-                    except IndexError:
-                        continue
 
-        await page.close()
-        await page.context.close()
+        page = response.meta["playwright_page"]
+        try:
+            json_responses = response.text.split("<pre>")[1]
+            json_responses = json_responses.split("</pre>")[0]
+            json_responses = json.loads(json_responses)
+            match_infos = []
+            url_prefix = "https://sb2frontend-altenar2.biahosted.com/api/Sportsbook/GetEventDetails?langId=4&skinName=casinogranmadrid&configId=1&culture=es-ES&countryCode=ES&integration=casinogranmadrid&eventId="
+            if len(json_responses["Result"]["Items"]) > 0:
+                for match in json_responses["Result"]["Items"][0]["Events"]:
+                    if not match["IsLiveEvent"]:
+                        try:
+                            url = str(match["Id"])
+                            home_team = match["Competitors"][0]["Name"]
+                            away_team = match["Competitors"][1]["Name"]
+                            date = dateparser.parse(''.join(match["EventDate"]))
+                            match_infos.append(
+                                {
+                                    "url": url_prefix + url, "home_team": home_team,
+                                    "away_team": away_team, "date": date,
+                                    "match_url": "https://www.casinogranmadridonline.es/apuestas-deportivas#/event/" + str(match["Id"]),
+                                    "comp_url": "https://www.casinogranmadridonline.es/apuestas-deportivas#/sport/" + str(
+                                        match["SportId"]) + "/category/" + str(match["CategoryId"]) + "/championship/" + str(
+                                        match["ChampId"])
+                                }
+                            )
+                        except IndexError:
+                            continue
+        except Exception as e:
+            pass
+        finally:
+            await page.close()
+            await page.context.close()
 
         for match_info in match_infos:
             context_info = random.choice(self.context_infos)
@@ -148,38 +151,41 @@ class TwoStepsSpider(scrapy.Spider):
 
     async def parse_match(self, response):
         page = response.meta["playwright_page"]
-        # print("### PARSING MATCHES RESPONSE", response.meta.get("playwright_context"))
-        json_responses = response.text.split("<pre>")[1]
-        json_responses = json_responses.split("</pre>")[0]
-        json_responses = json.loads(json_responses)
-        item = ScrapersItem()
-        for market_group in json_responses["Result"]["MarketGroups"]:
-            if market_group["Name"] == "Principal":
-                odds = []
-                for market in market_group["Items"]:
-                    if market["Name"] in response.meta.get("list_of_markets"):
-                        for bet in market["Items"]:
-                            if bet["IsActive"]:
-                                odds.append(
-                                    {"Market": market["Name"],
-                                     "Result": bet["Name"],
-                                     "Odds": bet["Price"]
-                                     }
-                                )
+        try:
+            # print("### PARSING MATCHES RESPONSE", response.meta.get("playwright_context"))
+            json_responses = response.text.split("<pre>")[1]
+            json_responses = json_responses.split("</pre>")[0]
+            json_responses = json.loads(json_responses)
+            item = ScrapersItem()
+            for market_group in json_responses["Result"]["MarketGroups"]:
+                if market_group["Name"] == "Principal":
+                    odds = []
+                    for market in market_group["Items"]:
+                        if market["Name"] in response.meta.get("list_of_markets"):
+                            for bet in market["Items"]:
+                                if bet["IsActive"]:
+                                    odds.append(
+                                        {"Market": market["Name"],
+                                         "Result": bet["Name"],
+                                         "Odds": bet["Price"]
+                                         }
+                                    )
 
-        item["Sport"] = response.meta.get("sport")
-        item["Competition"] = response.meta.get("competition")
-        item["Home_Team"] = response.meta.get("home_team")
-        item["Away_Team"] = response.meta.get("away_team")
-        item["Date"] = response.meta.get("start_date")
-        item["date_confidence"] = 3
-        item["Competition_Url"] = response.meta.get("competition_url")
-        item["Match_Url"] = response.meta.get("match_url")
-        item["Bets"] = normalize_odds_variables(odds, item["Sport"], item["Home_Team"], item["Away_Team"])
-        yield item
-
-        await page.close()
-        await page.context.close()
+            item["Sport"] = response.meta.get("sport")
+            item["Competition"] = response.meta.get("competition")
+            item["Home_Team"] = response.meta.get("home_team")
+            item["Away_Team"] = response.meta.get("away_team")
+            item["Date"] = response.meta.get("start_date")
+            item["date_confidence"] = 3
+            item["Competition_Url"] = response.meta.get("competition_url")
+            item["Match_Url"] = response.meta.get("match_url")
+            item["Bets"] = normalize_odds_variables(odds, item["Sport"], item["Home_Team"], item["Away_Team"])
+            yield item
+        except Exception as e:
+            pass
+        finally:
+            await page.close()
+            await page.context.close()
 
     def raw_html(self, response):
         print("### TEST OUTPUT")
@@ -254,9 +260,12 @@ class TwoStepsSpider(scrapy.Spider):
         yield item
 
     def closed(self, reason):
-        try:
-            requests.post(
-                "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480", timeout=30)
-        except requests.exceptions.RequestException as e:
-            print("request error", e)
+        # try:
+        #     if os.environ.get("USER") == "sylvain":
+        #         pass
+        # except Exception as e:
+        #     requests.post(
+        #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
+        requests.post(
+            "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
 

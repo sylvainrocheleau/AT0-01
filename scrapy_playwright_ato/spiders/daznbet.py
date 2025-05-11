@@ -74,7 +74,6 @@ class TwoStepsSpider(scrapy.Spider):
                             PageMethod(
                                 method="wait_for_selector",
                                 selector="//div[@class='main-container']",
-                                # timeout=40000,
                             ),
                         ],
                 ),
@@ -88,6 +87,8 @@ class TwoStepsSpider(scrapy.Spider):
         if time.time() - self.start_time > 4800:
             raise CloseSpider('Timeout reached')
         page = response.meta["playwright_page"]
+        await page.close()
+        await page.context.close()
 
         # html_cleaner = re.compile("<.*?>")
         xpath_results = response.xpath("//div[@class='main-container']").extract()
@@ -101,11 +102,13 @@ class TwoStepsSpider(scrapy.Spider):
                 away_team = xpath_result.xpath(
                     "//div[contains(@class, 'event-text event-text-margin text-ellipsis')]/text()").extract()[1]
                 away_team = away_team.strip()
-                url = xpath_result.xpath("//a[@class='w-100 display-flex align-center']//@href").extract()[0]
+                url = xpath_result.xpath("//a/@href").extract()[0]
+                url = "https://sb-pp-esfe.daznbet.es/" + url + "?tab=todo"
+                web_url = url
                 date = None
                 match_infos.append(
                     {
-                        "url": "https://sb-pp-esfe.daznbet.es/" + url + "?tab=todo", "home_team": home_team,
+                        "url": url, "web_url": web_url, "home_team": home_team,
                         "away_team": away_team, "date": date
                     }
                 )
@@ -115,9 +118,6 @@ class TwoStepsSpider(scrapy.Spider):
             except Exception as e:
                 # print("exception", e)
                 continue
-
-        await page.close()
-        await page.context.close()
 
         for match_info in match_infos:
             context_info = random.choice(self.context_infos)
@@ -206,8 +206,10 @@ class TwoStepsSpider(scrapy.Spider):
         if time.time() - self.start_time > 4800:
             raise CloseSpider('Timeout reached')
         page = response.meta["playwright_page"]
-        html_cleaner = re.compile("<.*?>")
+        await page.close()
+        await page.context.close()
         item = ScrapersItem()
+        html_cleaner = re.compile("<.*?>")
         try:
             selection_keys = response.xpath("//div[@class='accordion-container ']").extract()
             odds = []
@@ -290,11 +292,6 @@ class TwoStepsSpider(scrapy.Spider):
             item["error_message"] = str(e)
             yield item
 
-        finally:
-            # print("Closing page for", response.url)
-            await page.close()
-            # print("Closing context for", response.url)
-            await page.context.close()
 
 
     def raw_html(self, response):
@@ -329,14 +326,16 @@ class TwoStepsSpider(scrapy.Spider):
         print("user_gent_hash", self.user_agent_hash)
         item["proxy_ip"] = self.proxy_ip
         try:
-            item["Competition_Url"] = self.comp_url
+            item["Competition_Url"] = failure.request.meta.get("competition_url")
+            print("Competition_Url", item["Competition_Url"])
         except:
             pass
         try:
-            item["Match_Url"] = self.match_url
+            item["Match_Url"] = failure.request.meta.get("match_url")
+            print("Match_Url", item["Match_Url"])
         except:
             pass
-        item["extraction_time_utc"] = datetime.datetime.utcnow().replace(second=0, microsecond=0)
+        item["extraction_time_utc"] = datetime.datetime.now().replace(second=0, microsecond=0)
         try:
             if failure.check(HttpError):
                 response = failure.value.response
@@ -371,6 +370,12 @@ class TwoStepsSpider(scrapy.Spider):
         yield item
 
     def closed(self, reason):
+        # try:
+        #     if os.environ.get("USER") == "sylvain":
+        #         pass
+        # except Exception as e:
+        #     requests.post(
+        #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
         requests.post(
             "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
 

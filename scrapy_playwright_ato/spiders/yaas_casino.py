@@ -2,30 +2,33 @@ import scrapy
 import json
 import random
 import requests
+import dateparser
+import os
 from ..items import ScrapersItem
 from ..settings import proxy_prefix, proxy_suffix, list_of_proxies
 from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables
-
-
 
 
 class OneStepJsonSpider(scrapy.Spider):
     name = "YaassCasino"
     match_found = 0
     header = {
-        'User-Agent': '',
+        'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:132.0) Gecko/20100101 Firefox/132.0',
         'Accept': '*/*',
         'Accept-Language': 'es',
-        # 'Accept-Encoding': 'gzip, deflate, br',
-        'Referer': '',
+        # 'Accept-Encoding': 'gzip, deflate, br, zstd',
+        'Referer': 'https://online-sportsbook.orenes.tech/tournaments/040c76d0-ed19-4180-b56f-18ddbed04bfa/18805502-fb1e-4f91-9a42-8b9474917b5d',
         'content-type': 'application/json',
-        'x-api-key': 'UhzFpnnOV71MvIlxpJ63LuJyJoR',
+        'x-api-key': 'xEuh64cHUBr3v88mEd0tsLa4fU',
         'Origin': 'https://online-sportsbook.orenes.tech',
         'Connection': 'keep-alive',
         'Sec-Fetch-Dest': 'empty',
         'Sec-Fetch-Mode': 'cors',
         'Sec-Fetch-Site': 'same-origin',
         'Sec-GPC': '1',
+        'Priority': 'u=4',
+        # Requests doesn't support trailers
+        # 'TE': 'trailers',
     }
 
     def start_requests(self):
@@ -40,19 +43,108 @@ class OneStepJsonSpider(scrapy.Spider):
                     'isActive': True,
                     'skipMarketHeaders': False,
                     'oddFormat': 'Decimal',
-                    'skipScore': False,
-                    'skipSummary': False,
+                    'skipScore': True,
+                    'skipSummary': True,
                     'skipTournament': False,
-                    'first': 20,
+                    'onlyPlayerMarkets': False,
+                    'first': 30,
                     'status': 'All',
-                    'tournamentsId': [competition_id],
+                    'tournamentsId': [
+                        competition_id,
+                    ],
                     'onlyMainMarkets': False,
                     'types': [
                         'Fixture',
+                        'Draw',
                     ],
                     'prematchCalendarFrame': 'All',
                 },
-                'query': 'query currentOffer($first: Int, $status: EventFilterEnum, $sportKeys: [Short!], $to: DateTime, $from: DateTime, $highlighted: Boolean, $onlyMainMarkets: Boolean, $types: [EventTypeEnum!]!, $tournamentsId: [Uuid!], $isActive: Boolean = true, $after: String, $isAvailableInLive: Boolean, $prematchCalendarFrame: CalendarFrameEnum, $oddFilterInput: OddFilterInput, $marketIds: [Uuid], $skipMarketHeaders: Boolean = false, $oddFormat: OddFormatEnum = Decimal, $skipScore: Boolean = false, $skipSummary: Boolean = false, $skipTournament: Boolean = false, $hasPriceBoost: Boolean, $onlyWithPriceBoost: Boolean) {\n  currentOffer(\n    first: $first\n    after: $after\n    filter: {tenantId: "bb4500d9-53c7-4496-9345-af294bec5afd", types: $types, sportKeys: $sportKeys, status: $status, from: $from, to: $to, highlighted: $highlighted, tournamentsId: $tournamentsId, isAvailableInLive: $isAvailableInLive, prematchCalendarFrame: $prematchCalendarFrame, oddFilterInput: $oddFilterInput, onlyMainMarkets: $onlyMainMarkets, hasPriceBoost: $hasPriceBoost}\n  ) {\n    pageInfo {\n      endCursor\n      __typename\n    }\n    nodes {\n      eventId\n      id: eventId\n      sportName\n      sportKey\n      isLive\n      eventName\n      offerActive\n      provider\n      utcStartDate\n      utcEndDate\n      allowBetbuilder\n      visualizationConfig {\n        highlightOrder\n        __typename\n      }\n      tournament @skip(if: $skipTournament) {\n        id: tournamentId\n        tournamentId\n        tournamentName\n        highlightOrder\n        statisticsUrl\n        mainCategory {\n          categoryId\n          flagCode\n          calculatedFlagCode\n          name\n          __typename\n        }\n        __typename\n      }\n      ... on Fixture {\n        externalId\n        marketHeaders(\n          onlyMainMarkets: $onlyMainMarkets\n          isActive: $isActive\n          marketIds: $marketIds\n          onlyWithPriceBoost: $onlyWithPriceBoost\n        ) @skip(if: $skipMarketHeaders) {\n          id: marketHeaderId\n          marketHeaderId\n          marketKey\n          marketName\n          selectionColumns\n          markets {\n            id: marketId\n            marketName\n            marketKey\n            marketId\n            active\n            selectionColumns\n            marketSpecialSelectionsValues {\n              key\n              value\n              __typename\n            }\n            sort\n            selectionHeaders(onlyWithPriceBoost: $onlyWithPriceBoost) {\n              selectionKey\n              selectionName\n              selections {\n                price\n                formattedPrice(oddFormat: $oddFormat)\n                formattedPriceBoost(oddFormat: $oddFormat)\n                id: selectionId\n                selectionId\n                offerStatus\n                selectionName\n                priceUpDown\n                selectionShortName\n                sort\n                priceBoostValue\n                priceBoost {\n                  start\n                  end\n                  __typename\n                }\n                selectionKey\n                playerId\n                __typename\n              }\n              __typename\n            }\n            __typename\n          }\n          __typename\n        }\n        sportDefaultName\n        competitors {\n          countryCode\n          competitorName\n          participantId\n          id: participantId\n          __typename\n        }\n        statisticsUrl\n        isPaused\n        isInterrupted\n        minute\n        score @skip(if: $skipScore)\n        cornersHome\n        cornersAway\n        summary @skip(if: $skipSummary)\n        totalActiveMarkets\n        __typename\n      }\n      ... on Outright {\n        eventId\n        sportDefaultName\n        marketHeaders(\n          onlyMainMarkets: $onlyMainMarkets\n          isActive: $isActive\n          marketIds: $marketIds\n          onlyWithPriceBoost: $onlyWithPriceBoost\n        ) @skip(if: $skipMarketHeaders) {\n          id: marketHeaderId\n          marketHeaderId\n          marketKey\n          marketName\n          selectionColumns\n          markets {\n            id: marketId\n            marketName\n            marketKey\n            marketId\n            active\n            selectionColumns\n            marketSpecialSelectionsValues {\n              key\n              value\n              __typename\n            }\n            sort\n            selectionHeaders(onlyWithPriceBoost: $onlyWithPriceBoost) {\n              selectionKey\n              selectionName\n              selections {\n                price\n                formattedPrice(oddFormat: $oddFormat)\n                formattedPriceBoost(oddFormat: $oddFormat)\n                id: selectionId\n                selectionId\n                offerStatus\n                selectionName\n                priceUpDown\n                selectionShortName\n                sort\n                priceBoostValue\n                priceBoost {\n                  start\n                  end\n                  __typename\n                }\n                selectionKey\n                __typename\n              }\n              __typename\n            }\n            __typename\n          }\n          __typename\n        }\n        __typename\n      }\n      ... on Race {\n        sportDefaultName\n        tournamentId\n        meeting {\n          name\n          category\n          __typename\n        }\n        runners {\n          runnerId\n          id: runnerId\n          runnerName\n          jockey\n          runnerNum\n          weightInKg\n          age\n          lastRuns\n          trainer\n          __typename\n        }\n        marketHeaders(\n          onlyMainMarkets: $onlyMainMarkets\n          isActive: $isActive\n          marketIds: $marketIds\n        ) @skip(if: $skipMarketHeaders) {\n          id: marketHeaderId\n          marketHeaderId\n          marketKey\n          marketName\n          selectionColumns\n          markets {\n            id: marketId\n            marketName\n            marketKey\n            marketId\n            active\n            selectionHeaders {\n              selectionKey\n              selectionName\n              selections {\n                price\n                formattedPrice(oddFormat: $oddFormat)\n                formattedPriceBoost(oddFormat: $oddFormat)\n                id: selectionId\n                selectionId\n                offerStatus\n                selectionName\n                priceUpDown\n                selectionShortName\n                sort\n                priceBoostValue\n                priceBoost {\n                  start\n                  end\n                  __typename\n                }\n                isCombi\n                runnerId\n                runnerName\n                externalId\n                __typename\n              }\n              __typename\n            }\n            __typename\n          }\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    totalCount\n    __typename\n  }\n}\n',
+                'query': 'query currentOffer($first: Int, $status: EventFilterEnum, $sportKeys: [Short!], $to: DateTime, '
+                         '$from: DateTime, $highlighted: Boolean, $onlyMainMarkets: Boolean, $types: [EventTypeEnum!]!, '
+                         '$tournamentsId: [Uuid!], $isActive: Boolean = true, $after: String, $isAvailableInLive: Boolean, '
+                         '$prematchCalendarFrame: CalendarFrameEnum, $oddFilterInput: OddFilterInput, $marketIds: [Uuid], '
+                         '$skipMarketHeaders: Boolean = false, $oddFormat: OddFormatEnum = Decimal, '
+                         '$skipScore: Boolean = true, $skipSummary: Boolean = true, $skipTournament: Boolean = false, '
+                         '$hasPriceBoost: Boolean, $onlyWithPriceBoost: Boolean, $onlyPlayerMarkets: Boolean = false) '
+                         '{\ncurrentOffer(\nfirst: $first\nafter: $after\n'
+                         'filter: {tenantId: "bb4500d9-53c7-4496-9345-af294bec5afd", types: $types, sportKeys: $sportKeys, '
+                         'status: $status, from: $from, to: $to, highlighted: $highlighted, tournamentsId: $tournamentsId, '
+                         'isAvailableInLive: $isAvailableInLive, prematchCalendarFrame: $prematchCalendarFrame, '
+                         'oddFilterInput: $oddFilterInput, onlyMainMarkets: $onlyMainMarkets, hasPriceBoost: $hasPriceBoost}\n) '
+                         '{\npageInfo {\nendCursor\n__typename\n}\nnodes {\neventId\n'
+                         'id: eventId\nsportName\nsportKey\nisLive\neventName\n'
+                         'offerActive\nprovider\nutcStartDate\nutcEndDate\nallowBetbuilder\n'
+                         'visualizationConfig {\nhighlightOrder\n__typename\n}\n'
+                         'tournament @skip(if: $skipTournament) {\nid: tournamentId\ntournamentId\n'
+                         'tournamentName\nhighlightOrder\nstatisticsUrl\nmainCategory {\n'
+                         'categoryId\nflagCode\ncalculatedFlagCode\nname\n__typename\n}'
+                         '\n__typename\n}\n... on Fixture {\nexternalId\n'
+                         'marketHeaders(\nonlyMainMarkets: $onlyMainMarkets\nisActive: $isActive\n'
+                         'marketIds: $marketIds\nonlyWithPriceBoost: $onlyWithPriceBoost\n'
+                         'onlyPlayerMarkets: $onlyPlayerMarkets\n) '
+                         '@skip(if: $skipMarketHeaders) {\nid: marketHeaderId\nmarketHeaderId\n'
+                         'marketKey\nmarketName\nselectionColumns\nmarketTags\n'
+                         'markets {\nid: marketId\nmarketName\nmarketKey\n'
+                         'marketId\nactive\nselectionColumns\n'
+                         'marketSpecialSelectionsValues {\nkey\nvalue\n__typename\n}'
+                         '\nsort\nselectionHeaders(onlyWithPriceBoost: $onlyWithPriceBoost) '
+                         '{\nselectionKey\nselectionName\nselections {\n'
+                         'price\nformattedPrice(oddFormat: $oddFormat)\n'
+                         'formattedPriceBoost(oddFormat: $oddFormat)\nid: selectionId\n'
+                         'selectionId\nofferStatus\nselectionName\npriceUpDown\n'
+                         'selectionShortName\nsort\npriceBoostValue\n'
+                         'priceBoost {\nstart\nend\n__typename\n}'
+                         '\nselectionKey\nplayerId\nformattedHandicapSov\n'
+                         'numberOfEventsForPlayerProps\n__typename\n}\n__typename\n}'
+                         '\n__typename\n}\n__typename\n}\nsportDefaultName\n'
+                         'competitors {\ncountryCode\ncompetitorName\nparticipantId\n'
+                         'id: participantId\n__typename\n}\nstatisticsUrl\nisPaused\n'
+                         'isInterrupted\nminute\nscore @skip(if: $skipScore)\ncornersHome\n'
+                         'cornersAway\nsummary @skip(if: $skipSummary)\ntotalActiveMarkets\n'
+                         '__typename\n}\n... on Outright {\neventId\nsportDefaultName\n'
+                         'marketHeaders(\nonlyMainMarkets: $onlyMainMarkets\nisActive: $isActive\n'
+                         'marketIds: $marketIds\nonlyWithPriceBoost: $onlyWithPriceBoost\n) '
+                         '@skip(if: $skipMarketHeaders) {\nid: marketHeaderId\nmarketHeaderId\n'
+                         'marketKey\nmarketName\nselectionColumns\nmarkets {\n'
+                         'id: marketId\nmarketName\nmarketKey\nmarketId\n'
+                         'active\nselectionColumns\n'
+                         'marketSpecialSelectionsValues {\nkey\nvalue\n__typename\n}'
+                         '\nsort\nselectionHeaders(onlyWithPriceBoost: $onlyWithPriceBoost) {\n'
+                         'selectionKey\nselectionName\nselections {\nprice\n'
+                         'formattedPrice(oddFormat: $oddFormat)\nformattedPriceBoost(oddFormat: $oddFormat)\n'
+                         'id: selectionId\nselectionId\nofferStatus\n'
+                         'selectionName\npriceUpDown\nselectionShortName\n'
+                         'sort\npriceBoostValue\npriceBoost {\nstart\n'
+                         'end\n__typename\n}\nselectionKey\n'
+                         '__typename\n}\n__typename\n}\n__typename\n}\n'
+                         '__typename\n}\n__typename\n}\n... on Race {\nsportDefaultName\n'
+                         'tournamentId\nmeeting {\nname\ncategory\n__typename\n}\n'
+                         'eachWayPlaces\nhasEnded\nrunners {\nrunnerId\nid: runnerId\n'
+                         'runnerName\njockey\nrunnerNum\nweightInKg\nage\n'
+                         'lastRuns\ntrainer\nsilkFile\n__typename\n}\n'
+                         'marketHeaders(\nonlyMainMarkets: $onlyMainMarkets\nisActive: $isActive\n'
+                         'marketIds: $marketIds\n) @skip(if: $skipMarketHeaders) {\nid: marketHeaderId\n'
+                         'marketHeaderId\nmarketKey\nmarketName\nselectionColumns\n '
+                         ' markets {\nid: marketId\nmarketName\nmarketKey\n'
+                         'marketId\nactive\nselectionColumns\nselectionHeaders {\n'
+                         'selectionKey\nselectionName\nselections {\nprice\n'
+                         'formattedPrice(oddFormat: $oddFormat)\nformattedPriceBoost(oddFormat: $oddFormat)\n'
+                         'id: selectionId\nselectionId\nofferStatus\nselectionName\npriceUpDown\nselectionShortName\nsort\npriceBoostValue\n'
+                         'priceBoost {\nstart\nend\n__typename\n}\nisCombi\nrunnerId\nprice\nrunnerName\nexternalId\n__typename\n}'
+                         '\n__typename\n}\n__typename\n}\n__typename\n}\n__typename\n}\n... on Draw {\neventId\nsportKey\nutcStartDate\nlottery '
+                         '{\ntotalNumbers\ndrawNumbers\ndrawType\ntournamentId\nname\n__typename\n}\nofferActive\noffered\ndisabledBalls\ntournament '
+                         '{\ntournamentName\nmainCategory {\nname\nflagCode\ncategoryId\ncalculatedFlagCode\n__typename\n}\n__typename\n}'
+                         '\nmarketHeaders(\nonlyMainMarkets: $onlyMainMarkets\nisActive: $isActive\nmarketIds: $marketIds\n'
+                         'onlyWithPriceBoost: $onlyWithPriceBoost\n) @skip(if: $skipMarketHeaders) {\nid: marketHeaderId\n'
+                         'marketHeaderId\nmarketKey\nmarketName\nselectionColumns\nmarkets {\nid: marketId\nmarketName\n'
+                         'marketKey\nmarketId\nactive\nselectionColumns\nmarketSpecialSelectionsValues '
+                         '{\nkey\nvalue\n__typename\n}\nsort\nselectionHeaders(onlyWithPriceBoost: $onlyWithPriceBoost) '
+                         '{\nselectionKey\nselectionName\nselections {\nprice\nformattedPrice(oddFormat: $oddFormat)\n'
+                         'formattedPriceBoost(oddFormat: $oddFormat)\nid: selectionId\nselectionId\nofferStatus\n'
+                         'selectionName\npriceUpDown\nselectionShortName\nsort\npriceBoostValue\npriceBoost '
+                         '{\nstart\nend\n__typename\n}\nselectionKey\nselectionDefaultName\n__typename\n}\n__typename\n}\n__typename\n}\n'
+                         '__typename\n}\nresult {\nname\nvalue\n__typename\n}\n__typename\n}\n__typename\n}\ntotalCount\n__typename\n}\n}\n',
+
             }
             try:
                 request_body = json.dumps(json_data)
@@ -72,7 +164,7 @@ class OneStepJsonSpider(scrapy.Spider):
                         "list_of_markets": data["list_of_markets"],
                         "competition_url": data["url"].replace("https://online-sportsbook.orenes.tech/", "https://www.yaasscasino.es/apuestas/"),
                     },
-                    callback=self.parse_match
+                    callback=self.parse_match,
                 )
             except Exception as e:
                 print("error of ", e)
@@ -95,6 +187,8 @@ class OneStepJsonSpider(scrapy.Spider):
                             else:
                                 item["Home_Team"] = teams[0]
                                 item["Away_Team"] = teams[1]
+                        if key_02 == "utcStartDate":
+                            item["Date"] = dateparser.parse(''.join(value_02)).replace(tzinfo=None)
                         if key_02 == "marketHeaders":
                             odds = []
                             for entry_02 in value_02:
@@ -109,7 +203,7 @@ class OneStepJsonSpider(scrapy.Spider):
                                                 odd = selection["price"]
                                                 result = selection["selectionName"].replace("+", "Más de ").replace("-", "Menos de ")
                                             odds.append({"Market": market_name, "Result": result, "Odds": odd })
-                                    # else:
+                                    # else:ager/graphql
                                     #     print("Not found", markets["marketName"])
 
                             item["Sport"] = response.meta.get("sport")
@@ -119,7 +213,26 @@ class OneStepJsonSpider(scrapy.Spider):
                                                                     item["Home_Team"], item["Away_Team"])
 
                             yield item
+    def raw_html(self, response):
+        try:
+            print("### TEST OUTPUT")
+            print("Headers", response.headers)
+            # print(response.text)
+            print("Proxy_ip", self.proxy_ip)
+            parent = os.path.dirname(os.getcwd())
+            with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/" + self.name + "_response" + ".txt", "w") as f:
+                f.write(response.text) # response.meta["playwright_page"]
+            # print("custom setting", self.custom_settings)
+            # print(response.meta["playwright_page"])
+        except Exception as e:
+            print(e)
 
     def closed(self, reason):
-        # Step 3: Send a post request to notify the webhook that the spider has run
-        requests.post("https://data.againsttheodds.es/Zyte.php?bookie=" + self.name+ "&project_id=643480")
+        # try:
+        #     if os.environ.get("USER") == "sylvain":
+        #         pass
+        # except Exception as e:
+        #     requests.post(
+        #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
+        requests.post(
+            "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")

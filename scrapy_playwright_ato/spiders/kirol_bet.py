@@ -2,54 +2,54 @@ import os
 import scrapy
 import re
 import requests
+import random
 import dateparser
 import datetime
 from parsel import Selector
-from urllib.parse import urlencode
+from scrapy.spidermiddlewares.httperror import HttpError
+from twisted.internet.error import DNSLookupError, TimeoutError
+# from urllib.parse import urlencode
 from ..items import ScrapersItem
-from ..bookies_configurations import bookie_config, normalize_odds_variables
-
-API_KEY = "d3566962-a316-410d-be3d-5b4a24a33a3b"
-
-def get_scrapeops_url(url):
-    payload = {'api_key': API_KEY, 'url': url, 'country': 'es',}
-    proxy_url = 'https://proxy.scrapeops.io/v1/?' + urlencode(payload)
-    return proxy_url
+from ..bookies_configurations import bookie_config, normalize_odds_variables, get_context_infos
 
 
-# list_of_competitions = bookie_config(bookie_name)
-# list_of_competitions = [
-#     {'bookie': 'KirolBet',
-#      'url': 'https://apuestas.kirolbet.es/esp/Sport/Competicion/352',
-#      'sport': 'Football',
-#      'competition': 'Serie A Italiana',
-#      'list_of_markets': ['1X2', 'Nº Goles (1,5)', 'Nº Goles (2,5)', 'Nº Goles (3,5)', 'Nº Goles (4,5)', 'Nº Goles (5,5)', 'Resultado Exacto']}
-# ]
 
 class TwoStepsSpider(scrapy.Spider):
     name = "KirolBet"
+    header = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'Connection': 'keep-alive',
+              'User-Agent': '', 'Accept-Encoding': 'gzip, deflate, br, zstd',
+              'Accept-Language': 'es-ES;q=0.5,en;q=0.3',
+              'Upgrade-Insecure-Requests': '1', 'Referer': 'https://apuestas.kirolbet.es/',
+              'Sec-Fetch-Dest': 'document',
+              'Sec-Fetch-Mode': 'navigate',
+              'Sec-Fetch-Site': 'same-origin',
+              'Sec-Fetch-User': '?1', 'Sec-GPC': '1', 'Priority': 'u=0, i'
+              }
+
     custom_settings = {
-        # "DOWNLOAD_DELAY": 5,
-        "DOWNLOAD_TIMEOUT": 120,
-        "DOWNLOAD_DELAY": 0,
-        # "CONCURRENT_REQUESTS": 20,
-        "CONCURRENT_REQUESTS_PER_DOMAIN": 10,
-        "AUTOTHROTTLE_ENABLED": False,
+        "COOKIES_ENABLED": False,
     }
 
     def start_requests(self):
+        context_infos = get_context_infos(bookie_name=self.name)
+        self.context_infos = [x for x in context_infos if x["proxy_ip"] not in []]
+
         for data in bookie_config(self.name):
+            context_info = random.choice(self.context_infos)
+            self.header["User-Agent"] = context_info["user_agent"]
             yield scrapy.Request(
-                url=get_scrapeops_url(data["url"]),
+                url=data["url"],
                 callback=self.match_requests,
+                dont_filter=True,
+                headers=self.header,
                 meta={
+                    "proxy": "http://0ef225b8366548fb84767f6bf5e74653:@api.zyte.com:8011/",
                     "sport": data["sport"],
                     "competition": data["competition"],
                     "list_of_markets": data["list_of_markets"],
                     "competition_url": data["url"],
                 },
             )
-
 
     def match_requests(self,response):
         xpath_results = response.xpath("//div[@class='infoEve']").extract()
@@ -59,7 +59,10 @@ class TwoStepsSpider(scrapy.Spider):
                 xpath_result = Selector(xpath_result)
                 home_team = xpath_result.xpath("//span[@class='partido']/a/text()").extract()[0].split(" vs. ")[0]
                 away_team = xpath_result.xpath("//span[@class='partido']/a/text()").extract()[0].split(" vs. ")[1]
-                url = xpath_result.xpath("//span[@class='partido']/a/@href").extract()[1]
+                try:
+                    url = xpath_result.xpath("//span[@class='partido']/a/@href").extract()[1]
+                except IndexError:
+                    url = xpath_result.xpath("//span[@class='partido']/a/@href").extract()[0]
                 date = xpath_result.xpath("//time[@class='dateFecha']/@datetime").extract()[0]
                 date = dateparser.parse(''.join(date))
                 match_infos.append(
@@ -67,13 +70,20 @@ class TwoStepsSpider(scrapy.Spider):
                      "date": date})
             except IndexError:
                 continue
-
         for match_info in match_infos:
-            # print("processing", url)
+            context_info = random.choice(self.context_infos)
+            # self.header["User-Agent"] = context_info["user_agent"]
+            self.header["Referer"] = response.meta.get("competition")
+            # if match_info["url"] == "https://apuestas.kirolbet.es/esp/Sport/Evento/7850309":
+
             yield scrapy.Request(
-                url=get_scrapeops_url(match_info["url"]),
+                url=match_info["url"],
                 callback=self.parse_match,
+                errback=self.errback,
+                dont_filter=True,
+                headers=self.header,
                 meta={
+                    "proxy": "http://0ef225b8366548fb84767f6bf5e74653:@api.zyte.com:8011/",
                     "sport": response.meta.get("sport"),
                     "competition": response.meta.get("competition"),
                     "list_of_markets": response.meta.get("list_of_markets"),
@@ -88,8 +98,8 @@ class TwoStepsSpider(scrapy.Spider):
 
     def parse_match(self, response):
         # Step 3: Once the page is scraped this function extracts the fields as needed
-        html_cleaner = re.compile('<.*?>')
         item = ScrapersItem()
+        html_cleaner = re.compile('<.*?>')
         try:
             if response.meta.get("sport") == "Football":
                 selection_keys = response.xpath("//ul[@sport-type=\"Mkt\"]").extract()
@@ -251,6 +261,50 @@ class TwoStepsSpider(scrapy.Spider):
         if len(odds) > 1:
             yield item
 
+    def parse_headers(self, response):
+        print("Cookies sent: ", response.request.headers.get("Cookie"))
+        # print("Response cookies: ", response.headers.getlist("Set-Cookie"))
+        print("Requests headers: ", response.request.headers)
+        # print("Page cookies: ", storage_state["cookies"])
+        print("Response.headers: ", response.headers)
+        # print("Cookie from db: ", self.cookie_to_send_from_db)
+
+    async def errback(self, failure):
+        item = ScrapersItem()
+        print("### errback triggered")
+        try:
+            item["Competition_Url"] = failure.meta.get("competition_url")
+        except:
+            pass
+        try:
+            item["Match_Url"] = failure.meta.get("competition_url")
+        except:
+            pass
+        item["extraction_time_utc"] = datetime.datetime.now(tz=datetime.timezone.utc).replace(second=0, microsecond=0)
+        try:
+            if failure.check(HttpError):
+                response = failure.value.response
+                error = "HttpError_" + str(response.status)
+
+            elif failure.check(TimeoutError):
+                error = "Timeout"
+
+            elif failure.check(DNSLookupError):
+                error = "DNSLookupError"
+
+            elif failure.check(TimeoutError):
+                error = "TimeoutError"
+            try:
+                error = failure.value.response
+            except:
+                error = "UnknownError"
+            item["error_message"] = error
+
+            # await page.context.close()
+        except Exception as e:
+            item["error_message"] = "error on the function errback " + str(e)
+        yield item
+
     def raw_html(self, response):
         print("### TEST OUTPUT")
         print("Headers", response.headers)
@@ -259,8 +313,7 @@ class TwoStepsSpider(scrapy.Spider):
         parent = os.path.dirname(os.getcwd())
         with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/" + self.name + "_response" + ".txt", "w") as f:
             f.write(response.text) # response.meta["playwright_page"]
-        # print("custom setting", self.custom_settings)
-        # print(response.meta["playwright_page"])
+
     def closed(self, reason):
-        # Step 3: Send a post request to notify the webhook that the spider has run
-        requests.post("https://data.againsttheodds.es/Zyte.php?bookie=" + self.name+ "&project_id=643480")
+        requests.post(
+            "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")

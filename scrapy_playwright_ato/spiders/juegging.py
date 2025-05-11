@@ -10,7 +10,6 @@ from parsel import Selector
 from urllib.parse import urlencode
 from ..items import ScrapersItem
 from ..bookies_configurations import bookie_config, normalize_odds_variables
-from ..parsing_logic import parse_match as pm_logic
 
 API_KEY = "d3566962-a316-410d-be3d-5b4a24a33a3b"
 
@@ -88,146 +87,146 @@ class TwoStepsSpider(scrapy.Spider):
         html_cleaner = re.compile('<.*?>')
         item = ScrapersItem()
         try:
-            odds = pm_logic(self.name, response, response.meta.get("sport"), response.meta.get("list_of_markets"))
-            # if response.meta.get("sport") == "Football":
-            #     selection_keys = response.xpath("//ul[@sport-type=\"Mkt\"]").extract()
-            #     odds = []
-            #     for selection_key in selection_keys:
-            #         selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t", "")
-            #         clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
-            #         clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
-            #         for selection_key02 in clean_selection_keys:
-            #             if clean_selection_keys[0] in response.meta.get("list_of_markets"):
-            #                 market = clean_selection_keys[0]
-            #                 # print("market", selection_key02)
-            #             else:
-            #                 market = "empty"
-            #                 continue
-            #             if (
-            #                     (
-            #                         selection_key02 == "1"
-            #                         or selection_key02 == "X"
-            #                         or selection_key02 == "2"
-            #                         or "+" in selection_key02
-            #                         or "-" in selection_key02
-            #                         or ":" in selection_key02
-            #                         or "Otros" in selection_key02
-            #                     )
-            #                     and market in response.meta.get("list_of_markets")
-            #             ):
-            #
-            #                 result = selection_key02
-            #
-            #             elif (
-            #                     "-" not in selection_key02
-            #                     and "+" not in selection_key02
-            #                     and ":" not in selection_key02
-            #                     and re.search('[a-zA-Z]', selection_key02) is None
-            #                     and "," in selection_key02
-            #                     and market in response.meta.get("list_of_markets")
-            #             ):
-            #                 odd = selection_key02
-            #                 # print("odd", odd)
-            #             try:
-            #                 if (
-            #                         market in response.meta.get("list_of_markets")
-            #                         and result != "empty"
-            #                         and odd != "empty"
-            #                 ):
-            #                     odds.append({"Market": market, "Result": result, "Odds": odd})
-            #                     result = "empty"
-            #                     odd = "empty"
-            #             except UnboundLocalError:
-            #                 pass
-            # elif response.meta.get("sport") == "Basketball":
-            #     selection_keys = response.xpath("//ul[@sport-type=\"Mkt\"]").extract()
-            #     odds = []
-            #     for selection_key in selection_keys:
-            #         selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t","")
-            #         clean_selection_key = re.sub(html_cleaner, '@', selection_key).split("@")
-            #         clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
-            #         for selection_key02 in clean_selection_keys:
-            #             # print(selection_key02)
-            #             if clean_selection_keys[0] in response.meta.get("list_of_markets"):
-            #                 market = clean_selection_keys[0]
-            #                 # print("market", selection_key02)
-            #             else:
-            #                 market = "empty"
-            #                 continue
-            #             if (
-            #                     (selection_key02 == "1"
-            #                      or selection_key02 == "X"
-            #                      or selection_key02 == "2"
-            #                      or "+" in selection_key02
-            #                      or "-" in selection_key02
-            #                      or re.search('[a-zA-Z]', selection_key02) is not None)
-            #                     and market in response.meta.get("list_of_markets")
-            #             ):
-            #                 result = selection_key02
-            #                 # print("result", result)
-            #             elif (
-            #                     "-" not in selection_key02
-            #                     and "+" not in selection_key02
-            #                     and re.search('[a-zA-Z]', selection_key02) is None
-            #                     and "," in selection_key02
-            #                     and market in response.meta.get("list_of_markets")
-            #             ):
-            #                 odd = selection_key02
-            #                 # print("odd", odd)
-            #             try:
-            #                 if (
-            #                         market in response.meta.get("list_of_markets")
-            #                         and result != "empty"
-            #                         and odd != "empty"
-            #                 ):
-            #                     odds.append({"Market": market, "Result": result, "Odds": odd})
-            #                     result = "empty"
-            #                     odd = "empty"
-            #             except UnboundLocalError:
-            #                 pass
-            # elif response.meta.get("sport") == "Tennis":
-            #     selection_keys = response.xpath("//ul[@sport-type=\"Mkt\"]").extract()
-            #     odds = []
-            #     for selection_key in selection_keys:
-            #         selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace(
-            #             "\t", "")
-            #         clean_selection_key = re.sub(html_cleaner, '@', selection_key).split("@")
-            #         clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
-            #         for selection_key02 in clean_selection_keys:
-            #             if clean_selection_keys[0] in response.meta.get("list_of_markets"):
-            #                 market = clean_selection_keys[0]
-            #             else:
-            #                 market = "empty"
-            #                 continue
-            #             if (
-            #                     (selection_key02 == "1"
-            #                      or selection_key02 == "X"
-            #                      or selection_key02 == "2"
-            #                      or "+" in selection_key02
-            #                      or "-" in selection_key02
-            #                      or re.search('[a-zA-Z]', selection_key02) is not None)
-            #                      and market in response.meta.get("list_of_markets")
-            #             ):
-            #                 result = selection_key02
-            #             elif (
-            #                     "-" not in selection_key02
-            #                     and "+" not in selection_key02
-            #                     and re.search('[a-zA-Z]', selection_key02) is None
-            #                     and "," in selection_key02
-            #                     and market in response.meta.get("list_of_markets")
-            #             ):
-            #                 odd = selection_key02
-            #             try:
-            #                 if (
-            #                         market in response.meta.get("list_of_markets")
-            #                         and result != "empty"
-            #                         and odd != "empty"
-            #                 ):
-            #                     odds.append({"Market": market, "Result": result, "Odds": odd})
-            #                     result = "empty"
-            #                     odd = "empty"
-            #             except UnboundLocalError:
-            #                 pass
+            # odds = pm_logic(self.name, response, response.meta.get("sport"), response.meta.get("list_of_markets"))
+            if response.meta.get("sport") == "Football":
+                selection_keys = response.xpath("//ul[@sport-type=\"Mkt\"]").extract()
+                odds = []
+                for selection_key in selection_keys:
+                    selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t", "")
+                    clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
+                    clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
+                    for selection_key02 in clean_selection_keys:
+                        if clean_selection_keys[0] in response.meta.get("list_of_markets"):
+                            market = clean_selection_keys[0]
+                            # print("market", selection_key02)
+                        else:
+                            market = "empty"
+                            continue
+                        if (
+                                (
+                                    selection_key02 == "1"
+                                    or selection_key02 == "X"
+                                    or selection_key02 == "2"
+                                    or "+" in selection_key02
+                                    or "-" in selection_key02
+                                    or ":" in selection_key02
+                                    or "Otros" in selection_key02
+                                )
+                                and market in response.meta.get("list_of_markets")
+                        ):
+
+                            result = selection_key02
+
+                        elif (
+                                "-" not in selection_key02
+                                and "+" not in selection_key02
+                                and ":" not in selection_key02
+                                and re.search('[a-zA-Z]', selection_key02) is None
+                                and "," in selection_key02
+                                and market in response.meta.get("list_of_markets")
+                        ):
+                            odd = selection_key02
+                            # print("odd", odd)
+                        try:
+                            if (
+                                    market in response.meta.get("list_of_markets")
+                                    and result != "empty"
+                                    and odd != "empty"
+                            ):
+                                odds.append({"Market": market, "Result": result, "Odds": odd})
+                                result = "empty"
+                                odd = "empty"
+                        except UnboundLocalError:
+                            pass
+            elif response.meta.get("sport") == "Basketball":
+                selection_keys = response.xpath("//ul[@sport-type=\"Mkt\"]").extract()
+                odds = []
+                for selection_key in selection_keys:
+                    selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t","")
+                    clean_selection_key = re.sub(html_cleaner, '@', selection_key).split("@")
+                    clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
+                    for selection_key02 in clean_selection_keys:
+                        # print(selection_key02)
+                        if clean_selection_keys[0] in response.meta.get("list_of_markets"):
+                            market = clean_selection_keys[0]
+                            # print("market", selection_key02)
+                        else:
+                            market = "empty"
+                            continue
+                        if (
+                                (selection_key02 == "1"
+                                 or selection_key02 == "X"
+                                 or selection_key02 == "2"
+                                 or "+" in selection_key02
+                                 or "-" in selection_key02
+                                 or re.search('[a-zA-Z]', selection_key02) is not None)
+                                and market in response.meta.get("list_of_markets")
+                        ):
+                            result = selection_key02
+                            # print("result", result)
+                        elif (
+                                "-" not in selection_key02
+                                and "+" not in selection_key02
+                                and re.search('[a-zA-Z]', selection_key02) is None
+                                and "," in selection_key02
+                                and market in response.meta.get("list_of_markets")
+                        ):
+                            odd = selection_key02
+                            # print("odd", odd)
+                        try:
+                            if (
+                                    market in response.meta.get("list_of_markets")
+                                    and result != "empty"
+                                    and odd != "empty"
+                            ):
+                                odds.append({"Market": market, "Result": result, "Odds": odd})
+                                result = "empty"
+                                odd = "empty"
+                        except UnboundLocalError:
+                            pass
+            elif response.meta.get("sport") == "Tennis":
+                selection_keys = response.xpath("//ul[@sport-type=\"Mkt\"]").extract()
+                odds = []
+                for selection_key in selection_keys:
+                    selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace(
+                        "\t", "")
+                    clean_selection_key = re.sub(html_cleaner, '@', selection_key).split("@")
+                    clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
+                    for selection_key02 in clean_selection_keys:
+                        if clean_selection_keys[0] in response.meta.get("list_of_markets"):
+                            market = clean_selection_keys[0]
+                        else:
+                            market = "empty"
+                            continue
+                        if (
+                                (selection_key02 == "1"
+                                 or selection_key02 == "X"
+                                 or selection_key02 == "2"
+                                 or "+" in selection_key02
+                                 or "-" in selection_key02
+                                 or re.search('[a-zA-Z]', selection_key02) is not None)
+                                 and market in response.meta.get("list_of_markets")
+                        ):
+                            result = selection_key02
+                        elif (
+                                "-" not in selection_key02
+                                and "+" not in selection_key02
+                                and re.search('[a-zA-Z]', selection_key02) is None
+                                and "," in selection_key02
+                                and market in response.meta.get("list_of_markets")
+                        ):
+                            odd = selection_key02
+                        try:
+                            if (
+                                    market in response.meta.get("list_of_markets")
+                                    and result != "empty"
+                                    and odd != "empty"
+                            ):
+                                odds.append({"Market": market, "Result": result, "Odds": odd})
+                                result = "empty"
+                                odd = "empty"
+                        except UnboundLocalError:
+                            pass
 
             item["Home_Team"] = response.meta.get("home_team")
             item["Away_Team"] = response.meta.get("away_team")
@@ -257,7 +256,13 @@ class TwoStepsSpider(scrapy.Spider):
         parent = os.path.dirname(os.getcwd())
         with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/" + self.name + "_response" + ".txt", "w") as f:
             f.write(response.text) # response.meta["playwright_page"]
-        # print("custom setting", self.custom_settings)
-        # print(response.meta["playwright_page"])
+
     def closed(self, reason):
-        requests.post("https://data.againsttheodds.es/Zyte.php?bookie=" + bookie_name+ "&project_id=643480")
+        # try:
+        #     if os.environ.get("USER") == "sylvain":
+        #         pass
+        # except Exception as e:
+        #     requests.post(
+        #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
+        requests.post(
+            "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")

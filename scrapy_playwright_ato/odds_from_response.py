@@ -1,1731 +1,1901 @@
 response = """
-<!DOCTYPE html><html lang="es" data-n-head="%7B%22lang%22:%7B%22ssr%22:%22es%22%7D%7D"><head><style class="vjs-styles-defaults">
-      .video-js {
-        width: 300px;
-        height: 150px;
-      }
+<!DOCTYPE html><html lang="es"><head data-skin="0">
+<script type="text/javascript">
+(function(){
+try {
+function getterHook(obj, name, cb) {
+    if (document.__defineGetter__) {
+        document.__defineGetter__(name, cb);
+        return;
+    }
+    if ((obj && obj.prototype && Object) &&
+        (Object.getOwnPropertyDescriptor) &&
+        (Object.getOwnPropertyDescriptor(obj.prototype, name)) &&
+        (Object.getOwnPropertyDescriptor(obj.prototype, name).get) &&
+        (Object.getOwnPropertyDescriptor(obj.prototype, name).configurable)) {
+        Object.defineProperty(obj.prototype, name, { get : cb });
+        return;
+    }
+}
+function asmReferrerGetter() { return ""; }
+getterHook(Document, "referrer", asmReferrerGetter);
+} catch(e) {}
+})();
 
-      .vjs-fluid:not(.vjs-audio-only-mode) {
-        padding-top: 56.25%
-      }
-    </style>
-    <title>Apuestas Deportivas | Fútbol | Inglaterra | Premier League | Aston Villa / Wolverhampton | GoldenPark</title><meta data-n-head="ssr" charset="utf-8"><meta data-n-head="ssr" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5.0"><meta data-n-head="ssr" name="Description" content="Apuesta online sobre Aston Villa / Wolverhampton y consigue grandes premios. Apuesta ahora y vive la emoción del Fútbol | Premier League ¡ Las mejores apuestas y cuotas para Aston Villa / Wolverhampton aquí en GoldenPark !"><meta data-n-head="ssr" data-hid="nuxtVersion" name="nuxtVersion" content="v1.3.2_2024-09-12T17.17.37+0200"><base href="/"><link data-n-head="ssr" rel="icon" type="image/x-icon" href="/img/8_goldenpark/favicon.ico"><link data-n-head="ssr" rel="canonical" href="https://apuestas.goldenpark.es/es/evento/8330583-aston-villa-wolverhampton"><script async="" src="https://www.googletagmanager.com/gtm.js?id=GTM-TSNWT4LT"></script><script data-n-head="ssr" vmid="sportncoAnalytics0" type="text/javascript" ssr="false">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TSNWT4LT');</script><link rel="preload" href="/_nuxt/9ea6ab8.js" as="script"><link rel="preload" href="/_nuxt/0fc3c60.js" as="script"><link rel="preload" href="/_nuxt/css/1802e25.css" as="style"><link rel="preload" href="/_nuxt/b8face8.js" as="script"><link rel="preload" href="/_nuxt/css/92acdc5.css" as="style"><link rel="preload" href="/_nuxt/a98c8a7.js" as="script"><link rel="preload" href="/_nuxt/css/e1df0d4.css" as="style"><link rel="preload" href="/_nuxt/aaa276c.js" as="script"><link rel="preload" href="/_nuxt/93c807d.js" as="script"><link rel="preload" href="/_nuxt/css/b115f88.css" as="style"><link rel="preload" href="/_nuxt/bef45c1.js" as="script"><link rel="stylesheet" href="/_nuxt/css/1802e25.css"><link rel="stylesheet" href="/_nuxt/css/92acdc5.css"><link rel="stylesheet" href="/_nuxt/css/e1df0d4.css"><link rel="stylesheet" href="/_nuxt/css/b115f88.css">
-  </head>
-  <body>
-    <div id="__nuxt"><div data-external-id="loading-container" data-external-hide="true" class="loading-container" style="display:none;"><div class="loading"><span></span> <span></span> <span></span> <span></span></div></div><div id="__layout"><div class="es-evento/8330583-aston-villa-wolverhampton"><!----> <!----> <!----> <div></div> <div class="snc-top-general"><div class="container-top-page header-full-iframe"><div></div> <!----> <header id="snc-header"><div class="general-centered uk-flex"><div id="nb-header-login-container" class=""><div class="nb-header-login-wrapper flexbox-centered"><iframe id="pam_account" title="pam" src="https://www.goldenpark.es/sportncoheader2.html" width="500px" height="140px" scrolling="no" class="uk-form uk-margin-remove"></iframe></div> <img src="/img/moins18.png" alt="Interdit aux moins de 18 ans" class="anj-18"></div></div></header></div> <!----></div> <main class="snc-global-container"><div class="snc-container general-centered"><div id="snc-left-column"><aside id="column-left" role="navigation"><!----> <!----> <div class="menu-list"><div id="search"><div id="searchbox"><form class="uk-form uk-search"><div style="position: relative"><i class="icon-magnifier"></i> <input type="search" name="search" placeholder="Buscar" autocomplete="off" minlength="3" autocapitalize="off" spellcheck="false" value="" class="uk-search-field-mobile search-field "> <!----></div> <div id="result-search" aria-expanded="false" class="uk-dropdown uk-dropdown-search" style="display: none;"><ul class="result-search-items"><!----> <!----> <!----> <!----> </ul></div></form></div> <div id="searchicon"><i class="icon-big-x"></i></div></div> <!----> <!----> <nav id="component-menu-top" class="menu-elements-block menu-account"><div class="TitleXLarge menu-header" style="display:;"><p>Destacados</p></div> <ul><li><div class="menu-element-without-toggle"><a href="/es/competicion/6674-champions-league" hreflang="es" class=""><i class="icon-trophy"></i> <span>Champions League</span></a></div></li><li><div class="menu-element-without-toggle"><a href="/es/competicion/306-liga-espanola" hreflang="es" class=""><i class="icon-sport-soccer"></i> <span>LA LIGA ESPAÑOLA</span></a></div></li><li><div class="menu-element-without-toggle"><a href="/es/competicion/18-liga-espanola-2" hreflang="es" class=""><i class="icon-sport-soccer"></i> <span>Segunda División Española</span></a></div></li><li><div class="menu-element-without-toggle"><a href="/es/competicion/94-premier-league" hreflang="es" class=""><i class="icon-sport-soccer"></i> <span>Premier League</span></a></div></li><li><div class="menu-element-without-toggle"><a href="/es/competicion/81-brasileirao" hreflang="es" class=""><i class="icon-sport-soccer"></i> <span>Brasileirao</span></a></div></li><li><div class="menu-element-without-toggle"><a href="/es/categoria/247-atp" hreflang="es" class=""><i class="icon-sport-tennis"></i> <span>ATP</span></a></div></li><li><div class="menu-element-without-toggle"><a href="/es/competicion/51762-premier-padel" hreflang="es" class=""><i class="icon-sport-padel"></i> <span>Premier Padel</span></a></div></li><li><div class="menu-element-without-toggle"><a href="/es/deporte/26-tenis-de-mesa" hreflang="es" class=""><i class="icon-sport-pingpong"></i> <span>Tenis de Mesa</span></a></div></li><li><div class="menu-element-without-toggle"><a href="/es/competicion/36594-mlb" hreflang="es" class=""><i class="icon-sport-baseball"></i> <span>MLB</span></a></div></li></ul></nav> <!----><!----><!----><!----> <nav id="component-menu-sport" class="menu-elements-block "><div class="TitleXLarge menu-header"><p>Deportes</p></div> <ul><li class="title type-live"><div class="title menu-element-toggle"><div class="first-level"><i class="badge-live"></i> <span>En vivo</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/en-vivo" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      91
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-soccer"></i> <span>Fútbol</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/13-futbol" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      466
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-tennis"></i> <span>Tenis</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/21-tenis" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      144
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-basketball"></i> <span>Baloncesto</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/4-baloncesto" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      94
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-pingpong"></i> <span>Tenis de Mesa</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/26-tenis-de-mesa" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      34
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-baseball"></i> <span>Béisbol</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/3-beisbol" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      39
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-badminton"></i> <span>Bádminton</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/35-badminton" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      64
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-handball"></i> <span>Balonmano</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/9-balonmano" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      43
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-boxe"></i> <span>Boxeo</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/23-boxeo" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      60
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-courses-hippiques"></i> <span>Carreras de caballos</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/85-carreras-de-caballos" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      22
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-cyclisme"></i> <span>Ciclismo</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/16-ciclismo" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      2
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-cricket"></i> <span>Cricket</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/44-cricket" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      5
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-flechette"></i> <span>Dardos</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/17-dardos" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      3
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-floorball"></i> <span>Floorball</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/6-floorball" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      11
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-foot-us"></i> <span>Fútbol Americano</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/7-futbol-americano" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      105
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-aussie-rules"></i> <span>Fútbol Australiano</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/1-futbol-australiano" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      11
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-futsal"></i> <span>Fútbol sala</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/8-futbol-sala" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      6
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-golf"></i> <span>Golf</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/18-golf" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      12
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-hockey"></i> <span>Hockey sobre hielo</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/10-hockey-sobre-hielo" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      95
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-mma"></i> <span>MMA</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/78-mma" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      44
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-moto"></i> <span>Motociclismo</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/33-motociclismo" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      1
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-automoto"></i> <span>Motor</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/19-motor" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      12
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-padel"></i> <span>Padel</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/83-padel" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      10
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-rugby13"></i> <span>Rugby League</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/38-rugby-league" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      6
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-rugby"></i> <span>Rugby Union</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/12-rugby-union" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      30
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-snooker"></i> <span>Snooker</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/20-snooker" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      10
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-squash"></i> <span>Squash</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/62-squash" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      2
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-volleyball"></i> <span>Voleibol</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/14-voleibol" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      27
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-waterpolo"></i> <span>Waterpolo</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/15-waterpolo" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      3
-    </a></div> <!----></li></ul></nav> <nav id="component-menu-left-bottom" class="menu-elements-block"><div class="TitleXLarge menu-header"><p>Servicio</p></div> <ul><li><div class="menu-element-without-toggle"><a href="/reglas-de-apuestas-deportivas" hreflang="es" target="_self" class=""><i class="icon-book-2"></i> <span>Reglas de apuestas deportivas</span></a></div></li><li><div class="menu-element-without-toggle"><a href="https://sncgoldenpark.statscore.com/es/" target="_blank"><i class="icon-info"></i> <span>Resultados</span></a></div></li></ul></nav> <div id="component-menu-left-format-odds" class="menu-elements-block odds-format-container-parent"><div class="odds-format-container-child"><div class="menu-header-format-odds"><p><span class="format-odds-title-left"><i class="icon-settings"></i>Formato de las cuotas</span> <span class="format-odds-right-container"><i class="arrow-animation arrow-closed"></i></span></p></div> <form style="display:none;"><ul class="odds-format-list-choice"><li><label for="desktop-choice-decimal">
-            Decimal
-            <span class="format-odds-right-container"><input type="radio" name="desktop-choice" id="desktop-choice-decimal" value="decimal" checked="checked"></span></label></li><li><label for="desktop-choice-american">
-            Americano
-            <span class="format-odds-right-container"><input type="radio" name="desktop-choice" id="desktop-choice-american" value="american"></span></label></li><li><label for="desktop-choice-fractional">
-            Fraccional
-            <span class="format-odds-right-container"><input type="radio" name="desktop-choice" id="desktop-choice-fractional" value="fractional"></span></label></li></ul></form></div></div></div></aside></div> <div id="menumobileappear" class=""><div id="menu-left-mobile"><div class="menu-list menusport-block menu-az"><div class="close-overlay-btn"><div id="logo"><a href="/" hreflang="es" target="_parent" title="Accueil" class="nuxt-link-active"><img src="/img/8_goldenpark/logo.png" alt="Accueil"> <img src="/img/8_goldenpark/logo_mobile.png" alt="Accueil" class="hidden-desktop logo-mobile"></a> <!----></div> <button id="closeMenuLeft" type="button">Cerrar</button></div> <div class="container-all-menus menu-sport-and-account"><button style="display: none">Login</button> <div id="search"><div id="searchbox"><form class="uk-form uk-search"><div style="position: relative"><i class="icon-magnifier"></i> <input type="search" name="search" placeholder="Buscar" autocomplete="off" minlength="3" autocapitalize="off" spellcheck="false" value="" class="uk-search-field-mobile search-field "> <!----></div> <div id="result-search" aria-expanded="false" class="uk-dropdown uk-dropdown-search" style="display: none;"><ul class="result-search-items"><!----> <!----> <!----> <!----> </ul></div></form></div> <div id="searchicon"><i class="icon-big-x"></i></div></div> <!----> <!----> <nav id="component-menu-top" class="menu-elements-block menu-account"><div class="TitleXLarge menu-header" style="display:;"><p>Destacados</p></div> <ul><li><div class="menu-element-without-toggle"><a href="/es/competicion/6674-champions-league" hreflang="es" class=""><i class="icon-trophy"></i> <span>Champions League</span></a></div></li><li><div class="menu-element-without-toggle"><a href="/es/competicion/306-liga-espanola" hreflang="es" class=""><i class="icon-sport-soccer"></i> <span>LA LIGA ESPAÑOLA</span></a></div></li><li><div class="menu-element-without-toggle"><a href="/es/competicion/18-liga-espanola-2" hreflang="es" class=""><i class="icon-sport-soccer"></i> <span>Segunda División Española</span></a></div></li><li><div class="menu-element-without-toggle"><a href="/es/competicion/94-premier-league" hreflang="es" class=""><i class="icon-sport-soccer"></i> <span>Premier League</span></a></div></li><li><div class="menu-element-without-toggle"><a href="/es/competicion/81-brasileirao" hreflang="es" class=""><i class="icon-sport-soccer"></i> <span>Brasileirao</span></a></div></li><li><div class="menu-element-without-toggle"><a href="/es/categoria/247-atp" hreflang="es" class=""><i class="icon-sport-tennis"></i> <span>ATP</span></a></div></li><li><div class="menu-element-without-toggle"><a href="/es/competicion/51762-premier-padel" hreflang="es" class=""><i class="icon-sport-padel"></i> <span>Premier Padel</span></a></div></li><li><div class="menu-element-without-toggle"><a href="/es/deporte/26-tenis-de-mesa" hreflang="es" class=""><i class="icon-sport-pingpong"></i> <span>Tenis de Mesa</span></a></div></li><li><div class="menu-element-without-toggle"><a href="/es/competicion/36594-mlb" hreflang="es" class=""><i class="icon-sport-baseball"></i> <span>MLB</span></a></div></li></ul></nav> <nav id="component-menu-sport" class="menu-elements-block "><div class="TitleXLarge menu-header"><p>Deportes</p></div> <ul><li class="title type-live"><div class="title menu-element-toggle"><div class="first-level"><i class="badge-live"></i> <span>En vivo</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/en-vivo" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      91
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-soccer"></i> <span>Fútbol</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/13-futbol" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      466
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-tennis"></i> <span>Tenis</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/21-tenis" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      144
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-basketball"></i> <span>Baloncesto</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/4-baloncesto" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      94
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-pingpong"></i> <span>Tenis de Mesa</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/26-tenis-de-mesa" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      34
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-baseball"></i> <span>Béisbol</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/3-beisbol" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      39
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-badminton"></i> <span>Bádminton</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/35-badminton" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      64
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-handball"></i> <span>Balonmano</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/9-balonmano" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      43
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-boxe"></i> <span>Boxeo</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/23-boxeo" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      60
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-courses-hippiques"></i> <span>Carreras de caballos</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/85-carreras-de-caballos" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      22
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-cyclisme"></i> <span>Ciclismo</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/16-ciclismo" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      2
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-cricket"></i> <span>Cricket</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/44-cricket" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      5
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-flechette"></i> <span>Dardos</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/17-dardos" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      3
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-floorball"></i> <span>Floorball</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/6-floorball" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      11
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-foot-us"></i> <span>Fútbol Americano</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/7-futbol-americano" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      105
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-aussie-rules"></i> <span>Fútbol Australiano</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/1-futbol-australiano" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      11
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-futsal"></i> <span>Fútbol sala</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/8-futbol-sala" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      6
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-golf"></i> <span>Golf</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/18-golf" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      12
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-hockey"></i> <span>Hockey sobre hielo</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/10-hockey-sobre-hielo" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      95
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-mma"></i> <span>MMA</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/78-mma" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      44
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-moto"></i> <span>Motociclismo</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/33-motociclismo" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      1
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-automoto"></i> <span>Motor</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/19-motor" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      12
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-padel"></i> <span>Padel</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/83-padel" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      10
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-rugby13"></i> <span>Rugby League</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/38-rugby-league" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      6
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-rugby"></i> <span>Rugby Union</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/12-rugby-union" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      30
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-snooker"></i> <span>Snooker</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/20-snooker" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      10
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-squash"></i> <span>Squash</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/62-squash" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      2
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-volleyball"></i> <span>Voleibol</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/14-voleibol" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      27
-    </a></div> <!----></li><li live-item-title="" class="title type-sport"><div class="title menu-element-toggle"><div class="first-level"><i class="icon-sport-waterpolo"></i> <span>Waterpolo</span> <i class="arrow-animation arrow-opened"></i> <i class="arrow-animation arrow-closed"></i></div></div> <div class="menu-element-bets"><a href="/es/deporte/15-waterpolo" hreflang="es" target="_parent" class="arrow-icon-action-close-menu">
-      3
-    </a></div> <!----></li></ul></nav> <nav id="component-menu-left-bottom" class="menu-elements-block"><div class="TitleXLarge menu-header"><p>Servicio</p></div> <ul><li><div class="menu-element-without-toggle"><a href="/reglas-de-apuestas-deportivas" hreflang="es" target="_self" class=""><i class="icon-book-2"></i> <span>Reglas de apuestas deportivas</span></a></div></li><li><div class="menu-element-without-toggle"><a href="https://sncgoldenpark.statscore.com/es/" target="_blank"><i class="icon-info"></i> <span>Resultados</span></a></div></li></ul></nav> <div id="component-menu-left-format-odds" class="menu-elements-block odds-format-container-parent"><div class="odds-format-container-child"><div class="menu-header-format-odds"><p><span class="format-odds-title-left"><i class="icon-settings"></i>Formato de las cuotas</span> <span class="format-odds-right-container"><i class="arrow-animation arrow-closed"></i></span></p></div> <form style="display:none;"><ul class="odds-format-list-choice"><li><label for="mobile-choice-decimal">
-            Decimal
-            <span class="format-odds-right-container"><input type="radio" name="mobile-choice" id="mobile-choice-decimal" value="decimal" checked="checked"></span></label></li><li><label for="mobile-choice-american">
-            Americano
-            <span class="format-odds-right-container"><input type="radio" name="mobile-choice" id="mobile-choice-american" value="american"></span></label></li><li><label for="mobile-choice-fractional">
-            Fraccional
-            <span class="format-odds-right-container"><input type="radio" name="mobile-choice" id="mobile-choice-fractional" value="fractional"></span></label></li></ul></form></div></div></div></div></div></div> <section id="snc-central-column"><section class="ordering"><!----> <!----></section> <!----> <div class="markets"><div class="breadcrumb flexbox"><div id="breadcrumb-list-drag-scroll-alone" class="breadcrumb-list flexbox-centered scroll"><div><ul class="flexbox-centered"><li><a href="/es" hreflang="es" target="_parent" class="flexbox-centered nuxt-link-active">
-            Inicio
-          </a></li><li><a href="/es/deporte/13-futbol" hreflang="es" target="_parent" class="flexbox-centered">
-            Fútbol
-          </a></li><li><a href="/es/categoria/43-inglaterra" hreflang="es" target="_parent" class="flexbox-centered">
-            Inglaterra
-          </a></li><li><a href="/es/competicion/94-premier-league" hreflang="es" target="_parent" class="flexbox-centered">
-            Premier League
-          </a></li><li><a href="/es/evento/8330583-aston-villa-wolverhampton" aria-current="page" hreflang="es" target="_parent" class="flexbox-centered nuxt-link-exact-active nuxt-link-active">
-            Aston Villa / Wolverhampton
-          </a></li></ul></div></div></div> <div><div class="header"><div class="header-page-event-top"><div class="header-page-event-competition-info"><i class="icon-sport-soccer"></i> <span>Premier League</span></div> <div class="header-date"><div class="date"><div class="date-event"><span>sáb. 21 sep.</span> <span>10:00</span></div></div></div></div> <div class="header-title"><div class="header-title-info"><h1 class="default"><div class="container-vertical"><div>Aston Villa</div></div> <span class="info-separate"><span>vs</span><span class="separator"></span></span> <div class="container-vertical"><div>Wolverhampton</div></div></h1></div> <div class="header-stats"><!----> <!----></div></div></div> <div class="filter-rounded rounded-no-full-width"><div class="filter-and-toggle filter-rounded"><div class="filter-container"><div class="filter-content-display"><div id="component-filter-by-market-alone" class="component-filter-by-market scroll filter-template-2"><ul class="filter-sport"><li class="empty">&nbsp;</li> <li id="market_filter_1000" class="active"><div><span>Todo</span></div></li><li id="market_filter_1310" class=""><div><span>Destacados</span></div></li><li id="market_filter_1315" class=""><div><span>Combinaciones</span></div></li><li id="market_filter_1320" class=""><div><span>Jugadores</span></div></li><li id="market_filter_1340" class=""><div><span>1ra mitad</span></div></li><li id="market_filter_1345" class=""><div><span>2da mitad</span></div></li><li id="market_filter_1350" class=""><div><span>Resultados</span></div></li><li id="market_filter_1355" class=""><div><span>Córners</span></div></li><li id="market_filter_1365" class=""><div><span>Goles</span></div></li> <li class="empty">&nbsp;</li></ul></div></div></div> <div class="container-toggle-all"><a><i class="arrow-animation arrow-closed"></i></a></div></div> <div class="container-event-questions sport-13"><div class="bet-builder-event"><div class="container-event-builder"><div class="bet-builder-1"><span class="bet-builder-title"><img src="/img/market/betbuilder/953df8c058f67eb5a9da09e1c10e2ae02616b790.png" alt="Bet Builder" title="Bet Builder"> <span>Bet Builder</span></span> <span class="bet-builder-explanation">Combina tus mercados favoritos</span></div> <button class="snc-bet-builder-btn">
-      CREAR APUESTA
-    </button></div></div> <div class="parent-container-event open"><div class="container-event filterOrder-1"><div class="question-header open"><h3>
-        ¿Quién ganará el partido?
-        <label class="tooltip-mobile"><i class="icon-cashout-2 tooltip"></i> <input type="checkbox"> <span class="tooltip-content"> <div>Cashout</div></span></label></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa" class="odd vertical centered item5253296721"><span style="display:;">Aston Villa</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.58
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Empate" class="odd vertical centered item5253296722"><span style="display:;">Empate</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.30
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton" class="odd vertical centered item5253296723"><span style="display:;">Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    5.20
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-110"><div class="question-header open"><h3>
-        Más/Menos Goles
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span disabled="disabled" title="Más 0.5" class="odd vertical centered item5249795682 oddUnderOne"><span style="display:;">Más 0.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    -
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Menos 0.5" class="odd vertical centered item5249795683"><span style="display:;">Menos 0.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    14.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Más 1.5" class="odd vertical centered item5252373480"><span style="display:;">Más 1.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.13
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Menos 1.5" class="odd vertical centered item5252373479"><span style="display:;">Menos 1.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Más 2.5" class="odd vertical centered item5251951043"><span style="display:;">Más 2.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.52
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Menos 2.5" class="odd vertical centered item5251951044"><span style="display:;">Menos 2.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.25
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><!----><!----><!----><!----><!----><!----><!----><!----> <!----> <div class="more-choices"><span class="odd vertical centered button-toggle">
-        Ver más
-      </span></div></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-115"><div class="question-header open"><h3>
-        Hándicaps
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa (-3.5)" class="odd vertical centered item5253307052"><span style="display:;">Aston Villa (-3.5)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    8.25
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton (+3.5)" class="odd vertical centered item5253307053"><span style="display:;">Wolverhampton (+3.5)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.03
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa (-2.5)" class="odd vertical centered item5252571629"><span style="display:;">Aston Villa (-2.5)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.30
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton (+2.5)" class="odd vertical centered item5252571628"><span style="display:;">Wolverhampton (+2.5)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.16
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa (-1.5)" class="odd vertical centered item5252649416"><span style="display:;">Aston Villa (-1.5)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.37
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton (+1.5)" class="odd vertical centered item5252649417"><span style="display:;">Wolverhampton (+1.5)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.48
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><!----><!----><!----><!----> <!----> <div class="more-choices"><span class="odd vertical centered button-toggle">
-        Ver más
-      </span></div></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-120"><div class="question-header open"><h3>
-        ¿Doble oportunidad?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa o Empate" class="odd vertical centered item5252012806"><span style="display:;">Aston Villa o Empate</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.12
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Empate o Wolverhampton" class="odd vertical centered item5252012808"><span style="display:;">Empate o Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.20
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa o Wolverhampton" class="odd vertical centered item5252012807"><span style="display:;">Aston Villa o Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.17
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-131"><div class="question-header open"><h3>
-        ¿Quién ganará el partido? (Apuesta anulada en caso de empate)
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa" class="odd vertical centered item5251636989"><span style="display:;">Aston Villa</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.19
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton" class="odd vertical centered item5251636988"><span style="display:;">Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.70
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-700"><div class="question-header open"><h3>
-        ¿Ambos equipos marcarán al menos un gol?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Sí" class="odd vertical centered item5252037237"><span style="display:;">Sí</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.62
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="No" class="odd vertical centered item5252037238"><span style="display:;">No</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.07
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-800"><div class="question-header open"><h3>
-        Hándicaps
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa (-3)" class="odd vertical centered item5252012900"><span style="display:;">Aston Villa (-3)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    9.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Empate (-3)" class="odd vertical centered item5252012901"><span style="display:;">Empate (-3)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    7.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton (+3)" class="odd vertical centered item5252012899"><span style="display:;">Wolverhampton (+3)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.15
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa (-2)" class="odd vertical centered item5252012907"><span style="display:;">Aston Villa (-2)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.70
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Empate (-2)" class="odd vertical centered item5252012908"><span style="display:;">Empate (-2)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.60
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton (+2)" class="odd vertical centered item5252012906"><span style="display:;">Wolverhampton (+2)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.45
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa (-1)" class="odd vertical centered item5252373483"><span style="display:;">Aston Villa (-1)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Empate (-1)" class="odd vertical centered item5252373484"><span style="display:;">Empate (-1)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.65
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton (+1)" class="odd vertical centered item5252373485"><span style="display:;">Wolverhampton (+1)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.27
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><!----><!----><!----><!----><!----><!----> <!----> <div class="more-choices"><span class="odd vertical centered button-toggle">
-        Ver más
-      </span></div></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1110"><div class="question-header open"><h3>
-        Resultado del partido y Más/Menos goles
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa / Más 2.5" class="odd vertical centered item5252012614"><span style="display:;">Aston Villa / Más 2.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.17
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Empate / Más 2.5" class="odd vertical centered item5252012613"><span style="display:;">Empate / Más 2.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    11.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton / Más 2.5" class="odd vertical centered item5252012616"><span style="display:;">Wolverhampton / Más 2.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    7.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa / Menos 2.5" class="odd vertical centered item5252012615"><span style="display:;">Aston Villa / Menos 2.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.70
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Empate / Menos 2.5" class="odd vertical centered item5252012611"><span style="display:;">Empate / Menos 2.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    5.90
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton / Menos 2.5" class="odd vertical centered item5252012612"><span style="display:;">Wolverhampton / Menos 2.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    12.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1114"><div class="question-header open"><h3>
-        ¿Resultado y ambos equipos marcan?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa / Sí" class="odd vertical centered item5250027050"><span style="display:;">Aston Villa / Sí</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.75
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Empate / Sí" class="odd vertical centered item5250027055"><span style="display:;">Empate / Sí</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.80
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton / Sí" class="odd vertical centered item5250027051"><span style="display:;">Wolverhampton / Sí</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    7.75
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa / No" class="odd vertical centered item5250027053"><span style="display:;">Aston Villa / No</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.75
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Empate / No" class="odd vertical centered item5250027052"><span style="display:;">Empate / No</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    12.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton / No" class="odd vertical centered item5250027054"><span style="display:;">Wolverhampton / No</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    9.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1116"><div class="question-header open"><h3>
-        Doble oportunidad y Más/Menos goles
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa o Empate / Más 1.5" class="odd vertical centered item5253380129"><span style="display:;">Aston Villa o Empate / Más 1.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.25
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Empate o Wolverhampton / Más 1.5" class="odd vertical centered item5253380127"><span style="display:;">Empate o Wolverhampton / Más 1.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.72
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa o Wolverhampton / Más 1.5" class="odd vertical centered item5253380128"><span style="display:;">Aston Villa o Wolverhampton / Más 1.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.31
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa o Empate / Menos 1.5" class="odd vertical centered item5253380131"><span style="display:;">Aston Villa o Empate / Menos 1.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    5.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Empate o Wolverhampton / Menos 1.5" class="odd vertical centered item5253380126"><span style="display:;">Empate o Wolverhampton / Menos 1.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    8.25
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa o Wolverhampton / Menos 1.5" class="odd vertical centered item5253380130"><span style="display:;">Aston Villa o Wolverhampton / Menos 1.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    5.70
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa o Empate / Más 2.5" class="odd vertical centered item5253380115"><span style="display:;">Aston Villa o Empate / Más 2.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.71
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Empate o Wolverhampton / Más 2.5" class="odd vertical centered item5253380119"><span style="display:;">Empate o Wolverhampton / Más 2.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.40
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa o Wolverhampton / Más 2.5" class="odd vertical centered item5253380114"><span style="display:;">Aston Villa o Wolverhampton / Más 2.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.58
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa o Empate / Menos 2.5" class="odd vertical centered item5253380117"><span style="display:;">Aston Villa o Empate / Menos 2.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Empate o Wolverhampton / Menos 2.5" class="odd vertical centered item5253380116"><span style="display:;">Empate o Wolverhampton / Menos 2.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.85
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa o Wolverhampton / Menos 2.5" class="odd vertical centered item5253380118"><span style="display:;">Aston Villa o Wolverhampton / Menos 2.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.25
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----> <!----> <div class="more-choices"><span class="odd vertical centered button-toggle">
-        Ver más
-      </span></div></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1120"><div class="question-header open"><h3>
-        Ambos equipos marcan y Más/Menos goles
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Sí / Más 2.5" class="odd vertical centered item5252012665"><span style="display:;">Sí / Más 2.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.93
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="No / Más 2.5" class="odd vertical centered item5252012664"><span style="display:;">No / Más 2.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    6.10
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Sí / Menos 2.5" class="odd vertical centered item5252012667"><span style="display:;">Sí / Menos 2.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    8.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="No / Menos 2.5" class="odd vertical centered item5252012666"><span style="display:;">No / Menos 2.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.87
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----> <!----> <div class="more-choices"><span class="odd vertical centered button-toggle">
-        Ver más
-      </span></div></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1150"><div class="question-header open"><h3>
-        ¿Ambos equipos marcarán en la 1ª mitad?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Sí" class="odd vertical centered item5253737244"><span style="display:;">Sí</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.80
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="No" class="odd vertical centered item5253737243"><span style="display:;">No</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.20
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1200"><div class="question-header open"><h3>
-        ¿Aston Villa gana sin recibir ningún gol?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Sí" class="odd vertical centered item5251101533"><span style="display:;">Sí</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.82
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="No" class="odd vertical centered item5251101534"><span style="display:;">No</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.33
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1300"><div class="question-header open"><h3>
-        ¿Wolverhampton gana sin recibir ningún gol?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Sí" class="odd vertical centered item5249894203"><span style="display:;">Sí</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    8.25
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="No" class="odd vertical centered item5249894204"><span style="display:;">No</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.02
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1310"><div class="question-header open"><h3>
-        ¿Quién ganará la 1ª mitad?
-        <label class="tooltip-mobile"><i class="icon-cashout-2 tooltip"></i> <input type="checkbox"> <span class="tooltip-content"> <div>Cashout</div></span></label></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa" class="odd vertical centered item5252373526"><span style="display:;">Aston Villa</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.05
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Empate" class="odd vertical centered item5252373527"><span style="display:;">Empate</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.40
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton" class="odd vertical centered item5252373525"><span style="display:;">Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.80
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1313"><div class="question-header open"><h3>
-        ¿Doble oportunidad - 1ª mitad?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa o Empate" class="odd vertical centered item5250027048"><span style="display:;">Aston Villa o Empate</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.11
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Empate o Wolverhampton" class="odd vertical centered item5250027049"><span style="display:;">Empate o Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.60
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa o Wolverhampton" class="odd vertical centered item5250027047"><span style="display:;">Aston Villa o Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.43
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1320"><div class="question-header open"><h3>
-        ¿Quién ganará la 2ª mitad?
-        <label class="tooltip-mobile"><i class="icon-cashout-2 tooltip"></i> <input type="checkbox"> <span class="tooltip-content"> <div>Cashout</div></span></label></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa" class="odd vertical centered item5252454754"><span style="display:;">Aston Villa</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.85
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Empate" class="odd vertical centered item5252454752"><span style="display:;">Empate</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.82
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton" class="odd vertical centered item5252454753"><span style="display:;">Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.60
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1325"><div class="question-header open"><h3>
-        ¿Doble oportunidad - 2ª mitad?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa o Empate" class="odd vertical centered item5250027074"><span style="display:;">Aston Villa o Empate</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.12
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Empate o Wolverhampton" class="odd vertical centered item5250027076"><span style="display:;">Empate o Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.77
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa o Wolverhampton" class="odd vertical centered item5250027075"><span style="display:;">Aston Villa o Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.30
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1330"><div class="question-header open"><h3>
-        ¿Quién ganará el primer tiempo? (Apuesta anulada en caso de empate)
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa" class="odd vertical centered item5252373434"><span style="display:;">Aston Villa</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.29
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton" class="odd vertical centered item5252373433"><span style="display:;">Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.05
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1340"><div class="question-header open"><h3>
-        ¿Quién ganará el segundo tiempo? (Apuesta anulada en caso de empate)
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa" class="odd vertical centered item5251743762"><span style="display:;">Aston Villa</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.27
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton" class="odd vertical centered item5251743764"><span style="display:;">Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.10
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1385"><div class="question-header open"><h3>
-        ¿Aston Villa mantendrá su portería intacta?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Sí" class="odd vertical centered item5253380134"><span style="display:;">Sí</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.67
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="No" class="odd vertical centered item5253380135"><span style="display:;">No</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.37
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1390"><div class="question-header open"><h3>
-        ¿Wolverhampton mantendrá su portería intacta?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Sí" class="odd vertical centered item5251203453"><span style="display:;">Sí</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    6.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="No" class="odd vertical centered item5251203454"><span style="display:;">No</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.05
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1396"><div class="question-header open"><h3>
-        ¿Wolverhampton deja su portería a 0 en la 1ª mitad?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Sí" class="odd vertical centered item5252037399"><span style="display:;">Sí</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.17
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="No" class="odd vertical centered item5252037400"><span style="display:;">No</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.55
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1500"><div class="question-header open"><h3>
-        ¿Descanso/Resultado Final?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa / Aston Villa" class="odd vertical centered item5252012863"><span style="display:;">Aston Villa / Aston Villa</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.27
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa / Empate" class="odd vertical centered item5252012867"><span style="display:;">Aston Villa / Empate</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    13.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa / Wolverhampton" class="odd vertical centered item5252012861"><span style="display:;">Aston Villa / Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    37.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton / Aston Villa" class="odd vertical centered item5252012862"><span style="display:;">Wolverhampton / Aston Villa</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    19.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton / Empate" class="odd vertical centered item5252012859"><span style="display:;">Wolverhampton / Empate</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    16.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton / Wolverhampton" class="odd vertical centered item5252012860"><span style="display:;">Wolverhampton / Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    8.25
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Empate / Aston Villa" class="odd vertical centered item5252012864"><span style="display:;">Empate / Aston Villa</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.30
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Empate / Empate" class="odd vertical centered item5252012865"><span style="display:;">Empate / Empate</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    6.40
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Empate / Wolverhampton" class="odd vertical centered item5252012866"><span style="display:;">Empate / Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    11.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1510"><div class="question-header open"><h3>
-        ¿Aston Villa ganará ambas mitades?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Sí" class="odd vertical centered item5253770184"><span style="display:;">Sí</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.75
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="No" class="odd vertical centered item5253770185"><span style="display:;">No</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.20
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1530"><div class="question-header open"><h3>
-        ¿Aston Villa ganará al menos una mitad?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Sí" class="odd vertical centered item5251002801"><span style="display:;">Sí</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.27
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="No" class="odd vertical centered item5251002800"><span style="display:;">No</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.15
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1540"><div class="question-header open"><h3>
-        ¿Wolverhampton ganará al menos una mitad?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Sí" class="odd vertical centered item5251002782"><span style="display:;">Sí</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.70
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="No" class="odd vertical centered item5251002783"><span style="display:;">No</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.37
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1600"><div class="question-header open"><h3>
-        ¿Resultado exacto?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa 1-0 Wolverhampton" class="odd vertical centered item5252373573"><span style="display:;">Aston Villa 1-0 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    5.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 0-0 Wolverhampton" class="odd vertical centered item5252373559"><span style="display:;">Aston Villa 0-0 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    10.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 0-1 Wolverhampton" class="odd vertical centered item5252373572"><span style="display:;">Aston Villa 0-1 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    11.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 2-0 Wolverhampton" class="odd vertical centered item5252373569"><span style="display:;">Aston Villa 2-0 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    5.10
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 1-1 Wolverhampton" class="odd vertical centered item5252373570"><span style="display:;">Aston Villa 1-1 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.80
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 0-2 Wolverhampton" class="odd vertical centered item5252373571"><span style="display:;">Aston Villa 0-2 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    21.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 2-1 Wolverhampton" class="odd vertical centered item5252373567"><span style="display:;">Aston Villa 2-1 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.80
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 2-2 Wolverhampton" class="odd vertical centered item5252373560"><span style="display:;">Aston Villa 2-2 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    8.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 1-2 Wolverhampton" class="odd vertical centered item5252373565"><span style="display:;">Aston Villa 1-2 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    9.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 3-0 Wolverhampton" class="odd vertical centered item5252373568"><span style="display:;">Aston Villa 3-0 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    7.75
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 3-3 Wolverhampton" class="odd vertical centered item5252373549"><span style="display:;">Aston Villa 3-3 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    35.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 0-3 Wolverhampton" class="odd vertical centered item5252373566"><span style="display:;">Aston Villa 0-3 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    50.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 3-1 Wolverhampton" class="odd vertical centered item5252373561"><span style="display:;">Aston Villa 3-1 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    7.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span disabled="disabled" title="" class="odd vertical centered item0 oddUnderOne emptyChoice"><span style="display:;">-</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
+</script>
 
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 1-3 Wolverhampton" class="odd vertical centered item5252373564"><span style="display:;">Aston Villa 1-3 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    25.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----> <!----> <div class="more-choices"><span class="odd vertical centered button-toggle">
-        Ver más
-      </span></div></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1603"><div class="question-header open"><h3>
-        ¿Resultado múltiple?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa 1:0, 2:0, 3:0 Wolverhampton" class="odd vertical centered item5250027085"><span style="display:;">Aston Villa 1:0, 2:0, 3:0 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.40
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Empate" class="odd vertical centered item5250027083"><span style="display:;">Empate</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.85
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 0:1, 0:2, 0:3 Wolverhampton" class="odd vertical centered item5250027084"><span style="display:;">Aston Villa 0:1, 0:2, 0:3 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    9.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 4:0, 5:0, 6:0 Wolverhampton" class="odd vertical centered item5250027082"><span style="display:;">Aston Villa 4:0, 5:0, 6:0 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    11.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span disabled="disabled" title="" class="odd vertical centered item0 oddUnderOne emptyChoice"><span style="display:;">-</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
+<script type="text/javascript">
+(function(){
+window.gACM=!!window.gACM;try{(function(){(function(){var l={decrypt:function(l){try{return JSON.parse(function(l){l=l.split("l");var O="";for(var Z=0;Z<l.length;++Z)O+=String.fromCharCode(l[Z]);return O}(l))}catch(Z){}}};return l={configuration:l.decrypt("123l34l97l99l116l105l118l101l34l58l34l110l111l34l44l34l100l101l98l117l103l103l105l110l103l34l58l34l110l111l34l44l34l109l111l100l117l108l101l49l34l58l34l101l110l97l98l108l101l100l34l44l34l109l111l100l117l108l101l50l34l58l34l101l110l97l98l108l101l100l34l44l34l109l111l100l117l108l101l51l34l58l34l101l110l97l98l108l101l100l34l44l34l109l111l100l117l108l101l52l34l58l34l101l110l97l98l108l101l100l34l125")}})();
+var ol=77;try{var zl,sl,_l=L(491)?0:1,Il=L(566)?0:1,lL=L(444)?0:1,OL=L(836)?0:1,zL=L(409)?0:1,iL=L(65)?1:0,IL=L(431)?0:1;for(var jL=(L(808),0);jL<sl;++jL)_l+=L(983)?1:2,Il+=(L(912),2),lL+=(L(65),2),OL+=(L(999),2),zL+=L(384)?2:1,iL+=L(36)?2:1,IL+=(L(905),3);zl=_l+Il+lL+OL+zL+iL+IL;window.Zz===zl&&(window.Zz=++zl)}catch(lo){window.Zz=zl}var Lo=!0;function z(l,O){l+=O;return l.toString(36)}
+function Oo(l){var O=91;!l||document[s(O,209,196,206,196,189,196,199,196,207,212,174,207,188,207,192)]&&document[S(O,209,196,206,196,189,196,199,196,207,212,174,207,188,207,192)]!==S(O,209,196,206,196,189,199,192)||(Lo=!1);return Lo}function S(l){var O=arguments.length,Z=[];for(var _=1;_<O;++_)Z.push(arguments[_]-l);return String.fromCharCode.apply(String,Z)}function Zo(){}Oo(window[Zo[z(1086777,ol)]]===Zo);Oo(typeof ie9rgb4!==S(ol,179,194,187,176,193,182,188,187));
+Oo(RegExp("\x3c")[s(ol,193,178,192,193)](function(){return"\x3c"})&!RegExp(z(42812,ol))[z(1372128,ol)](function(){return"'x3'+'d';"}));
+var so=window[S(ol,174,193,193,174,176,181,146,195,178,187,193)]||RegExp(s(ol,186,188,175,182,201,174,187,177,191,188,182,177),S(ol,182))[z(1372128,ol)](window["\x6e\x61vi\x67a\x74\x6f\x72"]["\x75\x73e\x72A\x67\x65\x6et"]),_o=+new Date+(L(360)?6E5:746209),io,Jo,lO,LO=window[s(ol,192,178,193,161,182,186,178,188,194,193)],zO=so?L(233)?3E4:19714:L(669)?7606:6E3;
+document[S(ol,174,177,177,146,195,178,187,193,153,182,192,193,178,187,178,191)]&&document[S(ol,174,177,177,146,195,178,187,193,153,182,192,193,178,187,178,191)](s(ol,195,182,192,182,175,182,185,182,193,198,176,181,174,187,180,178),function(l){var O=11;document[S(O,129,116,126,116,109,116,119,116,127,132,94,127,108,127,112)]&&(document[S(O,129,116,126,116,109,116,119,116,127,132,94,127,108,127,112)]===s(O,115,116,111,111,112,121)&&l[S(O,116,126,95,125,128,126,127,112,111)]?lO=!0:document[S(O,129,116,
+126,116,109,116,119,116,127,132,94,127,108,127,112)]===z(68616527655,O)&&(io=+new Date,lO=!1,ZO()))});function ZO(){if(!document[s(91,204,208,192,205,212,174,192,199,192,190,207,202,205)])return!0;var l=+new Date;if(l>_o&&(L(106)?6E5:370616)>l-io)return Oo(!1);var O=Oo(Jo&&!lO&&io+zO<l);io=l;Jo||(Jo=!0,LO(function(){Jo=!1},L(483)?0:1));return O}ZO();var sO=[L(856)?26477630:17795081,L(914)?2147483647:27611931586,L(851)?951379742:1558153217];
+function SO(l){var O=59;l=typeof l===z(1743045617,O)?l:l[s(O,175,170,142,175,173,164,169,162)](L(254)?36:49);var Z=window[l];if(!Z||!Z[S(O,175,170,142,175,173,164,169,162)])return;var _=""+Z;window[l]=function(l,O){Jo=!1;return Z(l,O)};window[l][S(O,175,170,142,175,173,164,169,162)]=function(){return _}}for(var iO=(L(534),0);iO<sO[z(1294399128,ol)];++iO)SO(sO[iO]);Oo(!1!==window[S(ol,180,142,144,154)]);window._O=window._O||{};window._O.Li="08254aa74d194000cd6f18c4b95d1560b8a5bc6e5183b80473d29ac746a77c0b5e80d0c1b6f2d7abd43a86736117af43a18c5f67295769c2a7c923ed22fab60a134bd6134d026c0b";
+function jO(l){var O=+new Date,Z;!document[S(43,156,160,144,157,164,126,144,151,144,142,159,154,157,108,151,151)]||O>_o&&(L(979)?639190:6E5)>O-io?Z=Oo(!1):(Z=Oo(Jo&&!lO&&io+zO<O),io=O,Jo||(Jo=!0,LO(function(){Jo=!1},L(653)?0:1)));return!(arguments[l]^Z)}function s(l){var O=arguments.length,Z=[],_=1;while(_<O)Z[_-1]=arguments[_++]-l;return String.fromCharCode.apply(String,Z)}function L(l){return 389>l}
+(function lz(O){O&&"number"!==typeof O||("number"!==typeof O&&(O=1E3),O=Math.max(O,1),setInterval(function(){lz(O-10)},O))})(!0);})();}catch(x){}finally{ie9rgb4=void(0);};function ie9rgb4(a,b){return a>>b>>0};
 
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 0:4, 0:5, 0:6 Wolverhampton" class="odd vertical centered item5250027086"><span style="display:;">Aston Villa 0:4, 0:5, 0:6 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    70.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 2:1, 3:1, 4:1 Wolverhampton" class="odd vertical centered item5250027089"><span style="display:;">Aston Villa 2:1, 3:1, 4:1 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.95
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span disabled="disabled" title="" class="odd vertical centered item0 oddUnderOne emptyChoice"><span style="display:;">-</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
+})();
 
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 1:2, 1:3, 1:4 Wolverhampton" class="odd vertical centered item5250027087"><span style="display:;">Aston Villa 1:2, 1:3, 1:4 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    10.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 3:2, 4:2, 4:3, 5:1 Wolverhampton" class="odd vertical centered item5250027088"><span style="display:;">Aston Villa 3:2, 4:2, 4:3, 5:1 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    9.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span disabled="disabled" title="" class="odd vertical centered item0 oddUnderOne emptyChoice"><span style="display:;">-</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
+</script>
 
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 2:3, 2:4, 3:4, 1:5 Wolverhampton" class="odd vertical centered item5250027090"><span style="display:;">Aston Villa 2:3, 2:4, 3:4, 1:5 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    20.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa gana y +más de 6,5 goles (4-3 excluido)" class="odd vertical centered item5250027080"><span style="display:;">Aston Villa gana y +más de 6,5 goles (4-3 excluido)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    18.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span disabled="disabled" title="" class="odd vertical centered item0 oddUnderOne emptyChoice"><span style="display:;">-</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
+<script type="text/javascript" src="/TSPD/082eaff409ab2000c75e911f854dd124762af04064d3c351d6eac7c588b20793170a288b0c11632d?type=9"></script>
 
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton gana y +más de 6,5 goles (3-4 excluido)" class="odd vertical centered item5250027081"><span style="display:;">Wolverhampton gana y +más de 6,5 goles (3-4 excluido)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    70.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1620"><div class="question-header open"><h3>
-        ¿Resultado al descanso?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa 1-0 Wolverhampton" class="odd vertical centered item5252373535"><span style="display:;">Aston Villa 1-0 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.52
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 0-0 Wolverhampton" class="odd vertical centered item5252373534"><span style="display:;">Aston Villa 0-0 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.52
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 0-1 Wolverhampton" class="odd vertical centered item5252373536"><span style="display:;">Aston Villa 0-1 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.80
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 2-0 Wolverhampton" class="odd vertical centered item5252373538"><span style="display:;">Aston Villa 2-0 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    5.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 1-1 Wolverhampton" class="odd vertical centered item5252373537"><span style="display:;">Aston Villa 1-1 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.80
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 0-2 Wolverhampton" class="odd vertical centered item5252373539"><span style="display:;">Aston Villa 0-2 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    15.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 2-1 Wolverhampton" class="odd vertical centered item5252373542"><span style="display:;">Aston Villa 2-1 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    11.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 2-2 Wolverhampton" class="odd vertical centered item5252373531"><span style="display:;">Aston Villa 2-2 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    45.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 1-2 Wolverhampton" class="odd vertical centered item5252373541"><span style="display:;">Aston Villa 1-2 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    18.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 3-0 Wolverhampton" class="odd vertical centered item5252373540"><span style="display:;">Aston Villa 3-0 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    15.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span disabled="disabled" title="" class="odd vertical centered item0 oddUnderOne emptyChoice"><span style="display:;">-</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
+<script type="text/javascript">
+(function(){
+window.gACM=!!window.gACM;try{(function(){(function oz(){var O=!1;function Z(O){for(var Z=0;O--;)Z+=_(document.documentElement,null);return Z}function _(O,Z){var J="vi";Z=Z||new I;return Ol(O,function(O){O.setAttribute("data-"+J,Z.i1());return _(O,Z)},null)}function I(){this.Zi=1;this.i_=0;this.sz=this.Zi;this.Os=null;this.i1=function(){this.Os=this.i_+this.sz;if(!isFinite(this.Os))return this.reset(),this.i1();this.i_=this.sz;this.sz=this.Os;this.Os=null;return this.sz};this.reset=function(){this.Zi++;this.i_=0;this.sz=this.Zi}}var J=!1;
+function ll(O,Z){var _=document.createElement(O);Z=Z||document.body;Z.appendChild(_);_&&_.style&&(_.style.display="none")}function Ll(Z,_){_=_||Z;var I="|";function ll(O){O=O.split(I);var Z=[];for(var _=0;_<O.length;++_){var J="",Ll=O[_].split(",");for(var Ol=0;Ol<Ll.length;++Ol)J+=Ll[Ol][Ol];Z.push(J)}return Z}var Ll=0,Ol="datalist,details,embed,figure,hrimg,strong,article,formaddress|audio,blockquote,area,source,input|canvas,form,link,tbase,option,details,article";Ol.split(I);Ol=ll(Ol);Ol=new RegExp(Ol.join(I),
+"g");while(Ol.exec(Z))Ol=new RegExp((""+new Date)[8],"g"),O&&(J=!0),++Ll;return _(Ll&&1)}function Ol(O,Z,_){(_=_||J)&&ll("div",O);O=O.children;var I=0;for(var Ll in O){_=O[Ll];try{_ instanceof HTMLElement&&(Z(_),++I)}catch(Ol){}}return I}Ll(oz,Z)})();var ol=77;
+try{var zl,sl,_l=L(687)?0:1,Il=L(759)?0:1,lL=L(272)?1:0,OL=L(942)?0:1,zL=L(729)?0:1,iL=L(512)?0:1,IL=L(397)?0:1;for(var jL=(L(510),0);jL<sl;++jL)_l+=(L(118),2),Il+=(L(619),2),lL+=(L(531),2),OL+=(L(97),2),zL+=(L(72),2),iL+=L(539)?1:2,IL+=L(449)?1:3;zl=_l+Il+lL+OL+zL+iL+IL;window.Zz===zl&&(window.Zz=++zl)}catch(lo){window.Zz=zl}var Lo=!0;function s(l){var O=arguments.length,Z=[],_=1;while(_<O)Z[_-1]=arguments[_++]-l;return String.fromCharCode.apply(String,Z)}
+function Oo(l){var O=19;!l||document[s(O,137,124,134,124,117,124,127,124,135,140,102,135,116,135,120)]&&document[s(O,137,124,134,124,117,124,127,124,135,140,102,135,116,135,120)]!==z(68616527647,O)||(Lo=!1);return Lo}function z(l,O){l+=O;return l.toString(36)}function Zo(){}Oo(window[Zo[z(1086777,ol)]]===Zo);Oo(typeof ie9rgb4!==z(1242178186122,ol));Oo(RegExp("\x3c")[z(1372128,ol)](function(){return"\x3c"})&!RegExp(s(ol,197,128,177))[z(1372128,ol)](function(){return"'x3'+'d';"}));
+var so=window[s(ol,174,193,193,174,176,181,146,195,178,187,193)]||RegExp(S(ol,186,188,175,182,201,174,187,177,191,188,182,177),z(-59,ol))[z(1372128,ol)](window["\x6e\x61vi\x67a\x74\x6f\x72"]["\x75\x73e\x72A\x67\x65\x6et"]),_o=+new Date+(L(805)?617619:6E5),io,Jo,lO,LO=window[s(ol,192,178,193,161,182,186,178,188,194,193)],zO=so?L(70)?3E4:27193:L(877)?5040:6E3;
+document[s(ol,174,177,177,146,195,178,187,193,153,182,192,193,178,187,178,191)]&&document[S(ol,174,177,177,146,195,178,187,193,153,182,192,193,178,187,178,191)](s(ol,195,182,192,182,175,182,185,182,193,198,176,181,174,187,180,178),function(l){var O=38;document[s(O,156,143,153,143,136,143,146,143,154,159,121,154,135,154,139)]&&(document[s(O,156,143,153,143,136,143,146,143,154,159,121,154,135,154,139)]===z(1058781945,O)&&l[S(O,143,153,122,152,155,153,154,139,138)]?lO=!0:document[s(O,156,143,153,143,
+136,143,146,143,154,159,121,154,135,154,139)]===z(68616527628,O)&&(io=+new Date,lO=!1,ZO()))});function S(l){var O=arguments.length,Z=[];for(var _=1;_<O;++_)Z.push(arguments[_]-l);return String.fromCharCode.apply(String,Z)}function ZO(){if(!document[S(4,117,121,105,118,125,87,105,112,105,103,120,115,118)])return!0;var l=+new Date;if(l>_o&&(L(732)?880592:6E5)>l-io)return Oo(!1);var O=Oo(Jo&&!lO&&io+zO<l);io=l;Jo||(Jo=!0,LO(function(){Jo=!1},L(876)?0:1));return O}ZO();
+var sO=[L(539)?14069158:17795081,L(808)?2147483647:27611931586,L(42)?1558153217:970200265];function SO(l){var O=45;l=typeof l===z(1743045631,O)?l:l[S(O,161,156,128,161,159,150,155,148)](L(361)?36:43);var Z=window[l];if(!Z||!Z[s(O,161,156,128,161,159,150,155,148)])return;var _=""+Z;window[l]=function(l,O){Jo=!1;return Z(l,O)};window[l][s(O,161,156,128,161,159,150,155,148)]=function(){return _}}for(var iO=(L(511),0);iO<sO[z(1294399128,ol)];++iO)SO(sO[iO]);Oo(!1!==window[S(ol,180,142,144,154)]);
+window._O=window._O||{};window._O.sLl="0883da37e516e800480a3e7f33951dcdb8a5bc6e5183b804d65e1b13fc5e8ab7536e229f0efe12f8401ba24cae1b9a5d27b073eae5c986838451689655c14b9042e29bc8012a510dbdf8fe4c67ab33567b6abc267722dd03498cfc84b5aa7e55f6357a1841c7ce61eb965f54799dcb3e10ff556f38e878046e217107c8cc8eaab87cdbd22be88dbacc3dfd2c3973cb1ac76ac578e04af7d4cf57ced9fce1388dd77711db4fcd11db8a01721d1873d17042d780103402f63f1be14a94b5da1142056b93954d84504815f8063a2be713c40a3962e0928b7026e1ec4d642ba89d0633d78e272ed90a6c95fdff10c5078e89";function jO(l){var O=+new Date,Z;!document[s(18,131,135,119,132,139,101,119,126,119,117,134,129,132,83,126,126)]||O>_o&&(L(773)?395605:6E5)>O-io?Z=Oo(!1):(Z=Oo(Jo&&!lO&&io+zO<O),io=O,Jo||(Jo=!0,LO(function(){Jo=!1},L(545)?0:1)));return!(arguments[l]^Z)}function L(l){return 389>l}(function Oz(O){return O?0:Oz(O)*Oz(O)})(!0);})();}catch(x){}finally{ie9rgb4=void(0);};function ie9rgb4(a,b){return a>>b>>0};
 
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 0-3 Wolverhampton" class="odd vertical centered item5252373543"><span style="display:;">Aston Villa 0-3 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    70.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 3-1 Wolverhampton" class="odd vertical centered item5252373528"><span style="display:;">Aston Villa 3-1 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    32.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span disabled="disabled" title="" class="odd vertical centered item0 oddUnderOne emptyChoice"><span style="display:;">-</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
+})();
 
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa 1-3 Wolverhampton" class="odd vertical centered item5252373530"><span style="display:;">Aston Villa 1-3 Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    70.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><!----><!----><!----><!----><!----><!----><!----> <!----> <div class="more-choices"><span class="odd vertical centered button-toggle">
-        Ver más
-      </span></div></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1660"><div class="question-header open"><h3>
-        ¿Habrá un penalti en el partido?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Sí" class="odd vertical centered item5251378348"><span style="display:;">Sí</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.35
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="No" class="odd vertical centered item5251378347"><span style="display:;">No</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.24
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1700"><div class="question-header open"><h3>
-        ¿Primer equipo en marcar?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa" class="odd vertical centered item5253483448"><span style="display:;">Aston Villa</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.36
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton" class="odd vertical centered item5253483447"><span style="display:;">Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.92
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Sin goles" class="odd vertical centered item5253483449"><span style="display:;">Sin goles</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    14.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1715"><div class="question-header open"><h3>
-        Gol X - ¿Quién marcará el gol?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa (gol 5)" class="odd vertical centered item5253846277"><span style="display:;">Aston Villa (gol 5)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    5.80
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton (gol 5)" class="odd vertical centered item5253846278"><span style="display:;">Wolverhampton (gol 5)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    11.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Sin gol 5" class="odd vertical centered item5253846276"><span style="display:;">Sin gol 5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.17
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa (gol 4)" class="odd vertical centered item5253846273"><span style="display:;">Aston Villa (gol 4)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.35
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton (gol 4)" class="odd vertical centered item5253846272"><span style="display:;">Wolverhampton (gol 4)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    6.75
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Sin gol 4" class="odd vertical centered item5253846271"><span style="display:;">Sin gol 4</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.48
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa (gol 2)" class="odd vertical centered item5253846267"><span style="display:;">Aston Villa (gol 2)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.70
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton (gol 2)" class="odd vertical centered item5253846265"><span style="display:;">Wolverhampton (gol 2)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.35
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Sin gol 2" class="odd vertical centered item5253846266"><span style="display:;">Sin gol 2</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.40
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa (gol 3)" class="odd vertical centered item5253846268"><span style="display:;">Aston Villa (gol 3)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.15
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton (gol 3)" class="odd vertical centered item5253846269"><span style="display:;">Wolverhampton (gol 3)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.40
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Sin gol 3" class="odd vertical centered item5253846270"><span style="display:;">Sin gol 3</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.40
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa (gol 1)" class="odd vertical centered item5253306929"><span style="display:;">Aston Villa (gol 1)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.43
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton (gol 1)" class="odd vertical centered item5253306927"><span style="display:;">Wolverhampton (gol 1)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.77
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Sin gol 1" class="odd vertical centered item5253306928"><span style="display:;">Sin gol 1</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    18.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1720"><div class="question-header open"><h3>
-        ¿Intervalo del primer gol?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="1er" class="odd vertical centered item5249701104"><span style="display:;">1er</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.03
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="2°" class="odd vertical centered item5249701105"><span style="display:;">2°</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.55
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Sin goles" class="odd vertical centered item5249701106"><span style="display:;">Sin goles</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    12.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-1740"><div class="question-header open"><h3>
-        ¿Último equipo en marcar?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa" class="odd vertical centered item5252649170"><span style="display:;">Aston Villa</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.47
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton" class="odd vertical centered item5252649172"><span style="display:;">Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.70
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Sin goles" class="odd vertical centered item5252649171"><span style="display:;">Sin goles</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    16.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-2050"><div class="question-header open"><h3>
-        Goleadores
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span disabled="disabled" title="" class="odd vertical centered item0 oddUnderOne emptyChoice"><span style="display:;">-</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
+</script>
 
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span disabled="disabled" title="PLAYER_SCORER" class="odd vertical centered item0 oddUnderOne"><span style="display:;">PLAYER_SCORER</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    -
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span disabled="disabled" title="Sin goles" class="odd vertical centered item0 oddUnderOne"><span style="display:;">Sin goles</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    -
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Pablo Sarabia" class="odd vertical centered item5253711473"><span style="display:;">Pablo Sarabia</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    5.90
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Joao Gomes" class="odd vertical centered item5253711474"><span style="display:;">Joao Gomes</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    13.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Jhon Duran" class="odd vertical centered item5253711475"><span style="display:;">Jhon Duran</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.32
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Ross Barkley" class="odd vertical centered item5253711476"><span style="display:;">Ross Barkley</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    5.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Amadou Onana" class="odd vertical centered item5253711477"><span style="display:;">Amadou Onana</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.30
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Carlos Roberto Forbs Borges" class="odd vertical centered item5253711478"><span style="display:;">Carlos Roberto Forbs Borges</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    6.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Morgan Rogers" class="odd vertical centered item5253711479"><span style="display:;">Morgan Rogers</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.55
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----> <!----> <div class="more-choices"><span class="odd vertical centered button-toggle">
-        Ver más
-      </span></div></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-2300"><div class="question-header open"><h3>
-        Primer goleador
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span disabled="disabled" title="" class="odd vertical centered item0 oddUnderOne emptyChoice"><span style="display:;">-</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span disabled="disabled" title="PLAYER_SCORER" class="odd vertical centered item0 oddUnderOne"><span style="display:;">PLAYER_SCORER</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    -
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span disabled="disabled" title="Sin goles" class="odd vertical centered item0 oddUnderOne"><span style="display:;">Sin goles</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    -
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Ollie Watkins" class="odd vertical centered item5253898300"><span style="display:;">Ollie Watkins</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.40
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Joao Gomes" class="odd vertical centered item5253898301"><span style="display:;">Joao Gomes</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    17.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Rodrigo Gomes" class="odd vertical centered item5253898302"><span style="display:;">Rodrigo Gomes</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    10.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Jhon Duran" class="odd vertical centered item5253898303"><span style="display:;">Jhon Duran</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.70
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Bastien Meupiyou" class="odd vertical centered item5253898304"><span style="display:;">Bastien Meupiyou</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    18.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Tommy Doyle" class="odd vertical centered item5253898305"><span style="display:;">Tommy Doyle</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    15.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Carlos Roberto Forbs Borges" class="odd vertical centered item5253898306"><span style="display:;">Carlos Roberto Forbs Borges</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    11.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----> <!----> <div class="more-choices"><span class="odd vertical centered button-toggle">
-        Ver más
-      </span></div></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-2500"><div class="question-header open"><h3>
-        ¿Quién marcará al menos 2 goles ?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span disabled="disabled" title="" class="odd vertical centered item0 oddUnderOne emptyChoice"><span style="display:;">-</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span disabled="disabled" title="PLAYER_SCORER" class="odd vertical centered item0 oddUnderOne"><span style="display:;">PLAYER_SCORER</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    -
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span disabled="disabled" title="Sin goles" class="odd vertical centered item0 oddUnderOne"><span style="display:;">Sin goles</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    -
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Jorgen Strand Larsen" class="odd vertical centered item5253711387"><span style="display:;">Jorgen Strand Larsen</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    19.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Jhon Duran" class="odd vertical centered item5253711388"><span style="display:;">Jhon Duran</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    7.75
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Jaden Philogene-Bidace" class="odd vertical centered item5253711389"><span style="display:;">Jaden Philogene-Bidace</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    14.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Matheus Cunha" class="odd vertical centered item5253711390"><span style="display:;">Matheus Cunha</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    24.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Bastien Meupiyou" class="odd vertical centered item5253711391"><span style="display:;">Bastien Meupiyou</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    300.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Santiago Bueno" class="odd vertical centered item5253711392"><span style="display:;">Santiago Bueno</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    300.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Goncalo Guedes" class="odd vertical centered item5253711393"><span style="display:;">Goncalo Guedes</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    29.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----> <!----> <div class="more-choices"><span class="odd vertical centered button-toggle">
-        Ver más
-      </span></div></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-2600"><div class="question-header open"><h3>
-        ¿Quién marcará al menos 3 goles?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span disabled="disabled" title="" class="odd vertical centered item0 oddUnderOne emptyChoice"><span style="display:;">-</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span disabled="disabled" title="PLAYER_SCORER" class="odd vertical centered item0 oddUnderOne"><span style="display:;">PLAYER_SCORER</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    -
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span disabled="disabled" title="Sin goles" class="odd vertical centered item0 oddUnderOne"><span style="display:;">Sin goles</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    -
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Jhon Duran" class="odd vertical centered item5253711333"><span style="display:;">Jhon Duran</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    28.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Bastien Meupiyou" class="odd vertical centered item5253711334"><span style="display:;">Bastien Meupiyou</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    350.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Joao Gomes" class="odd vertical centered item5253711335"><span style="display:;">Joao Gomes</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    350.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Kadan Young" class="odd vertical centered item5253711336"><span style="display:;">Kadan Young</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    125.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Pau Torres" class="odd vertical centered item5253711337"><span style="display:;">Pau Torres</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    350.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Craig Dawson" class="odd vertical centered item5253711338"><span style="display:;">Craig Dawson</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    350.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Pedro Lima" class="odd vertical centered item5253711339"><span style="display:;">Pedro Lima</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    350.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----> <!----> <div class="more-choices"><span class="odd vertical centered button-toggle">
-        Ver más
-      </span></div></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-4000"><div class="question-header open"><h3>
-        ¿Número de goles en el partido?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="1" class="odd vertical centered item5252012816"><span style="display:;">1</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    6.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="2" class="odd vertical centered item5252012814"><span style="display:;">2</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="3" class="odd vertical centered item5252012811"><span style="display:;">3</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="4" class="odd vertical centered item5252012813"><span style="display:;">4</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    5.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="5" class="odd vertical centered item5252012809"><span style="display:;">5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    8.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="6" class="odd vertical centered item5252012810"><span style="display:;">6</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    15.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="7 o más" class="odd vertical centered item5252012812"><span style="display:;">7 o más</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    17.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Sin goles" class="odd vertical centered item5252012815"><span style="display:;">Sin goles</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    17.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-4400"><div class="question-header open"><h3>
-        1º Parte - Más/Menos goles
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Más 0.5" class="odd vertical centered item5252012889"><span style="display:;">Más 0.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.22
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Menos 0.5" class="odd vertical centered item5252012890"><span style="display:;">Menos 0.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.30
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Más 1.5" class="odd vertical centered item5249589142"><span style="display:;">Más 1.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.20
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Menos 1.5" class="odd vertical centered item5249589143"><span style="display:;">Menos 1.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.53
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><!----><!----><!----><!----> <!----> <div class="more-choices"><span class="odd vertical centered button-toggle">
-        Ver más
-      </span></div></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-4450"><div class="question-header open"><h3>
-        2º Parte - Más/Menos goles
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Más 0.5" class="odd vertical centered item5253738764"><span style="display:;">Más 0.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.11
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Menos 0.5" class="odd vertical centered item5253738763"><span style="display:;">Menos 0.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.70
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Más 1.5" class="odd vertical centered item5252370860"><span style="display:;">Más 1.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.73
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Menos 1.5" class="odd vertical centered item5252370859"><span style="display:;">Menos 1.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.85
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><!----><!----><!----><!----><!----><!----> <!----> <div class="more-choices"><span class="odd vertical centered button-toggle">
-        Ver más
-      </span></div></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-4460"><div class="question-header open"><h3>
-        ¿Número de goles en 1ª mitad?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="1" class="odd vertical centered item5252012802"><span style="display:;">1</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.60
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="2" class="odd vertical centered item5252012804"><span style="display:;">2</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.70
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="3" class="odd vertical centered item5252012803"><span style="display:;">3</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    7.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="4" class="odd vertical centered item5252012805"><span style="display:;">4</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    20.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="5 o más" class="odd vertical centered item5252012801"><span style="display:;">5 o más</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    40.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Sin goles" class="odd vertical centered item5252012800"><span style="display:;">Sin goles</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.45
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-4465"><div class="question-header open"><h3>
-        ¿Número de goles en la 2ª mitad?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="1" class="odd vertical centered item5252012883"><span style="display:;">1</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.97
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="2" class="odd vertical centered item5252012882"><span style="display:;">2</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.40
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="3" class="odd vertical centered item5252012881"><span style="display:;">3</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    5.40
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="4" class="odd vertical centered item5252012884"><span style="display:;">4</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    12.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="5 o más" class="odd vertical centered item5252012886"><span style="display:;">5 o más</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    18.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Sin goles" class="odd vertical centered item5252012885"><span style="display:;">Sin goles</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.90
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-4470"><div class="question-header open"><h3>
-        ¿Mitad con más goles?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="1er" class="odd vertical centered item5249375419"><span style="display:;">1er</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.05
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="2°" class="odd vertical centered item5249375420"><span style="display:;">2°</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.95
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Igual" class="odd vertical centered item5249375418"><span style="display:;">Igual</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.65
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-4500"><div class="question-header open"><h3>
-        Aston Villa - Más/Menos goles
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Más 0.5" class="odd vertical centered item5252036690"><span style="display:;">Más 0.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.06
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Menos 0.5" class="odd vertical centered item5252036689"><span style="display:;">Menos 0.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    6.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Más 1.5" class="odd vertical centered item5252037407"><span style="display:;">Más 1.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Menos 1.5" class="odd vertical centered item5252037408"><span style="display:;">Menos 1.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.30
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><!----><!----><!----><!----><!----><!----> <!----> <div class="more-choices"><span class="odd vertical centered button-toggle">
-        Ver más
-      </span></div></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-4600"><div class="question-header open"><h3>
-        Wolverhampton - Más/Menos goles
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Más 0.5" class="odd vertical centered item5252012873"><span style="display:;">Más 0.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.43
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Menos 0.5" class="odd vertical centered item5252012874"><span style="display:;">Menos 0.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Más 1.5" class="odd vertical centered item5252012878"><span style="display:;">Más 1.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.05
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Menos 1.5" class="odd vertical centered item5252012877"><span style="display:;">Menos 1.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.29
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><!----><!----><!----><!----> <!----> <div class="more-choices"><span class="odd vertical centered button-toggle">
-        Ver más
-      </span></div></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-4651"><div class="question-header open"><h3>
-        ¿Número de goles marcados por Aston Villa?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="1" class="odd vertical centered item5252012618"><span style="display:;">1</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.30
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="2" class="odd vertical centered item5252012619"><span style="display:;">2</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.15
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="3 o más" class="odd vertical centered item5252012620"><span style="display:;">3 o más</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.57
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Sin goles" class="odd vertical centered item5252012617"><span style="display:;">Sin goles</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    6.75
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-4661"><div class="question-header open"><h3>
-        ¿Número de goles marcados por Wolverhampton?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="1" class="odd vertical centered item5250027070"><span style="display:;">1</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.45
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="2" class="odd vertical centered item5250027071"><span style="display:;">2</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.40
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="3 o más" class="odd vertical centered item5250027073"><span style="display:;">3 o más</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    8.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Sin goles" class="odd vertical centered item5250027072"><span style="display:;">Sin goles</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-4670"><div class="question-header open"><h3>
-        ¿Aston Villa marca?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Sí" class="odd vertical centered item5253835423"><span style="display:;">Sí</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.05
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="No" class="odd vertical centered item5253835422"><span style="display:;">No</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    6.40
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-4671"><div class="question-header open"><h3>
-        ¿Wolverhampton marca?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Sí" class="odd vertical centered item5253835433"><span style="display:;">Sí</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.43
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="No" class="odd vertical centered item5253835432"><span style="display:;">No</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.52
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-4680"><div class="question-header open"><h3>
-        ¿Aston Villa marcará en cada mitad?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Sí" class="odd vertical centered item5253835427"><span style="display:;">Sí</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.17
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="No" class="odd vertical centered item5253835426"><span style="display:;">No</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.55
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-4685"><div class="question-header open"><h3>
-        ¿Wolverhampton marcará en cada mitad?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Sí" class="odd vertical centered item5251002767"><span style="display:;">Sí</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    5.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="No" class="odd vertical centered item5251002768"><span style="display:;">No</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.11
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-4688"><div class="question-header open"><h3>
-        ¿Ambos equipos marcarán en la 2ª mitad?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Sí" class="odd vertical centered item5249375579"><span style="display:;">Sí</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.85
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="No" class="odd vertical centered item5249375580"><span style="display:;">No</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.33
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-4689"><div class="question-header open"><h3>
-        ¿Los dos equipos marcarán en las dos mitades?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Sí" class="odd vertical centered item5252493184"><span style="display:;">Sí</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    9.75
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span disabled="disabled" title="No" class="odd vertical centered item5252493185 oddUnderOne"><span style="display:;">No</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    -
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-4690"><div class="question-header open"><h3>
-        ¿Mitad con más goles para Aston Villa?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="1er" class="odd vertical centered item5250027063"><span style="display:;">1er</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.15
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="2°" class="odd vertical centered item5250027065"><span style="display:;">2°</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.20
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Igual" class="odd vertical centered item5250027064"><span style="display:;">Igual</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.95
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-4691"><div class="question-header open"><h3>
-        ¿Mitad con más goles para Wolverhampton?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="1er" class="odd vertical centered item5250027079"><span style="display:;">1er</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.80
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="2°" class="odd vertical centered item5250027077"><span style="display:;">2°</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.82
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Igual" class="odd vertical centered item5250027078"><span style="display:;">Igual</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.02
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-4700"><div class="question-header open"><h3>
-        1º Parte - Aston Villa - Más/Menos goles
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Más 0.5" class="odd vertical centered item5252037396"><span style="display:;">Más 0.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.52
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Menos 0.5" class="odd vertical centered item5252037395"><span style="display:;">Menos 0.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.22
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Más 1.5" class="odd vertical centered item5252247615"><span style="display:;">Más 1.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.55
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Menos 1.5" class="odd vertical centered item5252247614"><span style="display:;">Menos 1.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.22
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Más 2.5" class="odd vertical centered item5249375584"><span style="display:;">Más 2.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    9.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Menos 2.5" class="odd vertical centered item5249375583"><span style="display:;">Menos 2.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.01
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-4900"><div class="question-header open"><h3>
-        1º Parte - Wolverhampton - Más/Menos goles
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Más 0.5" class="odd vertical centered item5252842777"><span style="display:;">Más 0.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.42
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Menos 0.5" class="odd vertical centered item5252842776"><span style="display:;">Menos 0.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.45
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-5100"><div class="question-header open"><h3>
-        Número de goles marcados por Aston Villa en la 1ª mitad
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="1" class="odd vertical centered item5250027059"><span style="display:;">1</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.45
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="2" class="odd vertical centered item5250027057"><span style="display:;">2</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.80
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="3 o más" class="odd vertical centered item5250027056"><span style="display:;">3 o más</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    10.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Sin goles" class="odd vertical centered item5250027058"><span style="display:;">Sin goles</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.25
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-5200"><div class="question-header open"><h3>
-        Número de goles marcados por Wolverhampton en el la 1ª mitad
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="1" class="odd vertical centered item5250027067"><span style="display:;">1</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.92
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="2" class="odd vertical centered item5250027066"><span style="display:;">2</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    11.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="3 o más" class="odd vertical centered item5250027068"><span style="display:;">3 o más</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    35.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Sin goles" class="odd vertical centered item5250027069"><span style="display:;">Sin goles</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.43
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-6000"><div class="question-header open"><h3>
-        1º Parte - Handicaps
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa (-1)" class="odd vertical centered item5252373465"><span style="display:;">Aston Villa (-1)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    5.10
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Empate (-1)" class="odd vertical centered item5252373467"><span style="display:;">Empate (-1)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.05
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton (+1)" class="odd vertical centered item5252373466"><span style="display:;">Wolverhampton (+1)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.70
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Aston Villa (+1)" class="odd vertical centered item5252373477"><span style="display:;">Aston Villa (+1)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.14
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Empate (+1)" class="odd vertical centered item5252373476"><span style="display:;">Empate (+1)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    5.90
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton (-1)" class="odd vertical centered item5252373478"><span style="display:;">Wolverhampton (-1)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    16.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-6100"><div class="question-header open"><h3>
-        1º Parte - Handicaps
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa (-0.5)" class="odd vertical centered item5252373494"><span style="display:;">Aston Villa (-0.5)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton (+0.5)" class="odd vertical centered item5252373495"><span style="display:;">Wolverhampton (+0.5)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.65
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-8000"><div class="question-header open"><h3>
-        ¿Qué equipo sacará más corners en el partido?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa" class="odd vertical centered item5252012939"><span style="display:;">Aston Villa</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.22
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Empate" class="odd vertical centered item5252012937"><span style="display:;">Empate</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    11.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton" class="odd vertical centered item5252012938"><span style="display:;">Wolverhampton</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.90
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-8010"><div class="question-header open"><h3>
-        Corners - Handicaps
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Aston Villa (-3.5)" class="odd vertical centered item5252012601"><span style="display:;">Aston Villa (-3.5)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.78
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Wolverhampton (+3.5)" class="odd vertical centered item5252012602"><span style="display:;">Wolverhampton (+3.5)</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.78
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-8100"><div class="question-header open"><h3>
-        Más/Menos corners
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Más 5.5" class="odd vertical centered item5253683770"><span style="display:;">Más 5.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.04
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Menos 5.5" class="odd vertical centered item5253683769"><span style="display:;">Menos 5.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    7.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Más 6.5" class="odd vertical centered item5253664845"><span style="display:;">Más 6.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.11
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Menos 6.5" class="odd vertical centered item5253664844"><span style="display:;">Menos 6.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    5.00
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Más 7.5" class="odd vertical centered item5253683836"><span style="display:;">Más 7.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.24
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Menos 7.5" class="odd vertical centered item5253683838"><span style="display:;">Menos 7.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.35
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----> <!----> <div class="more-choices"><span class="odd vertical centered button-toggle">
-        Ver más
-      </span></div></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-8130"><div class="question-header open"><h3>
-        ¿Número de córners en el partido?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-3"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="0-5" class="odd vertical centered item5252012694"><span style="display:;">0-5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    9.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="6-8" class="odd vertical centered item5252012695"><span style="display:;">6-8</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    3.10
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="9-11" class="odd vertical centered item5252012691"><span style="display:;">9-11</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.57
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="12-14" class="odd vertical centered item5252012693"><span style="display:;">12-14</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    4.20
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="15 o más" class="odd vertical centered item5252012692"><span style="display:;">15 o más</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    9.50
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-8170"><div class="question-header open"><h3>
-        1º Parte - Más/Menos Corners
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Más 3.5" class="odd vertical centered item5252373490"><span style="display:;">Más 3.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.35
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Menos 3.5" class="odd vertical centered item5252373491"><span style="display:;">Menos 3.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.80
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Más 4.5" class="odd vertical centered item5252373486"><span style="display:;">Más 4.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.77
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Menos 4.5" class="odd vertical centered item5252373487"><span style="display:;">Menos 4.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.85
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Más 5.5" class="odd vertical centered item5252373488"><span style="display:;">Más 5.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.47
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Menos 5.5" class="odd vertical centered item5252373489"><span style="display:;">Menos 5.5</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.43
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><!----><!----> <!----> <div class="more-choices"><span class="odd vertical centered button-toggle">
-        Ver más
-      </span></div></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-10000"><div class="question-header open"><h3>
-        ¿El número de goles marcados será par o impar?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Impar" class="odd vertical centered item5246060482"><span style="display:;">Impar</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.81
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Par" class="odd vertical centered item5246060483"><span style="display:;">Par</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.81
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-10050"><div class="question-header open"><h3>
-        ¿Número de goles en la 1ª mitad, par o impar ?
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Impar" class="odd vertical centered item5249213711"><span style="display:;">Impar</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.95
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Par" class="odd vertical centered item5249213710"><span style="display:;">Par</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.70
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-10100"><div class="question-header open"><h3>
-        Aston Villa - Total de goles - Par/Impar
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Impar" class="odd vertical centered item5252012600"><span style="display:;">Impar</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.81
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Par" class="odd vertical centered item5252012599"><span style="display:;">Par</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.81
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div><div class="parent-container-event open"><div class="container-event filterOrder-10200"><div class="question-header open"><h3>
-        Wolverhampton - Total de goles - Par/Impar
-        <!----></h3> <i class="arrow-animation arrow-opened"></i></div> <div class="question-odds" style="display:;"><div class="line-container no-stretch over-2"><div class="odds-box-total no-stretch"><div class="odds-box"><span title="Impar" class="odd vertical centered item5252012610"><span style="display:;">Impar</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    2.07
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span><span title="Par" class="odd vertical centered item5252012609"><span style="display:;">Par</span> <span class="container-odd-and-trend" style="display:;"><span class="odd-value-live"></span>
-    1.62
-  </span> <span class="container-odd-and-trend loading" style="display:none;"><div class="loader">
-    ...
-  </div></span></span> <!----> <!----></div> <!----></div></div></div> <div class="white-space-closed open"></div></div></div></div></div></div></div> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----> <!----></section> <div id="snc-right-column"><div id="right-column"><div></div> <div class="empty  bettingslip-component-parent"><div id="bettingslip-component"><div id="overlayBettingSlip" class="overlayBettingSlip" style="display:none;"><div class="betslip-overlay-container"></div> <div class="betslip-overlay"><div class="loading"><div class="loader">
-        ...
-      </div></div></div></div> <div class="bettingslip-head-parent"><div id="bettingslip-head"><p class="TitleXLarge">
-      Mi selección
-      <span class="bettingslip-selection-number" style="display:none;">(0)</span></p> <span id="bettingslip-empty-all" style="display:none;"><i class="icon-trash"></i></span></div></div> <div id="bettingslip-content"><div class="bettingslip-body-and-footer"><!----> <div id="bettingslip-empty"><div id="bettingslip-empty-icons"><i class="icon-sport-soccer"></i><i class="icon-sport-foot-us"></i><i class="icon-sport-tennis"></i></div> <p>Su selección está vacía</p></div> <!----></div></div></div></div> <!----> <!----> <!----></div></div> <!----> <div class="mobile-only betslipmobileappear"><div id="bettingslip-right-mobile"><div class="empty  bettingslip-component-parent"><div id="bettingslip-component"><div id="overlayBettingSlip" class="overlayBettingSlip" style="display:none;"><div class="betslip-overlay-container"></div> <div class="betslip-overlay"><div class="loading"><div class="loader">
-        ...
-      </div></div></div></div> <div class="bettingslip-head-parent"><div id="bettingslip-head"><p class="TitleXLarge">
-      Mi selección
-      <span class="bettingslip-selection-number" style="display:none;">(0)</span></p> <span id="bettingslip-empty-all" style="display:none;"><i class="icon-trash"></i></span></div></div> <div id="bettingslip-content"><div class="bettingslip-body-and-footer"><!----> <div id="bettingslip-empty"><div id="bettingslip-empty-icons"><i class="icon-sport-soccer"></i><i class="icon-sport-foot-us"></i><i class="icon-sport-tennis"></i></div> <p>Su selección está vacía</p></div> <!----></div></div></div></div></div></div></div></main> <div class="iframe-footer"><div class="iframe-parent-container"><!----> <iframe id="snc-footer" title="https://www.goldenpark.es//sportncofooter.html" src="https://www.goldenpark.es//sportncofooter.html" width="100%" height="430px" style=""></iframe></div></div> <!----> <nav data-external-id="tab-bar" data-external-hide="true" class="mobile-only"><div class="tab-bar"><ul class="flexbox-centered menu-mobile-fixed"><li data-external-click="menu_sport" class=""><span class="flex-column centered w-100 button"><div class="flex-column centered"><i class="icon-az-menu"></i> <span class="tabbar-label">Deportes</span></div></span></li><li class="tab-bar-lives"><a href="/es/en-vivo" hreflang="es" target="_parent" data-external-click="lives_link_href" class="flex-column centered w-100"><div class="flex-column centered"><span class="tabbar-number tabbar-live-number">91</span> <span class="tabbar-label">En vivo</span></div></a></li><li data-external-click="bettingslip" class="tab-bar-betslip"><span class="flex-column centered w-100 button"><div class="flex-column centered animation-heartbeat"><i class="icon-betslip-5 status-0"></i> <span class="tabbar-number tabbar-betslip-number status-0">
-        0
-      </span></div></span></li><li data-external-click="mybets_link" class=""><a class="flex-column centered w-100"><div class="flex-column centered"><i class="icon-book"></i> <span class="tabbar-label">Mis apuestas</span></div></a></li><li class=""><a href="https://www.goldenpark.es/" hreflang="es" target="_blank" data-external-click="link_href_casino_link" class="flex-column centered w-100"><div class="flex-column centered"><i class="icon-casino"></i> <span class="tabbar-label">Casino</span></div></a></li></ul></div></nav> <!----> <!----> <div class="loading-container loading-global" style="display:none;"><div class="loading"><span></span> <span></span> <span></span> <span></span></div></div> <div id="log-debug" style="display: none;"></div></div></div></div><script>window.__NUXT__=(function(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,_,$,aa,ab,ac,ad,ae,af,ag,ah,ai,aj,ak,al,am,an,ao,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aI,aJ,aK,aL,aM,aN,aO,aP,aQ,aR,aS,aT,aU,aV,aW,aX,aY,aZ,a_,a$,ba,bb,bc,bd,be,bf,bg,bh,bi,bj,bk,bl,bm,bn,bo,bp,bq,br,bs,bt,bu,bv,bw,bx,by,bz,bA,bB,bC,bD,bE,bF,bG,bH,bI,bJ,bK,bL,bM,bN,bO,bP,bQ,bR,bS,bT,bU,bV,bW,bX,bY,bZ,b_,b$,ca,cb,cc,cd,ce,cf,cg,ch,ci,cj,ck,cl,cm,cn,co,cp,cq,cr,cs,ct,cu,cv,cw,cx,cy,cz,cA,cB,cC,cD,cE,cF,cG,cH,cI,cJ,cK,cL,cM,cN,cO,cP,cQ,cR,cS,cT,cU,cV,cW,cX,cY,cZ,c_,c$,da,db,dc,dd,de,df,dg,dh,di,dj,dk,dl,dm,dn,do0,dp,dq,dr,ds,dt,du,dv,dw,dx,dy,dz,dA,dB,dC,dD,dE,dF,dG,dH,dI,dJ,dK,dL,dM,dN,dO,dP,dQ,dR,dS,dT,dU,dV,dW,dX,dY,dZ,d_,d$,ea,eb,ec,ed,ee,ef,eg,eh,ei,ej,ek,el,em,en,eo,ep,eq,er,es,et,eu,ev,ew,ex,ey,ez,eA,eB,eC,eD,eE,eF,eG,eH,eI,eJ,eK,eL,eM,eN,eO,eP,eQ,eR,eS,eT,eU,eV,eW,eX,eY,eZ,e_,e$,fa,fb,fc,fd,fe,ff,fg,fh,fi,fj,fk,fl,fm,fn,fo,fp,fq,fr,fs,ft,fu,fv,fw,fx,fy,fz,fA,fB,fC,fD,fE,fF,fG,fH,fI,fJ,fK,fL,fM,fN,fO,fP,fQ,fR,fS,fT,fU,fV,fW,fX,fY,fZ,f_,f$,ga,gb,gc,gd){dz.header={csrf_token:p,current:bd,switches:{single:i,combined:i,system:i,grid:i}};dz.body=be;dz.footer=dA;dA.currency="\\u20ac";dA.max_winning="999999999";dA.total_cost=bf;dA.total_stake=bf;dA.current=bd;dA.possible_payout=bf;dA.accept=g;dA.bettingslip_state=cy;dA.allow_freebet=i;dA.freebet_toggle=i;dA.freebet_id=p;dA.available_freebet=i;dA.message=p;dA.version=c;dA.kept_bet_builder_ids=[];dB.live={stake:m,maximum_bet:x,minimum_bet:b,minimum_odd:b,maximum_stake:3000,minimum_stake:ay,maximum_winning_amount:az};dB.single={hidden:i,stake:m,maximum_bet:x,minimum_bet:b,minimum_odd:b,maximum_stake:bg,minimum_stake:ay,maximum_winning_amount:az};dB.system={hidden:i,stake:m,maximum_bet:f,minimum_bet:e,minimum_odd:b,maximum_stake:bg,minimum_stake:ay,maximum_winning_amount:az};dB.combined={hidden:i,stake:m,maximum_bet:x,minimum_bet:d,minimum_odd:b,maximum_stake:bg,minimum_stake:ay,maximum_winning_amount:az};dC[0]={class:aa};dC[1]={class:"icon-sport-foot-us"};dC[2]={class:dD};return {layout:cy,data:[{}],fetch:{},error:p,state:{version:"v1.3.2_2024-09-12T17.17.37+0200",firstSSRLoad:g,nuxtLoading:i,errors:[],headersCookie:a,clientIp:"185.106.126.109",mobileLatLon:t,geoLocation:t,translations:{"1001007":"Intenta a acceder a una URL desconocida","5001001":"Usted ha excedido sus limites de juego","5001002":"Usted se ha auto-excluido","5001003":cz,"5001004":"Su cuenta se encuentra bloqueada temporalmente","5001005":"Usted se encuentra en la lista de usuarios prohibidos. Si no es así, contacte al Servicio de Atención al Cliente","5001006":"No tiene las apuestas gratis disponibles","5001007":ap,"5001008":"Se produjo un error","5001010":cA,"5001016":"Por motivo de la regulación vigente sólo puedes apostar la cantidad que tenías al comienzo del evento.","50011008":"Se ha producido un error",market_selector:"Selector de mercados",today_event_label:aq,live_bet_end_url:E,live_bet_stop_url:E,live_bet_suspended_url:E,live_bet_end_title_label:ar,live_bet_stop_title_label:cB,live_bet_end_description_label:cC,live_bet_suspended_title_label:cD,live_bet_stop_description_label:aS,live_bet_suspended_description_label:aS,event_date_min:"min",event_date_live_in:"LIVE en",betbuilder_available:"está disponible en este evento",access_prematch_event_translation:"Acceder al evento",event_list_label_show_more:as,button_show_event_live:"Acceder al directo",sports_filter_all:aT,Simple:at,"Combiné":W,"Système":au,"Ma sélection":aU,tabbar_bet_label:"Mis apuestas",tabbar_now_label:"Ahora",tabbar_grid_label:cE,tabbar_live_label:v,footer_label_stake:cF,header_label_title:aU,tabbar_sport_label:aV,bet_placed_question:cG,footer_button_accept:"Aceptar cambios",footer_button_cancel:cH,footer_button_submit:"Apostar",footer_label_freebet:"¿Usar apuesta gratis?",freebet_not_selected:"La freebet que has seleccionado no es compatible con tus selecciones. Por favor, utiliza otra de la siguiente lista.",footer_button_confirm:cI,freebet_not_available:"No hay freebets disponibles para tus selecciones. Ahora está utilizando su saldo de dinero real",footer_label_total_odd:"Cuota total",tabbar_promotion_label:X,bet_placed_button_erase:"Eliminar",bet_placed_odds_changes:"Algunas cuotas cambiaron mientras se hacía la apuesta.",footer_label_system_2_3:cJ,footer_label_system_2_4:cK,footer_label_system_2_5:cL,footer_label_system_2_6:cM,footer_label_system_3_4:cN,footer_label_system_3_5:cO,footer_label_system_3_6:cP,footer_label_system_4_5:cQ,footer_label_system_4_6:cR,footer_label_system_5_6:cS,header_label_tab_single:at,header_label_tab_system:au,body_label_empty_betslip:aW,footer_button_accept_bet:"Aceptar cambios y apostar",footer_label_total_stake:"Importe total",tabbar_today_short_label:aq,footer_button_odds_change:"El valor de las cuotas ha cambiado",header_label_tab_combined:W,bet_placed_success_message:aX,footer_label_potential_gain:cT,bet_placed_history_open_link:Y,footer_combiboost_label_first:"Añadir",footer_combiboost_label_third:"Multiboost",footer_label_stake_by_combine:"Importe por selección",footer_selection_no_available:"La selección no está disponible",footer_combiboost_label_second:"selecciones y beneficiarse de un",footer_label_accept_odd_change:"Aceptar Cambio de Cuotas",bet_placed_history_review_label:"Por favor revisa tu historial de apuestas",bet_placed_button_keep_selection:"Guardar",footer_label_total_potential_gain:"Ganancia potencial total",header_button_title_erase_betslip:"Confirmar mi selección",min_bet_submit_label_button_betslip:"Apuesta mínima [[min_amount]]","Souhaitez-vous conserver votre sélection ?":cG,"Sélectionnez vos cotes pour placer votre prochain pari.":aW,picto_live:v,filters_all:aT,no_open_bet:"No tiene apuestas pendientes",filters_erase:"Eliminar filtros",no_closed_bet:"No tiene apuestas cerradas",button_cashout:Z,filters_submit:"Filtrar",bet_details_odd:"Cuota",cashout_refresh:"Actualizar Cashout",filters_cashout:Z,filters_date_to:"Hasta",bet_details_gain:"Ganancia",bet_details_stake:cF,button_game_offer:"Consultar la oferta de apuestas",filters_date_from:"Desde",bet_details_result:"Resultado",button_see_details:"Ver detalles",filters_select_all:cU,bet_details_cashout:Z,bet_details_freebet:"Apuesta gratis",bet_details_settled:"Apuesta cerrada",button_hide_details:"Esconder detalles",confirm_button_label:cI,pending_result_label:"Esperando",bet_details_cancelled:"Anulada",bet_details_reference:"Ref",canceled_button_label:cH,cashout_description_1:"La opción de Cashout le permite decidir cuándo cerrar su apuesta para garantizar ganancias o reducir pérdidas.",cashout_description_2:"Ofrecemos diferentes deportes y partidos tanto en modalidad de pre partido y en vivo, pero recuerda que no está disponible para todos los mercados.",cashout_description_3:aY,filters_select_simple:at,filters_select_system:au,bet_details_bet_placed:aX,bet_details_tax_amount:"Importe del impuesto",filters_select_combined:W,more_content_link_label:"Ver historial de apuestas",bet_details_my_selection:aU,bet_details_simple_label:at,bet_details_system_label:au,"bets_history_system_2/3_3":cJ,"bets_history_system_2/4_6":cK,"bets_history_system_3/4_4":cN,"bets_history_system_4/5_5":cQ,"bets_history_system_5/6_6":cS,bet_details_combined_boost:"de Multiboost",bet_details_combined_label:W,bet_details_potential_gain:cT,"bets_history_system_2/5_10":cL,"bets_history_system_2/6_15":cM,"bets_history_system_3/5_10":cO,"bets_history_system_3/6_20":cP,"bets_history_system_4/6_15":cR,bet_details_system_combined:W,bet_details_combined_included:"Incluye",bet_details_combined_selection:"Selecciones",bet_details_potential_net_gain:"Ganancia pot. neta",live_title:v,close_label:"Cerrar",menu_sports_label_title:aV,filter_all:aT,filter_set:"Set",filter_team:"Equipo",filter_cards:"Tarjetas",filter_games:"Juegos",filter_goals:cV,filter_match:"Partido",filter_point:"Punto",filter_total:"Total",filter_period:"Período",filter_handicap:"Hándicap",filter_half_time:"Medio tiempo",filter_asian_line:"Líneas asiáticas",filter_extensions:"Prórroga",filter_field_exit:cW,filter_competition:cX,filter_end_of_game:"Final del partido",filter_goal_scorer:"Goleadores",filter_more_played:F,filter_play_events:"Eventos de la partida",filter_combinations:cY,filter_special_bets:"Apuestas especiales",filter_time_interval:"Intervalo de tiempo",event_list_label_live:v,event_list_label_today:aq,bet_list_label_show_less:cZ,bet_list_label_show_more:as,event_list_label_today_short:aq,breadcrumb_title:"Apostar sobre",sport_no_events_title:aZ,sport_no_events_message:a_,sport_no_events_button_label:av,category_no_events_title:aZ,category_no_events_message:a_,category_no_events_button_label:av,competition_no_events_title:aZ,competition_no_events_message:a_,competition_no_events_button_label:av,event_prematch_no_events_title:ar,event_prematch_no_events_button_label:c_,breadcrumbs_label_home:aw,breadcrumbs_label_account:"Mi cuenta",breadcrumbs_label_multiplex:v,breadcrumbs_label_promotions:X,breadcrumbs_label_event_unavailable:c$,title_label_event_unavailable:c$,menu_left_bottom_url_grids:a$,menu_left_bottom_url_mobile:"\u002Fes\u002Fmobile",menu_left_bottom_label_title:da,menu_left_bottom_url_cashout:db,menu_left_bottom_url_club_fp:"\u002Fes\u002Fclub-fp",menu_left_bottom_label_mobile:"Móvil",menu_left_bottom_label_cashout:Z,menu_left_bottom_label_club_fp:dc,menu_left_bottom_label_results:ax,menu_left_bottom_url_promotion:_,menu_left_bottom_url_pronostics:dd,menu_left_bottom_label_promotion:X,menu_left_bottom_label_pronostics:de,menu_left_bottom_url_face_to_face_bets:"\u002Fes\u002Fparis-en-face-a-face",menu_left_bottom_label_face_to_face_bets:"Apuestas Presenciales",menu_left_bottom_url_betting_regulations:"\u002Fes\u002Freglas-de-apuestas-deportivas",menu_left_bottom_url_responsible_gambling:df,menu_left_bottom_label_betting_regulations:dg,menu_left_bottom_label_responsible_gambling:dh,menu_left_bottom_url_frequently_asked_questions:"\u002Fes\u002Ffoire-aux-questions",menu_left_bottom_label_frequently_asked_questions:"Foire aux questions",cookie_consent_link:"\u002Fes\u002Fpolitique-relative-aux-cookies",cookie_consent_label:aY,cookie_consent_description:"Este sitio utiliza cookies para mejorar su navegación. Al continuar en este sitio, acepta su uso.",cookie_consent_button_label:"Aceptar",terms_conditions:"Ver reglas",button_all_promotions_url:_,button_all_promotions_label:"Todas las promociones",home_title_top_lives_label:"Más apuestas en vivo","En direct":v,tabs_label_top_events:F,tabs_label_last_minutes:$,tabs_label_mobil_top_events:F,uk_disclaimer:"Los marcadores en vivo y el contenido multimedia pueden sufrir demoras",scoreboard_tab:"Live Tracker",event_list_wait:aS,stream_video_open:"Voir la vidéo en direct",event_list_end_url:E,event_list_suspend:cD,stream_video_close:"Fermer la vidéo en direct",video_streaming_tab:"Video",event_list_match_ended:ar,event_list_ended_button:cC,event_list_open_shortly:cB,stream_message_generic_error:di,stream_message_user_not_logged:"Debes acceder para poder ver el partido",stream_message_user_bet_not_placed:"Debes apostar al partido para poder verlo",stream_message_user_insufficient_balance:"Debes tener un balance mínimo de [[currency_symbol]] [[video_stream_rule_min_amount]] para ver el partido",event_live_no_events_title:ar,event_live_no_events_button_label:c_,header_menu_url_grids:a$,header_menu_url_lives:E,header_menu_label_home:"Apuestas",header_menu_url_promotion:_,header_menu_url_contact_us:dj,header_menu_url_pronostics:dd,header_menu_label_promotion:X,header_menu_label_contact_us:"Contacto",header_menu_label_pronostics:de,header_menu_url_responsible_gambling:df,header_menu_label_responsible_gambling:dh,label_popular_top_league:F,home_tabs_lives_icon:v,home_tabs_lives_label:ba,home_tabs_lives_link_label:"Más apuestas en vivo ([[lives.nb_events]])",home_tabs_lives_label_mobile:ba,button_see_more:aY,sport_top_bets_tabs_label:F,sport_top_lives_tabs_label:v,sport_categories_tabs_label:"Categorías",sport_last_minutes_tabs_label:$,category_top_bets_tabs_label:F,category_top_lives_tabs_label:v,category_competitions_tabs_label:"Competiciones",category_last_minutes_tabs_label:$,competition_matchs_tabs_label:"Partidos",competition_top_lives_tabs_label:v,competition_final_winner_tabs_label:"Ganador final",label_button_show_less:cZ,label_button_show_more:as,tabs_url_bet_history_fixed_odds_open:Y,tabs_label_bet_history_fixed_odds_open:dk,tabs_url_bet_history_fixed_odds_settled:dl,tabs_label_bet_history_fixed_odds_settled:dm,link_for_next_live:"\u002Fes\u002Fproximamente-en-vivo",multiplex_title_lives:"Live ([[lives.nb_events]])",translation_next_live_label:dn,menu_shortcut_bet_history_fixed_odds_open:"Mis apuestas ([[player.nb_bets_open]])",menu_shortcut_bet_history_fixed_odds_open_url:Y,layout_403_title:do0,layout_404_title:do0,main_error_message:"La page à laquelle vous tentez d'accéder n'est pas accessible ou n'existe pas",layout_403_subtitle:"Acceso rechazado",layout_404_subtitle:"El sitio web no disponible",layout_403_description:dp,layout_404_description:dp,layout_404_home_redirection_url:"\u002Fes\u002F",layout_404_home_redirection_label:av,layout_404_multiplex_redirection_url:E,layout_404_multiplex_redirection_label:v,multiplex_next_lives_link_label:as,next_lives_title:dn,next_lives_link_label:"Eventos en directo",title_label_live_number:"En vivo ([[lives.nb_events]])",history_title_link_label:"Volver a las apuestas",tabs_history_open_bets_link:Y,tabs_history_open_bets_label:dk,tabs_history_closed_bets_link:dl,tabs_history_closed_bets_label:dm,tabs_history_pools_open_bets_link:"\u002Fes\u002Fcuenta\u002Fmis-apuestas\u002Fmutuas\u002Fen-curso",tabs_history_pools_open_bets_label:"Apuestas mutuas pendientes ([[player.nb_pools_open]])",tabs_history_pools_closed_bets_link:"\u002Fes\u002Fcuenta\u002Fmis-apuestas\u002Fmutuas\u002Fcerradas",tabs_history_pools_closed_bets_label:"Grilles terminés",home_lives_tabs_icon:v,home_lives_tabs_label:ba,home_tabs_lives_link_url:E,translation_top_bets_label:F,translation_last_minutes_label:$,search_event:"Evento",search_sport:"Deporte",search_results:ax,search_running:"Buscando...",search_category:"Categoría",search_min_chars:"Mínimo 3 caracteres",search_no_result:"Sin resultados",search_competition:cX,search_placeholder:"Buscar",link_mybets:Y,link_for_live:E,link_promotions:_,tabbar_home_label:aw,tabbar_deposit_label:"deposit",tabbar_register_label:"Registro",tabbar_menu_sport_label:"Menú",tabbar_not_logged_message:dq,Favoris:dr,favorites_title:dr,favorites_add_ok:"Favorito añadido correctamente",favorites_delete_ok:"Favorito eliminado correctamente",favorites_delete_label:"Eliminar favorito",favorites_add_or_delete_label:"Haz click en las estrellas y accede rápidamente a tus competiciones favoritas",link_for_grids:a$,link_for_lives:E,link_for_cashout:db,link_for_contact_us:dj,link_for_promotions:_,link_for_last_minute:"\u002Fes\u002Fproximamente",menu_quick_access_label_home:aw,menu_quick_access_label_lives:v,menu_quick_access_label_pools:cE,menu_quick_access_label_title:"Acceso rápido",menu_quick_access_label_cashout:Z,menu_quick_access_label_promotions:X,menu_quick_access_label_last_minutes:$,please_wait:"Por favor, espere",bridge_redirect:"Vas a ser redirigido",label_loyalty_points_submit:"convertir",label_loyalty_points_business:dc,label_loyalty_points_operator:a,label_loyalty_points_conversion:"Convertissez vos points FP en freebet",label_loyalty_points_amount_before:"Votre solde de points FP",label_loyalty_points_activate_account:"Activez votre compe pour pouvoir convertir vos points FP",label_loyalty_points_conversion_error:"Une erreur s'est produite lors de la conversion de vos points - Veuillez re-essayer ou contactez le service client",label_loyalty_points_conversion_select:"[[loyaltyPoints.conversion_amount]] points pour [[loyaltyPoints.conversion_freebets]] € de freebet",label_loyalty_points_conversion_success:"Vos points ont été convertis avec succès",label_loyalty_points_activate_account_button:"Activer mon compte",bridge_login:"Entrar",bridge_session_expired:"La sesión ha expirado.",odd_format:"Formato de las cuotas",format_decimal:"Decimal",format_american:"Americano",format_fractional:"Fraccional",code_400:"Se produjo un error 400",code_401:"Se produjo un error 401",code_402:"Se produjo un error 402",code_403:"Se produjo un error 403",code_404:"Se produjo un error 404",code_405:"Se produjo un error 405",code_406:"Se produjo un error 406",code_407:"Se produjo un error 407",code_408:"Se produjo un error 408",code_409:"Se produjo un error 409",code_410:"Se produjo un error 410",code_411:"Se produjo un error 411",code_412:"Se produjo un error 412",code_413:"Se produjo un error 413",code_414:"Se produjo un error 414",code_415:"Se produjo un error 415",code_416:"Se produjo un error 416",code_417:"Se produjo un error 417",code_418:"Se produjo un error 418",code_419:"Se produjo un error 419",code_420:"Se produjo un error 420",code_421:"Importe insuficiente",code_422:"Importe no válido",code_423:"Se produjo un error 423",code_424:"Se produjo un error 424",code_425:"Se produjo un error 425",code_426:"Se produjo un error 426",code_427:"Se produjo un error 427",code_428:"Se produjo un error 428",code_429:"Se produjo un error 429",code_430:"Se produjo un error 430",code_431:"Se produjo un error 431",code_432:"Se produjo un error 432",code_433:"Se produjo un error 433",code_434:"Se produjo un error 434",code_435:"Se produjo un error 435",code_436:"Se produjo un error 436",code_437:"Se produjo un error 437",code_438:"Se produjo un error 438",code_439:"Se produjo un error 439",code_440:"Se produjo un error 440",code_441:"Se produjo un error 441",code_442:"Se produjo un error 442",code_443:"Se produjo un error 443",code_444:"Se produjo un error 444",code_445:"Se produjo un error 445",code_446:"Se produjo un error 446",code_447:"Se produjo un error 447",code_448:"Se produjo un error 448",code_449:"Se produjo un error 449",code_450:"Se produjo un error 450",code_451:"Se produjo un error 451",code_452:"Se produjo un error 452",code_453:"Se produjo un error 453",code_454:"Se produjo un error 454",code_455:"Se produjo un error 455",code_456:"Se produjo un error 456",code_457:"Se produjo un error 457",code_458:"Se produjo un error 458",code_459:"Se produjo un error 459",code_460:"Se produjo un error 460",code_461:"Se produjo un error 461",code_462:"Se produjo un error 462",code_521:"Ha excedido el número de selecciones para una apuesta combinada, por favor, elimine las selecciones para poder apostar",code_522:aW,code_523:"No puede usar la apuesta gratis con más de una selección",code_524:"La apuesta gratis no puede ser utilizada en la apuesta de sistema",code_525:"La apuesta gratis no autorizada",code_527:L,code_529:"La apuesta no de un tipo fijo",code_530:L,code_532:"Mutiboost no está permitido para estas selecciones",code_534:"No se pueden combinar selecciones del mismo evento. Por favor modifique su boleto para validar su apuesta",code_535:"El tipo de sistema no es compatible con su elección",code_536:bb,code_537:bb,code_538:ds,code_602:L,code_610:ap,code_611:cz,code_612:"Su cuenta es provisional. Contacte a sus moderadores para realizar la apuesta",code_702:dt,code_703:L,code_704:L,code_705:L,code_708:ds,code_709:"El importe apostado no llega al mínimo permitido. Por favor modifique su boleto para validar su apuesta",code_710:"El importe apostado supera el máximo permitido. Por favor modifique su boleto para validar su apuesta",code_713:"Su apuesta excede el límite máximo permitido en este evento",code_714:"Su ganancia potencial excede el límite máximo permitido en este evento",code_717:L,code_718:"Este evento ya ha comenzado, puede apostar desde la sección En Vivo",code_801:bb,code_802:"Su cuenta se encuentra suspendida, contacte al Servicio de Atención al Cliente para obtener más información",code_811:"Su apuesta excede sus límites de jugado, contacte al Servicio de Atención al Cliente para obtener más información",code_819:"Por favor, espere unos momentos antes de volver a intentar realizar su apuesta.",code_824:ap,code_901:"Se produjo un error 901",code_902:"Se produjo un error 902",code_903:"Se produjo un error 903",code_1001:"Los ganadores de competiciones no pueden combinarse",code_1010:bc,code_1013:"La mise de votre grille est incorrect veuillez modifier la grille et essayer à nouveau",code_1018:"Esta apuesta no puede ser combinada, por favor modifique su boleto para validar su apuesta",code_1100:du,code_1101:"Las apuestas a los eventos en vivo se encuentran suspendidas en este momento",code_1102:"Las apuestas para este evento se encuentran suspendidas en este momento",code_1103:"Las apuestas se encuentran suspendidas en este momento",code_1104:dt,code_1105:"Se produjo un error 1105",code_2700:"Se produjo un error 2700",code_2701:"Se produjo un error 2701",code_2702:"Se produjo un error 2702",code_2810:"Atención, para este deporte, ha excedido el importe de apuesta en este evento",code_2811:"Atención, para este deporte, ha excedido el importe de ganancia potencial en este evento",code_2812:"Atención, para este deporte, ha excedido el importe de apuesta disponible para este mercado",code_2813:"Atención, para este deporte, ha excedido el importe de ganancia potencial disponible para este mercado",code_2814:"Atención, para esta categoría, ha excedido el importe de apuesta en este evento",code_2815:"Atención, para esta categoría, ha excedido el importe de ganancia potencial en este evento",code_2816:"Attention, pour cette catégorie, vous dépassez la limite de mise cumulée sur la question de l’évènement ",code_2817:"Atención, para esta categoría, ha excedido el importe de ganancia potencial disponible para este mercado",code_2818:"Atención, para esta competición, ha excedido el importe de apuesta en este evento",code_2819:"Atención, para esta competición, ha excedido el importe de ganancia potencial en este evento",code_2820:"Atención, para esta competición, ha excedido el importe de apuesta disponible para este mercado",code_2821:"Atención, para esta competición, ha excedido el importe de ganancia potencial disponible para este mercado",code_2824:ap,code_2900:bc,code_2901:dv,code_2902:dv,code_2903:bc,code_2904:"Vous dépassez le nombre de double autorisé pour ce type de grille",code_2905:"Vous dépassez le nombre de triple autorisé pour ce type de grille",code_2906:"Vous dépassez le nombre de double et de triple autorisés pour ce type de grille",code_3000:"Se produjo un error 3000","deposit-ko":"Su depósito no se ha efectuado. Por favor, vuelve a intentarlo más tarde","deposit-ok":"Su depósito se ha efectuado correctamente y se verá reflejado en su saldo",empty_pool_list:"No hay mutuas disponibles en este momento",placed_bet_slip:aX,success_cashout:"Cashout confirmado!",empty_event_list:"Ningún evento disponible en este momento",success_bet_slip:"Apuesta aceptada",empty_open_freebet:"No hay ofertas disponibles en este momento",empty_pool_results:"No hay resultados de mutuas disponibles todavía",error_when_cashout:"Cashout no completado",invalid_csrf_token:dw,empty_close_freebet:"Por el momento no se puede beneficiar de niguna oferta",page_does_not_exist:"La página que quiere consultar no existe",empty_promotion_list:"Aucune promotion n'est disponible pour le moment.",empty_live_event_list:"Actualmente no hay ningún evento en vivo disponible",empty_event_market_list:"Este evento no está disponible en este momento",player_must_be_connected:dq,error_maximum_bet_reached:"Has alcanzado el número máximo de selecciones permitido ([[params]]), por favor borra alguna selección para validar tu apuesta",error_occur_event_started:cA,success_subscribe_promotion:"Su registro se ha realizado correctamente",potential_gain_limit_exceeded:du,error_occur_when_bet_placement:dw,error_occur_when_betslip_usage:di,error_not_connected_to_place_bet:"Inicie la sesión para realizar la apuesta",error_occur_choice_odd_too_small:"La cuota seleccionada es más baja de la cuota mínima acceptable",error_unknown_error_has_occurred:"Se produjo un error desconocido",info_insufficient_freebet_amount:"No tiene apuestas gratis para apostar",error_occur_bet_already_in_betslip:"Esta apuesta ya está en su boleto.",error_promotion_already_subscribed:"Usted ya se ha inscrito a esta promoción",error_promotion_not_found_or_not_valid:"La promoción no se ha encontrado o ya no es válida.",error_pools_grid_choices_invalid_number:"Nombre de double ou triple non valide.",error_not_connected_to_subscribe_promotion:"Inicie la sesión para inscribirse a esta promoción"},isMobileApp:i,isMobileAppEncapsulated:i,deviceChannel:t,userAgent:"Mozilla\u002F5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\u002F537.36 (KHTML, like Gecko) Chrome\u002F60.0.3112.78 Safari\u002F537.36",serverOffsetTime:1726665386873,iframesSize:{},PAM:{PAM_BASE_URL:dx,PAM_CLIENT_BASE_URL:"https:\u002F\u002Fapuestas.goldenpark.es",PAM_CLIENT_LOGIN_URL:"\u002Flogin",PAM_CLIENT_LOGOUT_URL:"\u002Flogout",PAM_CLIENT_REGISTRATION_URL:"\u002Finscription"},toggles:{alreadyLogged:i,blockFetchCall:i,HeaderOverCenterPage:i,invisibleLoader:i,rightMenu:i,leftMenu:i,headerMenu:i,chatMobile:g,delayClass:i,bettingSlip:i},externalHides:{"loading-container":a,"tab-bar":a},THEME_ENV:"goldenpark",currentLanguage:dy,headerLanguage:t,mappedLanguage:dy,isFirstDomReady:i,isNewEventSource:g,bettingSlip:{betSlip:dz,bettingSlipConfig:{freebet:{type:"list",freebet_hide_not_available:g},configuration:dB,sports_icons:dC,bet_builder_configuration:{name:"Bet Builder",description:"Combina tus mercados favoritos",icon:"\u002Fimg\u002Fmarket\u002Fbetbuilder\u002F953df8c058f67eb5a9da09e1c10e2ae02616b790.png",icon_url:"https:\u002F\u002Fapuestas.goldenpark.es\u002Fimg\u002Fmarket\u002Fbetbuilder\u002F953df8c058f67eb5a9da09e1c10e2ae02616b790.png",button_description:"CREAR APUESTA"},bettingslip_urls:{place:{url:"https:\u002F\u002Fws.goldenpark.es\u002Fbettingslip",async:i},view:{url:"https:\u002F\u002Fws.goldenpark.es\u002Fbettingslip\u002Fview",async:i},togglebet:{url:"https:\u002F\u002Fws.goldenpark.es\u002Fbettingslip\u002Ftogglebet",async:i},delete:{url:"https:\u002F\u002Fws.goldenpark.es\u002Fbettingslip\u002Fdelete",async:g},empty:{url:"https:\u002F\u002Fws.goldenpark.es\u002Fbettingslip\u002Fempty",async:g},switch:{url:"https:\u002F\u002Fws.goldenpark.es\u002Fbettingslip\u002Fswitch",async:i},update:{url:"https:\u002F\u002Fws.goldenpark.es\u002Fbettingslip\u002Fupdate",async:g},system:{url:"https:\u002F\u002Fws.goldenpark.es\u002Fbettingslip\u002Fsystem",async:g},accept:{url:"https:\u002F\u002Fws.goldenpark.es\u002Fbettingslip\u002Faccept",async:i},freebet:{url:"https:\u002F\u002Fws.goldenpark.es\u002Fbettingslip\u002Ffreebet",async:g},replace:{url:"https:\u002F\u002Fws.goldenpark.es\u002Fbettingslip\u002Freplace",async:g},grid:{url:"https:\u002F\u002Fws.goldenpark.es\u002Fbettingslip\u002Fgrid",async:i},keep:{url:"https:\u002F\u002Fws.goldenpark.es\u002Fbettingslip\u002Fkeep",async:g},save:{url:"https:\u002F\u002Fws.goldenpark.es\u002Fbettingslip\u002Fsave",async:i}},currencies_rounding_rules:{digit_after_comma:d,round:"down"},combiboost:{freebet_compatibility:i,sports:[D,q,y,h,z,ab,n,e,aA,bh,aB,A,M,G,77,dE,aC,l,b,j,N,m,dF,aD,dG,ac,w,ad,dH,o,ae,x,bi,R,B,af,s,86,dI,dJ,aE,49,bj],categories:[],competitions:[],minimal_odd:1.3,bonusPercent:p,part:p,triggers:[{number_bet:h,percentage:d},{number_bet:k,percentage:h},{number_bet:f,percentage:f},{number_bet:l,percentage:j},{number_bet:j,percentage:m},{number_bet:n,percentage:s},{number_bet:m,percentage:x},{number_bet:r,percentage:R},{number_bet:o,percentage:J},{number_bet:q,percentage:ab},{number_bet:B,percentage:bk},{number_bet:s,percentage:O},{number_bet:A,percentage:S},{number_bet:G,percentage:dK},{number_bet:N,percentage:bl},{number_bet:w,percentage:90},{number_bet:x,percentage:dL}]},bettingslip_view:dz,texts:{body:{label_empty_betslip:"body_label_empty_betslip"},footer:{s2_3:"footer_label_system_2_3",s2_4:"footer_label_system_2_4",s2_5:"footer_label_system_2_5",s2_6:"footer_label_system_2_6",s3_4:"footer_label_system_3_4",s3_5:"footer_label_system_3_5",s3_6:"footer_label_system_3_6",s4_5:"footer_label_system_4_5",s4_6:"footer_label_system_4_6",s5_6:"footer_label_system_5_6",combiboost:{label_first:"footer_combiboost_label_first",label_third:"footer_combiboost_label_third",label_second:"footer_combiboost_label_second"},label_stake:"footer_label_stake",button_accept:"footer_button_accept",button_cancel:"footer_button_cancel",button_submit:"footer_button_submit",label_freebet:"footer_label_freebet",button_confirm:"footer_button_confirm",label_total_odd:"footer_label_total_odd",button_accept_bet:"footer_button_accept_bet",label_total_stake:"footer_label_total_stake",button_odds_change:"footer_button_odds_change",label_potential_gain:"footer_label_potential_gain",label_stake_by_combine:"footer_label_stake_by_combine",selection_no_available:"footer_selection_no_available",label_accept_odd_change:"footer_label_accept_odd_change",label_total_potential_gain:"footer_label_total_potential_gain"},header:{label_title:"header_label_title",label_tab_single:"header_label_tab_single",label_tab_system:"header_label_tab_system",label_tab_combined:"header_label_tab_combined",button_erase_betslip:"header_button_title_erase_betslip"},tabbar:{bet:"tabbar_bet_label",now:"tabbar_now_label",grid:"tabbar_grid_label",live:"tabbar_live_label",sport:"tabbar_sport_label",promotion:"tabbar_promotion_label",today_short:"tabbar_today_short_label"},bet_placed:{question:"bet_placed_question",button_erase:"bet_placed_button_erase",odds_changes:"bet_placed_odds_changes",success_message:"bet_placed_success_message",history_open_link:"bet_placed_history_open_link",history_review_label:"bet_placed_history_review_label",button_keep_selection:"bet_placed_button_keep_selection"}}}},UFWSClient:{skippedComponents:[],counters:{PAMIframe:b,PAMIframeFooter:b},CSRFTokens:{},urlKey:bm,pageKey:dM,components:{live_events:{componentKey:t,storeKey:"live_events",isLoaded:i,data:{},ttl:{},forceRefresh:c,forceRefreshKey:c,params:{}},page:{componentKey:dM,storeKey:dN,isLoaded:g,data:{title:"Apuestas Deportivas | Fútbol | Inglaterra | Premier League | Aston Villa \u002F Wolverhampton | GoldenPark",links:[],metaTags:[{charset:"utf-8"},{name:"viewport",content:"width=device-width, initial-scale=1, maximum-scale=5.0"},{name:"Description",content:"Apuesta online sobre Aston Villa \u002F Wolverhampton y consigue grandes premios. Apuesta ahora y vive la emoción del Fútbol | Premier League ¡ Las mejores apuestas y cuotas para Aston Villa \u002F Wolverhampton aquí en GoldenPark !"}],context:{id:8330583,type:"event"}},ttl:u,forceRefresh:c,forceRefreshKey:c,params:{}},head:{componentKey:bn,storeKey:bn,isLoaded:g,data:[],ttl:u,forceRefresh:c,forceRefreshKey:c,params:{}},analytics_head:{componentKey:bo,storeKey:bo,isLoaded:g,data:["(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https:\u002F\u002Fwww.googletagmanager.com\u002Fgtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-TSNWT4LT');"],ttl:u,forceRefresh:c,forceRefreshKey:c,params:{}},account:{componentKey:bp,storeKey:bp,isLoaded:g,data:{player:p,session_start:p,auth_token:p,refresh_token:p,id_token:p,geo_token:a},ttl:dO,forceRefresh:c,forceRefreshKey:c,params:{}},live_event_stream:{componentKey:bq,storeKey:bq,isLoaded:g,data:{live_event_stream_url:"https:\u002F\u002Fevents.goldenpark.es\u002Flive?mode=v2&partner=870&id=11294731|11361831|11377858|11401181|11444079|11452122|11452225|11457707|11459600|13544281|13665256|13711242|13714590|13723432|13731612|13732067|13734042|13734557|13735346|13738045|13738693|13744141|13746222|13747011|13747328|13747352|13747775|13747776|13747788|13747797|13748103|13748133|13748303|13748305|13748404|13748872|13748901|13749207|13749270|13749282|13749315|13749334|13749472|13750438|13753202|13753466|13753787|13753789|13753977|13753987|13753988|13754126|13754284|13754676|13754678|13754682|13754707|13754728|13754731|13754868|13754891|13754932|13755257|13755259|13755263|13755266|13755268|13755322|13755426|13755463|13756201|13756202|13756208|13756292|13756306|13756313|13756411|13756461|13757601|13758098|13758136|13759604|13760104|13760107|13760109|13760612|13760629|13760631|13760644|13760692|13760693&main={{main}}&lang=es&odds_format=dec"},ttl:ag,forceRefresh:c,forceRefreshKey:c,params:{}},global_data:{componentKey:br,storeKey:br,isLoaded:g,data:{livesCount:ah,poolsCount:c,playerPoolsCount:c,geolocationConfig:t,thirdPartyScripts:{},playerAccountManager:"tecnalis",dateConfiguration:{time:"HH:mm",text_date:"EEEE d MMMM",time_long:"HH:mm:ss",numeric_date:"yyyy-MM-dd",text_date_short:"EEE dd MMM",numeric_date_short:"yy-MM-dd"},openBetsCount:"n\u002Fa",videoStreamingConfig:{name:a,icon:"\u002Fimg\u002Fmarket\u002Fstreaming_rules_configuration\u002F",icon_url:"https:\u002F\u002Fapuestas.goldenpark.es\u002Fimg\u002Fmarket\u002Fstreaming_rules_configuration\u002F",rule_min_amount:p},videoStreamingMinimumBalance:c,currency:"EUR"},ttl:u,forceRefresh:c,forceRefreshKey:c,params:{}},header:{componentKey:bs,storeKey:bs,isLoaded:g,data:{iframe:{url:"https:\u002F\u002Fwww.goldenpark.es\u002Fsportncoheader2.html",height:"140px"},logo:{url:bt,title:"Accueil",img_mobile:"\u002Fimg\u002F8_goldenpark\u002Flogo_mobile.png"},isSportncoPam:p,anj_banners:{mobile:"\u002Fimg\u002Fanj\u002FImage-20201224-145153.png",desktop:"\u002Fimg\u002Fanj\u002FImage-20201224-145138.png"}},ttl:ag,forceRefresh:c,forceRefreshKey:c,params:{}},menu_header:{componentKey:bu,storeKey:bu,isLoaded:g,data:[],ttl:ag,forceRefresh:c,forceRefreshKey:c,params:{}},message:{componentKey:bv,storeKey:bv,isLoaded:g,data:[],ttl:u,forceRefresh:c,forceRefreshKey:c,params:{}},tab_bar:{componentKey:bw,storeKey:bw,isLoaded:g,data:{items:[{id:ai,component:ai},{id:dP,component:dP},{id:bx,component:bx},{id:dQ,data:{url:"link_mybets",post_message:{target:"https:\u002F\u002Fwww.goldenpark.es",message:"{\"event\" : \"request_login_open\"}",iframe_id:"pam_account"},not_logged_action:"post_message"},component:dQ},{id:"casino_link",data:{url:dx,target:dR},icon:"icon-casino",class:"menu-mobile-casino",label:"Casino",component:"link"}]},ttl:u,forceRefresh:c,forceRefreshKey:c,params:{}},events_customization:{componentKey:by,storeKey:by,isLoaded:g,data:{ruleHideByCompetitionIds:[dS,dT,dU,dV],ruleHideByCompetitionIdsAuth:t,ruleHideByCategoryIds:[bz,dW,dS,dT,dU,dV],ruleHideByCategoryIdsAuth:t,isLogged:i},ttl:u,forceRefresh:c,forceRefreshKey:c,params:{}},left_column:{componentKey:bA,storeKey:bA,isLoaded:g,data:[],ttl:u,forceRefresh:c,forceRefreshKey:c,params:{}},menu_top_league:{componentKey:bB,storeKey:bB,isLoaded:g,data:{menu:[{id:dX,label:T,icon:"icon-trophy",nb_bets:c,nb_events:c,url:dY,url_type:H,identifier:P},{id:bC,label:"LA LIGA ESPAÑOLA",icon:aa,nb_bets:c,nb_events:c,url:dZ,url_type:H,identifier:P},{id:N,label:"Segunda División Española",icon:aa,nb_bets:c,nb_events:c,url:d_,url_type:H,identifier:P},{id:aj,label:bD,icon:aa,nb_bets:c,nb_events:c,url:bE,url_type:H,identifier:P},{id:bF,label:"Brasileirao",icon:aa,nb_bets:c,nb_events:c,url:d$,url_type:H,identifier:P},{id:ea,label:eb,icon:dD,nb_bets:c,nb_events:c,url:ec,url_type:H,identifier:"category"},{id:ed,label:bG,icon:"icon-sport-padel",nb_bets:c,nb_events:c,url:ee,url_type:H,identifier:P},{id:D,label:bH,icon:"icon-sport-pingpong",nb_bets:c,nb_events:c,url:bI,url_type:H,identifier:"sport"},{id:ef,label:eg,icon:"icon-sport-baseball",nb_bets:c,nb_events:c,url:eh,url_type:H,identifier:P}],title:F,isMainMenu:i},ttl:ag,forceRefresh:c,forceRefreshKey:c,params:{}},menu_favorites:{componentKey:bJ,storeKey:bJ,isLoaded:g,data:{favorites:[],title:"Favoris"},ttl:dO,forceRefresh:c,forceRefreshKey:c,params:{}},menu_sport:{componentKey:ai,storeKey:ai,isLoaded:g,data:{menu:[{id:-1,url:E,label:v,icon:"badge-live",bets:p,events:ah,menu:[{id:q,url:bK,label:bL,icon:ei,bets:c,events:n,menu:[]},{id:y,url:ej,label:ek,icon:el,bets:c,events:bj,menu:[]},{id:h,url:em,label:en,icon:eo,bets:c,events:k,menu:[]},{id:D,url:bI,label:bH,icon:ep,bets:c,events:j,menu:[]},{id:e,url:eq,label:er,icon:es,bets:c,events:b,menu:[]},{id:n,url:et,label:eu,icon:ev,bets:c,events:b,menu:[]},{id:G,url:ew,label:ex,icon:ey,bets:c,events:h,menu:[]},{id:m,url:ez,label:eA,icon:eB,bets:c,events:d,menu:[]},{id:x,url:eC,label:eD,icon:eE,bets:c,events:h,menu:[]},{id:B,url:eF,label:eG,icon:eH,bets:c,events:f,menu:[]}]},{id:q,url:bK,label:bL,icon:ei,bets:31971,events:466,menu:[{id:s,url:"\u002Fes\u002Fcategoria\u002F15-espana",label:"España",icon:a,bets:2415,events:dJ,menu:[{id:bC,url:dZ,label:"Liga Española",icon:a,bets:1416,events:w,menu:[]},{id:N,url:d_,label:"Liga Española 2",icon:a,bets:972,events:n,menu:[]},{id:308,url:"\u002Fes\u002Fcompeticion\u002F308-copa-del-rey",label:"Copa del Rey",icon:a,bets:b,events:b,menu:[]},{id:50413,url:"\u002Fes\u002Fcompeticion\u002F50413-copa-catalunya-f",label:"Copa Catalunya (F)",icon:a,bets:D,events:d,menu:[]}]},{id:111,url:"\u002Fes\u002Fcategoria\u002F111-champions-league",label:T,icon:a,bets:eI,events:G,menu:[{id:dX,url:dY,label:T,icon:a,bets:eI,events:G,menu:[]}]},{id:dI,url:"\u002Fes\u002Fcategoria\u002F28-europa-league",label:eJ,icon:a,bets:eK,events:w,menu:[{id:6675,url:"\u002Fes\u002Fcompeticion\u002F6675-europa-league",label:eJ,icon:a,bets:eK,events:w,menu:[]}]},{id:1569,url:"\u002Fes\u002Fcategoria\u002F1569-conference-league",label:"Conference League",icon:a,bets:eL,events:w,menu:[{id:42958,url:"\u002Fes\u002Fcompeticion\u002F42958-europa-conference-league",label:"Europa Conference League",icon:a,bets:eL,events:w,menu:[]}]},{id:af,url:"\u002Fes\u002Fcategoria\u002F39-alemania",label:bM,icon:a,bets:eM,events:x,menu:[{id:268,url:"\u002Fes\u002Fcompeticion\u002F268-bundesliga",label:bN,icon:a,bets:1148,events:o,menu:[]},{id:267,url:"\u002Fes\u002Fcompeticion\u002F267-bundesliga-2",label:"Bundesliga 2",icon:a,bets:426,events:l,menu:[]},{id:201,url:"\u002Fes\u002Fcompeticion\u002F201-dfb-pokal",label:"DFB Pokal",icon:a,bets:b,events:b,menu:[]}]},{id:M,url:"\u002Fes\u002Fcategoria\u002F44-francia",label:aF,icon:a,bets:2134,events:D,menu:[{id:96,url:"\u002Fes\u002Fcompeticion\u002F96-ligue-1-mcdonald-stm",label:"Ligue 1 McDonald's™",icon:a,bets:1134,events:s,menu:[]},{id:eN,url:"\u002Fes\u002Fcompeticion\u002F97-ligue-2",label:"Ligue 2",icon:a,bets:999,events:m,menu:[]},{id:555,url:"\u002Fes\u002Fcompeticion\u002F555-copa-de-francia",label:"Copa de Francia",icon:a,bets:b,events:b,menu:[]}]},{id:bh,url:eO,label:aG,icon:a,bets:4488,events:U,menu:[{id:aj,url:bE,label:bD,icon:a,bets:1275,events:A,menu:[]},{id:202,url:"\u002Fes\u002Fcompeticion\u002F202-the-championship",label:eP,icon:a,bets:1482,events:q,menu:[]},{id:1288,url:"\u002Fes\u002Fcompeticion\u002F1288-league-one",label:"League One",icon:a,bets:761,events:o,menu:[]},{id:eQ,url:"\u002Fes\u002Fcompeticion\u002F235-efl-cup",label:"EFL Cup",icon:a,bets:253,events:e,menu:[]},{id:442,url:"\u002Fes\u002Fcompeticion\u002F442-fa-cup",label:"FA Cup",icon:a,bets:b,events:b,menu:[]},{id:eR,url:"\u002Fes\u002Fcompeticion\u002F2244-league-two",label:"League Two",icon:a,bets:eS,events:r,menu:[]}]},{id:N,url:"\u002Fes\u002Fcategoria\u002F18-italia",label:"Italia",icon:a,bets:1892,events:D,menu:[{id:eT,url:"\u002Fes\u002Fcompeticion\u002F305-serie-a",label:"Serie A",icon:a,bets:1217,events:q,menu:[]},{id:604,url:"\u002Fes\u002Fcompeticion\u002F604-serie-b",label:"Serie B",icon:a,bets:673,events:r,menu:[]},{id:263,url:"\u002Fes\u002Fcompeticion\u002F263-copa-de-italia",label:"Copa de Italia",icon:a,bets:b,events:b,menu:[]},{id:bO,url:"\u002Fes\u002Fcompeticion\u002F270-supercopa-de-italia",label:"Supercopa de Italia",icon:a,bets:b,events:b,menu:[]}]},{id:dF,url:"\u002Fes\u002Fcategoria\u002F45-paises-bajos",label:"Países Bajos",icon:a,bets:576,events:j,menu:[{id:bP,url:"\u002Fes\u002Fcompeticion\u002F102-eredivisie",label:"Eredivisie",icon:a,bets:246,events:e,menu:[]},{id:2083,url:"\u002Fes\u002Fcompeticion\u002F2083-eerste-divisie",label:"Eerste Divisie",icon:a,bets:330,events:k,menu:[]}]},{id:bQ,url:"\u002Fes\u002Fcategoria\u002F46-portugal",label:eU,icon:a,bets:1084,events:r,menu:[{id:154,url:"\u002Fes\u002Fcompeticion\u002F154-primeira-liga",label:"Primeira Liga",icon:a,bets:1073,events:m,menu:[]},{id:36446,url:"\u002Fes\u002Fcompeticion\u002F36446-campeonato-sub-23",label:"Campeonato Sub-23",icon:a,bets:r,events:b,menu:[]}]},{id:960,url:"\u002Fes\u002Fcategoria\u002F960-liga-de-las-naciones",label:eV,icon:a,bets:b,events:b,menu:[{id:36789,url:"\u002Fes\u002Fcompeticion\u002F36789-liga-de-las-naciones",label:eV,icon:a,bets:b,events:b,menu:[]}]},{id:141,url:"\u002Fes\u002Fcategoria\u002F141-america-del-sur",label:"América del Sur",icon:a,bets:725,events:j,menu:[{id:36146,url:"\u002Fes\u002Fcompeticion\u002F36146-copa-libertadores",label:"Copa Libertadores",icon:a,bets:375,events:h,menu:[]},{id:36148,url:"\u002Fes\u002Fcompeticion\u002F36148-copa-sudamericana",label:"Copa Sudamericana",icon:a,bets:350,events:h,menu:[]}]},{id:eW,url:"\u002Fes\u002Fcategoria\u002F476-andorra",label:"Andorra",icon:a,bets:e,events:b,menu:[{id:39430,url:"\u002Fes\u002Fcompeticion\u002F39430-super-cup",label:"Super Cup",icon:a,bets:e,events:b,menu:[]}]},{id:443,url:"\u002Fes\u002Fcategoria\u002F443-arabia-saudita",label:"Arabia Saudita",icon:a,bets:eX,events:l,menu:[{id:35248,url:"\u002Fes\u002Fcompeticion\u002F35248-division-1",label:eY,icon:a,bets:eZ,events:e,menu:[]},{id:3758,url:"\u002Fes\u002Fcompeticion\u002F3758-saudi-pro-league",label:"Saudi Pro League",icon:a,bets:311,events:h,menu:[]}]},{id:84,url:"\u002Fes\u002Fcategoria\u002F84-argentina",label:aH,icon:a,bets:1421,events:z,menu:[{id:1493,url:"\u002Fes\u002Fcompeticion\u002F1493-copa-argentina",label:e_,icon:a,bets:e$,events:e,menu:[]},{id:43414,url:"\u002Fes\u002Fcompeticion\u002F43414-argentina-reservas",label:"Argentina - Reservas",icon:a,bets:fa,events:o,menu:[]},{id:2530,url:"\u002Fes\u002Fcompeticion\u002F2530-liga-profesional-argentina",label:"Liga Profesional Argentina",icon:a,bets:1077,events:q,menu:[]},{id:43898,url:"\u002Fes\u002Fcompeticion\u002F43898-primera-b-metropolitana",label:"Primera B Metropolitana",icon:a,bets:q,events:b,menu:[]}]},{id:409,url:"\u002Fes\u002Fcategoria\u002F409-armenia",label:"Armenia",icon:a,bets:y,events:b,menu:[{id:3298,url:"\u002Fes\u002Fcompeticion\u002F3298-premier-league-arm",label:"Premier League (ARM)",icon:a,bets:y,events:b,menu:[]}]},{id:eZ,url:"\u002Fes\u002Fcategoria\u002F42-austria",label:fb,icon:a,bets:fc,events:f,menu:[{id:fd,url:"\u002Fes\u002Fcompeticion\u002F131-bundesliga",label:bN,icon:a,bets:fc,events:f,menu:[]}]},{id:bj,url:"\u002Fes\u002Fcategoria\u002F51-belgica",label:"Bélgica",icon:a,bets:905,events:m,menu:[{id:45101,url:"\u002Fes\u002Fcompeticion\u002F45101-first-amateur-division",label:"First Amateur Division",icon:a,bets:q,events:b,menu:[]},{id:fe,url:"\u002Fes\u002Fcompeticion\u002F101-jupiler-league",label:"Jupiler League",icon:a,bets:892,events:n,menu:[]}]},{id:404,url:"\u002Fes\u002Fcategoria\u002F404-bolivia",label:"Bolivia",icon:a,bets:O,events:b,menu:[{id:40050,url:"\u002Fes\u002Fcompeticion\u002F40050-division-profesional",label:"Division Profesional",icon:a,bets:O,events:b,menu:[]}]},{id:aD,url:"\u002Fes\u002Fcategoria\u002F37-brasil",label:aI,icon:a,bets:674,events:m,menu:[{id:bF,url:d$,label:"Brasileirão",icon:a,bets:290,events:h,menu:[]},{id:2121,url:"\u002Fes\u002Fcompeticion\u002F2121-brasileirao-serie-b",label:"Brasileirão Série B",icon:a,bets:384,events:f,menu:[]}]},{id:160,url:"\u002Fes\u002Fcategoria\u002F160-bulgaria",label:"Bulgaria",icon:a,bets:ff,events:d,menu:[{id:885,url:"\u002Fes\u002Fcompeticion\u002F885-parva-liga",label:"Parva Liga",icon:a,bets:ff,events:d,menu:[]}]},{id:374,url:"\u002Fes\u002Fcategoria\u002F374-canada",label:fg,icon:a,bets:ac,events:b,menu:[{id:37943,url:"\u002Fes\u002Fcompeticion\u002F37943-canadian-premier-league",label:"Canadian Premier League",icon:a,bets:ac,events:b,menu:[]}]},{id:286,url:"\u002Fes\u002Fcategoria\u002F286-champions-league-f",label:fh,icon:a,bets:fi,events:f,menu:[{id:769,url:"\u002Fes\u002Fcompeticion\u002F769-champions-league-f",label:fh,icon:a,bets:fi,events:f,menu:[]}]},{id:178,url:"\u002Fes\u002Fcategoria\u002F178-chipre",label:"Chipre",icon:a,bets:fj,events:d,menu:[{id:985,url:"\u002Fes\u002Fcompeticion\u002F985-cyta-championship",label:"Cyta Championship",icon:a,bets:fj,events:d,menu:[]}]},{id:405,url:"\u002Fes\u002Fcategoria\u002F405-costa-rica",label:"Costa Rica",icon:a,bets:dE,events:k,menu:[{id:61033,url:"\u002Fes\u002Fcompeticion\u002F61033-liga-de-ascenso-apertura",label:"Liga De Ascenso Apertura",icon:a,bets:bk,events:h,menu:[]},{id:36184,url:"\u002Fes\u002Fcompeticion\u002F36184-primera-division",label:ak,icon:a,bets:al,events:b,menu:[]}]},{id:am,url:"\u002Fes\u002Fcategoria\u002F52-croacia",label:"Croacia",icon:a,bets:272,events:f,menu:[{id:fa,url:"\u002Fes\u002Fcompeticion\u002F156-1-nl",label:"1.NL",icon:a,bets:179,events:h,menu:[]},{id:4151,url:"\u002Fes\u002Fcompeticion\u002F4151-copa-croacia",label:"Copa Croacia",icon:a,bets:Q,events:b,menu:[]},{id:52162,url:"\u002Fes\u002Fcompeticion\u002F52162-supersport-hnl",label:"SuperSport HNL",icon:a,bets:61,events:b,menu:[]}]},{id:r,url:"\u002Fes\u002Fcategoria\u002F11-dinamarca",label:bR,icon:a,bets:bS,events:k,menu:[{id:fk,url:"\u002Fes\u002Fcompeticion\u002F130-superligaen",label:"Superligaen",icon:a,bets:bS,events:k,menu:[]}]},{id:309,url:"\u002Fes\u002Fcategoria\u002F309-ecuador",label:"Ecuador",icon:a,bets:o,events:b,menu:[{id:36686,url:"\u002Fes\u002Fcompeticion\u002F36686-primera-b",label:"Primera B",icon:a,bets:o,events:b,menu:[]}]},{id:fl,url:"\u002Fes\u002Fcategoria\u002F132-eslovenia",label:"Eslovenia",icon:a,bets:fm,events:h,menu:[{id:37550,url:"\u002Fes\u002Fcompeticion\u002F37550-copa-de-eslovenia",label:"Copa de Eslovenia",icon:a,bets:n,events:e,menu:[]},{id:682,url:"\u002Fes\u002Fcompeticion\u002F682-liga-primera",label:"Liga Primera",icon:a,bets:fn,events:b,menu:[]}]},{id:e,url:"\u002Fes\u002Fcategoria\u002F3-estados-unidos",label:an,icon:a,bets:1644,events:s,menu:[{id:k,url:"\u002Fes\u002Fcompeticion\u002F5-major-league-soccer",label:"Major League Soccer",icon:a,bets:1631,events:B,menu:[]},{id:37791,url:"\u002Fes\u002Fcompeticion\u002F37791-usl-league-one",label:"USL League One",icon:a,bets:q,events:b,menu:[]}]},{id:146,url:"\u002Fes\u002Fcategoria\u002F146-estonia",label:"Estonia",icon:a,bets:fo,events:d,menu:[{id:42922,url:"\u002Fes\u002Fcompeticion\u002F42922-meistriliiga",label:"Meistriliiga",icon:a,bets:fo,events:d,menu:[]}]},{id:G,url:"\u002Fes\u002Fcategoria\u002F17-finlandia",label:bT,icon:a,bets:aJ,events:e,menu:[{id:z,url:"\u002Fes\u002Fcompeticion\u002F29-veikkausliiga",label:"Veikkausliiga",icon:a,bets:aJ,events:e,menu:[]}]},{id:395,url:"\u002Fes\u002Fcategoria\u002F395-georgia",label:"Georgia",icon:a,bets:J,events:b,menu:[{id:36684,url:"\u002Fes\u002Fcompeticion\u002F36684-erovnuli-liga",label:"Erovnuli Liga",icon:a,bets:J,events:b,menu:[]}]},{id:fp,url:"\u002Fes\u002Fcategoria\u002F400-guatemala",label:"Guatemala",icon:a,bets:R,events:k,menu:[{id:43927,url:"\u002Fes\u002Fcompeticion\u002F43927-primera-division",label:ak,icon:a,bets:q,events:b,menu:[]},{id:44577,url:"\u002Fes\u002Fcompeticion\u002F44577-segunda-division",label:fq,icon:a,bets:o,events:h,menu:[]}]},{id:401,url:"\u002Fes\u002Fcategoria\u002F401-honduras",label:"Honduras",icon:a,bets:D,events:d,menu:[{id:36308,url:"\u002Fes\u002Fcompeticion\u002F36308-liga-nacional",label:"Liga Nacional",icon:a,bets:D,events:d,menu:[]}]},{id:bS,url:"\u002Fes\u002Fcategoria\u002F340-internacional-categorias-inferiores",label:"Internacional Categorías Inferiores",icon:a,bets:bU,events:N,menu:[{id:52353,url:"\u002Fes\u002Fcompeticion\u002F52353-premier-league-international-cup",label:"Premier League International Cup",icon:a,bets:J,events:b,menu:[]},{id:45955,url:"\u002Fes\u002Fcompeticion\u002F45955-u20-copa-del-mundo-f",label:"U20 Copa del Mundo (F)",icon:a,bets:ab,events:b,menu:[]},{id:4613,url:"\u002Fes\u002Fcompeticion\u002F4613-uefa-youth-league",label:"UEFA Youth League",icon:a,bets:bz,events:A,menu:[]}]},{id:342,url:"\u002Fes\u002Fcategoria\u002F342-internacional-clubes",label:bV,icon:a,bets:J,events:b,menu:[{id:2089,url:"\u002Fes\u002Fcompeticion\u002F2089-amistosos-de-clubes",label:bW,icon:a,bets:J,events:b,menu:[]}]},{id:142,url:"\u002Fes\u002Fcategoria\u002F142-islandia",label:fr,icon:a,bets:q,events:b,menu:[{id:37614,url:"\u002Fes\u002Fcompeticion\u002F37614-1a-division",label:"1ª División",icon:a,bets:q,events:b,menu:[]}]},{id:bX,url:"\u002Fes\u002Fcategoria\u002F170-israel",label:"Israel",icon:a,bets:U,events:b,menu:[{id:fs,url:"\u002Fes\u002Fcompeticion\u002F918-ligat-ha-al",label:"Ligat ha'Al",icon:a,bets:U,events:b,menu:[]}]},{id:282,url:"\u002Fes\u002Fcategoria\u002F282-kazajstan",label:ft,icon:a,bets:z,events:b,menu:[{id:2495,url:"\u002Fes\u002Fcompeticion\u002F2495-liga-premier",label:fu,icon:a,bets:z,events:b,menu:[]}]},{id:147,url:"\u002Fes\u002Fcategoria\u002F147-letonia",label:bY,icon:a,bets:am,events:b,menu:[{id:793,url:"\u002Fes\u002Fcompeticion\u002F793-virsliga",label:fv,icon:a,bets:am,events:b,menu:[]}]},{id:150,url:"\u002Fes\u002Fcategoria\u002F150-lituania",label:"Lituania",icon:a,bets:f,events:d,menu:[{id:37612,url:"\u002Fes\u002Fcompeticion\u002F37612-copa-de-lituania",label:"Copa de Lituania",icon:a,bets:f,events:d,menu:[]}]},{id:408,url:"\u002Fes\u002Fcategoria\u002F408-luxemburgo",label:"Luxemburgo",icon:a,bets:e,events:b,menu:[{id:44308,url:"\u002Fes\u002Fcompeticion\u002F44308-division-de-honor",label:"División de honor",icon:a,bets:e,events:b,menu:[]}]},{id:310,url:"\u002Fes\u002Fcategoria\u002F310-mexico",label:fw,icon:a,bets:fx,events:h,menu:[{id:2807,url:"\u002Fes\u002Fcompeticion\u002F2807-primera-division",label:ak,icon:a,bets:185,events:e,menu:[]},{id:45265,url:"\u002Fes\u002Fcompeticion\u002F45265-segunda-division",label:fq,icon:a,bets:q,events:b,menu:[]}]},{id:230,url:"\u002Fes\u002Fcategoria\u002F230-montenegro",label:"Montenegro",icon:a,bets:U,events:d,menu:[{id:1386,url:"\u002Fes\u002Fcompeticion\u002F1386-1-cfl",label:"1. CFL",icon:a,bets:U,events:d,menu:[]}]},{id:1197,url:"\u002Fes\u002Fcategoria\u002F1197-nicaragua",label:"Nicaragua",icon:a,bets:q,events:b,menu:[{id:52303,url:"\u002Fes\u002Fcompeticion\u002F52303-primera-division",label:ak,icon:a,bets:q,events:b,menu:[]}]},{id:B,url:"\u002Fes\u002Fcategoria\u002F14-noruega",label:bZ,icon:a,bets:b_,events:d,menu:[{id:aA,url:"\u002Fes\u002Fcompeticion\u002F63-eliteserien",label:b$,icon:a,bets:b_,events:d,menu:[]}]},{id:bU,url:"\u002Fes\u002Fcategoria\u002F413-oman",label:"Oman",icon:a,bets:D,events:d,menu:[{id:46919,url:"\u002Fes\u002Fcompeticion\u002F46919-division-1",label:eY,icon:a,bets:D,events:d,menu:[]}]},{id:eT,url:"\u002Fes\u002Fcategoria\u002F305-paraguay",label:"Paraguay",icon:a,bets:z,events:b,menu:[{id:30608,url:"\u002Fes\u002Fcompeticion\u002F30608-copa-de-paraguay",label:"Copa de Paraguay",icon:a,bets:z,events:b,menu:[]}]},{id:bC,url:"\u002Fes\u002Fcategoria\u002F306-peru",label:"Perú",icon:a,bets:bX,events:e,menu:[{id:36178,url:"\u002Fes\u002Fcompeticion\u002F36178-primera-division",label:ak,icon:a,bets:bX,events:e,menu:[]}]},{id:ca,url:"\u002Fes\u002Fcategoria\u002F158-polonia",label:aK,icon:a,bets:704,events:r,menu:[{id:875,url:"\u002Fes\u002Fcompeticion\u002F875-ekstraklasa",label:"Ekstraklasa",icon:a,bets:613,events:n,menu:[]},{id:3205,url:"\u002Fes\u002Fcompeticion\u002F3205-liga-ii",label:"Liga II",icon:a,bets:ah,events:d,menu:[]}]},{id:al,url:"\u002Fes\u002Fcategoria\u002F34-republica-checa",label:aL,icon:a,bets:553,events:n,menu:[{id:3155,url:"\u002Fes\u002Fcompeticion\u002F3155-fnl",label:"FNL",icon:a,bets:y,events:b,menu:[]},{id:fl,url:"\u002Fes\u002Fcompeticion\u002F132-fortuna-liga",label:"Fortuna Liga",icon:a,bets:fy,events:j,menu:[]}]},{id:fz,url:"\u002Fes\u002Fcategoria\u002F134-rumania",label:fA,icon:a,bets:aE,events:b,menu:[{id:11253,url:"\u002Fes\u002Fcompeticion\u002F11253-liga-2",label:"Liga 2",icon:a,bets:aE,events:b,menu:[]}]},{id:x,url:"\u002Fes\u002Fcategoria\u002F20-rusia",label:cb,icon:a,bets:ad,events:h,menu:[{id:2276,url:"\u002Fes\u002Fcompeticion\u002F2276-copa-de-rusia",label:"Copa de Rusia",icon:a,bets:ad,events:h,menu:[]}]},{id:ac,url:"\u002Fes\u002Fcategoria\u002F33-serbia",label:fB,icon:a,bets:O,events:b,menu:[{id:840,url:"\u002Fes\u002Fcompeticion\u002F840-superliga",label:cc,icon:a,bets:O,events:b,menu:[]}]},{id:373,url:"\u002Fes\u002Fcategoria\u002F373-sudafrica",label:"Sudáfrica",icon:a,bets:bP,events:e,menu:[{id:36201,url:"\u002Fes\u002Fcompeticion\u002F36201-dstv-premiership",label:"DSTV Premiership",icon:a,bets:bP,events:e,menu:[]}]},{id:n,url:"\u002Fes\u002Fcategoria\u002F9-suecia",label:fC,icon:a,bets:782,events:r,menu:[{id:K,url:"\u002Fes\u002Fcompeticion\u002F99-allsvenskan",label:fD,icon:a,bets:cd,events:e,menu:[]},{id:36479,url:"\u002Fes\u002Fcompeticion\u002F36479-superettan",label:"Superettan",icon:a,bets:483,events:j,menu:[]}]},{id:ce,url:"\u002Fes\u002Fcategoria\u002F48-suiza",label:fE,icon:a,bets:529,events:m,menu:[{id:44469,url:"\u002Fes\u002Fcompeticion\u002F44469-1-liga-classic",label:"1. Liga Classic",icon:a,bets:e,events:b,menu:[]},{id:fz,url:"\u002Fes\u002Fcompeticion\u002F134-super-league",label:fF,icon:a,bets:eW,events:l,menu:[]},{id:3204,url:"\u002Fes\u002Fcompeticion\u002F3204-promotion-league",label:"Promotion League",icon:a,bets:O,events:d,menu:[]}]},{id:aE,url:"\u002Fes\u002Fcategoria\u002F53-turquia",label:"Turquía",icon:a,bets:fG,events:e,menu:[{id:254,url:"\u002Fes\u002Fcompeticion\u002F254-super-lig",label:"Süper Lig",icon:a,bets:fG,events:e,menu:[]}]},{id:m,url:"\u002Fes\u002Fcategoria\u002F10-ucrania",label:fH,icon:a,bets:V,events:b,menu:[{id:88,url:"\u002Fes\u002Fcompeticion\u002F88-liga-premier",label:fu,icon:a,bets:V,events:b,menu:[]}]},{id:316,url:"\u002Fes\u002Fcategoria\u002F316-uruguay",label:fI,icon:a,bets:V,events:h,menu:[{id:51541,url:"\u002Fes\u002Fcompeticion\u002F51541-copa-uruguay",label:"Copa Uruguay",icon:a,bets:V,events:h,menu:[]}]}]},{id:y,url:ej,label:ek,icon:el,bets:1151,events:144,menu:[{id:ea,url:ec,label:eb,icon:a,bets:258,events:q,menu:[{id:43725,url:"\u002Fes\u002Fcompeticion\u002F43725-open-de-australia",label:"Open de Australia",icon:a,bets:b,events:b,menu:[]},{id:50467,url:"\u002Fes\u002Fcompeticion\u002F50467-open-de-francia",label:"Open de Francia",icon:a,bets:b,events:b,menu:[]},{id:49159,url:"\u002Fes\u002Fcompeticion\u002F49159-wimbledon",label:"Wimbledon",icon:a,bets:b,events:b,menu:[]},{id:57714,url:"\u002Fes\u002Fcompeticion\u002F57714-chengdu-china",label:"Chengdu, China",icon:a,bets:e$,events:k,menu:[]},{id:61295,url:"\u002Fes\u002Fcompeticion\u002F61295-hangzhou-china",label:"Hangzhou, China",icon:a,bets:bl,events:k,menu:[]}]},{id:234,url:"\u002Fes\u002Fcategoria\u002F234-wta",label:"WTA",icon:a,bets:fJ,events:q,menu:[{id:47808,url:"\u002Fes\u002Fcompeticion\u002F47808-open-de-australia-f",label:"Open de Australia (F)",icon:a,bets:b,events:b,menu:[]},{id:36602,url:"\u002Fes\u002Fcompeticion\u002F36602-open-de-francia-f",label:"Open de Francia (F)",icon:a,bets:b,events:b,menu:[]},{id:50477,url:"\u002Fes\u002Fcompeticion\u002F50477-wimbledon-f",label:"Wimbledon (F)",icon:a,bets:b,events:b,menu:[]},{id:47626,url:"\u002Fes\u002Fcompeticion\u002F47626-seul-corea-del-sur-f",label:"Seúl, Corea del Sur (F)",icon:a,bets:K,events:e,menu:[]},{id:54787,url:"\u002Fes\u002Fcompeticion\u002F54787-hua-hin-tailandia-f",label:"Hua Hin, Tailandia (F)",icon:a,bets:fK,events:f,menu:[]},{id:57585,url:"\u002Fes\u002Fcompeticion\u002F57585-us-open-f",label:"US Open (F)",icon:a,bets:b,events:b,menu:[]}]},{id:1496,url:"\u002Fes\u002Fcategoria\u002F1496-atp-dobles",label:"ATP - Dobles",icon:a,bets:J,events:o,menu:[{id:57734,url:"\u002Fes\u002Fcompeticion\u002F57734-chengdu-china-dobles",label:"Chengdu, China, Dobles",icon:a,bets:B,events:f,menu:[]},{id:61296,url:"\u002Fes\u002Fcompeticion\u002F61296-hangzhou-china-dobles",label:"Hangzhou, China, Dobles",icon:a,bets:A,events:f,menu:[]}]},{id:1497,url:"\u002Fes\u002Fcategoria\u002F1497-wta-dobles",label:"WTA - Dobles",icon:a,bets:d,events:b,menu:[{id:54770,url:"\u002Fes\u002Fcompeticion\u002F54770-hua-hin-tailandia-dobles-f",label:"Hua Hin, Tailandia, Dobles (F)",icon:a,bets:d,events:b,menu:[]}]},{id:304,url:"\u002Fes\u002Fcategoria\u002F304-atp-challenger",label:"ATP - Challenger",icon:a,bets:177,events:o,menu:[{id:51021,url:"\u002Fes\u002Fcompeticion\u002F51021-cali-colombia",label:"Cali, Colombia",icon:a,bets:V,events:h,menu:[]},{id:36533,url:"\u002Fes\u002Fcompeticion\u002F36533-columbus-eeuu",label:"Columbus, EEUU",icon:a,bets:79,events:k,menu:[]},{id:44769,url:"\u002Fes\u002Fcompeticion\u002F44769-saint-tropez-francia",label:"Saint Tropez, Francia",icon:a,bets:bk,events:e,menu:[]}]},{id:2600,url:"\u002Fes\u002Fcategoria\u002F2600-atp-challenger-dobles",label:"ATP - Challenger - Dobles",icon:a,bets:47,events:x,menu:[{id:51022,url:"\u002Fes\u002Fcompeticion\u002F51022-cali-colombia-dobles",label:"Cali, Colombia, Dobles",icon:a,bets:o,events:h,menu:[]},{id:57703,url:"\u002Fes\u002Fcompeticion\u002F57703-bad-waltersdorf-austria-dobles",label:"Bad Waltersdorf, Austria, Dobles",icon:a,bets:h,events:e,menu:[]},{id:61288,url:"\u002Fes\u002Fcompeticion\u002F61288-columbus-estados-unidos-dobles",label:"Columbus, Estados Unidos, Dobles",icon:a,bets:s,events:f,menu:[]},{id:44786,url:"\u002Fes\u002Fcompeticion\u002F44786-saint-tropez-francia-dobles",label:"Saint Tropez, Francia, Dobles",icon:a,bets:s,events:f,menu:[]},{id:45567,url:"\u002Fes\u002Fcompeticion\u002F45567-sibiu-rumania-dobles",label:"Sibiu, Rumania, Dobles",icon:a,bets:b,events:b,menu:[]}]},{id:dW,url:"\u002Fes\u002Fcategoria\u002F349-itf-masculino",label:"ITF Masculino",icon:a,bets:fx,events:Q,menu:[{id:57605,url:"\u002Fes\u002Fcompeticion\u002F57605-m25-satu-mare",label:"M25 Satu Mare",icon:a,bets:e,events:b,menu:[]},{id:61298,url:"\u002Fes\u002Fcompeticion\u002F61298-m15-asuncion",label:"M15 Asuncion",icon:a,bets:fL,events:j,menu:[]},{id:45412,url:"\u002Fes\u002Fcompeticion\u002F45412-m15-fayetteville",label:"M15 Fayetteville",icon:a,bets:fm,events:s,menu:[]},{id:61292,url:"\u002Fes\u002Fcompeticion\u002F61292-m15-vaxjo",label:"M15 Vaxjo",icon:a,bets:bi,events:j,menu:[]}]},{id:bz,url:"\u002Fes\u002Fcategoria\u002F348-itf-femenino",label:"ITF Femenino",icon:a,bets:133,events:cf,menu:[{id:55678,url:"\u002Fes\u002Fcompeticion\u002F55678-w15-kursumlijska-banja",label:"W15 Kursumlijska Banja",icon:a,bets:j,events:e,menu:[]},{id:45155,url:"\u002Fes\u002Fcompeticion\u002F45155-w60-caldas-de-rainha",label:"W60 Caldas de Rainha",icon:a,bets:G,events:d,menu:[]},{id:61291,url:"\u002Fes\u002Fcompeticion\u002F61291-w15-nogent-sur-marne",label:"W15 Nogent-sur-Marne",icon:a,bets:f,events:d,menu:[]},{id:59538,url:"\u002Fes\u002Fcompeticion\u002F59538-w15-tucuman",label:"W15 Tucuman",icon:a,bets:am,events:o,menu:[]},{id:61307,url:"\u002Fes\u002Fcompeticion\u002F61307-w35-san-rafael",label:"W35 San Rafael",icon:a,bets:O,events:j,menu:[]}]},{id:1591,url:"\u002Fes\u002Fcategoria\u002F1591-internacional",label:C,icon:a,bets:B,events:B,menu:[{id:43689,url:"\u002Fes\u002Fcompeticion\u002F43689-utr-pro-tennis-series",label:"UTR Pro Tennis Series",icon:a,bets:B,events:B,menu:[]}]}]},{id:h,url:em,label:en,icon:eo,bets:1712,events:aj,menu:[{id:dL,url:"\u002Fes\u002Fcategoria\u002F100-copas-de-europa",label:cg,icon:a,bets:313,events:j,menu:[{id:12044,url:"\u002Fes\u002Fcompeticion\u002F12044-euroliga",label:"Euroliga",icon:a,bets:b,events:b,menu:[]},{id:12493,url:"\u002Fes\u002Fcompeticion\u002F12493-champions-league",label:T,icon:a,bets:174,events:e,menu:[]},{id:958,url:"\u002Fes\u002Fcompeticion\u002F958-euroliga-f",label:"Euroliga (F)",icon:a,bets:ae,events:d,menu:[]},{id:6687,url:"\u002Fes\u002Fcompeticion\u002F6687-eurocopa-femenina",label:"Eurocopa Femenina",icon:a,bets:dK,events:d,menu:[]}]},{id:l,url:"\u002Fes\u002Fcategoria\u002F7-estados-unidos",label:an,icon:a,bets:641,events:V,menu:[{id:206,url:"\u002Fes\u002Fcompeticion\u002F206-nba",label:"NBA",icon:a,bets:602,events:w,menu:[]},{id:13753,url:"\u002Fes\u002Fcompeticion\u002F13753-ncaab",label:"NCAAB",icon:a,bets:b,events:b,menu:[]},{id:56862,url:"\u002Fes\u002Fcompeticion\u002F56862-nba-conferencias",label:"NBA - Conferencias",icon:a,bets:d,events:d,menu:[]},{id:56863,url:"\u002Fes\u002Fcompeticion\u002F56863-nba-division",label:"NBA - División",icon:a,bets:f,events:f,menu:[]},{id:58090,url:"\u002Fes\u002Fcompeticion\u002F58090-nba-victorias-temporada-regular",label:"NBA - Victorias temporada regular",icon:a,bets:z,events:z,menu:[]},{id:61188,url:"\u002Fes\u002Fcompeticion\u002F61188-copa-nba",label:"Copa NBA",icon:a,bets:b,events:b,menu:[]}]},{id:462,url:"\u002Fes\u002Fcategoria\u002F462-internacional-clubes",label:bV,icon:a,bets:bO,events:o,menu:[{id:45577,url:"\u002Fes\u002Fcompeticion\u002F45577-bnxt-league",label:"BNXT League",icon:a,bets:aA,events:b,menu:[]},{id:37387,url:"\u002Fes\u002Fcompeticion\u002F37387-amistosos-de-clubes",label:bW,icon:a,bets:fd,events:l,menu:[]},{id:38158,url:"\u002Fes\u002Fcompeticion\u002F38158-amistosos-de-clubes-f",label:fM,icon:a,bets:76,events:h,menu:[]}]},{id:R,url:"\u002Fes\u002Fcategoria\u002F25-francia",label:aF,icon:a,bets:b,events:b,menu:[{id:495,url:"\u002Fes\u002Fcompeticion\u002F495-pro-a",label:"Pro A",icon:a,bets:b,events:b,menu:[]}]},{id:567,url:"\u002Fes\u002Fcategoria\u002F567-brasil",label:aI,icon:a,bets:ca,events:d,menu:[{id:44017,url:"\u002Fes\u002Fcompeticion\u002F44017-liga-paulista",label:"Liga Paulista",icon:a,bets:ca,events:d,menu:[]}]},{id:fy,url:"\u002Fes\u002Fcategoria\u002F532-japon",label:fN,icon:a,bets:b,events:b,menu:[{id:36097,url:"\u002Fes\u002Fcompeticion\u002F36097-b-league",label:"B.League",icon:a,bets:b,events:b,menu:[]}]},{id:599,url:"\u002Fes\u002Fcategoria\u002F599-mexico",label:fw,icon:a,bets:ch,events:j,menu:[{id:44870,url:"\u002Fes\u002Fcompeticion\u002F44870-lnbp",label:"LNBP",icon:a,bets:ch,events:j,menu:[]}]},{id:fO,url:"\u002Fes\u002Fcategoria\u002F1349-puerto-rico",label:"Puerto Rico",icon:a,bets:bQ,events:d,menu:[{id:45888,url:"\u002Fes\u002Fcompeticion\u002F45888-liga-superior-nacional-f",label:"Liga Superior Nacional (F)",icon:a,bets:bQ,events:d,menu:[]}]},{id:826,url:"\u002Fes\u002Fcategoria\u002F826-uruguay",label:fI,icon:a,bets:x,events:d,menu:[{id:38478,url:"\u002Fes\u002Fcompeticion\u002F38478-el-metro",label:"El Metro",icon:a,bets:x,events:d,menu:[]}]}]},{id:D,url:bI,label:bH,icon:ep,bets:fp,events:al,menu:[{id:346,url:"\u002Fes\u002Fcategoria\u002F346-internacional",label:C,icon:a,bets:41,events:f,menu:[{id:61302,url:"\u002Fes\u002Fcompeticion\u002F61302-wtt-feeder-halmstad",label:"WTT Feeder Halmstad",icon:a,bets:G,events:b,menu:[]},{id:61319,url:"\u002Fes\u002Fcompeticion\u002F61319-wtt-feeder-halmstad-dobles-f",label:"WTT Feeder Halmstad, Dobles (F)",icon:a,bets:24,events:k,menu:[]}]},{id:1857,url:"\u002Fes\u002Fcategoria\u002F1857-polonia",label:aK,icon:a,bets:fP,events:n,menu:[{id:48938,url:"\u002Fes\u002Fcompeticion\u002F48938-tt-elite-series",label:"TT Elite Series",icon:a,bets:fP,events:n,menu:[]}]},{id:1594,url:"\u002Fes\u002Fcategoria\u002F1594-republica-checa",label:aL,icon:a,bets:fk,events:r,menu:[{id:42980,url:"\u002Fes\u002Fcompeticion\u002F42980-pro-league",label:"Pro League",icon:a,bets:126,events:m,menu:[]},{id:42917,url:"\u002Fes\u002Fcompeticion\u002F42917-tt-star-series",label:"TT Star Series",icon:a,bets:h,events:b,menu:[]}]},{id:1614,url:"\u002Fes\u002Fcategoria\u002F1614-ucrania",label:fH,icon:a,bets:108,events:j,menu:[{id:37137,url:"\u002Fes\u002Fcompeticion\u002F37137-setka-cup-f",label:"Setka Cup (F)",icon:a,bets:ab,events:e,menu:[]},{id:36967,url:"\u002Fes\u002Fcompeticion\u002F36967-tt-cup",label:"TT Cup",icon:a,bets:fQ,events:k,menu:[]}]}]},{id:e,url:eq,label:er,icon:es,bets:1653,events:af,menu:[{id:aj,url:"\u002Fes\u002Fcategoria\u002F94-estados-unidos",label:an,icon:a,bets:fR,events:aD,menu:[{id:56861,url:"\u002Fes\u002Fcompeticion\u002F56861-mlb-divisions",label:"MLB - Divisions",icon:a,bets:h,events:h,menu:[]},{id:56860,url:"\u002Fes\u002Fcompeticion\u002F56860-mlb-leagues",label:"MLB - Leagues",icon:a,bets:d,events:d,menu:[]},{id:ef,url:eh,label:eg,icon:a,bets:1330,events:A,menu:[]},{id:29293,url:"\u002Fes\u002Fcompeticion\u002F29293-milb",label:"MILB",icon:a,bets:315,events:s,menu:[]}]},{id:eQ,url:"\u002Fes\u002Fcategoria\u002F235-japon",label:fN,icon:a,bets:b,events:b,menu:[{id:37040,url:"\u002Fes\u002Fcompeticion\u002F37040-npb",label:"NPB",icon:a,bets:b,events:b,menu:[]}]},{id:624,url:"\u002Fes\u002Fcategoria\u002F624-corea",label:"Corea",icon:a,bets:b,events:b,menu:[{id:37304,url:"\u002Fes\u002Fcompeticion\u002F37304-liga-kbo",label:"Liga KBO",icon:a,bets:b,events:b,menu:[]}]}]},{id:ab,url:"\u002Fes\u002Fdeporte\u002F35-badminton",label:"Bádminton",icon:"badminton",bets:fS,events:fT,menu:[{id:371,url:"\u002Fes\u002Fcategoria\u002F371-internacional",label:C,icon:a,bets:fS,events:fT,menu:[{id:45455,url:"\u002Fes\u002Fcompeticion\u002F45455-internacional-de-polonia-dobles-mixtos",label:"Internacional de Polonia, Dobles Mixtos",icon:a,bets:m,events:m,menu:[]},{id:45442,url:"\u002Fes\u002Fcompeticion\u002F45442-international-de-pologne",label:"International de Pologne",icon:a,bets:k,events:k,menu:[]},{id:45441,url:"\u002Fes\u002Fcompeticion\u002F45441-internacional-de-polonia-f",label:"Internacional de Polonia (F)",icon:a,bets:n,events:n,menu:[]},{id:45453,url:"\u002Fes\u002Fcompeticion\u002F45453-internacional-de-polonia-dobles",label:"Internacional de Polonia, Dobles",icon:a,bets:k,events:k,menu:[]},{id:45483,url:"\u002Fes\u002Fcompeticion\u002F45483-internacional-de-polonia-dobles-f",label:"Internacional  de Polonia, Dobles (F)",icon:a,bets:e,events:e,menu:[]},{id:56541,url:"\u002Fes\u002Fcompeticion\u002F56541-open-de-china",label:"Open de China",icon:a,bets:K,events:k,menu:[]},{id:57473,url:"\u002Fes\u002Fcompeticion\u002F57473-open-de-china-f",label:"Open de China (F)",icon:a,bets:fU,events:j,menu:[]},{id:56335,url:"\u002Fes\u002Fcompeticion\u002F56335-open-de-china-dobles",label:"Open de China, Dobles",icon:a,bets:ci,events:l,menu:[]},{id:57474,url:"\u002Fes\u002Fcompeticion\u002F57474-open-de-china-dobles-f",label:"Open de China, Dobles (F)",icon:a,bets:113,events:f,menu:[]},{id:56332,url:"\u002Fes\u002Fcompeticion\u002F56332-open-de-china-dobles-mixtos",label:"Open de China, Dobles Mixtos",icon:a,bets:ci,events:f,menu:[]}]}]},{id:n,url:et,label:eu,icon:ev,bets:816,events:bh,menu:[{id:115,url:"\u002Fes\u002Fcategoria\u002F115-copas-de-europa",label:cg,icon:a,bets:fV,events:j,menu:[{id:445,url:"\u002Fes\u002Fcompeticion\u002F445-champions-league",label:T,icon:a,bets:fV,events:j,menu:[]}]},{id:fU,url:"\u002Fes\u002Fcategoria\u002F98-francia",label:aF,icon:a,bets:221,events:f,menu:[{id:4958,url:"\u002Fes\u002Fcompeticion\u002F4958-division-1-lfh-f",label:"División 1 LFH (F)",icon:a,bets:Q,events:b,menu:[]},{id:44126,url:"\u002Fes\u002Fcompeticion\u002F44126-starligue",label:"Starligue",icon:a,bets:fK,events:k,menu:[]}]},{id:A,url:"\u002Fes\u002Fcategoria\u002F16-alemania",label:bM,icon:a,bets:S,events:e,menu:[{id:w,url:"\u002Fes\u002Fcompeticion\u002F19-bundesliga",label:bN,icon:a,bets:S,events:e,menu:[]}]},{id:1763,url:"\u002Fes\u002Fcategoria\u002F1763-argentina",label:aH,icon:a,bets:j,events:b,menu:[{id:43975,url:"\u002Fes\u002Fcompeticion\u002F43975-apertura",label:"Apertura",icon:a,bets:j,events:b,menu:[]}]},{id:1358,url:"\u002Fes\u002Fcategoria\u002F1358-bielorrusia",label:"Bielorrusia",icon:a,bets:cj,events:d,menu:[{id:44682,url:"\u002Fes\u002Fcompeticion\u002F44682-chempiyanat-1",label:"Chempiyanat 1",icon:a,bets:cj,events:d,menu:[]}]},{id:fs,url:"\u002Fes\u002Fcategoria\u002F918-campeonato-de-europa",label:"Campeonato de Europa",icon:a,bets:b,events:b,menu:[{id:4558,url:"\u002Fes\u002Fcompeticion\u002F4558-campeonato-de-europa-f",label:"Campeonato de Europa (F)",icon:a,bets:b,events:b,menu:[]}]},{id:1114,url:"\u002Fes\u002Fcategoria\u002F1114-campeonato-del-mundo",label:ao,icon:a,bets:b,events:b,menu:[{id:46692,url:"\u002Fes\u002Fcompeticion\u002F46692-campeonato-del-mundo",label:ao,icon:a,bets:b,events:b,menu:[]}]},{id:363,url:"\u002Fes\u002Fcategoria\u002F363-dinamarca",label:bR,icon:a,bets:K,events:h,menu:[{id:3775,url:"\u002Fes\u002Fcompeticion\u002F3775-1st-division-f",label:"1st Division (F)",icon:a,bets:K,events:h,menu:[]}]},{id:457,url:"\u002Fes\u002Fcategoria\u002F457-grecia",label:"Grecia",icon:a,bets:e,events:b,menu:[{id:45289,url:"\u002Fes\u002Fcompeticion\u002F45289-a1",label:"A1",icon:a,bets:e,events:b,menu:[]}]},{id:463,url:"\u002Fes\u002Fcategoria\u002F463-hungria",label:fW,icon:a,bets:l,events:b,menu:[{id:45011,url:"\u002Fes\u002Fcompeticion\u002F45011-nb-i-f",label:"NB I (F)",icon:a,bets:l,events:b,menu:[]}]},{id:eS,url:"\u002Fes\u002Fcategoria\u002F716-islandia",label:fr,icon:a,bets:A,events:d,menu:[{id:18704,url:"\u002Fes\u002Fcompeticion\u002F18704-olis-deildin-f",label:"Olis Deildin (F)",icon:a,bets:A,events:d,menu:[]}]},{id:469,url:"\u002Fes\u002Fcategoria\u002F469-noruega",label:bZ,icon:a,bets:al,events:b,menu:[{id:44731,url:"\u002Fes\u002Fcompeticion\u002F44731-eliteserien",label:b$,icon:a,bets:al,events:b,menu:[]}]},{id:477,url:"\u002Fes\u002Fcategoria\u002F477-portugal",label:eU,icon:a,bets:s,events:k,menu:[{id:4254,url:"\u002Fes\u002Fcompeticion\u002F4254-superliga",label:cc,icon:a,bets:s,events:k,menu:[]}]},{id:411,url:"\u002Fes\u002Fcategoria\u002F411-rumania",label:fA,icon:a,bets:s,events:e,menu:[{id:44741,url:"\u002Fes\u002Fcompeticion\u002F44741-liga-nationala",label:"Liga Nationala",icon:a,bets:r,events:b,menu:[]},{id:44802,url:"\u002Fes\u002Fcompeticion\u002F44802-liga-nationala-f",label:"Liga Nationala (F)",icon:a,bets:h,events:d,menu:[]}]},{id:513,url:"\u002Fes\u002Fcategoria\u002F513-serbia",label:fB,icon:a,bets:e,events:b,menu:[{id:4634,url:"\u002Fes\u002Fcompeticion\u002F4634-superliga",label:cc,icon:a,bets:e,events:b,menu:[]}]},{id:389,url:"\u002Fes\u002Fcategoria\u002F389-suecia",label:fC,icon:a,bets:l,events:e,menu:[{id:44983,url:"\u002Fes\u002Fcompeticion\u002F44983-allsvenskan",label:fD,icon:a,bets:f,events:d,menu:[]},{id:36048,url:"\u002Fes\u002Fcompeticion\u002F36048-handbollsligan",label:"Handbollsligan",icon:a,bets:b,events:b,menu:[]}]}]},{id:aB,url:"\u002Fes\u002Fdeporte\u002F23-boxeo",label:"Boxeo",icon:"boxe",bets:aM,events:S,menu:[{id:810,url:"\u002Fes\u002Fcategoria\u002F810-internacional",label:C,icon:a,bets:aM,events:S,menu:[{id:13859,url:"\u002Fes\u002Fcompeticion\u002F13859-campeonatos-del-mundo",label:"Campeonatos del Mundo",icon:a,bets:aM,events:S,menu:[]}]}]},{id:85,url:"\u002Fes\u002Fdeporte\u002F85-carreras-de-caballos",label:"Carreras de caballos",icon:"courses-hippiques",bets:aC,events:aC,menu:[{id:1490,url:"\u002Fes\u002Fcategoria\u002F1490-hong-kong",label:"Hong Kong",icon:a,bets:e,events:e,menu:[{id:39673,url:"\u002Fes\u002Fcompeticion\u002F39673-happy-valley",label:"Happy Valley",icon:a,bets:e,events:e,menu:[]}]},{id:1486,url:"\u002Fes\u002Fcategoria\u002F1486-nueva-zelanda",label:"Nueva Zelanda",icon:a,bets:w,events:w,menu:[{id:47651,url:"\u002Fes\u002Fcompeticion\u002F47651-ellerslie",label:"Ellerslie",icon:a,bets:l,events:l,menu:[]},{id:44619,url:"\u002Fes\u002Fcompeticion\u002F44619-taupo",label:"Taupo",icon:a,bets:k,events:k,menu:[]},{id:44100,url:"\u002Fes\u002Fcompeticion\u002F44100-wanganui",label:"Wanganui",icon:a,bets:l,events:l,menu:[]}]}]},{id:A,url:"\u002Fes\u002Fdeporte\u002F16-ciclismo",label:"Ciclismo",icon:"cyclisme",bets:d,events:d,menu:[{id:1470,url:"\u002Fes\u002Fcategoria\u002F1470-mundo",label:"Mundo",icon:a,bets:d,events:d,menu:[{id:52291,url:"\u002Fes\u002Fcompeticion\u002F52291-campeonato-del-mundo",label:ao,icon:a,bets:b,events:b,menu:[]},{id:45732,url:"\u002Fes\u002Fcompeticion\u002F45732-tour-de-france",label:"Tour de France",icon:a,bets:b,events:b,menu:[]}]}]},{id:M,url:"\u002Fes\u002Fdeporte\u002F44-cricket",label:"Cricket",icon:"cricket",bets:k,events:k,menu:[{id:471,url:"\u002Fes\u002Fcategoria\u002F471-inglaterra",label:aG,icon:a,bets:b,events:b,menu:[{id:41941,url:"\u002Fes\u002Fcompeticion\u002F41941-royal-london-one-day-cup",label:"Royal London One-Day Cup",icon:a,bets:b,events:b,menu:[]}]},{id:470,url:"\u002Fes\u002Fcategoria\u002F470-internacional",label:C,icon:a,bets:d,events:d,menu:[{id:40695,url:"\u002Fes\u002Fcompeticion\u002F40695-icc-test-championship",label:"ICC Test Championship",icon:a,bets:b,events:b,menu:[]},{id:40696,url:"\u002Fes\u002Fcompeticion\u002F40696-lg-icc-odi-championship",label:"LG ICC ODI Championship",icon:a,bets:b,events:b,menu:[]}]},{id:1247,url:"\u002Fes\u002Fcategoria\u002F1247-internacional-f",label:fX,icon:a,bets:d,events:d,menu:[{id:39888,url:"\u002Fes\u002Fcompeticion\u002F39888-t20-series",label:"T20 Series",icon:a,bets:d,events:d,menu:[]}]}]},{id:G,url:ew,label:ex,icon:ey,bets:f,events:e,menu:[{id:360,url:"\u002Fes\u002Fcategoria\u002F360-internacional",label:C,icon:a,bets:f,events:e,menu:[{id:61257,url:"\u002Fes\u002Fcompeticion\u002F61257-players-championship-20",label:"Players Championship 20",icon:a,bets:f,events:e,menu:[]}]}]},{id:f,url:"\u002Fes\u002Fdeporte\u002F6-floorball",label:"Floorball",icon:"floorball",bets:fn,events:r,menu:[{id:507,url:"\u002Fes\u002Fcategoria\u002F507-finlandia",label:bT,icon:a,bets:j,events:b,menu:[{id:57641,url:"\u002Fes\u002Fcompeticion\u002F57641-f-liiga",label:"F-liiga",icon:a,bets:j,events:b,menu:[]}]},{id:2711,url:"\u002Fes\u002Fcategoria\u002F2711-letonia",label:bY,icon:a,bets:e,events:b,menu:[{id:57685,url:"\u002Fes\u002Fcompeticion\u002F57685-elvi-league",label:"Elvi League",icon:a,bets:e,events:b,menu:[]}]},{id:2704,url:"\u002Fes\u002Fcategoria\u002F2704-noruega",label:bZ,icon:a,bets:y,events:h,menu:[{id:57640,url:"\u002Fes\u002Fcompeticion\u002F57640-eliteserien",label:b$,icon:a,bets:y,events:h,menu:[]}]},{id:519,url:"\u002Fes\u002Fcategoria\u002F519-republica-checa",label:aL,icon:a,bets:R,events:k,menu:[{id:57616,url:"\u002Fes\u002Fcompeticion\u002F57616-extraliga",label:ck,icon:a,bets:R,events:k,menu:[]}]}]},{id:l,url:"\u002Fes\u002Fdeporte\u002F7-futbol-americano",label:"Fútbol Americano",icon:"foot-us",bets:6367,events:105,menu:[{id:U,url:"\u002Fes\u002Fcategoria\u002F56-estados-unidos",label:an,icon:a,bets:6331,events:fe,menu:[{id:341,url:"\u002Fes\u002Fcompeticion\u002F341-nfl",label:"NFL",icon:a,bets:fR,events:w,menu:[]},{id:56856,url:"\u002Fes\u002Fcompeticion\u002F56856-nfl-conferencias",label:"NFL - Conferencias",icon:a,bets:d,events:d,menu:[]},{id:56857,url:"\u002Fes\u002Fcompeticion\u002F56857-nfl-division",label:"NFL - División",icon:a,bets:j,events:j,menu:[]},{id:35933,url:"\u002Fes\u002Fcompeticion\u002F35933-ncaaf",label:"NCAAF",icon:a,bets:4661,events:aA,menu:[]},{id:56858,url:"\u002Fes\u002Fcompeticion\u002F56858-ncaaf-conferencias",label:"NCAAF - Conferencias",icon:a,bets:n,events:n,menu:[]}]},{id:347,url:"\u002Fes\u002Fcategoria\u002F347-canada",label:fg,icon:a,bets:fY,events:h,menu:[{id:2521,url:"\u002Fes\u002Fcompeticion\u002F2521-cfl",label:"CFL",icon:a,bets:fY,events:h,menu:[]}]}]},{id:b,url:"\u002Fes\u002Fdeporte\u002F1-futbol-australiano",label:"Fútbol Australiano",icon:"aussie-rules",bets:r,events:r,menu:[{id:431,url:"\u002Fes\u002Fcategoria\u002F431-australia",label:"Australia",icon:a,bets:r,events:r,menu:[{id:36596,url:"\u002Fes\u002Fcompeticion\u002F36596-afl",label:"AFL",icon:a,bets:d,events:d,menu:[]},{id:36595,url:"\u002Fes\u002Fcompeticion\u002F36595-afl-f",label:"AFL (F)",icon:a,bets:l,events:l,menu:[]},{id:40678,url:"\u002Fes\u002Fcompeticion\u002F40678-south-australian-national-football-league",label:"South Australian National Football League",icon:a,bets:b,events:b,menu:[]},{id:40681,url:"\u002Fes\u002Fcompeticion\u002F40681-west-australian-football-league",label:"West Australian Football League",icon:a,bets:b,events:b,menu:[]}]}]},{id:j,url:"\u002Fes\u002Fdeporte\u002F8-futbol-sala",label:"Fútbol sala",icon:fZ,bets:z,events:f,menu:[{id:2173,url:"\u002Fes\u002Fcategoria\u002F2173-argentina",label:aH,icon:a,bets:e,events:b,menu:[{id:51896,url:"\u002Fes\u002Fcompeticion\u002F51896-copa-argentina",label:e_,icon:a,bets:e,events:b,menu:[]}]},{id:436,url:"\u002Fes\u002Fcategoria\u002F436-brasil",label:aI,icon:a,bets:k,events:d,menu:[{id:50751,url:"\u002Fes\u002Fcompeticion\u002F50751-catarinense",label:"Catarinense",icon:a,bets:k,events:d,menu:[]}]},{id:480,url:"\u002Fes\u002Fcategoria\u002F480-internacional",label:C,icon:a,bets:y,events:e,menu:[{id:49275,url:"\u002Fes\u002Fcompeticion\u002F49275-copa-del-mundo",label:cl,icon:a,bets:B,events:b,menu:[]},{id:48797,url:"\u002Fes\u002Fcompeticion\u002F48797-partidos-amistosos-internacionales",label:"Partidos amistosos internacionales",icon:a,bets:b,events:b,menu:[]},{id:49108,url:"\u002Fes\u002Fcompeticion\u002F49108-amistosos-clubes",label:"Amistosos Clubes",icon:a,bets:f,events:b,menu:[]}]}]},{id:N,url:"\u002Fes\u002Fdeporte\u002F18-golf",label:"Golf",icon:"golf",bets:o,events:o,menu:[{id:424,url:"\u002Fes\u002Fcategoria\u002F424-internacional",label:C,icon:a,bets:n,events:n,menu:[{id:47978,url:"\u002Fes\u002Fcompeticion\u002F47978-pga-championship",label:"PGA Championship",icon:a,bets:b,events:b,menu:[]},{id:47982,url:"\u002Fes\u002Fcompeticion\u002F47982-ryder-cup",label:"Ryder Cup",icon:a,bets:b,events:b,menu:[]},{id:47979,url:"\u002Fes\u002Fcompeticion\u002F47979-the-open-championship",label:"The Open Championship",icon:a,bets:b,events:b,menu:[]},{id:47988,url:"\u002Fes\u002Fcompeticion\u002F47988-the-masters",label:"The Masters",icon:a,bets:b,events:b,menu:[]},{id:47986,url:"\u002Fes\u002Fcompeticion\u002F47986-us-open",label:"US Open",icon:a,bets:b,events:b,menu:[]},{id:51086,url:"\u002Fes\u002Fcompeticion\u002F51086-italian-challenge-open",label:"Italian Challenge Open",icon:a,bets:b,events:b,menu:[]},{id:57748,url:"\u002Fes\u002Fcompeticion\u002F57748-nationwide-children-s-hospital-championship",label:"Nationwide Children's Hospital Championship",icon:a,bets:b,events:b,menu:[]},{id:52566,url:"\u002Fes\u002Fcompeticion\u002F52566-pure-insurance-championship",label:"Pure Insurance Championship",icon:a,bets:b,events:b,menu:[]},{id:57638,url:"\u002Fes\u002Fcompeticion\u002F57638-winstongolf-abierto-senior",label:"WINSTONgolf Abierto Senior",icon:a,bets:b,events:b,menu:[]}]},{id:2411,url:"\u002Fes\u002Fcategoria\u002F2411-internacional-f",label:fX,icon:a,bets:e,events:e,menu:[{id:56779,url:"\u002Fes\u002Fcompeticion\u002F56779-la-sella-open",label:"La Sella Open",icon:a,bets:b,events:b,menu:[]},{id:57493,url:"\u002Fes\u002Fcompeticion\u002F57493-queen-city-championship",label:"Queen City Championship",icon:a,bets:b,events:b,menu:[]},{id:47992,url:"\u002Fes\u002Fcompeticion\u002F47992-solheim-cup",label:"Solheim Cup",icon:a,bets:b,events:b,menu:[]}]}]},{id:m,url:ez,label:eA,icon:eB,bets:2100,events:95,menu:[{id:359,url:"\u002Fes\u002Fcategoria\u002F359-alemania",label:bM,icon:a,bets:cd,events:l,menu:[{id:3774,url:"\u002Fes\u002Fcompeticion\u002F3774-del",label:"DEL",icon:a,bets:cd,events:l,menu:[]}]},{id:279,url:"\u002Fes\u002Fcategoria\u002F279-austria",label:fb,icon:a,bets:aJ,events:f,menu:[{id:55208,url:"\u002Fes\u002Fcompeticion\u002F55208-ehl",label:"EHL",icon:a,bets:aJ,events:f,menu:[]}]},{id:631,url:"\u002Fes\u002Fcategoria\u002F631-campeonato-del-mundo",label:ao,icon:a,bets:b,events:b,menu:[{id:767,url:"\u002Fes\u002Fcompeticion\u002F767-campeonato-del-mundo",label:ao,icon:a,bets:b,events:b,menu:[]}]},{id:506,url:"\u002Fes\u002Fcategoria\u002F506-dinamarca",label:bR,icon:a,bets:M,events:b,menu:[{id:4529,url:"\u002Fes\u002Fcompeticion\u002F4529-superisligaen",label:"Superisligaen",icon:a,bets:M,events:b,menu:[]}]},{id:k,url:"\u002Fes\u002Fcategoria\u002F5-estados-unidos",label:an,icon:a,bets:419,events:z,menu:[{id:f,url:"\u002Fes\u002Fcompeticion\u002F6-nhl",label:"NHL",icon:a,bets:bU,events:aB,menu:[]},{id:56864,url:"\u002Fes\u002Fcompeticion\u002F56864-nhl-conferencias",label:"NHL - Conferencias",icon:a,bets:d,events:d,menu:[]},{id:56865,url:"\u002Fes\u002Fcompeticion\u002F56865-nhl-division",label:"NHL - División",icon:a,bets:h,events:h,menu:[]}]},{id:281,url:"\u002Fes\u002Fcategoria\u002F281-eslovaquia",label:"Eslovaquia",icon:a,bets:f_,events:f,menu:[{id:3755,url:"\u002Fes\u002Fcompeticion\u002F3755-extraliga",label:ck,icon:a,bets:f_,events:f,menu:[]}]},{id:280,url:"\u002Fes\u002Fcategoria\u002F280-finlandia",label:bT,icon:a,bets:fJ,events:j,menu:[{id:57657,url:"\u002Fes\u002Fcompeticion\u002F57657-mestis",label:"Mestis",icon:a,bets:aC,events:d,menu:[]},{id:2248,url:"\u002Fes\u002Fcompeticion\u002F2248-sm-liiga",label:"SM-liiga",icon:a,bets:bO,events:f,menu:[]}]},{id:546,url:"\u002Fes\u002Fcategoria\u002F546-internacional-clubes",label:bV,icon:a,bets:s,events:b,menu:[{id:38808,url:"\u002Fes\u002Fcompeticion\u002F38808-amistosos-de-clubes",label:bW,icon:a,bets:s,events:b,menu:[]}]},{id:1267,url:"\u002Fes\u002Fcategoria\u002F1267-kazajstan",label:ft,icon:a,bets:A,events:d,menu:[{id:57317,url:"\u002Fes\u002Fcompeticion\u002F57317-the-championship",label:eP,icon:a,bets:A,events:d,menu:[]}]},{id:821,url:"\u002Fes\u002Fcategoria\u002F821-letonia",label:bY,icon:a,bets:d,events:d,menu:[{id:55205,url:"\u002Fes\u002Fcompeticion\u002F55205-virsliga",label:fv,icon:a,bets:d,events:d,menu:[]}]},{id:2669,url:"\u002Fes\u002Fcategoria\u002F2669-polonia",label:aK,icon:a,bets:h,events:b,menu:[{id:57079,url:"\u002Fes\u002Fcompeticion\u002F57079-polish-hockey-league",label:"Polish Hockey League",icon:a,bets:h,events:b,menu:[]}]},{id:277,url:"\u002Fes\u002Fcategoria\u002F277-republica-checa",label:aL,icon:a,bets:eX,events:A,menu:[{id:57978,url:"\u002Fes\u002Fcompeticion\u002F57978-2-liga",label:"2. Liga",icon:a,bets:aB,events:e,menu:[]},{id:57510,url:"\u002Fes\u002Fcompeticion\u002F57510-chance-liga",label:"Chance Liga",icon:a,bets:ae,events:f,menu:[]},{id:44489,url:"\u002Fes\u002Fcompeticion\u002F44489-extraliga",label:ck,icon:a,bets:ch,events:l,menu:[]}]},{id:241,url:"\u002Fes\u002Fcategoria\u002F241-rusia",label:cb,icon:a,bets:195,events:q,menu:[{id:44492,url:"\u002Fes\u002Fcompeticion\u002F44492-khl",label:"KHL",icon:a,bets:140,events:f,menu:[]},{id:4177,url:"\u002Fes\u002Fcompeticion\u002F4177-mhl",label:"MHL",icon:a,bets:l,events:b,menu:[]},{id:57339,url:"\u002Fes\u002Fcompeticion\u002F57339-vhl",label:"VHL",icon:a,bets:ce,events:f,menu:[]}]},{id:2588,url:"\u002Fes\u002Fcategoria\u002F2588-suiza",label:fE,icon:a,bets:ah,events:d,menu:[{id:55625,url:"\u002Fes\u002Fcompeticion\u002F55625-nla",label:"NLA",icon:a,bets:ah,events:d,menu:[]}]}]},{id:dG,url:"\u002Fes\u002Fdeporte\u002F78-mma",label:"MMA",icon:"mma",bets:M,events:M,menu:[{id:1190,url:"\u002Fes\u002Fcategoria\u002F1190-bellator",label:"Bellator",icon:a,bets:b,events:b,menu:[{id:40291,url:"\u002Fes\u002Fcompeticion\u002F40291-combates",label:cm,icon:a,bets:b,events:b,menu:[]}]},{id:2722,url:"\u002Fes\u002Fcategoria\u002F2722-pfl",label:"PFL",icon:a,bets:r,events:r,menu:[{id:57866,url:"\u002Fes\u002Fcompeticion\u002F57866-combates",label:cm,icon:a,bets:r,events:r,menu:[]}]},{id:1188,url:"\u002Fes\u002Fcategoria\u002F1188-ufc",label:"UFC",icon:a,bets:Q,events:Q,menu:[{id:40004,url:"\u002Fes\u002Fcompeticion\u002F40004-combates",label:cm,icon:a,bets:Q,events:Q,menu:[]}]}]},{id:ac,url:"\u002Fes\u002Fdeporte\u002F33-motociclismo",label:"Motociclismo",icon:"moto",bets:b,events:b,menu:[{id:aM,url:"\u002Fes\u002Fcategoria\u002F87-motogp",label:"MotoGP",icon:a,bets:b,events:b,menu:[{id:49180,url:"\u002Fes\u002Fcompeticion\u002F49180-campeonato-del-mundo-motogp",label:"Campeonato del Mundo - MotoGP",icon:a,bets:b,events:b,menu:[]}]}]},{id:w,url:"\u002Fes\u002Fdeporte\u002F19-motor",label:"Motor",icon:"automoto",bets:o,events:o,menu:[{id:eM,url:"\u002Fes\u002Fcategoria\u002F1575-formula-1",label:"Fórmula 1",icon:a,bets:j,events:j,menu:[{id:42712,url:"\u002Fes\u002Fcompeticion\u002F42712-campeonato-del-mundo-de-formula-1",label:"Campeonato del Mundo de Fórmula 1",icon:a,bets:j,events:j,menu:[]}]},{id:434,url:"\u002Fes\u002Fcategoria\u002F434-nascar",label:"Nascar",icon:a,bets:h,events:h,menu:[{id:55116,url:"\u002Fes\u002Fcompeticion\u002F55116-craftsman-truck-series",label:"Craftsman Truck Series",icon:a,bets:b,events:b,menu:[]},{id:49300,url:"\u002Fes\u002Fcompeticion\u002F49300-cup-series",label:"Cup Series",icon:a,bets:b,events:b,menu:[]},{id:42632,url:"\u002Fes\u002Fcompeticion\u002F42632-temporada",label:"Temporada",icon:a,bets:b,events:b,menu:[]},{id:55060,url:"\u002Fes\u002Fcompeticion\u002F55060-xfinity-series",label:"Xfinity Series",icon:a,bets:b,events:b,menu:[]}]}]},{id:ad,url:"\u002Fes\u002Fdeporte\u002F83-padel",label:"Padel",icon:"padel",bets:m,events:m,menu:[{id:2327,url:"\u002Fes\u002Fcategoria\u002F2327-premier-padel",label:bG,icon:a,bets:m,events:m,menu:[{id:ed,url:ee,label:bG,icon:a,bets:h,events:h,menu:[]},{id:54995,url:"\u002Fes\u002Fcompeticion\u002F54995-premier-padel-f",label:"Premier Padel (F)",icon:a,bets:f,events:f,menu:[]}]}]},{id:dH,url:"\u002Fes\u002Fdeporte\u002F38-rugby-league",label:"Rugby League",icon:"rugby13",bets:eN,events:f,menu:[{id:229,url:"\u002Fes\u002Fcategoria\u002F229-europa",label:"Europa",icon:a,bets:z,events:e,menu:[{id:fO,url:"\u002Fes\u002Fcompeticion\u002F1349-super-league",label:fF,icon:a,bets:z,events:e,menu:[]}]},{id:240,url:"\u002Fes\u002Fcategoria\u002F240-hemisferio-sur",label:"Hemisferio sur",icon:a,bets:ae,events:e,menu:[{id:43035,url:"\u002Fes\u002Fcompeticion\u002F43035-nrl",label:"NRL",icon:a,bets:ae,events:e,menu:[]}]}]},{id:o,url:"\u002Fes\u002Fdeporte\u002F12-rugby-union",label:"Rugby Union",icon:"rugby",bets:364,events:J,menu:[{id:143,url:"\u002Fes\u002Fcategoria\u002F143-copa-del-mundo",label:cl,icon:a,bets:b,events:b,menu:[{id:36029,url:"\u002Fes\u002Fcompeticion\u002F36029-copa-del-mundo",label:cl,icon:a,bets:b,events:b,menu:[]}]},{id:82,url:"\u002Fes\u002Fcategoria\u002F82-internacional",label:C,icon:a,bets:aj,events:h,menu:[{id:44196,url:"\u002Fes\u002Fcompeticion\u002F44196-the-rugby-championship",label:"The Rugby Championship",icon:a,bets:fL,events:d,menu:[]},{id:44990,url:"\u002Fes\u002Fcompeticion\u002F44990-united-rugby-championship",label:"United Rugby Championship",icon:a,bets:cf,events:d,menu:[]}]},{id:ad,url:"\u002Fes\u002Fcategoria\u002F83-champions-cup",label:f$,icon:a,bets:b,events:b,menu:[{id:b_,url:"\u002Fes\u002Fcompeticion\u002F136-champions-cup",label:f$,icon:a,bets:b,events:b,menu:[]}]},{id:bF,url:"\u002Fes\u002Fcategoria\u002F81-francia",label:aF,icon:a,bets:213,events:w,menu:[{id:266,url:"\u002Fes\u002Fcompeticion\u002F266-top-14",label:"Top 14",icon:a,bets:cj,events:n,menu:[]},{id:297,url:"\u002Fes\u002Fcompeticion\u002F297-pro-d2",label:"Pro D2",icon:a,bets:ci,events:m,menu:[]}]},{id:bl,url:"\u002Fes\u002Fcategoria\u002F80-inglaterra",label:aG,icon:a,bets:ga,events:h,menu:[{id:10490,url:"\u002Fes\u002Fcompeticion\u002F10490-premiership",label:"Premiership",icon:a,bets:ga,events:h,menu:[]}]},{id:493,url:"\u002Fes\u002Fcategoria\u002F493-seis-naciones",label:gb,icon:a,bets:b,events:b,menu:[{id:6857,url:"\u002Fes\u002Fcompeticion\u002F6857-seis-naciones",label:gb,icon:a,bets:b,events:b,menu:[]}]}]},{id:x,url:eC,label:eD,icon:eE,bets:K,events:m,menu:[{id:323,url:"\u002Fes\u002Fcategoria\u002F323-internacional",label:C,icon:a,bets:K,events:m,menu:[{id:45166,url:"\u002Fes\u002Fcompeticion\u002F45166-open-de-inglaterra",label:"Open de Inglaterra",icon:a,bets:K,events:m,menu:[]}]}]},{id:bi,url:"\u002Fes\u002Fdeporte\u002F62-squash",label:"Squash",icon:"squash",bets:l,events:d,menu:[{id:2099,url:"\u002Fes\u002Fcategoria\u002F2099-internacional",label:C,icon:a,bets:l,events:d,menu:[{id:57410,url:"\u002Fes\u002Fcompeticion\u002F57410-paris-squash",label:"Paris Squash",icon:a,bets:l,events:d,menu:[]}]}]},{id:B,url:eF,label:eG,icon:eH,bets:191,events:cf,menu:[{id:2287,url:"\u002Fes\u002Fcategoria\u002F2287-argentina",label:aH,icon:a,bets:ce,events:j,menu:[{id:51056,url:"\u002Fes\u002Fcompeticion\u002F51056-superiores-primera",label:"Superiores - Primera",icon:a,bets:aD,events:f,menu:[]},{id:50980,url:"\u002Fes\u002Fcompeticion\u002F50980-superiores-primera-f",label:"Superiores - Primera (F)",icon:a,bets:h,events:b,menu:[]},{id:51035,url:"\u002Fes\u002Fcompeticion\u002F51035-superiores-segunda-f",label:"Superiores - Segunda (F)",icon:a,bets:l,events:b,menu:[]}]},{id:597,url:"\u002Fes\u002Fcategoria\u002F597-brasil",label:aI,icon:a,bets:m,events:d,menu:[{id:57450,url:"\u002Fes\u002Fcompeticion\u002F57450-mineiro",label:"Mineiro",icon:a,bets:l,events:b,menu:[]},{id:57253,url:"\u002Fes\u002Fcompeticion\u002F57253-paulista",label:"Paulista",icon:a,bets:e,events:b,menu:[]}]},{id:125,url:"\u002Fes\u002Fcategoria\u002F125-copas-de-europa",label:cg,icon:a,bets:fQ,events:f,menu:[{id:621,url:"\u002Fes\u002Fcompeticion\u002F621-champions-league",label:T,icon:a,bets:am,events:h,menu:[]},{id:46504,url:"\u002Fes\u002Fcompeticion\u002F46504-cev-challenge-cup-f",label:"CEV Challenge Cup (F)",icon:a,bets:y,events:d,menu:[]}]},{id:o,url:"\u002Fes\u002Fcategoria\u002F12-internacional",label:C,icon:a,bets:f,events:d,menu:[{id:54596,url:"\u002Fes\u002Fcompeticion\u002F54596-amistosos-de-clubes-f",label:fM,icon:a,bets:f,events:d,menu:[]}]},{id:eR,url:"\u002Fes\u002Fcategoria\u002F2244-polonia",label:aK,icon:a,bets:af,events:d,menu:[{id:50051,url:"\u002Fes\u002Fcompeticion\u002F50051-plusliga",label:"PlusLiga",icon:a,bets:af,events:d,menu:[]}]},{id:218,url:"\u002Fes\u002Fcategoria\u002F218-rusia",label:cb,icon:a,bets:s,events:l,menu:[{id:45940,url:"\u002Fes\u002Fcompeticion\u002F45940-pro-league-f",label:"Pro League (F)",icon:a,bets:f,events:d,menu:[]},{id:37134,url:"\u002Fes\u002Fcompeticion\u002F37134-ural-volleyball",label:"Ural Volleyball",icon:a,bets:f,events:e,menu:[]},{id:37151,url:"\u002Fes\u002Fcompeticion\u002F37151-ural-volleyball-f",label:"Ural Volleyball (F)",icon:a,bets:d,events:b,menu:[]},{id:49154,url:"\u002Fes\u002Fcompeticion\u002F49154-vysshaya-liga-a-f",label:"Vysshaya Liga A (F)",icon:a,bets:b,events:b,menu:[]}]}]},{id:s,url:"\u002Fes\u002Fdeporte\u002F15-waterpolo",label:"Waterpolo",icon:"waterpolo",bets:y,events:e,menu:[{id:526,url:"\u002Fes\u002Fcategoria\u002F526-hungria",label:fW,icon:a,bets:y,events:e,menu:[{id:7603,url:"\u002Fes\u002Fcompeticion\u002F7603-ob-i",label:"OB I",icon:a,bets:y,events:e,menu:[]}]}]}],title:aV,liveItemTitle:a},ttl:ag,forceRefresh:c,forceRefreshKey:c,params:{}},search_box:{componentKey:cn,storeKey:cn,isLoaded:g,data:{texts:{search_event:"search_event",search_sport:"search_sport",search_results:"search_results",search_running:"search_running",search_category:"search_category",search_min_chars:"search_min_chars",search_no_result:"search_no_result",search_competition:"search_competition",search_placeholder:"search_placeholder"}},ttl:u,forceRefresh:c,forceRefreshKey:c,params:{}},menu_left_bottom:{componentKey:co,storeKey:co,isLoaded:g,data:{menu:[{label:dg,url:"\u002Freglas-de-apuestas-deportivas",icon:"icon-book-2",target:"_self",priority:b,id:gc,redirect_to:p},{label:ax,url:"https:\u002F\u002Fsncgoldenpark.statscore.com\u002Fes\u002F",icon:"icon-info",target:dR,priority:d,id:gc,redirect_to:p}],title:da,isMainMenu:i},ttl:u,forceRefresh:c,forceRefreshKey:c,params:{}},menu_odd_formats:{componentKey:cp,storeKey:cp,isLoaded:g,data:{oddFormats:[{value:"decimal",label:"format_decimal",selected:g},{value:"american",label:"format_american",selected:i},{value:"fractional",label:"format_fractional",selected:i}]},ttl:u,forceRefresh:c,forceRefreshKey:c,params:{}},main_content_event:{componentKey:aN,storeKey:aN,isLoaded:g,data:{no_events_title:"event_prematch_no_events_title",no_events_button:{url:bt,label:"event_prematch_no_events_button_label"}},ttl:u,forceRefresh:c,forceRefreshKey:c,params:{}},banner:{componentKey:aO,storeKey:aO,isLoaded:g,data:[],ttl:u,forceRefresh:c,forceRefreshKey:c,params:{}},breadcrumbs:{componentKey:aP,storeKey:aP,isLoaded:g,data:[{url:"\u002Fes",label:aw,action:"GoToHome"},{url:bK,label:bL,action:"PushToSport"},{url:eO,label:aG,action:"PushToCategory"},{url:bE,label:bD,action:"PushToCompetition"},{url:bm,label:"Aston Villa \u002F Wolverhampton",action:"PushToEvent"}],ttl:u,forceRefresh:c,forceRefreshKey:c,params:{}},title:{componentKey:aQ,storeKey:aQ,isLoaded:g,data:{title:"Argentina \u002F Afganistán",icon:fZ,id:8340698},ttl:u,forceRefresh:c,forceRefreshKey:c,params:{}},event_market_list:{componentKey:aR,storeKey:aR,isLoaded:g,data:{event:{id:8330583,label:"Aston Villa \u002F Wolverhampton",url:bm,statisticsUrl:a,live:p,becomeLive:i,start:"2024-09-21T16:00:00.000+02:00",activeBets:127,sportId:q,sportIcon:ei,sportLabel:bL,sportUrl:a,categoryId:bh,categoryLabel:aG,categoryUrl:a,competitionId:aj,competitionLabel:bD,competitionUrl:a,choices:[{id:5253296721,odd:1.58,status:a,winning:t,actor:{id:a,label:"Aston Villa",abbreviation:"Aston Villa",short:a,actorLabel:"Aston Villa"},oddsDisplay:"1.58",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253296722,odd:4.3,status:a,winning:t,actor:{id:a,label:"Empate",abbreviation:"Empate",short:a,actorLabel:"Empate"},oddsDisplay:"4.30",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253296723,odd:5.2,status:a,winning:t,actor:{id:a,label:"Wolverhampton",abbreviation:"Wolverhampton",short:a,actorLabel:"Wolverhampton"},oddsDisplay:"5.20",isEmptyChoice:i,td:a,hash:t,main:i}],bets:[{question:{label:"¿Quién ganará el partido?",short_label:"¿Quién ganará el partido?"},choices:[{id:5253296721,odd:1.58,status:a,winning:t,actor:{id:a,label:"Aston Villa",abbreviation:"Aston Villa",short:a,actorLabel:"Aston Villa"},oddsDisplay:"1.58",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253296722,odd:4.3,status:a,winning:t,actor:{id:a,label:"Empate",abbreviation:"Empate",short:a,actorLabel:"Empate"},oddsDisplay:"4.30",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253296723,odd:5.2,status:a,winning:t,actor:{id:a,label:"Wolverhampton",abbreviation:"Wolverhampton",short:a,actorLabel:"Wolverhampton"},oddsDisplay:"5.20",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:g,display_by:e,order:b,filters:{"1000":b,"1310":dL},see_more:999,isBetGroup:i},{question:{label:"Más\u002FMenos Goles",short_label:"¿Más o menos de 6.5 goles?"},choices:[{id:5249795682,odd:b,status:a,winning:t,actor:{id:a,label:"Más 0.5",abbreviation:"Más",short:a,actorLabel:"Más 0.5"},oddsDisplay:"-",isEmptyChoice:i,td:a,hash:t,main:i},{id:5249795683,odd:B,status:a,winning:t,actor:{id:a,label:"Menos 0.5",abbreviation:"Menos",short:a,actorLabel:"Menos 0.5"},oddsDisplay:"14.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373480,odd:1.13,status:a,winning:t,actor:{id:a,label:"Más 1.5",abbreviation:"Más",short:a,actorLabel:"Más 1.5"},oddsDisplay:"1.13",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373479,odd:4.5,status:a,winning:t,actor:{id:a,label:"Menos 1.5",abbreviation:"Menos",short:a,actorLabel:"Menos 1.5"},oddsDisplay:"4.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5251951043,odd:1.52,status:a,winning:t,actor:{id:a,label:"Más 2.5",abbreviation:"Más",short:a,actorLabel:"Más 2.5"},oddsDisplay:"1.52",isEmptyChoice:i,td:a,hash:t,main:i},{id:5251951044,odd:2.25,status:a,winning:t,actor:{id:a,label:"Menos 2.5",abbreviation:"Menos",short:a,actorLabel:"Menos 2.5"},oddsDisplay:"2.25",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252370904,odd:2.35,status:a,winning:t,actor:{id:a,label:"Más 3.5",abbreviation:"Más",short:a,actorLabel:"Más 3.5"},oddsDisplay:"2.35",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252370905,odd:1.48,status:a,winning:t,actor:{id:a,label:"Menos 3.5",abbreviation:"Menos",short:a,actorLabel:"Menos 3.5"},oddsDisplay:"1.48",isEmptyChoice:i,td:a,hash:t,main:i},{id:5251161860,odd:4.1,status:a,winning:t,actor:{id:a,label:"Más 4.5",abbreviation:"Más",short:a,actorLabel:"Más 4.5"},oddsDisplay:"4.10",isEmptyChoice:i,td:a,hash:t,main:i},{id:5251161861,odd:1.17,status:a,winning:t,actor:{id:a,label:"Menos 4.5",abbreviation:"Menos",short:a,actorLabel:"Menos 4.5"},oddsDisplay:"1.17",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012935,odd:j,status:a,winning:t,actor:{id:a,label:"Más 5.5",abbreviation:"Más",short:a,actorLabel:"Más 5.5"},oddsDisplay:"8.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012936,odd:1.02,status:a,winning:t,actor:{id:a,label:"Menos 5.5",abbreviation:"Menos",short:a,actorLabel:"Menos 5.5"},oddsDisplay:"1.02",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373482,odd:G,status:a,winning:t,actor:{id:a,label:"Más 6.5",abbreviation:"Más",short:a,actorLabel:"Más 6.5"},oddsDisplay:"17.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373481,odd:b,status:a,winning:t,actor:{id:a,label:"Menos 6.5",abbreviation:"Menos",short:a,actorLabel:"Menos 6.5"},oddsDisplay:"-",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:cj,filters:{"1000":cj,"1310":800,"1365":dL},see_more:f,isBetGroup:g},{question:{label:"Hándicaps",short_label:"Hándicap (1.5) - ¿Quién ganará el partido?"},choices:[{id:5253307052,odd:8.25,status:a,winning:t,actor:{id:a,label:"Aston Villa (-3.5)",abbreviation:"Aston Villa (-3.5)",short:a,actorLabel:"Aston Villa (-3.5)"},oddsDisplay:"8.25",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253307053,odd:1.03,status:a,winning:t,actor:{id:a,label:"Wolverhampton (+3.5)",abbreviation:"Wolverhampton (+3.5)",short:a,actorLabel:"Wolverhampton (+3.5)"},oddsDisplay:"1.03",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252571629,odd:4.3,status:a,winning:t,actor:{id:a,label:"Aston Villa (-2.5)",abbreviation:"Aston Villa (-2.5)",short:a,actorLabel:"Aston Villa (-2.5)"},oddsDisplay:"4.30",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252571628,odd:1.16,status:a,winning:t,actor:{id:a,label:"Wolverhampton (+2.5)",abbreviation:"Wolverhampton (+2.5)",short:a,actorLabel:"Wolverhampton (+2.5)"},oddsDisplay:"1.16",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252649416,odd:2.37,status:a,winning:t,actor:{id:a,label:"Aston Villa (-1.5)",abbreviation:"Aston Villa (-1.5)",short:a,actorLabel:"Aston Villa (-1.5)"},oddsDisplay:"2.37",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252649417,odd:1.48,status:a,winning:t,actor:{id:a,label:"Wolverhampton (+1.5)",abbreviation:"Wolverhampton (+1.5)",short:a,actorLabel:"Wolverhampton (+1.5)"},oddsDisplay:"1.48",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252649412,odd:1.14,status:a,winning:t,actor:{id:a,label:"Aston Villa (+0.5)",abbreviation:"Aston Villa (+0.5)",short:a,actorLabel:"Aston Villa (+0.5)"},oddsDisplay:"1.14",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252649411,odd:4.8,status:a,winning:t,actor:{id:a,label:"Wolverhampton (-0.5)",abbreviation:"Wolverhampton (-0.5)",short:a,actorLabel:"Wolverhampton (-0.5)"},oddsDisplay:"4.80",isEmptyChoice:i,td:a,hash:t,main:i},{id:5251372282,odd:1.01,status:a,winning:t,actor:{id:a,label:"Aston Villa (+1.5)",abbreviation:"Aston Villa (+1.5)",short:a,actorLabel:"Aston Villa (+1.5)"},oddsDisplay:"1.01",isEmptyChoice:i,td:a,hash:t,main:i},{id:5251372283,odd:11.5,status:a,winning:t,actor:{id:a,label:"Wolverhampton (-1.5)",abbreviation:"Wolverhampton (-1.5)",short:a,actorLabel:"Wolverhampton (-1.5)"},oddsDisplay:"11.50",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:115,filters:{"1000":115,"1310":700},see_more:f,isBetGroup:g},{question:{label:"¿Doble oportunidad?",short_label:"¿Doble oportunidad?"},choices:[{id:5252012806,odd:1.12,status:a,winning:t,actor:{id:a,label:"Aston Villa o Empate",abbreviation:"1X",short:a,actorLabel:"Aston Villa o Empate"},oddsDisplay:"1.12",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012808,odd:2.2,status:a,winning:t,actor:{id:a,label:"Empate o Wolverhampton",abbreviation:"X2",short:a,actorLabel:"Empate o Wolverhampton"},oddsDisplay:"2.20",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012807,odd:1.17,status:a,winning:t,actor:{id:a,label:"Aston Villa o Wolverhampton",abbreviation:"12",short:a,actorLabel:"Aston Villa o Wolverhampton"},oddsDisplay:"1.17",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:e,order:ff,filters:{"1000":ff,"1310":200},see_more:999,isBetGroup:i},{question:{label:"¿Quién ganará el partido? (Apuesta anulada en caso de empate)",short_label:"¿Quién ganará el partido? (Apuesta anulada en caso de empate)"},choices:[{id:5251636989,odd:1.19,status:a,winning:t,actor:{id:a,label:"Aston Villa",abbreviation:"Aston Villa",short:a,actorLabel:"Aston Villa"},oddsDisplay:"1.19",isEmptyChoice:i,td:a,hash:t,main:i},{id:5251636988,odd:3.7,status:a,winning:t,actor:{id:a,label:"Wolverhampton",abbreviation:"Wolverhampton",short:a,actorLabel:"Wolverhampton"},oddsDisplay:"3.70",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:fd,filters:{"1000":fd,"1310":501},see_more:999,isBetGroup:i},{question:{label:"¿Ambos equipos marcarán al menos un gol?",short_label:"¿Ambos equipos marcarán al menos un gol?"},choices:[{id:5252037237,odd:1.62,status:a,winning:t,actor:{id:a,label:"Sí",abbreviation:"Sí",short:a,actorLabel:"Sí"},oddsDisplay:"1.62",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252037238,odd:2.07,status:a,winning:t,actor:{id:a,label:"No",abbreviation:"No",short:a,actorLabel:"No"},oddsDisplay:"2.07",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:700,filters:{"1000":700,"1310":1000},see_more:999,isBetGroup:i},{question:{label:"Hándicaps",short_label:"Hándicap (2:0) - ¿Quién ganará el partido?"},choices:[{id:5252012900,odd:9.5,status:a,winning:t,actor:{id:a,label:"Aston Villa (-3)",abbreviation:"Aston Villa (-3)",short:a,actorLabel:"Aston Villa (-3)"},oddsDisplay:"9.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012901,odd:7.5,status:a,winning:t,actor:{id:a,label:"Empate (-3)",abbreviation:"Empate (-3)",short:a,actorLabel:"Empate (-3)"},oddsDisplay:"7.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012899,odd:1.15,status:a,winning:t,actor:{id:a,label:"Wolverhampton (+3)",abbreviation:"Wolverhampton (+3)",short:a,actorLabel:"Wolverhampton (+3)"},oddsDisplay:"1.15",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012907,odd:4.7,status:a,winning:t,actor:{id:a,label:"Aston Villa (-2)",abbreviation:"Aston Villa (-2)",short:a,actorLabel:"Aston Villa (-2)"},oddsDisplay:"4.70",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012908,odd:4.6,status:a,winning:t,actor:{id:a,label:"Empate (-2)",abbreviation:"Empate (-2)",short:a,actorLabel:"Empate (-2)"},oddsDisplay:"4.60",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012906,odd:1.45,status:a,winning:t,actor:{id:a,label:"Wolverhampton (+2)",abbreviation:"Wolverhampton (+2)",short:a,actorLabel:"Wolverhampton (+2)"},oddsDisplay:"1.45",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373483,odd:2.5,status:a,winning:t,actor:{id:a,label:"Aston Villa (-1)",abbreviation:"Aston Villa (-1)",short:a,actorLabel:"Aston Villa (-1)"},oddsDisplay:"2.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373484,odd:3.65,status:a,winning:t,actor:{id:a,label:"Empate (-1)",abbreviation:"Empate (-1)",short:a,actorLabel:"Empate (-1)"},oddsDisplay:"3.65",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373485,odd:2.27,status:a,winning:t,actor:{id:a,label:"Wolverhampton (+1)",abbreviation:"Wolverhampton (+1)",short:a,actorLabel:"Wolverhampton (+1)"},oddsDisplay:"2.27",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012898,odd:1.15,status:a,winning:t,actor:{id:a,label:"Aston Villa (+1)",abbreviation:"Aston Villa (+1)",short:a,actorLabel:"Aston Villa (+1)"},oddsDisplay:"1.15",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012897,odd:6.75,status:a,winning:t,actor:{id:a,label:"Empate (+1)",abbreviation:"Empate (+1)",short:a,actorLabel:"Empate (+1)"},oddsDisplay:"6.75",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012896,odd:10.5,status:a,winning:t,actor:{id:a,label:"Wolverhampton (-1)",abbreviation:"Wolverhampton (-1)",short:a,actorLabel:"Wolverhampton (-1)"},oddsDisplay:"10.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012910,odd:b,status:a,winning:t,actor:{id:a,label:"Aston Villa (+2)",abbreviation:"Aston Villa (+2)",short:a,actorLabel:"Aston Villa (+2)"},oddsDisplay:"-",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012909,odd:B,status:a,winning:t,actor:{id:a,label:"Empate (+2)",abbreviation:"Empate (+2)",short:a,actorLabel:"Empate (+2)"},oddsDisplay:"14.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012911,odd:cf,status:a,winning:t,actor:{id:a,label:"Wolverhampton (-2)",abbreviation:"Wolverhampton (-2)",short:a,actorLabel:"Wolverhampton (-2)"},oddsDisplay:"27.00",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:e,order:800,filters:{"1000":800,"1310":600},see_more:n,isBetGroup:g},{question:{label:"Resultado del partido y Más\u002FMenos goles",short_label:"¿Resultado y más o menos de 2.5 goles?"},choices:[{id:5252012614,odd:2.17,status:a,winning:t,actor:{id:a,label:"Aston Villa \u002F Más 2.5",abbreviation:"Aston Villa \u002F Más",short:a,actorLabel:"Aston Villa \u002F Más 2.5"},oddsDisplay:"2.17",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012613,odd:r,status:a,winning:t,actor:{id:a,label:"Empate \u002F Más 2.5",abbreviation:"Empate \u002F Más",short:a,actorLabel:"Empate \u002F Más 2.5"},oddsDisplay:"11.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012616,odd:7.5,status:a,winning:t,actor:{id:a,label:"Wolverhampton \u002F Más 2.5",abbreviation:"Wolverhampton \u002F Más",short:a,actorLabel:"Wolverhampton \u002F Más 2.5"},oddsDisplay:"7.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012615,odd:4.7,status:a,winning:t,actor:{id:a,label:"Aston Villa \u002F Menos 2.5",abbreviation:"Aston Villa \u002F Menos",short:a,actorLabel:"Aston Villa \u002F Menos 2.5"},oddsDisplay:"4.70",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012611,odd:5.9,status:a,winning:t,actor:{id:a,label:"Empate \u002F Menos 2.5",abbreviation:"Empate \u002F Menos",short:a,actorLabel:"Empate \u002F Menos 2.5"},oddsDisplay:"5.90",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012612,odd:o,status:a,winning:t,actor:{id:a,label:"Wolverhampton \u002F Menos 2.5",abbreviation:"Wolverhampton \u002F Menos",short:a,actorLabel:"Wolverhampton \u002F Menos 2.5"},oddsDisplay:"12.00",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:e,order:1110,filters:{"1000":1110,"1310":1110,"1315":O},see_more:o,isBetGroup:g},{question:{label:"¿Resultado y ambos equipos marcan?",short_label:"¿Resultado y ambos equipos marcan?"},choices:[{id:5250027050,odd:2.75,status:a,winning:t,actor:{id:a,label:"Aston Villa \u002F Sí",abbreviation:"Aston Villa \u002F Sí",short:a,actorLabel:"Aston Villa \u002F Sí"},oddsDisplay:"2.75",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027055,odd:4.8,status:a,winning:t,actor:{id:a,label:"Empate \u002F Sí",abbreviation:"Empate \u002F Sí",short:a,actorLabel:"Empate \u002F Sí"},oddsDisplay:"4.80",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027051,odd:7.75,status:a,winning:t,actor:{id:a,label:"Wolverhampton \u002F Sí",abbreviation:"Wolverhampton \u002F Sí",short:a,actorLabel:"Wolverhampton \u002F Sí"},oddsDisplay:"7.75",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027053,odd:2.75,status:a,winning:t,actor:{id:a,label:"Aston Villa \u002F No",abbreviation:"Aston Villa \u002F No",short:a,actorLabel:"Aston Villa \u002F No"},oddsDisplay:"2.75",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027052,odd:12.5,status:a,winning:t,actor:{id:a,label:"Empate \u002F No",abbreviation:"Empate \u002F No",short:a,actorLabel:"Empate \u002F No"},oddsDisplay:"12.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027054,odd:n,status:a,winning:t,actor:{id:a,label:"Wolverhampton \u002F No",abbreviation:"Wolverhampton \u002F No",short:a,actorLabel:"Wolverhampton \u002F No"},oddsDisplay:"9.00",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:e,order:1114,filters:{"1000":1114,"1315":dL},see_more:f,isBetGroup:i},{question:{label:"Doble oportunidad y Más\u002FMenos goles",short_label:"¿Doble oportunidad y más o menos de 4.5 goles en el partido?"},choices:[{id:5253380129,odd:1.25,status:a,winning:t,actor:{id:a,label:"Aston Villa o Empate \u002F Más 1.5",abbreviation:"1X \u002F Mas",short:a,actorLabel:"Aston Villa o Empate \u002F Más 1.5"},oddsDisplay:"1.25",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253380127,odd:2.72,status:a,winning:t,actor:{id:a,label:"Empate o Wolverhampton \u002F Más 1.5",abbreviation:"X2 \u002F Mas",short:a,actorLabel:"Empate o Wolverhampton \u002F Más 1.5"},oddsDisplay:"2.72",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253380128,odd:1.31,status:a,winning:t,actor:{id:a,label:"Aston Villa o Wolverhampton \u002F Más 1.5",abbreviation:"12 \u002F Mas",short:a,actorLabel:"Aston Villa o Wolverhampton \u002F Más 1.5"},oddsDisplay:"1.31",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253380131,odd:5.5,status:a,winning:t,actor:{id:a,label:"Aston Villa o Empate \u002F Menos 1.5",abbreviation:"1X \u002F Menos",short:a,actorLabel:"Aston Villa o Empate \u002F Menos 1.5"},oddsDisplay:"5.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253380126,odd:8.25,status:a,winning:t,actor:{id:a,label:"Empate o Wolverhampton \u002F Menos 1.5",abbreviation:"X2 \u002F Menos",short:a,actorLabel:"Empate o Wolverhampton \u002F Menos 1.5"},oddsDisplay:"8.25",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253380130,odd:5.7,status:a,winning:t,actor:{id:a,label:"Aston Villa o Wolverhampton \u002F Menos 1.5",abbreviation:"12 \u002F Menos",short:a,actorLabel:"Aston Villa o Wolverhampton \u002F Menos 1.5"},oddsDisplay:"5.70",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253380115,odd:1.71,status:a,winning:t,actor:{id:a,label:"Aston Villa o Empate \u002F Más 2.5",abbreviation:"1X \u002F Mas",short:a,actorLabel:"Aston Villa o Empate \u002F Más 2.5"},oddsDisplay:"1.71",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253380119,odd:4.4,status:a,winning:t,actor:{id:a,label:"Empate o Wolverhampton \u002F Más 2.5",abbreviation:"X2 \u002F Mas",short:a,actorLabel:"Empate o Wolverhampton \u002F Más 2.5"},oddsDisplay:"4.40",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253380114,odd:1.58,status:a,winning:t,actor:{id:a,label:"Aston Villa o Wolverhampton \u002F Más 2.5",abbreviation:"12 \u002F Mas",short:a,actorLabel:"Aston Villa o Wolverhampton \u002F Más 2.5"},oddsDisplay:"1.58",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253380117,odd:2.5,status:a,winning:t,actor:{id:a,label:"Aston Villa o Empate \u002F Menos 2.5",abbreviation:"1X \u002F Menos",short:a,actorLabel:"Aston Villa o Empate \u002F Menos 2.5"},oddsDisplay:"2.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253380116,odd:3.85,status:a,winning:t,actor:{id:a,label:"Empate o Wolverhampton \u002F Menos 2.5",abbreviation:"X2 \u002F Menos",short:a,actorLabel:"Empate o Wolverhampton \u002F Menos 2.5"},oddsDisplay:"3.85",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253380118,odd:3.25,status:a,winning:t,actor:{id:a,label:"Aston Villa o Wolverhampton \u002F Menos 2.5",abbreviation:"12 \u002F Menos",short:a,actorLabel:"Aston Villa o Wolverhampton \u002F Menos 2.5"},oddsDisplay:"3.25",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253841088,odd:2.52,status:a,winning:t,actor:{id:a,label:"Aston Villa o Empate \u002F Más 3.5",abbreviation:"1X \u002F Mas",short:a,actorLabel:"Aston Villa o Empate \u002F Más 3.5"},oddsDisplay:"2.52",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253841089,odd:6.1,status:a,winning:t,actor:{id:a,label:"Empate o Wolverhampton \u002F Más 3.5",abbreviation:"X2 \u002F Mas",short:a,actorLabel:"Empate o Wolverhampton \u002F Más 3.5"},oddsDisplay:"6.10",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253841090,odd:2.62,status:a,winning:t,actor:{id:a,label:"Aston Villa o Wolverhampton \u002F Más 3.5",abbreviation:"12 \u002F Mas",short:a,actorLabel:"Aston Villa o Wolverhampton \u002F Más 3.5"},oddsDisplay:"2.62",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253841087,odd:1.71,status:a,winning:t,actor:{id:a,label:"Aston Villa o Empate \u002F Menos 3.5",abbreviation:"1X \u002F Menos",short:a,actorLabel:"Aston Villa o Empate \u002F Menos 3.5"},oddsDisplay:"1.71",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253841086,odd:3.05,status:a,winning:t,actor:{id:a,label:"Empate o Wolverhampton \u002F Menos 3.5",abbreviation:"X2 \u002F Menos",short:a,actorLabel:"Empate o Wolverhampton \u002F Menos 3.5"},oddsDisplay:"3.05",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253841091,odd:1.8,status:a,winning:t,actor:{id:a,label:"Aston Villa o Wolverhampton \u002F Menos 3.5",abbreviation:"12 \u002F Menos",short:a,actorLabel:"Aston Villa o Wolverhampton \u002F Menos 3.5"},oddsDisplay:"1.80",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253841078,odd:4.5,status:a,winning:t,actor:{id:a,label:"Aston Villa o Empate \u002F Más 4.5",abbreviation:"1X \u002F Mas",short:a,actorLabel:"Aston Villa o Empate \u002F Más 4.5"},oddsDisplay:"4.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253841082,odd:13.5,status:a,winning:t,actor:{id:a,label:"Empate o Wolverhampton \u002F Más 4.5",abbreviation:"X2 \u002F Mas",short:a,actorLabel:"Empate o Wolverhampton \u002F Más 4.5"},oddsDisplay:"13.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253841080,odd:4.1,status:a,winning:t,actor:{id:a,label:"Aston Villa o Wolverhampton \u002F Más 4.5",abbreviation:"12 \u002F Mas",short:a,actorLabel:"Aston Villa o Wolverhampton \u002F Más 4.5"},oddsDisplay:"4.10",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253841081,odd:1.31,status:a,winning:t,actor:{id:a,label:"Aston Villa o Empate \u002F Menos 4.5",abbreviation:"1X \u002F Menos",short:a,actorLabel:"Aston Villa o Empate \u002F Menos 4.5"},oddsDisplay:"1.31",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253841083,odd:2.42,status:a,winning:t,actor:{id:a,label:"Empate o Wolverhampton \u002F Menos 4.5",abbreviation:"X2 \u002F Menos",short:a,actorLabel:"Empate o Wolverhampton \u002F Menos 4.5"},oddsDisplay:"2.42",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253841079,odd:1.45,status:a,winning:t,actor:{id:a,label:"Aston Villa o Wolverhampton \u002F Menos 4.5",abbreviation:"12 \u002F Menos",short:a,actorLabel:"Aston Villa o Wolverhampton \u002F Menos 4.5"},oddsDisplay:"1.45",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:e,order:1116,filters:{"1000":1116,"1315":300},see_more:o,isBetGroup:g},{question:{label:"Ambos equipos marcan y Más\u002FMenos goles",short_label:"¿Ambos equipos marcan y más o menos de 5.5 goles?"},choices:[{id:5252012665,odd:1.93,status:a,winning:t,actor:{id:a,label:"Sí \u002F Más 2.5",abbreviation:"Sí \u002F Más",short:a,actorLabel:"Sí \u002F Más 2.5"},oddsDisplay:"1.93",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012664,odd:6.1,status:a,winning:t,actor:{id:a,label:"No \u002F Más 2.5",abbreviation:"No \u002F Más",short:a,actorLabel:"No \u002F Más 2.5"},oddsDisplay:"6.10",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012667,odd:j,status:a,winning:t,actor:{id:a,label:"Sí \u002F Menos 2.5",abbreviation:"Sí \u002F Menos",short:a,actorLabel:"Sí \u002F Menos 2.5"},oddsDisplay:"8.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012666,odd:2.87,status:a,winning:t,actor:{id:a,label:"No \u002F Menos 2.5",abbreviation:"No \u002F Menos",short:a,actorLabel:"No \u002F Menos 2.5"},oddsDisplay:"2.87",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027734,odd:2.75,status:a,winning:t,actor:{id:a,label:"Sí \u002F Más 3.5",abbreviation:"Sí \u002F Más",short:a,actorLabel:"Sí \u002F Más 3.5"},oddsDisplay:"2.75",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027733,odd:r,status:a,winning:t,actor:{id:a,label:"No \u002F Más 3.5",abbreviation:"No \u002F Más",short:a,actorLabel:"No \u002F Más 3.5"},oddsDisplay:"11.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027736,odd:3.55,status:a,winning:t,actor:{id:a,label:"Sí \u002F Menos 3.5",abbreviation:"Sí \u002F Menos",short:a,actorLabel:"Sí \u002F Menos 3.5"},oddsDisplay:"3.55",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027735,odd:2.4,status:a,winning:t,actor:{id:a,label:"No \u002F Menos 3.5",abbreviation:"No \u002F Menos",short:a,actorLabel:"No \u002F Menos 3.5"},oddsDisplay:"2.40",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027730,odd:4.3,status:a,winning:t,actor:{id:a,label:"Sí \u002F Más 4.5",abbreviation:"Sí \u002F Más",short:a,actorLabel:"Sí \u002F Más 4.5"},oddsDisplay:"4.30",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027731,odd:N,status:a,winning:t,actor:{id:a,label:"No \u002F Más 4.5",abbreviation:"No \u002F Más",short:a,actorLabel:"No \u002F Más 4.5"},oddsDisplay:"18.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027732,odd:2.37,status:a,winning:t,actor:{id:a,label:"Sí \u002F Menos 4.5",abbreviation:"Sí \u002F Menos",short:a,actorLabel:"Sí \u002F Menos 4.5"},oddsDisplay:"2.37",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027729,odd:2.22,status:a,winning:t,actor:{id:a,label:"No \u002F Menos 4.5",abbreviation:"No \u002F Menos",short:a,actorLabel:"No \u002F Menos 4.5"},oddsDisplay:"2.22",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027727,odd:7.5,status:a,winning:t,actor:{id:a,label:"Sí \u002F Más 5.5",abbreviation:"Sí \u002F Más",short:a,actorLabel:"Sí \u002F Más 5.5"},oddsDisplay:"7.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027726,odd:Q,status:a,winning:t,actor:{id:a,label:"No \u002F Más 5.5",abbreviation:"No \u002F Más",short:a,actorLabel:"No \u002F Más 5.5"},oddsDisplay:"32.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027725,odd:1.93,status:a,winning:t,actor:{id:a,label:"Sí \u002F Menos 5.5",abbreviation:"Sí \u002F Menos",short:a,actorLabel:"Sí \u002F Menos 5.5"},oddsDisplay:"1.93",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027728,odd:2.12,status:a,winning:t,actor:{id:a,label:"No \u002F Menos 5.5",abbreviation:"No \u002F Menos",short:a,actorLabel:"No \u002F Menos 5.5"},oddsDisplay:"2.12",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:1120,filters:{"1000":1120,"1315":500},see_more:h,isBetGroup:g},{question:{label:"¿Ambos equipos marcarán en la 1ª mitad?",short_label:"¿Ambos equipos marcarán en la 1ª mitad?"},choices:[{id:5253737244,odd:3.8,status:a,winning:t,actor:{id:a,label:"Sí",abbreviation:"Sí",short:a,actorLabel:"Sí"},oddsDisplay:"3.80",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253737243,odd:1.2,status:a,winning:t,actor:{id:a,label:"No",abbreviation:"No",short:a,actorLabel:"No"},oddsDisplay:"1.20",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:1150,filters:{"2":d,"1000":1150},see_more:999,isBetGroup:i},{question:{label:"¿Aston Villa gana sin recibir ningún gol?",short_label:"¿Aston Villa gana sin recibir ningún gol?"},choices:[{id:5251101533,odd:2.82,status:a,winning:t,actor:{id:a,label:"Sí",abbreviation:"Sí",short:a,actorLabel:"Sí"},oddsDisplay:"2.82",isEmptyChoice:i,td:a,hash:t,main:i},{id:5251101534,odd:1.33,status:a,winning:t,actor:{id:a,label:"No",abbreviation:"No",short:a,actorLabel:"No"},oddsDisplay:"1.33",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:1200,filters:{"1000":1200,"1310":2000},see_more:999,isBetGroup:i},{question:{label:"¿Wolverhampton gana sin recibir ningún gol?",short_label:"¿Wolverhampton gana sin recibir ningún gol?"},choices:[{id:5249894203,odd:8.25,status:a,winning:t,actor:{id:a,label:"Sí",abbreviation:"Sí",short:a,actorLabel:"Sí"},oddsDisplay:"8.25",isEmptyChoice:i,td:a,hash:t,main:i},{id:5249894204,odd:1.02,status:a,winning:t,actor:{id:a,label:"No",abbreviation:"No",short:a,actorLabel:"No"},oddsDisplay:"1.02",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:1300,filters:{"1000":1300,"1310":2010},see_more:999,isBetGroup:i},{question:{label:"¿Quién ganará la 1ª mitad?",short_label:"¿Quién ganará la 1ª mitad?"},choices:[{id:5252373526,odd:2.05,status:a,winning:t,actor:{id:a,label:"Aston Villa",abbreviation:"Aston Villa",short:a,actorLabel:"Aston Villa"},oddsDisplay:"2.05",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373527,odd:2.4,status:a,winning:t,actor:{id:a,label:"Empate",abbreviation:"Empate",short:a,actorLabel:"Empate"},oddsDisplay:"2.40",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373525,odd:4.8,status:a,winning:t,actor:{id:a,label:"Wolverhampton",abbreviation:"Wolverhampton",short:a,actorLabel:"Wolverhampton"},oddsDisplay:"4.80",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:g,display_by:e,order:1310,filters:{"1000":1310,"1340":dL},see_more:999,isBetGroup:i},{question:{label:"¿Doble oportunidad - 1ª mitad?",short_label:"¿Doble oportunidad - 1ª mitad?"},choices:[{id:5250027048,odd:1.11,status:a,winning:t,actor:{id:a,label:"Aston Villa o Empate",abbreviation:"1X",short:a,actorLabel:"Aston Villa o Empate"},oddsDisplay:"1.11",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027049,odd:1.6,status:a,winning:t,actor:{id:a,label:"Empate o Wolverhampton",abbreviation:"X2",short:a,actorLabel:"Empate o Wolverhampton"},oddsDisplay:"1.60",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027047,odd:1.43,status:a,winning:t,actor:{id:a,label:"Aston Villa o Wolverhampton",abbreviation:"12",short:a,actorLabel:"Aston Villa o Wolverhampton"},oddsDisplay:"1.43",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:e,order:1313,filters:{"1000":1313,"1340":200},see_more:999,isBetGroup:i},{question:{label:"¿Quién ganará la 2ª mitad?",short_label:"¿Quién ganará la 2ª mitad?"},choices:[{id:5252454754,odd:1.85,status:a,winning:t,actor:{id:a,label:"Aston Villa",abbreviation:"Aston Villa",short:a,actorLabel:"Aston Villa"},oddsDisplay:"1.85",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252454752,odd:2.82,status:a,winning:t,actor:{id:a,label:"Empate",abbreviation:"Empate",short:a,actorLabel:"Empate"},oddsDisplay:"2.82",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252454753,odd:4.6,status:a,winning:t,actor:{id:a,label:"Wolverhampton",abbreviation:"Wolverhampton",short:a,actorLabel:"Wolverhampton"},oddsDisplay:"4.60",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:g,display_by:e,order:1320,filters:{"1000":1320,"1345":dL},see_more:999,isBetGroup:i},{question:{label:"¿Doble oportunidad - 2ª mitad?",short_label:"¿Doble oportunidad - 2ª mitad?"},choices:[{id:5250027074,odd:1.12,status:a,winning:t,actor:{id:a,label:"Aston Villa o Empate",abbreviation:"1X",short:a,actorLabel:"Aston Villa o Empate"},oddsDisplay:"1.12",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027076,odd:1.77,status:a,winning:t,actor:{id:a,label:"Empate o Wolverhampton",abbreviation:"X2",short:a,actorLabel:"Empate o Wolverhampton"},oddsDisplay:"1.77",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027075,odd:1.3,status:a,winning:t,actor:{id:a,label:"Aston Villa o Wolverhampton",abbreviation:"12",short:a,actorLabel:"Aston Villa o Wolverhampton"},oddsDisplay:"1.30",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:e,order:1325,filters:{"1000":1325,"1345":200},see_more:999,isBetGroup:i},{question:{label:"¿Quién ganará el primer tiempo? (Apuesta anulada en caso de empate)",short_label:"¿Quién ganará el primer tiempo? (Apuesta anulada en caso de empate)"},choices:[{id:5252373434,odd:1.29,status:a,winning:t,actor:{id:a,label:"Aston Villa",abbreviation:"Aston Villa",short:a,actorLabel:"Aston Villa"},oddsDisplay:"1.29",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373433,odd:3.05,status:a,winning:t,actor:{id:a,label:"Wolverhampton",abbreviation:"Wolverhampton",short:a,actorLabel:"Wolverhampton"},oddsDisplay:"3.05",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:1330,filters:{"1000":1330,"1340":fp},see_more:999,isBetGroup:i},{question:{label:"¿Quién ganará el segundo tiempo? (Apuesta anulada en caso de empate)",short_label:"¿Quién ganará el segundo tiempo? (Apuesta anulada en caso de empate)"},choices:[{id:5251743762,odd:1.27,status:a,winning:t,actor:{id:a,label:"Aston Villa",abbreviation:"Aston Villa",short:a,actorLabel:"Aston Villa"},oddsDisplay:"1.27",isEmptyChoice:i,td:a,hash:t,main:i},{id:5251743764,odd:3.1,status:a,winning:t,actor:{id:a,label:"Wolverhampton",abbreviation:"Wolverhampton",short:a,actorLabel:"Wolverhampton"},oddsDisplay:"3.10",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:1340,filters:{"1000":1340,"1345":300},see_more:999,isBetGroup:i},{question:{label:"¿Aston Villa mantendrá su portería intacta?",short_label:"¿Aston Villa mantendrá su portería intacta?"},choices:[{id:5253380134,odd:2.67,status:a,winning:t,actor:{id:a,label:"Sí",abbreviation:"Sí",short:a,actorLabel:"Sí"},oddsDisplay:"2.67",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253380135,odd:1.37,status:a,winning:t,actor:{id:a,label:"No",abbreviation:"No",short:a,actorLabel:"No"},oddsDisplay:"1.37",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:1385,filters:{"1000":1385},see_more:999,isBetGroup:i},{question:{label:"¿Wolverhampton mantendrá su portería intacta?",short_label:"¿Wolverhampton mantendrá su portería intacta?"},choices:[{id:5251203453,odd:6.5,status:a,winning:t,actor:{id:a,label:"Sí",abbreviation:"Sí",short:a,actorLabel:"Sí"},oddsDisplay:"6.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5251203454,odd:1.05,status:a,winning:t,actor:{id:a,label:"No",abbreviation:"No",short:a,actorLabel:"No"},oddsDisplay:"1.05",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:1390,filters:{"1000":1390},see_more:999,isBetGroup:i},{question:{label:"¿Wolverhampton deja su portería a 0 en la 1ª mitad?",short_label:"¿Wolverhampton deja su portería a 0 en la 1ª mitad?"},choices:[{id:5252037399,odd:2.17,status:a,winning:t,actor:{id:a,label:"Sí",abbreviation:"Sí",short:a,actorLabel:"Sí"},oddsDisplay:"2.17",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252037400,odd:1.55,status:a,winning:t,actor:{id:a,label:"No",abbreviation:"No",short:a,actorLabel:"No"},oddsDisplay:"1.55",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:1396,filters:{"1000":1396},see_more:999,isBetGroup:i},{question:{label:"¿Descanso\u002FResultado Final?",short_label:"¿Descanso\u002FResultado Final?"},choices:[{id:5252012863,odd:2.27,status:a,winning:t,actor:{id:a,label:"Aston Villa \u002F Aston Villa",abbreviation:"Aston Villa \u002F Aston Villa",short:a,actorLabel:"Aston Villa \u002F Aston Villa"},oddsDisplay:"2.27",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012867,odd:13.5,status:a,winning:t,actor:{id:a,label:"Aston Villa \u002F Empate",abbreviation:"Aston Villa \u002F X",short:a,actorLabel:"Aston Villa \u002F Empate"},oddsDisplay:"13.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012861,odd:aD,status:a,winning:t,actor:{id:a,label:"Aston Villa \u002F Wolverhampton",abbreviation:"Aston Villa \u002F Wolverhampton",short:a,actorLabel:"Aston Villa \u002F Wolverhampton"},oddsDisplay:"37.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012862,odd:w,status:a,winning:t,actor:{id:a,label:"Wolverhampton \u002F Aston Villa",abbreviation:"Wolverhampton \u002F Aston Villa",short:a,actorLabel:"Wolverhampton \u002F Aston Villa"},oddsDisplay:"19.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012859,odd:A,status:a,winning:t,actor:{id:a,label:"Wolverhampton \u002F Empate",abbreviation:"Wolverhampton \u002F X",short:a,actorLabel:"Wolverhampton \u002F Empate"},oddsDisplay:"16.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012860,odd:8.25,status:a,winning:t,actor:{id:a,label:"Wolverhampton \u002F Wolverhampton",abbreviation:"Wolverhampton \u002F Wolverhampton",short:a,actorLabel:"Wolverhampton \u002F Wolverhampton"},oddsDisplay:"8.25",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012864,odd:4.3,status:a,winning:t,actor:{id:a,label:"Empate \u002F Aston Villa",abbreviation:"Empate \u002F Aston Villa",short:a,actorLabel:"Empate \u002F Aston Villa"},oddsDisplay:"4.30",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012865,odd:6.4,status:a,winning:t,actor:{id:a,label:"Empate \u002F Empate",abbreviation:"X\u002FX",short:a,actorLabel:"Empate \u002F Empate"},oddsDisplay:"6.40",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012866,odd:r,status:a,winning:t,actor:{id:a,label:"Empate \u002F Wolverhampton",abbreviation:"Empate \u002F Wolverhampton",short:a,actorLabel:"Empate \u002F Wolverhampton"},oddsDisplay:"11.00",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:e,order:1500,filters:{"2":c,"1000":1500},see_more:999,isBetGroup:i},{question:{label:"¿Aston Villa ganará ambas mitades?",short_label:"¿Aston Villa ganará ambas mitades?"},choices:[{id:5253770184,odd:3.75,status:a,winning:t,actor:{id:a,label:"Sí",abbreviation:"Sí",short:a,actorLabel:"Sí"},oddsDisplay:"3.75",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253770185,odd:1.2,status:a,winning:t,actor:{id:a,label:"No",abbreviation:"No",short:a,actorLabel:"No"},oddsDisplay:"1.20",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:1510,filters:{"1000":1510},see_more:999,isBetGroup:i},{question:{label:"¿Aston Villa ganará al menos una mitad?",short_label:"¿Aston Villa ganará al menos una mitad?"},choices:[{id:5251002801,odd:1.27,status:a,winning:t,actor:{id:a,label:"Sí",abbreviation:"Sí",short:a,actorLabel:"Sí"},oddsDisplay:"1.27",isEmptyChoice:i,td:a,hash:t,main:i},{id:5251002800,odd:3.15,status:a,winning:t,actor:{id:a,label:"No",abbreviation:"No",short:a,actorLabel:"No"},oddsDisplay:"3.15",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:1530,filters:{"1000":1530},see_more:999,isBetGroup:i},{question:{label:"¿Wolverhampton ganará al menos una mitad?",short_label:"¿Wolverhampton ganará al menos una mitad?"},choices:[{id:5251002782,odd:2.7,status:a,winning:t,actor:{id:a,label:"Sí",abbreviation:"Sí",short:a,actorLabel:"Sí"},oddsDisplay:"2.70",isEmptyChoice:i,td:a,hash:t,main:i},{id:5251002783,odd:1.37,status:a,winning:t,actor:{id:a,label:"No",abbreviation:"No",short:a,actorLabel:"No"},oddsDisplay:"1.37",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:1540,filters:{"1000":1540},see_more:999,isBetGroup:i},{question:{label:"¿Resultado exacto?",short_label:"¿Resultado exacto?"},choices:[{id:5252373573,odd:5.5,status:a,winning:t,actor:{id:a,label:"Aston Villa 1-0 Wolverhampton",abbreviation:"1:0",short:a,actorLabel:"Aston Villa 1-0 Wolverhampton"},oddsDisplay:"5.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373559,odd:10.5,status:a,winning:t,actor:{id:a,label:"Aston Villa 0-0 Wolverhampton",abbreviation:"0:0",short:a,actorLabel:"Aston Villa 0-0 Wolverhampton"},oddsDisplay:"10.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373572,odd:r,status:a,winning:t,actor:{id:a,label:"Aston Villa 0-1 Wolverhampton",abbreviation:"0:1",short:a,actorLabel:"Aston Villa 0-1 Wolverhampton"},oddsDisplay:"11.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373569,odd:5.1,status:a,winning:t,actor:{id:a,label:"Aston Villa 2-0 Wolverhampton",abbreviation:"2:0",short:a,actorLabel:"Aston Villa 2-0 Wolverhampton"},oddsDisplay:"5.10",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373570,odd:4.8,status:a,winning:t,actor:{id:a,label:"Aston Villa 1-1 Wolverhampton",abbreviation:"1:1",short:a,actorLabel:"Aston Villa 1-1 Wolverhampton"},oddsDisplay:"4.80",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373571,odd:y,status:a,winning:t,actor:{id:a,label:"Aston Villa 0-2 Wolverhampton",abbreviation:"0:2",short:a,actorLabel:"Aston Villa 0-2 Wolverhampton"},oddsDisplay:"21.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373567,odd:4.8,status:a,winning:t,actor:{id:a,label:"Aston Villa 2-1 Wolverhampton",abbreviation:"2:1",short:a,actorLabel:"Aston Villa 2-1 Wolverhampton"},oddsDisplay:"4.80",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373560,odd:8.5,status:a,winning:t,actor:{id:a,label:"Aston Villa 2-2 Wolverhampton",abbreviation:"2:2",short:a,actorLabel:"Aston Villa 2-2 Wolverhampton"},oddsDisplay:"8.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373565,odd:n,status:a,winning:t,actor:{id:a,label:"Aston Villa 1-2 Wolverhampton",abbreviation:"1:2",short:a,actorLabel:"Aston Villa 1-2 Wolverhampton"},oddsDisplay:"9.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373568,odd:7.75,status:a,winning:t,actor:{id:a,label:"Aston Villa 3-0 Wolverhampton",abbreviation:"3:0",short:a,actorLabel:"Aston Villa 3-0 Wolverhampton"},oddsDisplay:"7.75",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373549,odd:ab,status:a,winning:t,actor:{id:a,label:"Aston Villa 3-3 Wolverhampton",abbreviation:"3:3",short:a,actorLabel:"Aston Villa 3-3 Wolverhampton"},oddsDisplay:"35.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373566,odd:O,status:a,winning:t,actor:{id:a,label:"Aston Villa 0-3 Wolverhampton",abbreviation:"0:3",short:a,actorLabel:"Aston Villa 0-3 Wolverhampton"},oddsDisplay:"50.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373561,odd:7.5,status:a,winning:t,actor:{id:a,label:"Aston Villa 3-1 Wolverhampton",abbreviation:"3:1",short:a,actorLabel:"Aston Villa 3-1 Wolverhampton"},oddsDisplay:"7.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:5252373564,odd:R,status:a,winning:t,actor:{id:a,label:"Aston Villa 1-3 Wolverhampton",abbreviation:"1:3",short:a,actorLabel:"Aston Villa 1-3 Wolverhampton"},oddsDisplay:"25.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373558,odd:q,status:a,winning:t,actor:{id:a,label:"Aston Villa 3-2 Wolverhampton",abbreviation:"3:2",short:a,actorLabel:"Aston Villa 3-2 Wolverhampton"},oddsDisplay:"13.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:5252373557,odd:R,status:a,winning:t,actor:{id:a,label:"Aston Villa 2-3 Wolverhampton",abbreviation:"2:3",short:a,actorLabel:"Aston Villa 2-3 Wolverhampton"},oddsDisplay:"25.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373563,odd:14.5,status:a,winning:t,actor:{id:a,label:"Aston Villa 4-0 Wolverhampton",abbreviation:"4:0",short:a,actorLabel:"Aston Villa 4-0 Wolverhampton"},oddsDisplay:"14.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:5252373562,odd:125,status:a,winning:t,actor:{id:a,label:"Aston Villa 0-4 Wolverhampton",abbreviation:"0:4",short:a,actorLabel:"Aston Villa 0-4 Wolverhampton"},oddsDisplay:"125.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373555,odd:13.5,status:a,winning:t,actor:{id:a,label:"Aston Villa 4-1 Wolverhampton",abbreviation:"4:1",short:a,actorLabel:"Aston Villa 4-1 Wolverhampton"},oddsDisplay:"13.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:5252373556,odd:bl,status:a,winning:t,actor:{id:a,label:"Aston Villa 1-4 Wolverhampton",abbreviation:"1:4",short:a,actorLabel:"Aston Villa 1-4 Wolverhampton"},oddsDisplay:"80.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373551,odd:R,status:a,winning:t,actor:{id:a,label:"Aston Villa 4-2 Wolverhampton",abbreviation:"4:2",short:a,actorLabel:"Aston Villa 4-2 Wolverhampton"},oddsDisplay:"25.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:5252373552,odd:dL,status:a,winning:t,actor:{id:a,label:"Aston Villa 2-4 Wolverhampton",abbreviation:"2:4",short:a,actorLabel:"Aston Villa 2-4 Wolverhampton"},oddsDisplay:"100.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373548,odd:bl,status:a,winning:t,actor:{id:a,label:"Aston Villa 4-3 Wolverhampton",abbreviation:"4:3",short:a,actorLabel:"Aston Villa 4-3 Wolverhampton"},oddsDisplay:"80.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:5252373546,odd:125,status:a,winning:t,actor:{id:a,label:"Aston Villa 3-4 Wolverhampton",abbreviation:"3:4",short:a,actorLabel:"Aston Villa 3-4 Wolverhampton"},oddsDisplay:"125.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373554,odd:ab,status:a,winning:t,actor:{id:a,label:"Aston Villa 5-0 Wolverhampton",abbreviation:"5:0",short:a,actorLabel:"Aston Villa 5-0 Wolverhampton"},oddsDisplay:"35.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:5252373553,odd:ab,status:a,winning:t,actor:{id:a,label:"Aston Villa 5-1 Wolverhampton",abbreviation:"5:1",short:a,actorLabel:"Aston Villa 5-1 Wolverhampton"},oddsDisplay:"35.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:5252373547,odd:dK,status:a,winning:t,actor:{id:a,label:"Aston Villa 5-2 Wolverhampton",abbreviation:"5:2",short:a,actorLabel:"Aston Villa 5-2 Wolverhampton"},oddsDisplay:"70.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:5252373544,odd:125,status:a,winning:t,actor:{id:a,label:"Aston Villa 5-3 Wolverhampton",abbreviation:"5:3",short:a,actorLabel:"Aston Villa 5-3 Wolverhampton"},oddsDisplay:"125.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:5252373550,odd:dL,status:a,winning:t,actor:{id:a,label:"Aston Villa 6-0 Wolverhampton",abbreviation:"6:0",short:a,actorLabel:"Aston Villa 6-0 Wolverhampton"},oddsDisplay:"100.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:5252373545,odd:dL,status:a,winning:t,actor:{id:a,label:"Aston Villa 6-1 Wolverhampton",abbreviation:"6:1",short:a,actorLabel:"Aston Villa 6-1 Wolverhampton"},oddsDisplay:"100.00",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:e,order:1600,filters:{"1000":1600,"1350":dL},see_more:s,isBetGroup:i},{question:{label:"¿Resultado múltiple?",short_label:"¿Resultado múltiple?"},choices:[{id:5250027085,odd:3.4,status:a,winning:t,actor:{id:a,label:"Aston Villa 1:0, 2:0, 3:0 Wolverhampton",abbreviation:"1:0, 2:0, 3:0",short:a,actorLabel:"Aston Villa 1:0, 2:0, 3:0 Wolverhampton"},oddsDisplay:"3.40",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027083,odd:3.85,status:a,winning:t,actor:{id:a,label:"Empate",abbreviation:"Empate",short:a,actorLabel:"Empate"},oddsDisplay:"3.85",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027084,odd:9.5,status:a,winning:t,actor:{id:a,label:"Aston Villa 0:1, 0:2, 0:3 Wolverhampton",abbreviation:"0:1, 0:2, 0:3",short:a,actorLabel:"Aston Villa 0:1, 0:2, 0:3 Wolverhampton"},oddsDisplay:"9.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027082,odd:11.5,status:a,winning:t,actor:{id:a,label:"Aston Villa 4:0, 5:0, 6:0 Wolverhampton",abbreviation:"4:0, 5:0, 6:0",short:a,actorLabel:"Aston Villa 4:0, 5:0, 6:0 Wolverhampton"},oddsDisplay:"11.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:5250027086,odd:dK,status:a,winning:t,actor:{id:a,label:"Aston Villa 0:4, 0:5, 0:6 Wolverhampton",abbreviation:"0:4, 0:5, 0:6",short:a,actorLabel:"Aston Villa 0:4, 0:5, 0:6 Wolverhampton"},oddsDisplay:"70.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027089,odd:3.95,status:a,winning:t,actor:{id:a,label:"Aston Villa 2:1, 3:1, 4:1 Wolverhampton",abbreviation:"2:1, 3:1, 4:1",short:a,actorLabel:"Aston Villa 2:1, 3:1, 4:1 Wolverhampton"},oddsDisplay:"3.95",isEmptyChoice:i,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:5250027087,odd:m,status:a,winning:t,actor:{id:a,label:"Aston Villa 1:2, 1:3, 1:4 Wolverhampton",abbreviation:"1:2, 1:3, 1:4",short:a,actorLabel:"Aston Villa 1:2, 1:3, 1:4 Wolverhampton"},oddsDisplay:"10.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027088,odd:n,status:a,winning:t,actor:{id:a,label:"Aston Villa 3:2, 4:2, 4:3, 5:1 Wolverhampton",abbreviation:"3:2, 4:2, 4:3, 5:1",short:a,actorLabel:"Aston Villa 3:2, 4:2, 4:3, 5:1 Wolverhampton"},oddsDisplay:"9.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:5250027090,odd:x,status:a,winning:t,actor:{id:a,label:"Aston Villa 2:3, 2:4, 3:4, 1:5 Wolverhampton",abbreviation:"2:3, 2:4, 3:4, 1:5",short:a,actorLabel:"Aston Villa 2:3, 2:4, 3:4, 1:5 Wolverhampton"},oddsDisplay:"20.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027080,odd:N,status:a,winning:t,actor:{id:a,label:"Aston Villa gana y +más de 6,5 goles (4-3 excluido)",abbreviation:"Aston Villa gana y +más de 6,5 goles (4-3 excluido)",short:a,actorLabel:"Aston Villa gana y +más de 6,5 goles (4-3 excluido)"},oddsDisplay:"18.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:5250027081,odd:dK,status:a,winning:t,actor:{id:a,label:"Wolverhampton gana y +más de 6,5 goles (3-4 excluido)",abbreviation:"Wolverhampton gana y +más de 6,5 goles (3-4 excluido)",short:a,actorLabel:"Wolverhampton gana y +más de 6,5 goles (3-4 excluido)"},oddsDisplay:"70.00",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:e,order:1603,filters:{"1000":1603,"1350":200},see_more:999,isBetGroup:i},{question:{label:"¿Resultado al descanso?",short_label:"¿Resultado al descanso?"},choices:[{id:5252373535,odd:2.52,status:a,winning:t,actor:{id:a,label:"Aston Villa 1-0 Wolverhampton",abbreviation:"1:0",short:a,actorLabel:"Aston Villa 1-0 Wolverhampton"},oddsDisplay:"2.52",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373534,odd:2.52,status:a,winning:t,actor:{id:a,label:"Aston Villa 0-0 Wolverhampton",abbreviation:"0:0",short:a,actorLabel:"Aston Villa 0-0 Wolverhampton"},oddsDisplay:"2.52",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373536,odd:4.8,status:a,winning:t,actor:{id:a,label:"Aston Villa 0-1 Wolverhampton",abbreviation:"0:1",short:a,actorLabel:"Aston Villa 0-1 Wolverhampton"},oddsDisplay:"4.80",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373538,odd:k,status:a,winning:t,actor:{id:a,label:"Aston Villa 2-0 Wolverhampton",abbreviation:"2:0",short:a,actorLabel:"Aston Villa 2-0 Wolverhampton"},oddsDisplay:"5.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373537,odd:4.8,status:a,winning:t,actor:{id:a,label:"Aston Villa 1-1 Wolverhampton",abbreviation:"1:1",short:a,actorLabel:"Aston Villa 1-1 Wolverhampton"},oddsDisplay:"4.80",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373539,odd:s,status:a,winning:t,actor:{id:a,label:"Aston Villa 0-2 Wolverhampton",abbreviation:"0:2",short:a,actorLabel:"Aston Villa 0-2 Wolverhampton"},oddsDisplay:"15.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373542,odd:11.5,status:a,winning:t,actor:{id:a,label:"Aston Villa 2-1 Wolverhampton",abbreviation:"2:1",short:a,actorLabel:"Aston Villa 2-1 Wolverhampton"},oddsDisplay:"11.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373531,odd:dF,status:a,winning:t,actor:{id:a,label:"Aston Villa 2-2 Wolverhampton",abbreviation:"2:2",short:a,actorLabel:"Aston Villa 2-2 Wolverhampton"},oddsDisplay:"45.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373541,odd:N,status:a,winning:t,actor:{id:a,label:"Aston Villa 1-2 Wolverhampton",abbreviation:"1:2",short:a,actorLabel:"Aston Villa 1-2 Wolverhampton"},oddsDisplay:"18.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373540,odd:s,status:a,winning:t,actor:{id:a,label:"Aston Villa 3-0 Wolverhampton",abbreviation:"3:0",short:a,actorLabel:"Aston Villa 3-0 Wolverhampton"},oddsDisplay:"15.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:5252373543,odd:dK,status:a,winning:t,actor:{id:a,label:"Aston Villa 0-3 Wolverhampton",abbreviation:"0:3",short:a,actorLabel:"Aston Villa 0-3 Wolverhampton"},oddsDisplay:"70.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373528,odd:Q,status:a,winning:t,actor:{id:a,label:"Aston Villa 3-1 Wolverhampton",abbreviation:"3:1",short:a,actorLabel:"Aston Villa 3-1 Wolverhampton"},oddsDisplay:"32.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:5252373530,odd:dK,status:a,winning:t,actor:{id:a,label:"Aston Villa 1-3 Wolverhampton",abbreviation:"1:3",short:a,actorLabel:"Aston Villa 1-3 Wolverhampton"},oddsDisplay:"70.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373532,odd:dK,status:a,winning:t,actor:{id:a,label:"Aston Villa 3-2 Wolverhampton",abbreviation:"3:2",short:a,actorLabel:"Aston Villa 3-2 Wolverhampton"},oddsDisplay:"70.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:5252373529,odd:dK,status:a,winning:t,actor:{id:a,label:"Aston Villa 4-0 Wolverhampton",abbreviation:"4:0",short:a,actorLabel:"Aston Villa 4-0 Wolverhampton"},oddsDisplay:"70.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:5252373533,odd:dK,status:a,winning:t,actor:{id:a,label:"Aston Villa 4-1 Wolverhampton",abbreviation:"4:1",short:a,actorLabel:"Aston Villa 4-1 Wolverhampton"},oddsDisplay:"70.00",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:e,order:1620,filters:{"1000":1620,"1340":800,"1350":201},see_more:s,isBetGroup:i},{question:{label:"¿Habrá un penalti en el partido?",short_label:"¿Habrá un penalti en el partido?"},choices:[{id:5251378348,odd:3.35,status:a,winning:t,actor:{id:a,label:"Sí",abbreviation:"Sí",short:a,actorLabel:"Sí"},oddsDisplay:"3.35",isEmptyChoice:i,td:a,hash:t,main:i},{id:5251378347,odd:1.24,status:a,winning:t,actor:{id:a,label:"No",abbreviation:"No",short:a,actorLabel:"No"},oddsDisplay:"1.24",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:1660,filters:{"1000":1660},see_more:999,isBetGroup:i},{question:{label:"¿Primer equipo en marcar?",short_label:"¿Primer equipo en marcar?"},choices:[{id:5253483448,odd:1.36,status:a,winning:t,actor:{id:a,label:"Aston Villa",abbreviation:"Aston Villa",short:a,actorLabel:"Aston Villa"},oddsDisplay:"1.36",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253483447,odd:2.92,status:a,winning:t,actor:{id:a,label:"Wolverhampton",abbreviation:"Wolverhampton",short:a,actorLabel:"Wolverhampton"},oddsDisplay:"2.92",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253483449,odd:14.5,status:a,winning:t,actor:{id:a,label:"Sin goles",abbreviation:"Sin goles",short:a,actorLabel:"Sin goles"},oddsDisplay:"14.50",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:e,order:1700,filters:{"1000":1700,"1310":2200},see_more:999,isBetGroup:i},{question:{label:"Gol X - ¿Quién marcará el gol?",short_label:"¿Quién marcará el gol 1?"},choices:[{id:5253846277,odd:5.8,status:a,winning:t,actor:{id:a,label:"Aston Villa (gol 5)",abbreviation:"Aston Villa",short:a,actorLabel:"Aston Villa (gol 5)"},oddsDisplay:"5.80",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253846278,odd:r,status:a,winning:t,actor:{id:a,label:"Wolverhampton (gol 5)",abbreviation:"Wolverhampton",short:a,actorLabel:"Wolverhampton (gol 5)"},oddsDisplay:"11.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253846276,odd:1.17,status:a,winning:t,actor:{id:a,label:"Sin gol 5",abbreviation:"Sin goles",short:a,actorLabel:"Sin gol 5"},oddsDisplay:"1.17",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253846273,odd:3.35,status:a,winning:t,actor:{id:a,label:"Aston Villa (gol 4)",abbreviation:"Aston Villa",short:a,actorLabel:"Aston Villa (gol 4)"},oddsDisplay:"3.35",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253846272,odd:6.75,status:a,winning:t,actor:{id:a,label:"Wolverhampton (gol 4)",abbreviation:"Wolverhampton",short:a,actorLabel:"Wolverhampton (gol 4)"},oddsDisplay:"6.75",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253846271,odd:1.48,status:a,winning:t,actor:{id:a,label:"Sin gol 4",abbreviation:"Sin goles",short:a,actorLabel:"Sin gol 4"},oddsDisplay:"1.48",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253846267,odd:1.7,status:a,winning:t,actor:{id:a,label:"Aston Villa (gol 2)",abbreviation:"Aston Villa",short:a,actorLabel:"Aston Villa (gol 2)"},oddsDisplay:"1.70",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253846265,odd:3.35,status:a,winning:t,actor:{id:a,label:"Wolverhampton (gol 2)",abbreviation:"Wolverhampton",short:a,actorLabel:"Wolverhampton (gol 2)"},oddsDisplay:"3.35",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253846266,odd:4.4,status:a,winning:t,actor:{id:a,label:"Sin gol 2",abbreviation:"Sin goles",short:a,actorLabel:"Sin gol 2"},oddsDisplay:"4.40",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253846268,odd:2.15,status:a,winning:t,actor:{id:a,label:"Aston Villa (gol 3)",abbreviation:"Aston Villa",short:a,actorLabel:"Aston Villa (gol 3)"},oddsDisplay:"2.15",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253846269,odd:4.4,status:a,winning:t,actor:{id:a,label:"Wolverhampton (gol 3)",abbreviation:"Wolverhampton",short:a,actorLabel:"Wolverhampton (gol 3)"},oddsDisplay:"4.40",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253846270,odd:2.4,status:a,winning:t,actor:{id:a,label:"Sin gol 3",abbreviation:"Sin goles",short:a,actorLabel:"Sin gol 3"},oddsDisplay:"2.40",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253306929,odd:1.43,status:a,winning:t,actor:{id:a,label:"Aston Villa (gol 1)",abbreviation:"Aston Villa",short:a,actorLabel:"Aston Villa (gol 1)"},oddsDisplay:"1.43",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253306927,odd:2.77,status:a,winning:t,actor:{id:a,label:"Wolverhampton (gol 1)",abbreviation:"Wolverhampton",short:a,actorLabel:"Wolverhampton (gol 1)"},oddsDisplay:"2.77",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253306928,odd:N,status:a,winning:t,actor:{id:a,label:"Sin gol 1",abbreviation:"Sin goles",short:a,actorLabel:"Sin gol 1"},oddsDisplay:"18.00",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:e,order:1715,filters:{"1000":1715},see_more:999,isBetGroup:g},{question:{label:"¿Intervalo del primer gol?",short_label:"¿Intervalo del primer gol?"},choices:[{id:5249701104,odd:1.03,status:a,winning:t,actor:{id:a,label:"1er",abbreviation:"1er",short:a,actorLabel:"1er"},oddsDisplay:"1.03",isEmptyChoice:i,td:a,hash:t,main:i},{id:5249701105,odd:3.55,status:a,winning:t,actor:{id:a,label:"2°",abbreviation:"2°",short:a,actorLabel:"2°"},oddsDisplay:"3.55",isEmptyChoice:i,td:a,hash:t,main:i},{id:5249701106,odd:12.5,status:a,winning:t,actor:{id:a,label:"Sin goles",abbreviation:"Sin goles",short:a,actorLabel:"Sin goles"},oddsDisplay:"12.50",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:e,order:1720,filters:{"1000":1720},see_more:999,isBetGroup:i},{question:{label:"¿Último equipo en marcar?",short_label:"¿Último equipo en marcar?"},choices:[{id:5252649170,odd:1.47,status:a,winning:t,actor:{id:a,label:"Aston Villa",abbreviation:"Aston Villa",short:a,actorLabel:"Aston Villa"},oddsDisplay:"1.47",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252649172,odd:2.7,status:a,winning:t,actor:{id:a,label:"Wolverhampton",abbreviation:"Wolverhampton",short:a,actorLabel:"Wolverhampton"},oddsDisplay:"2.70",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252649171,odd:A,status:a,winning:t,actor:{id:a,label:"Sin goles",abbreviation:"Sin goles",short:a,actorLabel:"Sin goles"},oddsDisplay:"16.00",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:e,order:1740,filters:{"1000":1740},see_more:999,isBetGroup:i},{question:{label:"Goleadores",short_label:"Goleadores"},choices:[{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:c,odd:b,status:a,winning:t,actor:{id:a,label:"PLAYER_SCORER",abbreviation:"PLAYER_SCORER",short:a,actorLabel:"PLAYER_SCORER"},oddsDisplay:"-",isEmptyChoice:i,td:a,hash:t,main:i},{id:c,odd:b,status:a,winning:t,actor:{id:a,label:"Sin goles",abbreviation:"Sin goles",short:a,actorLabel:"Sin goles"},oddsDisplay:"-",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711473,odd:5.9,status:a,winning:t,actor:{id:a,label:"Pablo Sarabia",abbreviation:"Pablo Sarabia",short:a,actorLabel:"Pablo Sarabia"},oddsDisplay:"5.90",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711474,odd:q,status:a,winning:t,actor:{id:a,label:"Joao Gomes",abbreviation:"Joao Gomes",short:a,actorLabel:"Joao Gomes"},oddsDisplay:"13.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711475,odd:2.32,status:a,winning:t,actor:{id:a,label:"Jhon Duran",abbreviation:"Jhon Duran",short:a,actorLabel:"Jhon Duran"},oddsDisplay:"2.32",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711476,odd:k,status:a,winning:t,actor:{id:a,label:"Ross Barkley",abbreviation:"Ross Barkley",short:a,actorLabel:"Ross Barkley"},oddsDisplay:"5.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711477,odd:4.3,status:a,winning:t,actor:{id:a,label:"Amadou Onana",abbreviation:"Amadou Onana",short:a,actorLabel:"Amadou Onana"},oddsDisplay:"4.30",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711478,odd:f,status:a,winning:t,actor:{id:a,label:"Carlos Roberto Forbs Borges",abbreviation:"Carlos Roberto Forbs Borges",short:a,actorLabel:"Carlos Roberto Forbs Borges"},oddsDisplay:"6.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711479,odd:2.55,status:a,winning:t,actor:{id:a,label:"Morgan Rogers",abbreviation:"Morgan Rogers",short:a,actorLabel:"Morgan Rogers"},oddsDisplay:"2.55",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711480,odd:14.5,status:a,winning:t,actor:{id:a,label:"Matt Doherty",abbreviation:"Matt Doherty",short:a,actorLabel:"Matt Doherty"},oddsDisplay:"14.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711481,odd:s,status:a,winning:t,actor:{id:a,label:"Craig Dawson",abbreviation:"Craig Dawson",short:a,actorLabel:"Craig Dawson"},oddsDisplay:"15.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711482,odd:s,status:a,winning:t,actor:{id:a,label:"Bastien Meupiyou",abbreviation:"Bastien Meupiyou",short:a,actorLabel:"Bastien Meupiyou"},oddsDisplay:"15.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711483,odd:q,status:a,winning:t,actor:{id:a,label:"Diego Carlos",abbreviation:"Diego Carlos",short:a,actorLabel:"Diego Carlos"},oddsDisplay:"13.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711484,odd:q,status:a,winning:t,actor:{id:a,label:"Lucas Digne",abbreviation:"Lucas Digne",short:a,actorLabel:"Lucas Digne"},oddsDisplay:"13.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711485,odd:9.25,status:a,winning:t,actor:{id:a,label:"Mario Lemina",abbreviation:"Mario Lemina",short:a,actorLabel:"Mario Lemina"},oddsDisplay:"9.25",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711486,odd:3.75,status:a,winning:t,actor:{id:a,label:"Matheus Cunha",abbreviation:"Matheus Cunha",short:a,actorLabel:"Matheus Cunha"},oddsDisplay:"3.75",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711487,odd:h,status:a,winning:t,actor:{id:a,label:"Hee-Chan Hwang",abbreviation:"Hee-Chan Hwang",short:a,actorLabel:"Hee-Chan Hwang"},oddsDisplay:"4.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711488,odd:13.5,status:a,winning:t,actor:{id:a,label:"Ezri Konsa",abbreviation:"Ezri Konsa",short:a,actorLabel:"Ezri Konsa"},oddsDisplay:"13.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711489,odd:3.6,status:a,winning:t,actor:{id:a,label:"Emiliano Buendia",abbreviation:"Emiliano Buendia",short:a,actorLabel:"Emiliano Buendia"},oddsDisplay:"3.60",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711490,odd:A,status:a,winning:t,actor:{id:a,label:"Pedro Lima",abbreviation:"Pedro Lima",short:a,actorLabel:"Pedro Lima"},oddsDisplay:"16.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711491,odd:o,status:a,winning:t,actor:{id:a,label:"Pau Torres",abbreviation:"Pau Torres",short:a,actorLabel:"Pau Torres"},oddsDisplay:"12.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711492,odd:14.5,status:a,winning:t,actor:{id:a,label:"Yerson Mosquera",abbreviation:"Yerson Mosquera",short:a,actorLabel:"Yerson Mosquera"},oddsDisplay:"14.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711493,odd:e,status:a,winning:t,actor:{id:a,label:"Leon Bailey",abbreviation:"Leon Bailey",short:a,actorLabel:"Leon Bailey"},oddsDisplay:"3.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711494,odd:w,status:a,winning:t,actor:{id:a,label:"Toti Gomes",abbreviation:"Toti Gomes",short:a,actorLabel:"Toti Gomes"},oddsDisplay:"19.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711495,odd:m,status:a,winning:t,actor:{id:a,label:"Tommy Doyle",abbreviation:"Tommy Doyle",short:a,actorLabel:"Tommy Doyle"},oddsDisplay:"10.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711496,odd:6.5,status:a,winning:t,actor:{id:a,label:"Youri Tielemans",abbreviation:"Youri Tielemans",short:a,actorLabel:"Youri Tielemans"},oddsDisplay:"6.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711497,odd:3.85,status:a,winning:t,actor:{id:a,label:"Kadan Young",abbreviation:"Kadan Young",short:a,actorLabel:"Kadan Young"},oddsDisplay:"3.85",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711498,odd:24,status:a,winning:t,actor:{id:a,label:"Santiago Bueno",abbreviation:"Santiago Bueno",short:a,actorLabel:"Santiago Bueno"},oddsDisplay:"24.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711499,odd:4.2,status:a,winning:t,actor:{id:a,label:"Goncalo Guedes",abbreviation:"Goncalo Guedes",short:a,actorLabel:"Goncalo Guedes"},oddsDisplay:"4.20",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711500,odd:10.5,status:a,winning:t,actor:{id:a,label:"Rayan Ait Nouri",abbreviation:"Rayan Ait Nouri",short:a,actorLabel:"Rayan Ait Nouri"},oddsDisplay:"10.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711501,odd:5.8,status:a,winning:t,actor:{id:a,label:"Rodrigo Gomes",abbreviation:"Rodrigo Gomes",short:a,actorLabel:"Rodrigo Gomes"},oddsDisplay:"5.80",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711502,odd:3.5,status:a,winning:t,actor:{id:a,label:"Jorgen Strand Larsen",abbreviation:"Jorgen Strand Larsen",short:a,actorLabel:"Jorgen Strand Larsen"},oddsDisplay:"3.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711503,odd:9.5,status:a,winning:t,actor:{id:a,label:"Luke Cundle",abbreviation:"Luke Cundle",short:a,actorLabel:"Luke Cundle"},oddsDisplay:"9.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711504,odd:o,status:a,winning:t,actor:{id:a,label:"Lamare Bogarde",abbreviation:"Lamare Bogarde",short:a,actorLabel:"Lamare Bogarde"},oddsDisplay:"12.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711505,odd:aB,status:a,winning:t,actor:{id:a,label:"André Trindade Da Costa Neto",abbreviation:"André Trindade Da Costa Neto",short:a,actorLabel:"André Trindade Da Costa Neto"},oddsDisplay:"23.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711506,odd:9.75,status:a,winning:t,actor:{id:a,label:"Ian Maatsen",abbreviation:"Ian Maatsen",short:a,actorLabel:"Ian Maatsen"},oddsDisplay:"9.75",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711507,odd:2.2,status:a,winning:t,actor:{id:a,label:"Ollie Watkins",abbreviation:"Ollie Watkins",short:a,actorLabel:"Ollie Watkins"},oddsDisplay:"2.20",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711508,odd:l,status:a,winning:t,actor:{id:a,label:"Jean-Ricner Bellegarde",abbreviation:"Jean-Ricner Bellegarde",short:a,actorLabel:"Jean-Ricner Bellegarde"},oddsDisplay:"7.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711509,odd:x,status:a,winning:t,actor:{id:a,label:"Nelson Semedo",abbreviation:"Nelson Semedo",short:a,actorLabel:"Nelson Semedo"},oddsDisplay:"20.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711510,odd:q,status:a,winning:t,actor:{id:a,label:"Boubacar Traore",abbreviation:"Boubacar Traore",short:a,actorLabel:"Boubacar Traore"},oddsDisplay:"13.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711511,odd:4.8,status:a,winning:t,actor:{id:a,label:"John Mcginn",abbreviation:"John Mcginn",short:a,actorLabel:"John Mcginn"},oddsDisplay:"4.80",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711512,odd:3.15,status:a,winning:t,actor:{id:a,label:"Jaden Philogene-Bidace",abbreviation:"Jaden Philogene-Bidace",short:a,actorLabel:"Jaden Philogene-Bidace"},oddsDisplay:"3.15",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711513,odd:3.25,status:a,winning:t,actor:{id:a,label:"Jacob Ramsey",abbreviation:"Jacob Ramsey",short:a,actorLabel:"Jacob Ramsey"},oddsDisplay:"3.25",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711514,odd:13.5,status:a,winning:t,actor:{id:a,label:"Kosta Nedeljkovic",abbreviation:"Kosta Nedeljkovic",short:a,actorLabel:"Kosta Nedeljkovic"},oddsDisplay:"13.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711515,odd:6.1,status:a,winning:t,actor:{id:a,label:"Matty Cash",abbreviation:"Matty Cash",short:a,actorLabel:"Matty Cash"},oddsDisplay:"6.10",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:2050,filters:{"1000":2050,"1320":m},see_more:m,isBetGroup:i},{question:{label:"Primer goleador",short_label:"Primer goleador"},choices:[{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:c,odd:b,status:a,winning:t,actor:{id:a,label:"PLAYER_SCORER",abbreviation:"PLAYER_SCORER",short:a,actorLabel:"PLAYER_SCORER"},oddsDisplay:"-",isEmptyChoice:i,td:a,hash:t,main:i},{id:c,odd:b,status:a,winning:t,actor:{id:a,label:"Sin goles",abbreviation:"Sin goles",short:a,actorLabel:"Sin goles"},oddsDisplay:"-",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898300,odd:4.4,status:a,winning:t,actor:{id:a,label:"Ollie Watkins",abbreviation:"Ollie Watkins",short:a,actorLabel:"Ollie Watkins"},oddsDisplay:"4.40",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898301,odd:G,status:a,winning:t,actor:{id:a,label:"Joao Gomes",abbreviation:"Joao Gomes",short:a,actorLabel:"Joao Gomes"},oddsDisplay:"17.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898302,odd:10.5,status:a,winning:t,actor:{id:a,label:"Rodrigo Gomes",abbreviation:"Rodrigo Gomes",short:a,actorLabel:"Rodrigo Gomes"},oddsDisplay:"10.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898303,odd:4.7,status:a,winning:t,actor:{id:a,label:"Jhon Duran",abbreviation:"Jhon Duran",short:a,actorLabel:"Jhon Duran"},oddsDisplay:"4.70",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898304,odd:N,status:a,winning:t,actor:{id:a,label:"Bastien Meupiyou",abbreviation:"Bastien Meupiyou",short:a,actorLabel:"Bastien Meupiyou"},oddsDisplay:"18.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898305,odd:s,status:a,winning:t,actor:{id:a,label:"Tommy Doyle",abbreviation:"Tommy Doyle",short:a,actorLabel:"Tommy Doyle"},oddsDisplay:"15.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898306,odd:r,status:a,winning:t,actor:{id:a,label:"Carlos Roberto Forbs Borges",abbreviation:"Carlos Roberto Forbs Borges",short:a,actorLabel:"Carlos Roberto Forbs Borges"},oddsDisplay:"11.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898307,odd:G,status:a,winning:t,actor:{id:a,label:"Boubacar Traore",abbreviation:"Boubacar Traore",short:a,actorLabel:"Boubacar Traore"},oddsDisplay:"17.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898308,odd:6.5,status:a,winning:t,actor:{id:a,label:"Jaden Philogene-Bidace",abbreviation:"Jaden Philogene-Bidace",short:a,actorLabel:"Jaden Philogene-Bidace"},oddsDisplay:"6.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898309,odd:14.5,status:a,winning:t,actor:{id:a,label:"Ian Maatsen",abbreviation:"Ian Maatsen",short:a,actorLabel:"Ian Maatsen"},oddsDisplay:"14.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898310,odd:8.25,status:a,winning:t,actor:{id:a,label:"Goncalo Guedes",abbreviation:"Goncalo Guedes",short:a,actorLabel:"Goncalo Guedes"},oddsDisplay:"8.25",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898311,odd:G,status:a,winning:t,actor:{id:a,label:"Ezri Konsa",abbreviation:"Ezri Konsa",short:a,actorLabel:"Ezri Konsa"},oddsDisplay:"17.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898312,odd:A,status:a,winning:t,actor:{id:a,label:"Pau Torres",abbreviation:"Pau Torres",short:a,actorLabel:"Pau Torres"},oddsDisplay:"16.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898313,odd:N,status:a,winning:t,actor:{id:a,label:"Pedro Lima",abbreviation:"Pedro Lima",short:a,actorLabel:"Pedro Lima"},oddsDisplay:"18.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898314,odd:11.5,status:a,winning:t,actor:{id:a,label:"Youri Tielemans",abbreviation:"Youri Tielemans",short:a,actorLabel:"Youri Tielemans"},oddsDisplay:"11.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898315,odd:o,status:a,winning:t,actor:{id:a,label:"Jean-Ricner Bellegarde",abbreviation:"Jean-Ricner Bellegarde",short:a,actorLabel:"Jean-Ricner Bellegarde"},oddsDisplay:"12.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898316,odd:G,status:a,winning:t,actor:{id:a,label:"Kosta Nedeljkovic",abbreviation:"Kosta Nedeljkovic",short:a,actorLabel:"Kosta Nedeljkovic"},oddsDisplay:"17.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898317,odd:l,status:a,winning:t,actor:{id:a,label:"Jorgen Strand Larsen",abbreviation:"Jorgen Strand Larsen",short:a,actorLabel:"Jorgen Strand Larsen"},oddsDisplay:"7.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898318,odd:9.5,status:a,winning:t,actor:{id:a,label:"John Mcginn",abbreviation:"John Mcginn",short:a,actorLabel:"John Mcginn"},oddsDisplay:"9.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898319,odd:6.5,status:a,winning:t,actor:{id:a,label:"Jacob Ramsey",abbreviation:"Jacob Ramsey",short:a,actorLabel:"Jacob Ramsey"},oddsDisplay:"6.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898320,odd:s,status:a,winning:t,actor:{id:a,label:"Rayan Ait Nouri",abbreviation:"Rayan Ait Nouri",short:a,actorLabel:"Rayan Ait Nouri"},oddsDisplay:"15.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898321,odd:j,status:a,winning:t,actor:{id:a,label:"Hee-Chan Hwang",abbreviation:"Hee-Chan Hwang",short:a,actorLabel:"Hee-Chan Hwang"},oddsDisplay:"8.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898322,odd:6.1,status:a,winning:t,actor:{id:a,label:"Leon Bailey",abbreviation:"Leon Bailey",short:a,actorLabel:"Leon Bailey"},oddsDisplay:"6.10",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898323,odd:8.5,status:a,winning:t,actor:{id:a,label:"Amadou Onana",abbreviation:"Amadou Onana",short:a,actorLabel:"Amadou Onana"},oddsDisplay:"8.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898324,odd:x,status:a,winning:t,actor:{id:a,label:"André Trindade Da Costa Neto",abbreviation:"André Trindade Da Costa Neto",short:a,actorLabel:"André Trindade Da Costa Neto"},oddsDisplay:"20.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898325,odd:7.25,status:a,winning:t,actor:{id:a,label:"Emiliano Buendia",abbreviation:"Emiliano Buendia",short:a,actorLabel:"Emiliano Buendia"},oddsDisplay:"7.25",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898326,odd:y,status:a,winning:t,actor:{id:a,label:"Santiago Bueno",abbreviation:"Santiago Bueno",short:a,actorLabel:"Santiago Bueno"},oddsDisplay:"21.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898327,odd:r,status:a,winning:t,actor:{id:a,label:"Pablo Sarabia",abbreviation:"Pablo Sarabia",short:a,actorLabel:"Pablo Sarabia"},oddsDisplay:"11.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898328,odd:N,status:a,winning:t,actor:{id:a,label:"Craig Dawson",abbreviation:"Craig Dawson",short:a,actorLabel:"Craig Dawson"},oddsDisplay:"18.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898329,odd:9.5,status:a,winning:t,actor:{id:a,label:"Ross Barkley",abbreviation:"Ross Barkley",short:a,actorLabel:"Ross Barkley"},oddsDisplay:"9.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898330,odd:B,status:a,winning:t,actor:{id:a,label:"Mario Lemina",abbreviation:"Mario Lemina",short:a,actorLabel:"Mario Lemina"},oddsDisplay:"14.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898331,odd:5.2,status:a,winning:t,actor:{id:a,label:"Morgan Rogers",abbreviation:"Morgan Rogers",short:a,actorLabel:"Morgan Rogers"},oddsDisplay:"5.20",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898332,odd:G,status:a,winning:t,actor:{id:a,label:"Diego Carlos",abbreviation:"Diego Carlos",short:a,actorLabel:"Diego Carlos"},oddsDisplay:"17.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898333,odd:7.5,status:a,winning:t,actor:{id:a,label:"Matheus Cunha",abbreviation:"Matheus Cunha",short:a,actorLabel:"Matheus Cunha"},oddsDisplay:"7.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898334,odd:G,status:a,winning:t,actor:{id:a,label:"Lucas Digne",abbreviation:"Lucas Digne",short:a,actorLabel:"Lucas Digne"},oddsDisplay:"17.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898335,odd:14.5,status:a,winning:t,actor:{id:a,label:"Luke Cundle",abbreviation:"Luke Cundle",short:a,actorLabel:"Luke Cundle"},oddsDisplay:"14.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898336,odd:7.75,status:a,winning:t,actor:{id:a,label:"Kadan Young",abbreviation:"Kadan Young",short:a,actorLabel:"Kadan Young"},oddsDisplay:"7.75",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898337,odd:A,status:a,winning:t,actor:{id:a,label:"Lamare Bogarde",abbreviation:"Lamare Bogarde",short:a,actorLabel:"Lamare Bogarde"},oddsDisplay:"16.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253898338,odd:r,status:a,winning:t,actor:{id:a,label:"Matty Cash",abbreviation:"Matty Cash",short:a,actorLabel:"Matty Cash"},oddsDisplay:"11.00",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:2300,filters:{"1000":2300,"1320":x},see_more:m,isBetGroup:i},{question:{label:"¿Quién marcará al menos 2 goles ?",short_label:"¿Quién marcará al menos 2 goles ?"},choices:[{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:c,odd:b,status:a,winning:t,actor:{id:a,label:"PLAYER_SCORER",abbreviation:"PLAYER_SCORER",short:a,actorLabel:"PLAYER_SCORER"},oddsDisplay:"-",isEmptyChoice:i,td:a,hash:t,main:i},{id:c,odd:b,status:a,winning:t,actor:{id:a,label:"Sin goles",abbreviation:"Sin goles",short:a,actorLabel:"Sin goles"},oddsDisplay:"-",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711387,odd:w,status:a,winning:t,actor:{id:a,label:"Jorgen Strand Larsen",abbreviation:"Jorgen Strand Larsen",short:a,actorLabel:"Jorgen Strand Larsen"},oddsDisplay:"19.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711388,odd:7.75,status:a,winning:t,actor:{id:a,label:"Jhon Duran",abbreviation:"Jhon Duran",short:a,actorLabel:"Jhon Duran"},oddsDisplay:"7.75",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711389,odd:14.5,status:a,winning:t,actor:{id:a,label:"Jaden Philogene-Bidace",abbreviation:"Jaden Philogene-Bidace",short:a,actorLabel:"Jaden Philogene-Bidace"},oddsDisplay:"14.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711390,odd:24,status:a,winning:t,actor:{id:a,label:"Matheus Cunha",abbreviation:"Matheus Cunha",short:a,actorLabel:"Matheus Cunha"},oddsDisplay:"24.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711391,odd:300,status:a,winning:t,actor:{id:a,label:"Bastien Meupiyou",abbreviation:"Bastien Meupiyou",short:a,actorLabel:"Bastien Meupiyou"},oddsDisplay:"300.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711392,odd:300,status:a,winning:t,actor:{id:a,label:"Santiago Bueno",abbreviation:"Santiago Bueno",short:a,actorLabel:"Santiago Bueno"},oddsDisplay:"300.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711393,odd:z,status:a,winning:t,actor:{id:a,label:"Goncalo Guedes",abbreviation:"Goncalo Guedes",short:a,actorLabel:"Goncalo Guedes"},oddsDisplay:"29.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711394,odd:150,status:a,winning:t,actor:{id:a,label:"Pau Torres",abbreviation:"Pau Torres",short:a,actorLabel:"Pau Torres"},oddsDisplay:"150.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711395,odd:300,status:a,winning:t,actor:{id:a,label:"Pedro Lima",abbreviation:"Pedro Lima",short:a,actorLabel:"Pedro Lima"},oddsDisplay:"300.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711396,odd:dL,status:a,winning:t,actor:{id:a,label:"Tommy Doyle",abbreviation:"Tommy Doyle",short:a,actorLabel:"Tommy Doyle"},oddsDisplay:"100.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711397,odd:bl,status:a,winning:t,actor:{id:a,label:"Jean-Ricner Bellegarde",abbreviation:"Jean-Ricner Bellegarde",short:a,actorLabel:"Jean-Ricner Bellegarde"},oddsDisplay:"80.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711398,odd:150,status:a,winning:t,actor:{id:a,label:"Joao Gomes",abbreviation:"Joao Gomes",short:a,actorLabel:"Joao Gomes"},oddsDisplay:"150.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711399,odd:cf,status:a,winning:t,actor:{id:a,label:"Hee-Chan Hwang",abbreviation:"Hee-Chan Hwang",short:a,actorLabel:"Hee-Chan Hwang"},oddsDisplay:"27.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711400,odd:150,status:a,winning:t,actor:{id:a,label:"Lamare Bogarde",abbreviation:"Lamare Bogarde",short:a,actorLabel:"Lamare Bogarde"},oddsDisplay:"150.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711401,odd:150,status:a,winning:t,actor:{id:a,label:"Boubacar Traore",abbreviation:"Boubacar Traore",short:a,actorLabel:"Boubacar Traore"},oddsDisplay:"150.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711402,odd:150,status:a,winning:t,actor:{id:a,label:"Diego Carlos",abbreviation:"Diego Carlos",short:a,actorLabel:"Diego Carlos"},oddsDisplay:"150.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711403,odd:200,status:a,winning:t,actor:{id:a,label:"Kosta Nedeljkovic",abbreviation:"Kosta Nedeljkovic",short:a,actorLabel:"Kosta Nedeljkovic"},oddsDisplay:"200.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711404,odd:300,status:a,winning:t,actor:{id:a,label:"Toti Gomes",abbreviation:"Toti Gomes",short:a,actorLabel:"Toti Gomes"},oddsDisplay:"300.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711405,odd:S,status:a,winning:t,actor:{id:a,label:"Rodrigo Gomes",abbreviation:"Rodrigo Gomes",short:a,actorLabel:"Rodrigo Gomes"},oddsDisplay:"60.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711406,odd:150,status:a,winning:t,actor:{id:a,label:"Ezri Konsa",abbreviation:"Ezri Konsa",short:a,actorLabel:"Ezri Konsa"},oddsDisplay:"150.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711407,odd:7.25,status:a,winning:t,actor:{id:a,label:"Ollie Watkins",abbreviation:"Ollie Watkins",short:a,actorLabel:"Ollie Watkins"},oddsDisplay:"7.25",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711408,odd:bl,status:a,winning:t,actor:{id:a,label:"Youri Tielemans",abbreviation:"Youri Tielemans",short:a,actorLabel:"Youri Tielemans"},oddsDisplay:"80.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711409,odd:dL,status:a,winning:t,actor:{id:a,label:"Ian Maatsen",abbreviation:"Ian Maatsen",short:a,actorLabel:"Ian Maatsen"},oddsDisplay:"100.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711410,odd:s,status:a,winning:t,actor:{id:a,label:"Jacob Ramsey",abbreviation:"Jacob Ramsey",short:a,actorLabel:"Jacob Ramsey"},oddsDisplay:"15.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711411,odd:250,status:a,winning:t,actor:{id:a,label:"Yerson Mosquera",abbreviation:"Yerson Mosquera",short:a,actorLabel:"Yerson Mosquera"},oddsDisplay:"250.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711412,odd:150,status:a,winning:t,actor:{id:a,label:"Rayan Ait Nouri",abbreviation:"Rayan Ait Nouri",short:a,actorLabel:"Rayan Ait Nouri"},oddsDisplay:"150.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711413,odd:dL,status:a,winning:t,actor:{id:a,label:"Luke Cundle",abbreviation:"Luke Cundle",short:a,actorLabel:"Luke Cundle"},oddsDisplay:"100.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711414,odd:300,status:a,winning:t,actor:{id:a,label:"Nelson Semedo",abbreviation:"Nelson Semedo",short:a,actorLabel:"Nelson Semedo"},oddsDisplay:"300.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711415,odd:300,status:a,winning:t,actor:{id:a,label:"Craig Dawson",abbreviation:"Craig Dawson",short:a,actorLabel:"Craig Dawson"},oddsDisplay:"300.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711416,odd:S,status:a,winning:t,actor:{id:a,label:"Carlos Roberto Forbs Borges",abbreviation:"Carlos Roberto Forbs Borges",short:a,actorLabel:"Carlos Roberto Forbs Borges"},oddsDisplay:"60.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711417,odd:24,status:a,winning:t,actor:{id:a,label:"Kadan Young",abbreviation:"Kadan Young",short:a,actorLabel:"Kadan Young"},oddsDisplay:"24.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711418,odd:300,status:a,winning:t,actor:{id:a,label:"André Trindade Da Costa Neto",abbreviation:"André Trindade Da Costa Neto",short:a,actorLabel:"André Trindade Da Costa Neto"},oddsDisplay:"300.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711419,odd:dF,status:a,winning:t,actor:{id:a,label:"John Mcginn",abbreviation:"John Mcginn",short:a,actorLabel:"John Mcginn"},oddsDisplay:"45.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711420,odd:z,status:a,winning:t,actor:{id:a,label:"Amadou Onana",abbreviation:"Amadou Onana",short:a,actorLabel:"Amadou Onana"},oddsDisplay:"29.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711421,odd:O,status:a,winning:t,actor:{id:a,label:"Ross Barkley",abbreviation:"Ross Barkley",short:a,actorLabel:"Ross Barkley"},oddsDisplay:"50.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711422,odd:y,status:a,winning:t,actor:{id:a,label:"Emiliano Buendia",abbreviation:"Emiliano Buendia",short:a,actorLabel:"Emiliano Buendia"},oddsDisplay:"21.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711423,odd:12.5,status:a,winning:t,actor:{id:a,label:"Leon Bailey",abbreviation:"Leon Bailey",short:a,actorLabel:"Leon Bailey"},oddsDisplay:"12.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711424,odd:dL,status:a,winning:t,actor:{id:a,label:"Mario Lemina",abbreviation:"Mario Lemina",short:a,actorLabel:"Mario Lemina"},oddsDisplay:"100.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711425,odd:9.25,status:a,winning:t,actor:{id:a,label:"Morgan Rogers",abbreviation:"Morgan Rogers",short:a,actorLabel:"Morgan Rogers"},oddsDisplay:"9.25",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711426,odd:150,status:a,winning:t,actor:{id:a,label:"Lucas Digne",abbreviation:"Lucas Digne",short:a,actorLabel:"Lucas Digne"},oddsDisplay:"150.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711427,odd:S,status:a,winning:t,actor:{id:a,label:"Pablo Sarabia",abbreviation:"Pablo Sarabia",short:a,actorLabel:"Pablo Sarabia"},oddsDisplay:"60.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711428,odd:dK,status:a,winning:t,actor:{id:a,label:"Matty Cash",abbreviation:"Matty Cash",short:a,actorLabel:"Matty Cash"},oddsDisplay:"70.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711429,odd:200,status:a,winning:t,actor:{id:a,label:"Matt Doherty",abbreviation:"Matt Doherty",short:a,actorLabel:"Matt Doherty"},oddsDisplay:"200.00",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:2500,filters:{"1000":2500,"1320":J},see_more:m,isBetGroup:i},{question:{label:"¿Quién marcará al menos 3 goles?",short_label:"¿Quién marcará al menos 3 goles?"},choices:[{id:c,odd:-1,status:a,winning:t,actor:{id:a,label:a,abbreviation:a,short:a,actorLabel:a},oddsDisplay:t,isEmptyChoice:g,td:a,hash:t,main:i},{id:c,odd:b,status:a,winning:t,actor:{id:a,label:"PLAYER_SCORER",abbreviation:"PLAYER_SCORER",short:a,actorLabel:"PLAYER_SCORER"},oddsDisplay:"-",isEmptyChoice:i,td:a,hash:t,main:i},{id:c,odd:b,status:a,winning:t,actor:{id:a,label:"Sin goles",abbreviation:"Sin goles",short:a,actorLabel:"Sin goles"},oddsDisplay:"-",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711333,odd:dI,status:a,winning:t,actor:{id:a,label:"Jhon Duran",abbreviation:"Jhon Duran",short:a,actorLabel:"Jhon Duran"},oddsDisplay:"28.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711334,odd:350,status:a,winning:t,actor:{id:a,label:"Bastien Meupiyou",abbreviation:"Bastien Meupiyou",short:a,actorLabel:"Bastien Meupiyou"},oddsDisplay:"350.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711335,odd:350,status:a,winning:t,actor:{id:a,label:"Joao Gomes",abbreviation:"Joao Gomes",short:a,actorLabel:"Joao Gomes"},oddsDisplay:"350.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711336,odd:125,status:a,winning:t,actor:{id:a,label:"Kadan Young",abbreviation:"Kadan Young",short:a,actorLabel:"Kadan Young"},oddsDisplay:"125.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711337,odd:350,status:a,winning:t,actor:{id:a,label:"Pau Torres",abbreviation:"Pau Torres",short:a,actorLabel:"Pau Torres"},oddsDisplay:"350.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711338,odd:350,status:a,winning:t,actor:{id:a,label:"Craig Dawson",abbreviation:"Craig Dawson",short:a,actorLabel:"Craig Dawson"},oddsDisplay:"350.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711339,odd:350,status:a,winning:t,actor:{id:a,label:"Pedro Lima",abbreviation:"Pedro Lima",short:a,actorLabel:"Pedro Lima"},oddsDisplay:"350.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711340,odd:350,status:a,winning:t,actor:{id:a,label:"Luke Cundle",abbreviation:"Luke Cundle",short:a,actorLabel:"Luke Cundle"},oddsDisplay:"350.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711341,odd:aB,status:a,winning:t,actor:{id:a,label:"Ollie Watkins",abbreviation:"Ollie Watkins",short:a,actorLabel:"Ollie Watkins"},oddsDisplay:"23.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711342,odd:250,status:a,winning:t,actor:{id:a,label:"Amadou Onana",abbreviation:"Amadou Onana",short:a,actorLabel:"Amadou Onana"},oddsDisplay:"250.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711343,odd:225,status:a,winning:t,actor:{id:a,label:"Ross Barkley",abbreviation:"Ross Barkley",short:a,actorLabel:"Ross Barkley"},oddsDisplay:"225.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711344,odd:225,status:a,winning:t,actor:{id:a,label:"John Mcginn",abbreviation:"John Mcginn",short:a,actorLabel:"John Mcginn"},oddsDisplay:"225.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711345,odd:fp,status:a,winning:t,actor:{id:a,label:"André Trindade Da Costa Neto",abbreviation:"André Trindade Da Costa Neto",short:a,actorLabel:"André Trindade Da Costa Neto"},oddsDisplay:"400.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711346,odd:350,status:a,winning:t,actor:{id:a,label:"Jean-Ricner Bellegarde",abbreviation:"Jean-Ricner Bellegarde",short:a,actorLabel:"Jean-Ricner Bellegarde"},oddsDisplay:"350.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711347,odd:350,status:a,winning:t,actor:{id:a,label:"Boubacar Traore",abbreviation:"Boubacar Traore",short:a,actorLabel:"Boubacar Traore"},oddsDisplay:"350.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711348,odd:300,status:a,winning:t,actor:{id:a,label:"Rodrigo Gomes",abbreviation:"Rodrigo Gomes",short:a,actorLabel:"Rodrigo Gomes"},oddsDisplay:"300.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711349,odd:350,status:a,winning:t,actor:{id:a,label:"Ezri Konsa",abbreviation:"Ezri Konsa",short:a,actorLabel:"Ezri Konsa"},oddsDisplay:"350.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711350,odd:250,status:a,winning:t,actor:{id:a,label:"Goncalo Guedes",abbreviation:"Goncalo Guedes",short:a,actorLabel:"Goncalo Guedes"},oddsDisplay:"250.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711351,odd:350,status:a,winning:t,actor:{id:a,label:"Toti Gomes",abbreviation:"Toti Gomes",short:a,actorLabel:"Toti Gomes"},oddsDisplay:"350.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711352,odd:350,status:a,winning:t,actor:{id:a,label:"Mario Lemina",abbreviation:"Mario Lemina",short:a,actorLabel:"Mario Lemina"},oddsDisplay:"350.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711353,odd:250,status:a,winning:t,actor:{id:a,label:"Youri Tielemans",abbreviation:"Youri Tielemans",short:a,actorLabel:"Youri Tielemans"},oddsDisplay:"250.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711354,odd:350,status:a,winning:t,actor:{id:a,label:"Nelson Semedo",abbreviation:"Nelson Semedo",short:a,actorLabel:"Nelson Semedo"},oddsDisplay:"350.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711355,odd:350,status:a,winning:t,actor:{id:a,label:"Yerson Mosquera",abbreviation:"Yerson Mosquera",short:a,actorLabel:"Yerson Mosquera"},oddsDisplay:"350.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711356,odd:125,status:a,winning:t,actor:{id:a,label:"Hee-Chan Hwang",abbreviation:"Hee-Chan Hwang",short:a,actorLabel:"Hee-Chan Hwang"},oddsDisplay:"125.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711357,odd:450,status:a,winning:t,actor:{id:a,label:"Santiago Bueno",abbreviation:"Santiago Bueno",short:a,actorLabel:"Santiago Bueno"},oddsDisplay:"450.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711358,odd:350,status:a,winning:t,actor:{id:a,label:"Matt Doherty",abbreviation:"Matt Doherty",short:a,actorLabel:"Matt Doherty"},oddsDisplay:"350.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711359,odd:300,status:a,winning:t,actor:{id:a,label:"Carlos Roberto Forbs Borges",abbreviation:"Carlos Roberto Forbs Borges",short:a,actorLabel:"Carlos Roberto Forbs Borges"},oddsDisplay:"300.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711360,odd:350,status:a,winning:t,actor:{id:a,label:"Lucas Digne",abbreviation:"Lucas Digne",short:a,actorLabel:"Lucas Digne"},oddsDisplay:"350.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711361,odd:dF,status:a,winning:t,actor:{id:a,label:"Morgan Rogers",abbreviation:"Morgan Rogers",short:a,actorLabel:"Morgan Rogers"},oddsDisplay:"45.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711362,odd:bl,status:a,winning:t,actor:{id:a,label:"Jaden Philogene-Bidace",abbreviation:"Jaden Philogene-Bidace",short:a,actorLabel:"Jaden Philogene-Bidace"},oddsDisplay:"80.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711363,odd:300,status:a,winning:t,actor:{id:a,label:"Lamare Bogarde",abbreviation:"Lamare Bogarde",short:a,actorLabel:"Lamare Bogarde"},oddsDisplay:"300.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711364,odd:125,status:a,winning:t,actor:{id:a,label:"Matheus Cunha",abbreviation:"Matheus Cunha",short:a,actorLabel:"Matheus Cunha"},oddsDisplay:"125.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711365,odd:90,status:a,winning:t,actor:{id:a,label:"Emiliano Buendia",abbreviation:"Emiliano Buendia",short:a,actorLabel:"Emiliano Buendia"},oddsDisplay:"90.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711366,odd:250,status:a,winning:t,actor:{id:a,label:"Pablo Sarabia",abbreviation:"Pablo Sarabia",short:a,actorLabel:"Pablo Sarabia"},oddsDisplay:"250.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711367,odd:350,status:a,winning:t,actor:{id:a,label:"Rayan Ait Nouri",abbreviation:"Rayan Ait Nouri",short:a,actorLabel:"Rayan Ait Nouri"},oddsDisplay:"350.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711368,odd:350,status:a,winning:t,actor:{id:a,label:"Diego Carlos",abbreviation:"Diego Carlos",short:a,actorLabel:"Diego Carlos"},oddsDisplay:"350.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711369,odd:300,status:a,winning:t,actor:{id:a,label:"Matty Cash",abbreviation:"Matty Cash",short:a,actorLabel:"Matty Cash"},oddsDisplay:"300.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711370,odd:350,status:a,winning:t,actor:{id:a,label:"Kosta Nedeljkovic",abbreviation:"Kosta Nedeljkovic",short:a,actorLabel:"Kosta Nedeljkovic"},oddsDisplay:"350.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711371,odd:350,status:a,winning:t,actor:{id:a,label:"Tommy Doyle",abbreviation:"Tommy Doyle",short:a,actorLabel:"Tommy Doyle"},oddsDisplay:"350.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711372,odd:bl,status:a,winning:t,actor:{id:a,label:"Leon Bailey",abbreviation:"Leon Bailey",short:a,actorLabel:"Leon Bailey"},oddsDisplay:"80.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711373,odd:300,status:a,winning:t,actor:{id:a,label:"Ian Maatsen",abbreviation:"Ian Maatsen",short:a,actorLabel:"Ian Maatsen"},oddsDisplay:"300.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711374,odd:90,status:a,winning:t,actor:{id:a,label:"Jacob Ramsey",abbreviation:"Jacob Ramsey",short:a,actorLabel:"Jacob Ramsey"},oddsDisplay:"90.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253711375,odd:90,status:a,winning:t,actor:{id:a,label:"Jorgen Strand Larsen",abbreviation:"Jorgen Strand Larsen",short:a,actorLabel:"Jorgen Strand Larsen"},oddsDisplay:"90.00",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:2600,filters:{"1000":2600,"1320":ab},see_more:m,isBetGroup:i},{question:{label:"¿Número de goles en el partido?",short_label:"¿Número de goles en el partido?"},choices:[{id:5252012816,odd:6.5,status:a,winning:t,actor:{id:a,label:"1",abbreviation:"1",short:a,actorLabel:"1"},oddsDisplay:"6.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012814,odd:h,status:a,winning:t,actor:{id:a,label:"2",abbreviation:"2",short:a,actorLabel:"2"},oddsDisplay:"4.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012811,odd:h,status:a,winning:t,actor:{id:a,label:"3",abbreviation:"3",short:a,actorLabel:"3"},oddsDisplay:"4.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012813,odd:k,status:a,winning:t,actor:{id:a,label:"4",abbreviation:"4",short:a,actorLabel:"4"},oddsDisplay:"5.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012809,odd:j,status:a,winning:t,actor:{id:a,label:"5",abbreviation:"5",short:a,actorLabel:"5"},oddsDisplay:"8.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012810,odd:s,status:a,winning:t,actor:{id:a,label:"6",abbreviation:"6",short:a,actorLabel:"6"},oddsDisplay:"15.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012812,odd:G,status:a,winning:t,actor:{id:a,label:"7 o más",abbreviation:"7 o más",short:a,actorLabel:"7 o más"},oddsDisplay:"17.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012815,odd:G,status:a,winning:t,actor:{id:a,label:"Sin goles",abbreviation:"Sin goles",short:a,actorLabel:"Sin goles"},oddsDisplay:"17.00",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:e,order:4000,filters:{"1000":4000},see_more:999,isBetGroup:i},{question:{label:"1º Parte - Más\u002FMenos goles",short_label:"¿Más o menos de 3.5 goles en la 1ª mitad?"},choices:[{id:5252012889,odd:1.22,status:a,winning:t,actor:{id:a,label:"Más 0.5",abbreviation:"Más",short:a,actorLabel:"Más 0.5"},oddsDisplay:"1.22",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012890,odd:3.3,status:a,winning:t,actor:{id:a,label:"Menos 0.5",abbreviation:"Menos",short:a,actorLabel:"Menos 0.5"},oddsDisplay:"3.30",isEmptyChoice:i,td:a,hash:t,main:i},{id:5249589142,odd:2.2,status:a,winning:t,actor:{id:a,label:"Más 1.5",abbreviation:"Más",short:a,actorLabel:"Más 1.5"},oddsDisplay:"2.20",isEmptyChoice:i,td:a,hash:t,main:i},{id:5249589143,odd:1.53,status:a,winning:t,actor:{id:a,label:"Menos 1.5",abbreviation:"Menos",short:a,actorLabel:"Menos 1.5"},oddsDisplay:"1.53",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012891,odd:4.9,status:a,winning:t,actor:{id:a,label:"Más 2.5",abbreviation:"Más",short:a,actorLabel:"Más 2.5"},oddsDisplay:"4.90",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012892,odd:1.1,status:a,winning:t,actor:{id:a,label:"Menos 2.5",abbreviation:"Menos",short:a,actorLabel:"Menos 2.5"},oddsDisplay:"1.10",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012888,odd:12.5,status:a,winning:t,actor:{id:a,label:"Más 3.5",abbreviation:"Más",short:a,actorLabel:"Más 3.5"},oddsDisplay:"12.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012887,odd:b,status:a,winning:t,actor:{id:a,label:"Menos 3.5",abbreviation:"Menos",short:a,actorLabel:"Menos 3.5"},oddsDisplay:"-",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:4400,filters:{"1000":4400,"1340":430,"1365":200},see_more:h,isBetGroup:g},{question:{label:"2º Parte - Más\u002FMenos goles",short_label:"¿Más o menos de 4.5 goles en la 2ª mitad?"},choices:[{id:5253738764,odd:1.11,status:a,winning:t,actor:{id:a,label:"Más 0.5",abbreviation:"Más",short:a,actorLabel:"Más 0.5"},oddsDisplay:"1.11",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253738763,odd:4.7,status:a,winning:t,actor:{id:a,label:"Menos 0.5",abbreviation:"Menos",short:a,actorLabel:"Menos 0.5"},oddsDisplay:"4.70",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252370860,odd:1.73,status:a,winning:t,actor:{id:a,label:"Más 1.5",abbreviation:"Más",short:a,actorLabel:"Más 1.5"},oddsDisplay:"1.73",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252370859,odd:1.85,status:a,winning:t,actor:{id:a,label:"Menos 1.5",abbreviation:"Menos",short:a,actorLabel:"Menos 1.5"},oddsDisplay:"1.85",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253831220,odd:3.2,status:a,winning:t,actor:{id:a,label:"Más 2.5",abbreviation:"Más",short:a,actorLabel:"Más 2.5"},oddsDisplay:"3.20",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253831219,odd:1.24,status:a,winning:t,actor:{id:a,label:"Menos 2.5",abbreviation:"Menos",short:a,actorLabel:"Menos 2.5"},oddsDisplay:"1.24",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253846283,odd:6.75,status:a,winning:t,actor:{id:a,label:"Más 3.5",abbreviation:"Más",short:a,actorLabel:"Más 3.5"},oddsDisplay:"6.75",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253846284,odd:1.03,status:a,winning:t,actor:{id:a,label:"Menos 3.5",abbreviation:"Menos",short:a,actorLabel:"Menos 3.5"},oddsDisplay:"1.03",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253831218,odd:N,status:a,winning:t,actor:{id:a,label:"Más 4.5",abbreviation:"Más",short:a,actorLabel:"Más 4.5"},oddsDisplay:"18.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253831217,odd:b,status:a,winning:t,actor:{id:a,label:"Menos 4.5",abbreviation:"Menos",short:a,actorLabel:"Menos 4.5"},oddsDisplay:"-",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:4450,filters:{"1000":4450,"1345":200,"1365":210},see_more:h,isBetGroup:g},{question:{label:"¿Número de goles en 1ª mitad?",short_label:"¿Número de goles en 1ª mitad?"},choices:[{id:5252012802,odd:2.6,status:a,winning:t,actor:{id:a,label:"1",abbreviation:"1",short:a,actorLabel:"1"},oddsDisplay:"2.60",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012804,odd:3.7,status:a,winning:t,actor:{id:a,label:"2",abbreviation:"2",short:a,actorLabel:"2"},oddsDisplay:"3.70",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012803,odd:7.5,status:a,winning:t,actor:{id:a,label:"3",abbreviation:"3",short:a,actorLabel:"3"},oddsDisplay:"7.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012805,odd:x,status:a,winning:t,actor:{id:a,label:"4",abbreviation:"4",short:a,actorLabel:"4"},oddsDisplay:"20.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012801,odd:bk,status:a,winning:t,actor:{id:a,label:"5 o más",abbreviation:a,short:a,actorLabel:"5 o más"},oddsDisplay:"40.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012800,odd:3.45,status:a,winning:t,actor:{id:a,label:"Sin goles",abbreviation:"Sin goles",short:a,actorLabel:"Sin goles"},oddsDisplay:"3.45",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:4460,filters:{"1000":4460,"1340":440},see_more:999,isBetGroup:i},{question:{label:"¿Número de goles en la 2ª mitad?",short_label:"¿Número de goles en la 2ª mitad?"},choices:[{id:5252012883,odd:2.97,status:a,winning:t,actor:{id:a,label:"1",abbreviation:"1",short:a,actorLabel:"1"},oddsDisplay:"2.97",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012882,odd:3.4,status:a,winning:t,actor:{id:a,label:"2",abbreviation:"2",short:a,actorLabel:"2"},oddsDisplay:"3.40",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012881,odd:5.4,status:a,winning:t,actor:{id:a,label:"3",abbreviation:"3",short:a,actorLabel:"3"},oddsDisplay:"5.40",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012884,odd:o,status:a,winning:t,actor:{id:a,label:"4",abbreviation:"4",short:a,actorLabel:"4"},oddsDisplay:"12.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012886,odd:N,status:a,winning:t,actor:{id:a,label:"5 o más",abbreviation:a,short:a,actorLabel:"5 o más"},oddsDisplay:"18.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012885,odd:4.9,status:a,winning:t,actor:{id:a,label:"Sin goles",abbreviation:"Sin goles",short:a,actorLabel:"Sin goles"},oddsDisplay:"4.90",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:4465,filters:{"1000":4465},see_more:999,isBetGroup:i},{question:{label:"¿Mitad con más goles?",short_label:"¿Mitad con más goles?"},choices:[{id:5249375419,odd:3.05,status:a,winning:t,actor:{id:a,label:"1er",abbreviation:"1er",short:a,actorLabel:"1er"},oddsDisplay:"3.05",isEmptyChoice:i,td:a,hash:t,main:i},{id:5249375420,odd:1.95,status:a,winning:t,actor:{id:a,label:"2°",abbreviation:"2°",short:a,actorLabel:"2°"},oddsDisplay:"1.95",isEmptyChoice:i,td:a,hash:t,main:i},{id:5249375418,odd:3.65,status:a,winning:t,actor:{id:a,label:"Igual",abbreviation:"Igual",short:a,actorLabel:"Igual"},oddsDisplay:"3.65",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:e,order:4470,filters:{"1000":4470},see_more:999,isBetGroup:i},{question:{label:"Aston Villa - Más\u002FMenos goles",short_label:"¿Más o Menos de 4.5 goles para Aston Villa?"},choices:[{id:5252036690,odd:1.06,status:a,winning:t,actor:{id:a,label:"Más 0.5",abbreviation:"Más",short:a,actorLabel:"Más 0.5"},oddsDisplay:"1.06",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252036689,odd:f,status:a,winning:t,actor:{id:a,label:"Menos 0.5",abbreviation:"Menos",short:a,actorLabel:"Menos 0.5"},oddsDisplay:"6.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252037407,odd:1.5,status:a,winning:t,actor:{id:a,label:"Más 1.5",abbreviation:"Más",short:a,actorLabel:"Más 1.5"},oddsDisplay:"1.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252037408,odd:2.3,status:a,winning:t,actor:{id:a,label:"Menos 1.5",abbreviation:"Menos",short:a,actorLabel:"Menos 1.5"},oddsDisplay:"2.30",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252649085,odd:2.57,status:a,winning:t,actor:{id:a,label:"Más 2.5",abbreviation:"Más",short:a,actorLabel:"Más 2.5"},oddsDisplay:"2.57",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252649086,odd:1.41,status:a,winning:t,actor:{id:a,label:"Menos 2.5",abbreviation:"Menos",short:a,actorLabel:"Menos 2.5"},oddsDisplay:"1.41",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012685,odd:4.9,status:a,winning:t,actor:{id:a,label:"Más 3.5",abbreviation:"Más",short:a,actorLabel:"Más 3.5"},oddsDisplay:"4.90",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012684,odd:1.11,status:a,winning:t,actor:{id:a,label:"Menos 3.5",abbreviation:"Menos",short:a,actorLabel:"Menos 3.5"},oddsDisplay:"1.11",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012687,odd:9.5,status:a,winning:t,actor:{id:a,label:"Más 4.5",abbreviation:"Más",short:a,actorLabel:"Más 4.5"},oddsDisplay:"9.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012686,odd:1.01,status:a,winning:t,actor:{id:a,label:"Menos 4.5",abbreviation:"Menos",short:a,actorLabel:"Menos 4.5"},oddsDisplay:"1.01",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:4500,filters:{"1000":4500,"1365":300},see_more:h,isBetGroup:g},{question:{label:"Wolverhampton - Más\u002FMenos goles",short_label:"¿Más o Menos de 3.5 goles para Wolverhampton?"},choices:[{id:5252012873,odd:1.43,status:a,winning:t,actor:{id:a,label:"Más 0.5",abbreviation:"Más",short:a,actorLabel:"Más 0.5"},oddsDisplay:"1.43",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012874,odd:2.5,status:a,winning:t,actor:{id:a,label:"Menos 0.5",abbreviation:"Menos",short:a,actorLabel:"Menos 0.5"},oddsDisplay:"2.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012878,odd:3.05,status:a,winning:t,actor:{id:a,label:"Más 1.5",abbreviation:"Más",short:a,actorLabel:"Más 1.5"},oddsDisplay:"3.05",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012877,odd:1.29,status:a,winning:t,actor:{id:a,label:"Menos 1.5",abbreviation:"Menos",short:a,actorLabel:"Menos 1.5"},oddsDisplay:"1.29",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012875,odd:8.25,status:a,winning:t,actor:{id:a,label:"Más 2.5",abbreviation:"Más",short:a,actorLabel:"Más 2.5"},oddsDisplay:"8.25",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012876,odd:1.02,status:a,winning:t,actor:{id:a,label:"Menos 2.5",abbreviation:"Menos",short:a,actorLabel:"Menos 2.5"},oddsDisplay:"1.02",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012872,odd:aB,status:a,winning:t,actor:{id:a,label:"Más 3.5",abbreviation:"Más",short:a,actorLabel:"Más 3.5"},oddsDisplay:"23.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012871,odd:b,status:a,winning:t,actor:{id:a,label:"Menos 3.5",abbreviation:"Menos",short:a,actorLabel:"Menos 3.5"},oddsDisplay:"-",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:4600,filters:{"1000":4600,"1365":eT},see_more:h,isBetGroup:g},{question:{label:"¿Número de goles marcados por Aston Villa?",short_label:"¿Número de goles marcados por Aston Villa?"},choices:[{id:5252012618,odd:3.3,status:a,winning:t,actor:{id:a,label:"1",abbreviation:"1",short:a,actorLabel:"1"},oddsDisplay:"3.30",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012619,odd:3.15,status:a,winning:t,actor:{id:a,label:"2",abbreviation:"2",short:a,actorLabel:"2"},oddsDisplay:"3.15",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012620,odd:2.57,status:a,winning:t,actor:{id:a,label:"3 o más",abbreviation:a,short:a,actorLabel:"3 o más"},oddsDisplay:"2.57",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012617,odd:6.75,status:a,winning:t,actor:{id:a,label:"Sin goles",abbreviation:"Sin goles",short:a,actorLabel:"Sin goles"},oddsDisplay:"6.75",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:4651,filters:{"1000":4651},see_more:999,isBetGroup:i},{question:{label:"¿Número de goles marcados por Wolverhampton?",short_label:"¿Número de goles marcados por Wolverhampton?"},choices:[{id:5250027070,odd:2.45,status:a,winning:t,actor:{id:a,label:"1",abbreviation:"1",short:a,actorLabel:"1"},oddsDisplay:"2.45",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027071,odd:4.4,status:a,winning:t,actor:{id:a,label:"2",abbreviation:"2",short:a,actorLabel:"2"},oddsDisplay:"4.40",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027073,odd:8.5,status:a,winning:t,actor:{id:a,label:"3 o más",abbreviation:a,short:a,actorLabel:"3 o más"},oddsDisplay:"8.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027072,odd:2.5,status:a,winning:t,actor:{id:a,label:"Sin goles",abbreviation:"Sin goles",short:a,actorLabel:"Sin goles"},oddsDisplay:"2.50",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:4661,filters:{"1000":4661},see_more:999,isBetGroup:i},{question:{label:"¿Aston Villa marca?",short_label:"¿Aston Villa marca?"},choices:[{id:5253835423,odd:1.05,status:a,winning:t,actor:{id:a,label:"Sí",abbreviation:"Sí",short:a,actorLabel:"Sí"},oddsDisplay:"1.05",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253835422,odd:6.4,status:a,winning:t,actor:{id:a,label:"No",abbreviation:"No",short:a,actorLabel:"No"},oddsDisplay:"6.40",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:4670,filters:{"1000":4670},see_more:999,isBetGroup:i},{question:{label:"¿Wolverhampton marca?",short_label:"¿Wolverhampton marca?"},choices:[{id:5253835433,odd:1.43,status:a,winning:t,actor:{id:a,label:"Sí",abbreviation:"Sí",short:a,actorLabel:"Sí"},oddsDisplay:"1.43",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253835432,odd:2.52,status:a,winning:t,actor:{id:a,label:"No",abbreviation:"No",short:a,actorLabel:"No"},oddsDisplay:"2.52",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:4671,filters:{"1000":4671},see_more:999,isBetGroup:i},{question:{label:"¿Aston Villa marcará en cada mitad?",short_label:"¿Aston Villa marcará en cada mitad?"},choices:[{id:5253835427,odd:2.17,status:a,winning:t,actor:{id:a,label:"Sí",abbreviation:"Sí",short:a,actorLabel:"Sí"},oddsDisplay:"2.17",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253835426,odd:1.55,status:a,winning:t,actor:{id:a,label:"No",abbreviation:"No",short:a,actorLabel:"No"},oddsDisplay:"1.55",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:4680,filters:{"1000":4680},see_more:999,isBetGroup:i},{question:{label:"¿Wolverhampton marcará en cada mitad?",short_label:"¿Wolverhampton marcará en cada mitad?"},choices:[{id:5251002767,odd:k,status:a,winning:t,actor:{id:a,label:"Sí",abbreviation:"Sí",short:a,actorLabel:"Sí"},oddsDisplay:"5.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5251002768,odd:1.11,status:a,winning:t,actor:{id:a,label:"No",abbreviation:"No",short:a,actorLabel:"No"},oddsDisplay:"1.11",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:4685,filters:{"1000":4685},see_more:999,isBetGroup:i},{question:{label:"¿Ambos equipos marcarán en la 2ª mitad?",short_label:"¿Ambos equipos marcarán en la 2ª mitad?"},choices:[{id:5249375579,odd:2.85,status:a,winning:t,actor:{id:a,label:"Sí",abbreviation:"Sí",short:a,actorLabel:"Sí"},oddsDisplay:"2.85",isEmptyChoice:i,td:a,hash:t,main:i},{id:5249375580,odd:1.33,status:a,winning:t,actor:{id:a,label:"No",abbreviation:"No",short:a,actorLabel:"No"},oddsDisplay:"1.33",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:4688,filters:{"1000":4688},see_more:999,isBetGroup:i},{question:{label:"¿Los dos equipos marcarán en las dos mitades?",short_label:"¿Los dos equipos marcarán en las dos mitades?"},choices:[{id:5252493184,odd:9.75,status:a,winning:t,actor:{id:a,label:"Sí",abbreviation:"Sí",short:a,actorLabel:"Sí"},oddsDisplay:"9.75",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252493185,odd:b,status:a,winning:t,actor:{id:a,label:"No",abbreviation:"No",short:a,actorLabel:"No"},oddsDisplay:"-",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:4689,filters:{"1000":4689},see_more:999,isBetGroup:i},{question:{label:"¿Mitad con más goles para Aston Villa?",short_label:"¿Mitad con más goles para Aston Villa?"},choices:[{id:5250027063,odd:3.15,status:a,winning:t,actor:{id:a,label:"1er",abbreviation:"1er",short:a,actorLabel:"1er"},oddsDisplay:"3.15",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027065,odd:2.2,status:a,winning:t,actor:{id:a,label:"2°",abbreviation:"2°",short:a,actorLabel:"2°"},oddsDisplay:"2.20",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027064,odd:2.95,status:a,winning:t,actor:{id:a,label:"Igual",abbreviation:"Igual",short:a,actorLabel:"Igual"},oddsDisplay:"2.95",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:e,order:4690,filters:{"1000":4690},see_more:999,isBetGroup:i},{question:{label:"¿Mitad con más goles para Wolverhampton?",short_label:"¿Mitad con más goles para Wolverhampton?"},choices:[{id:5250027079,odd:3.8,status:a,winning:t,actor:{id:a,label:"1er",abbreviation:"1er",short:a,actorLabel:"1er"},oddsDisplay:"3.80",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027077,odd:2.82,status:a,winning:t,actor:{id:a,label:"2°",abbreviation:"2°",short:a,actorLabel:"2°"},oddsDisplay:"2.82",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027078,odd:2.02,status:a,winning:t,actor:{id:a,label:"Igual",abbreviation:"Igual",short:a,actorLabel:"Igual"},oddsDisplay:"2.02",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:e,order:4691,filters:{"1000":4691},see_more:999,isBetGroup:i},{question:{label:"1º Parte - Aston Villa - Más\u002FMenos goles",short_label:"¿Más o menos de 2.5 goles de Aston Villa en la 1ª mitad?"},choices:[{id:5252037396,odd:1.52,status:a,winning:t,actor:{id:a,label:"Más 0.5",abbreviation:"Más",short:a,actorLabel:"Más 0.5"},oddsDisplay:"1.52",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252037395,odd:2.22,status:a,winning:t,actor:{id:a,label:"Menos 0.5",abbreviation:"Menos",short:a,actorLabel:"Menos 0.5"},oddsDisplay:"2.22",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252247615,odd:3.55,status:a,winning:t,actor:{id:a,label:"Más 1.5",abbreviation:"Más",short:a,actorLabel:"Más 1.5"},oddsDisplay:"3.55",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252247614,odd:1.22,status:a,winning:t,actor:{id:a,label:"Menos 1.5",abbreviation:"Menos",short:a,actorLabel:"Menos 1.5"},oddsDisplay:"1.22",isEmptyChoice:i,td:a,hash:t,main:i},{id:5249375584,odd:9.5,status:a,winning:t,actor:{id:a,label:"Más 2.5",abbreviation:"Más",short:a,actorLabel:"Más 2.5"},oddsDisplay:"9.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5249375583,odd:1.01,status:a,winning:t,actor:{id:a,label:"Menos 2.5",abbreviation:"Menos",short:a,actorLabel:"Menos 2.5"},oddsDisplay:"1.01",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:4700,filters:{"1000":4700,"1340":600,"1365":fp},see_more:f,isBetGroup:g},{question:{label:"1º Parte - Wolverhampton - Más\u002FMenos goles",short_label:"¿Más o menos de 0.5 goles de Wolverhampton en la 1ª mitad?"},choices:[{id:5252842777,odd:2.42,status:a,winning:t,actor:{id:a,label:"Más 0.5",abbreviation:"Más",short:a,actorLabel:"Más 0.5"},oddsDisplay:"2.42",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252842776,odd:1.45,status:a,winning:t,actor:{id:a,label:"Menos 0.5",abbreviation:"Menos",short:a,actorLabel:"Menos 0.5"},oddsDisplay:"1.45",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:4900,filters:{"1000":4900,"1340":605},see_more:f,isBetGroup:g},{question:{label:"Número de goles marcados por Aston Villa en la 1ª mitad",short_label:"Número de goles marcados por Aston Villa en la 1ª mitad"},choices:[{id:5250027059,odd:2.45,status:a,winning:t,actor:{id:a,label:"1",abbreviation:"1",short:a,actorLabel:"1"},oddsDisplay:"2.45",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027057,odd:4.8,status:a,winning:t,actor:{id:a,label:"2",abbreviation:"2",short:a,actorLabel:"2"},oddsDisplay:"4.80",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027056,odd:10.5,status:a,winning:t,actor:{id:a,label:"3 o más",abbreviation:a,short:a,actorLabel:"3 o más"},oddsDisplay:"10.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027058,odd:2.25,status:a,winning:t,actor:{id:a,label:"Sin goles",abbreviation:"Sin goles",short:a,actorLabel:"Sin goles"},oddsDisplay:"2.25",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:5100,filters:{"1000":5100,"1340":620},see_more:999,isBetGroup:i},{question:{label:"Número de goles marcados por Wolverhampton en el la 1ª mitad",short_label:"Número de goles marcados por Wolverhampton en el la 1ª mitad"},choices:[{id:5250027067,odd:2.92,status:a,winning:t,actor:{id:a,label:"1",abbreviation:"1",short:a,actorLabel:"1"},oddsDisplay:"2.92",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027066,odd:r,status:a,winning:t,actor:{id:a,label:"2",abbreviation:"2",short:a,actorLabel:"2"},oddsDisplay:"11.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027068,odd:ab,status:a,winning:t,actor:{id:a,label:"3 o más",abbreviation:a,short:a,actorLabel:"3 o más"},oddsDisplay:"35.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5250027069,odd:1.43,status:a,winning:t,actor:{id:a,label:"Sin goles",abbreviation:"Sin goles",short:a,actorLabel:"Sin goles"},oddsDisplay:"1.43",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:5200,filters:{"1000":5200,"1340":621},see_more:999,isBetGroup:i},{question:{label:"1º Parte - Handicaps",short_label:"Hándicap (1:0) - ¿Quién ganará la 1ª mitad?"},choices:[{id:5252373465,odd:5.1,status:a,winning:t,actor:{id:a,label:"Aston Villa (-1)",abbreviation:"Aston Villa (-1)",short:a,actorLabel:"Aston Villa (-1)"},oddsDisplay:"5.10",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373467,odd:3.05,status:a,winning:t,actor:{id:a,label:"Empate (-1)",abbreviation:"Empate (-1)",short:a,actorLabel:"Empate (-1)"},oddsDisplay:"3.05",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373466,odd:1.7,status:a,winning:t,actor:{id:a,label:"Wolverhampton (+1)",abbreviation:"Wolverhampton (+1)",short:a,actorLabel:"Wolverhampton (+1)"},oddsDisplay:"1.70",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373477,odd:1.14,status:a,winning:t,actor:{id:a,label:"Aston Villa (+1)",abbreviation:"Aston Villa (+1)",short:a,actorLabel:"Aston Villa (+1)"},oddsDisplay:"1.14",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373476,odd:5.9,status:a,winning:t,actor:{id:a,label:"Empate (+1)",abbreviation:"Empate (+1)",short:a,actorLabel:"Empate (+1)"},oddsDisplay:"5.90",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373478,odd:A,status:a,winning:t,actor:{id:a,label:"Wolverhampton (-1)",abbreviation:"Wolverhampton (-1)",short:a,actorLabel:"Wolverhampton (-1)"},oddsDisplay:"16.00",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:e,order:bg,filters:{"1000":bg,"1340":410},see_more:n,isBetGroup:g},{question:{label:"1º Parte - Handicaps",short_label:"Handicap (-0.5) - ¿Quién ganará la 1ª mitad?"},choices:[{id:5252373494,odd:d,status:a,winning:t,actor:{id:a,label:"Aston Villa (-0.5)",abbreviation:"Aston Villa (-0.5)",short:a,actorLabel:"Aston Villa (-0.5)"},oddsDisplay:"2.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373495,odd:1.65,status:a,winning:t,actor:{id:a,label:"Wolverhampton (+0.5)",abbreviation:"Wolverhampton (+0.5)",short:a,actorLabel:"Wolverhampton (+0.5)"},oddsDisplay:"1.65",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:6100,filters:{"1000":6100,"1340":412},see_more:f,isBetGroup:g},{question:{label:"¿Qué equipo sacará más corners en el partido?",short_label:"¿Qué equipo sacará más corners en el partido?"},choices:[{id:5252012939,odd:1.22,status:a,winning:t,actor:{id:a,label:"Aston Villa",abbreviation:"Aston Villa",short:a,actorLabel:"Aston Villa"},oddsDisplay:"1.22",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012937,odd:r,status:a,winning:t,actor:{id:a,label:"Empate",abbreviation:"Empate",short:a,actorLabel:"Empate"},oddsDisplay:"11.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012938,odd:4.9,status:a,winning:t,actor:{id:a,label:"Wolverhampton",abbreviation:"Wolverhampton",short:a,actorLabel:"Wolverhampton"},oddsDisplay:"4.90",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:e,order:8000,filters:{"1000":8000,"1355":b},see_more:999,isBetGroup:i},{question:{label:"Corners - Handicaps",short_label:"Handicap (-3.5) - ¿Qué equipo sacará más córners en el partido?"},choices:[{id:5252012601,odd:1.78,status:a,winning:t,actor:{id:a,label:"Aston Villa (-3.5)",abbreviation:"Aston Villa (-3.5)",short:a,actorLabel:"Aston Villa (-3.5)"},oddsDisplay:"1.78",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012602,odd:1.78,status:a,winning:t,actor:{id:a,label:"Wolverhampton (+3.5)",abbreviation:"Wolverhampton (+3.5)",short:a,actorLabel:"Wolverhampton (+3.5)"},oddsDisplay:"1.78",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:8010,filters:{"1000":8010,"1355":d},see_more:f,isBetGroup:g},{question:{label:"Más\u002FMenos corners",short_label:"¿Más o menos de 15.5 córners en el partido?"},choices:[{id:5253683770,odd:1.04,status:a,winning:t,actor:{id:a,label:"Más 5.5",abbreviation:"Más",short:a,actorLabel:"Más 5.5"},oddsDisplay:"1.04",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253683769,odd:l,status:a,winning:t,actor:{id:a,label:"Menos 5.5",abbreviation:"Menos",short:a,actorLabel:"Menos 5.5"},oddsDisplay:"7.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253664845,odd:1.11,status:a,winning:t,actor:{id:a,label:"Más 6.5",abbreviation:"Más",short:a,actorLabel:"Más 6.5"},oddsDisplay:"1.11",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253664844,odd:k,status:a,winning:t,actor:{id:a,label:"Menos 6.5",abbreviation:"Menos",short:a,actorLabel:"Menos 6.5"},oddsDisplay:"5.00",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253683836,odd:1.24,status:a,winning:t,actor:{id:a,label:"Más 7.5",abbreviation:"Más",short:a,actorLabel:"Más 7.5"},oddsDisplay:"1.24",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253683838,odd:3.35,status:a,winning:t,actor:{id:a,label:"Menos 7.5",abbreviation:"Menos",short:a,actorLabel:"Menos 7.5"},oddsDisplay:"3.35",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253664838,odd:1.45,status:a,winning:t,actor:{id:a,label:"Más 8.5",abbreviation:"Más",short:a,actorLabel:"Más 8.5"},oddsDisplay:"1.45",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253664839,odd:2.45,status:a,winning:t,actor:{id:a,label:"Menos 8.5",abbreviation:"Menos",short:a,actorLabel:"Menos 8.5"},oddsDisplay:"2.45",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253647416,odd:1.75,status:a,winning:t,actor:{id:a,label:"Más 9.5",abbreviation:"Más",short:a,actorLabel:"Más 9.5"},oddsDisplay:"1.75",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253647415,odd:1.88,status:a,winning:t,actor:{id:a,label:"Menos 9.5",abbreviation:"Menos",short:a,actorLabel:"Menos 9.5"},oddsDisplay:"1.88",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253683764,odd:2.17,status:a,winning:t,actor:{id:a,label:"Más 10.5",abbreviation:"Más",short:a,actorLabel:"Más 10.5"},oddsDisplay:"2.17",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253683763,odd:1.55,status:a,winning:t,actor:{id:a,label:"Menos 10.5",abbreviation:"Menos",short:a,actorLabel:"Menos 10.5"},oddsDisplay:"1.55",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253683755,odd:2.8,status:a,winning:t,actor:{id:a,label:"Más 11.5",abbreviation:"Más",short:a,actorLabel:"Más 11.5"},oddsDisplay:"2.80",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253683756,odd:1.35,status:a,winning:t,actor:{id:a,label:"Menos 11.5",abbreviation:"Menos",short:a,actorLabel:"Menos 11.5"},oddsDisplay:"1.35",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253683750,odd:3.7,status:a,winning:t,actor:{id:a,label:"Más 12.5",abbreviation:"Más",short:a,actorLabel:"Más 12.5"},oddsDisplay:"3.70",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253683752,odd:1.2,status:a,winning:t,actor:{id:a,label:"Menos 12.5",abbreviation:"Menos",short:a,actorLabel:"Menos 12.5"},oddsDisplay:"1.20",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253683744,odd:5.1,status:a,winning:t,actor:{id:a,label:"Más 13.5",abbreviation:"Más",short:a,actorLabel:"Más 13.5"},oddsDisplay:"5.10",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253683743,odd:1.11,status:a,winning:t,actor:{id:a,label:"Menos 13.5",abbreviation:"Menos",short:a,actorLabel:"Menos 13.5"},oddsDisplay:"1.11",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253809005,odd:6.75,status:a,winning:t,actor:{id:a,label:"Más 14.5",abbreviation:"Más",short:a,actorLabel:"Más 14.5"},oddsDisplay:"6.75",isEmptyChoice:i,td:a,hash:t,main:i},{id:5253809004,odd:1.04,status:a,winning:t,actor:{id:a,label:"Menos 14.5",abbreviation:"Menos",short:a,actorLabel:"Menos 14.5"},oddsDisplay:"1.04",isEmptyChoice:i,td:a,hash:t,main:i},{id:5251918028,odd:7.5,status:a,winning:t,actor:{id:a,label:"Más 15.5",abbreviation:"Más",short:a,actorLabel:"Más 15.5"},oddsDisplay:"7.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5251918027,odd:1.03,status:a,winning:t,actor:{id:a,label:"Menos 15.5",abbreviation:"Menos",short:a,actorLabel:"Menos 15.5"},oddsDisplay:"1.03",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:8100,filters:{"1000":8100,"1355":e},see_more:f,isBetGroup:g},{question:{label:"¿Número de córners en el partido?",short_label:"¿Número de córners en el partido?"},choices:[{id:5252012694,odd:9.5,status:a,winning:t,actor:{id:a,label:"0-5",abbreviation:"0:5",short:a,actorLabel:"0-5"},oddsDisplay:"9.50",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012695,odd:3.1,status:a,winning:t,actor:{id:a,label:"6-8",abbreviation:"6:8",short:a,actorLabel:"6-8"},oddsDisplay:"3.10",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012691,odd:2.57,status:a,winning:t,actor:{id:a,label:"9-11",abbreviation:"9:11",short:a,actorLabel:"9-11"},oddsDisplay:"2.57",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012693,odd:4.2,status:a,winning:t,actor:{id:a,label:"12-14",abbreviation:"12:14",short:a,actorLabel:"12-14"},oddsDisplay:"4.20",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012692,odd:9.5,status:a,winning:t,actor:{id:a,label:"15 o más",abbreviation:"15 o más",short:a,actorLabel:"15 o más"},oddsDisplay:"9.50",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:e,order:8130,filters:{"1000":8130,"1355":f},see_more:999,isBetGroup:i},{question:{label:"1º Parte - Más\u002FMenos Corners",short_label:"¿Más o menos de 6.5 córners en la 1ª mitad?"},choices:[{id:5252373490,odd:1.35,status:a,winning:t,actor:{id:a,label:"Más 3.5",abbreviation:"Más",short:a,actorLabel:"Más 3.5"},oddsDisplay:"1.35",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373491,odd:2.8,status:a,winning:t,actor:{id:a,label:"Menos 3.5",abbreviation:"Menos",short:a,actorLabel:"Menos 3.5"},oddsDisplay:"2.80",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373486,odd:1.77,status:a,winning:t,actor:{id:a,label:"Más 4.5",abbreviation:"Más",short:a,actorLabel:"Más 4.5"},oddsDisplay:"1.77",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373487,odd:1.85,status:a,winning:t,actor:{id:a,label:"Menos 4.5",abbreviation:"Menos",short:a,actorLabel:"Menos 4.5"},oddsDisplay:"1.85",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373488,odd:2.47,status:a,winning:t,actor:{id:a,label:"Más 5.5",abbreviation:"Más",short:a,actorLabel:"Más 5.5"},oddsDisplay:"2.47",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373489,odd:1.43,status:a,winning:t,actor:{id:a,label:"Menos 5.5",abbreviation:"Menos",short:a,actorLabel:"Menos 5.5"},oddsDisplay:"1.43",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373493,odd:3.65,status:a,winning:t,actor:{id:a,label:"Más 6.5",abbreviation:"Más",short:a,actorLabel:"Más 6.5"},oddsDisplay:"3.65",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252373492,odd:1.2,status:a,winning:t,actor:{id:a,label:"Menos 6.5",abbreviation:"Menos",short:a,actorLabel:"Menos 6.5"},oddsDisplay:"1.20",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:8170,filters:{"1000":8170,"1355":m},see_more:f,isBetGroup:g},{question:{label:"¿El número de goles marcados será par o impar?",short_label:"¿El número de goles marcados será par o impar?"},choices:[{id:5246060482,odd:1.81,status:a,winning:t,actor:{id:a,label:"Impar",abbreviation:"Impar",short:a,actorLabel:"Impar"},oddsDisplay:"1.81",isEmptyChoice:i,td:a,hash:t,main:i},{id:5246060483,odd:1.81,status:a,winning:t,actor:{id:a,label:"Par",abbreviation:"Par",short:a,actorLabel:"Par"},oddsDisplay:"1.81",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:10000,filters:{"1000":10000},see_more:999,isBetGroup:i},{question:{label:"¿Número de goles en la 1ª mitad, par o impar ?",short_label:"¿Número de goles en la 1ª mitad, par o impar ?"},choices:[{id:5249213711,odd:1.95,status:a,winning:t,actor:{id:a,label:"Impar",abbreviation:"Impar",short:a,actorLabel:"Impar"},oddsDisplay:"1.95",isEmptyChoice:i,td:a,hash:t,main:i},{id:5249213710,odd:1.7,status:a,winning:t,actor:{id:a,label:"Par",abbreviation:"Par",short:a,actorLabel:"Par"},oddsDisplay:"1.70",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:10050,filters:{"1000":10050},see_more:999,isBetGroup:i},{question:{label:"Aston Villa - Total de goles - Par\u002FImpar",short_label:"Aston Villa - Total de goles - Par\u002FImpar"},choices:[{id:5252012600,odd:1.81,status:a,winning:t,actor:{id:a,label:"Impar",abbreviation:"Impar",short:a,actorLabel:"Impar"},oddsDisplay:"1.81",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012599,odd:1.81,status:a,winning:t,actor:{id:a,label:"Par",abbreviation:"Par",short:a,actorLabel:"Par"},oddsDisplay:"1.81",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:10100,filters:{"1000":10100},see_more:999,isBetGroup:i},{question:{label:"Wolverhampton - Total de goles - Par\u002FImpar",short_label:"Wolverhampton - Total de goles - Par\u002FImpar"},choices:[{id:5252012610,odd:2.07,status:a,winning:t,actor:{id:a,label:"Impar",abbreviation:"Impar",short:a,actorLabel:"Impar"},oddsDisplay:"2.07",isEmptyChoice:i,td:a,hash:t,main:i},{id:5252012609,odd:1.62,status:a,winning:t,actor:{id:a,label:"Par",abbreviation:"Par",short:a,actorLabel:"Par"},oddsDisplay:"1.62",isEmptyChoice:i,td:a,hash:t,main:i}],is_cashoutable:i,display_by:d,order:10200,filters:{"1000":10200},see_more:999,isBetGroup:i}],actors:[{id:550674,type:"home",label:"Aston Villa",abrev:"Aston Villa"},{id:550666,type:"away",label:"Wolverhampton",abrev:"Wolverhampton"}],displayMode:"vs",displayModeLabel:"vs",eventLiveId:t,matchId:t,willLive:i,type:"pm",state:"pm",hasScoreBoard:i,status:b,score:{currentActor1:"-",currentActor2:"-",setActor1:[],setActor2:[],gameActor1:"-",gameActor2:"-",status:b,statusBrute:"-",service:"-",during:"-",lblEvent:"-",actor1:"-",actor2:"-"},mainBetIndex:t,betBuilderId:360116,betBuilderConfiguration:{name:"Bet Builder",description:"Combina tus mercados favoritos",icon:"\u002Fimg\u002Fmarket\u002Fbetbuilder\u002F953df8c058f67eb5a9da09e1c10e2ae02616b790.png",icon_url:"https:\u002F\u002Fapuestas.goldenpark.es\u002Fimg\u002Fmarket\u002Fbetbuilder\u002F953df8c058f67eb5a9da09e1c10e2ae02616b790.png",button_description:"CREAR APUESTA",url:"https:\u002F\u002Fpublic-prod-gen2.sportcastlive.com?key=eaa1ab0f-5289-40da-ae7b-18e32244537a&fixtureId=360116&brand=goldenpark&odds=DecimalPrice&culture=es-ES&region=spain",id:360116},streaming:[],hasVideoStreaming:i},filters:[{id:1000,label:cU,order:c},{id:1310,label:F,order:b},{id:1315,label:cY,order:d},{id:1320,label:"Jugadores",order:e},{id:1340,label:"1ra mitad",order:l},{id:1345,label:"2da mitad",order:j},{id:1350,label:ax,order:n},{id:1355,label:cW,order:m},{id:1365,label:cV,order:o}],empty_message:a,live_url:t},ttl:u,forceRefresh:c,forceRefreshKey:c,params:{}},right_column:{componentKey:cq,storeKey:cq,isLoaded:g,data:[],ttl:I,forceRefresh:c,forceRefreshKey:c,params:{}},menu_account_shortcuts:{componentKey:cr,storeKey:cr,isLoaded:g,data:{menu:[],title:p},ttl:I,forceRefresh:c,forceRefreshKey:c,params:{}},betting_slip:{componentKey:bx,storeKey:gd,isLoaded:g,data:{acceptStakeChange:g,configuration:dB,sportsIcons:dC,translations:t,betTypes:{current:bd,switches:{single:{value:i,label:a},combined:{value:i,label:a},system:{value:i,label:a}}},bets:be,betsIds:[be],stoppedMatchIds:[],stoppedChoiceIds:[],gain:dA,combiboost:{},keepSelection:i,oddsChangeAfterBetPlacement:i},ttl:I,forceRefresh:c,forceRefreshKey:c,params:{}},iframe_banner_mini:{componentKey:cs,storeKey:cs,isLoaded:g,data:{title:t,requiredConnection:i,iframes:[]},ttl:I,forceRefresh:c,forceRefreshKey:c,params:{}},footer:{componentKey:ct,storeKey:ct,isLoaded:g,data:[],ttl:I,forceRefresh:c,forceRefreshKey:c,params:{}},footer_seo:{componentKey:cu,storeKey:cu,isLoaded:g,data:[],ttl:I,forceRefresh:c,forceRefreshKey:c,params:{}},iframe_footer:{componentKey:cv,storeKey:cv,isLoaded:g,data:{title:t,requiredConnection:i,iframes:[{id:"snc-footer",url:"https:\u002F\u002Fwww.goldenpark.es\u002F\u002Fsportncofooter.html",title:t,width:"100%",height:"430px",class:t,allow:t,scrolling:t,additionalParams:[]}]},ttl:I,forceRefresh:c,forceRefreshKey:c,params:{}},analytics_body:{componentKey:cw,storeKey:cw,isLoaded:g,data:["https:\u002F\u002Fwww.googletagmanager.com\u002Fns.html?id=GTM-TSNWT4LT"],ttl:I,forceRefresh:c,forceRefreshKey:c,params:{}},analytics_event:{componentKey:cx,storeKey:cx,isLoaded:g,data:[],ttl:I,forceRefresh:c,forceRefreshKey:c,params:{}}},contentComponents:[aN,aO,aP,aQ,aR],currentPageComponents:[dN,bn,bo,bp,bq,br,bs,bu,bv,bw,by,bA,bB,bJ,ai,cn,co,cp,aN,aO,aP,aQ,aR,cq,cr,gd,cs,ct,cu,cv,cw,cx],headersCookie:p,dataErrors:c}},serverRendered:g,routePath:bm,config:{app:{basePath:bt,assetsPath:"\u002F_nuxt\u002F",cdnURL:p}}}}("",1,0,2,3,6,true,4,false,8,5,7,10,9,12,null,13,11,15,void 0,1726668986949,"En vivo",19,20,21,29,16,14,"Internacional",26,"\u002Fes\u002Fen-vivo","Destacados",17,"url_key",1726668986951,30,99,"Esta apuesta no está disponible en este momento",44,18,50,"competition",32,25,60,"Champions League",56,58,"Combinada","Promotions","\u002Fes\u002Fcuenta\u002Fmis-apuestas\u002Fen-curso","Cashout","\u002Fes\u002Fpromotions","Próximamente","icon-sport-soccer",35,33,83,68,39,1726665566949,91,"menu_sport",94,"Primera Division",34,52,"Estados Unidos","Campeonato del Mundo","No tiene saldo suficiente","Hoy","No hay mercados disponibles para este evento","Ver más","Simple","Sistema","Página de inicio","Inicio","Resultados",.1,999999999,63,23,22,37,53,"Francia","Inglaterra","Argentina","Brasil",205,"Polonia","República Checa",87,"main_content_event","banner","breadcrumbs","title","event_market_list","Gracias por su paciencia","Todos","Mi selección","Deportes","Su selección está vacía","Apuesta colocada","Saber más","Actualmente no hay eventos disponibles para este deporte, categoría o competición","Regrese a la página de inicio para ver nuestra oferta de apuestas","\u002Fes\u002Fgrilles","Top En Vivo","Por favor, conéctese para realizar su apuesta","Cette grille n'est plus disponible pour le moment","single",Array(0),"0",6000,43,62,51,40,80,"\u002Fes\u002Fevento\u002F8330583-aston-villa-wolverhampton","head","analytics_head","account","live_event_stream","global_data","header","\u002F","menu_header","message","tab_bar","bettingslip","events_customization",348,"left_column","menu_top_league",306,"Premier League","\u002Fes\u002Fcompeticion\u002F94-premier-league",81,"Premier Padel","Tenis de Mesa","\u002Fes\u002Fdeporte\u002F26-tenis-de-mesa","menu_favorites","\u002Fes\u002Fdeporte\u002F13-futbol","Fútbol","Alemania","Bundesliga",270,102,46,"Dinamarca",340,"Finlandia",413,"Internacional Clubes","Amistosos de clubes",170,"Letonia","Noruega",136,"Eliteserien",158,"Rusia","Superliga",299,48,27,"Copas de Europa",262,103,110,"Extraliga","Copa del Mundo","Combates","search_box","menu_left_bottom","menu_odd_formats","right_column","menu_account_shortcuts","iframe_banner_mini","footer","footer_seo","iframe_footer","analytics_body","analytics_event","default","Su cuenta se encuentra cerrada, contacte al Servicio de Atención al Cliente para obtener más información","El evento ya ha comenzado","Los mercados abrirán en unos instantes","Ver más en vivo","Apuestas suspendidas","Apuestas mutuas","Importe","¿Guardar la selección?","Cancelar","Confirmar","Sistema 2\u002F3 (3 combinaciones)","Sistema 2\u002F4 (6 combinaciones)","Sistema 2\u002F5 (10 combinaciones)","Sistema 2\u002F6 (15 combinaciones)","Sistema 3\u002F4 (4 combinaciones)","Sistema 3\u002F5 (10 combinaciones)","Sistema 3\u002F6 (20 combinaciones)","Sistema 4\u002F5 (5 combinaciones)","Sistema 4\u002F6 (15 combinaciones)","Sistema 5\u002F6 (6 combinaciones)","Ganancia potencial","Todo","Goles","Córners","Competición","Combinaciones","Ver menos","Acceder a toda la oferta de juego","Evento no disponible","Servicio","\u002Fes\u002Fcashout-es","Club FP","\u002Fes\u002Fpronostics","Pronostics","\u002Fes\u002Fjeu-responsable","Reglas de apuestas deportivas","Juego responsable","Se produjo un problema, por favor intente de nuevo más tarde.","\u002Fes\u002Fcontactez-nous","Apuestas abiertas ([[player.nb_bets_open]])","\u002Fes\u002Fcuenta\u002Fmis-apuestas\u002Fcerradas","Apuestas cerradas","Próximamente en vivo","Oups...","Volver","Inicie su sesión para poder acceder a este sitio","Favoritos","Su cuota no llega al mínimo permitido. Por favor modifique su boleto para validar su apuesta","La cuota ha cambiado y usted ha rechazado los cambios de cuota al momento de apostar. Por favor, cambie de selección o apuesta de nuevo sobre la nueva cuota","Ha excedido el limite de ganancia potencial en esta apuesta, modifique su boleto para apostar","La grille ne peut pas s'afficher","Se produjo un error durante la realización de la apuesta","https:\u002F\u002Fwww.goldenpark.es\u002F","es",{},{},{},Array(3),"icon-sport-tennis",74,45,78,38,28,31,70,100,"page_event","page",1726665506949,"lives_link","mybets_link","_blank",23953,5256,38313,38329,349,6674,"\u002Fes\u002Fcompeticion\u002F6674-champions-league","\u002Fes\u002Fcompeticion\u002F306-liga-espanola","\u002Fes\u002Fcompeticion\u002F18-liga-espanola-2","\u002Fes\u002Fcompeticion\u002F81-brasileirao",247,"ATP","\u002Fes\u002Fcategoria\u002F247-atp",51762,"\u002Fes\u002Fcompeticion\u002F51762-premier-padel",36594,"MLB","\u002Fes\u002Fcompeticion\u002F36594-mlb","soccer","\u002Fes\u002Fdeporte\u002F21-tenis","Tenis","tennis","\u002Fes\u002Fdeporte\u002F4-baloncesto","Baloncesto","basketball","pingpong","\u002Fes\u002Fdeporte\u002F3-beisbol","Béisbol","baseball","\u002Fes\u002Fdeporte\u002F9-balonmano","Balonmano","handball","\u002Fes\u002Fdeporte\u002F17-dardos","Dardos","flechette","\u002Fes\u002Fdeporte\u002F10-hockey-sobre-hielo","Hockey sobre hielo","hockey","\u002Fes\u002Fdeporte\u002F20-snooker","Snooker","snooker","\u002Fes\u002Fdeporte\u002F14-voleibol","Voleibol","volleyball",1578,"Europa League",2137,1872,1575,97,"\u002Fes\u002Fcategoria\u002F43-inglaterra","The Championship",235,2244,716,305,"Portugal","Liga de las Naciones",476,353,"Division 1",42,"Copa Argentina",175,156,"Austria",403,131,101,120,"Canada","Champions League (F)",139,104,130,132,66,57,65,400,"Segunda Division","Islandia",918,"Kazajstán","Liga Premier","Virsliga","Mexico",198,532,134,"Rumania","Serbia","Suecia","Allsvenskan","Suiza","Super League",307,"Ucrania","Uruguay",292,189,67,"Amistosos de clubes (F)","Japón",1349,121,73,1651,548,64,98,216,"Hungría","Internacional (F)",36,"futsal",164,"Champions Cup",54,"Seis Naciones","webview","betting_slip"));</script><script src="/_nuxt/9ea6ab8.js" defer=""></script><script src="/_nuxt/aaa276c.js" defer=""></script><script src="/_nuxt/93c807d.js" defer=""></script><script src="/_nuxt/bef45c1.js" defer=""></script><script src="/_nuxt/0fc3c60.js" defer=""></script><script src="/_nuxt/b8face8.js" defer=""></script><script src="/_nuxt/a98c8a7.js" defer=""></script>
+<script type="text/javascript" src="/TSPD/082eaff409ab2000c75e911f854dd124762af04064d3c351d6eac7c588b20793170a288b0c11632d?type=17"></script>
 
 
-<link href="/_nuxt/css/b115f88.css" rel="stylesheet" type="text/css"><link href="/_nuxt/css/e1df0d4.css" rel="stylesheet" type="text/css"></body></html>
+    <meta charset="utf-8">
+    <meta http-equiv="content-language" content="es">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=2">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=2">
+<link rel="manifest" href="/site.webmanifest?v=2">
+<link rel="mask-icon" href="/safari-pinned-tab.svg?v=2" color="#001c0c">
+<link rel="shortcut icon" href="/favicon.ico?v=2">
+<meta name="msapplication-TileColor" content="#001c0c">
+<meta name="theme-color" content="#001c0c">
+
+
+
+        <title>Apostar a NBA - Pronósticos deportivos NBA &gt;&gt; RETABET ESPAÑA</title>
+        <meta name="description" content="Apuesta a NBA con RETABET, tu casa de apuestas deportivas. Consigue las mejores cuotas de apuestas de BALONCESTO y de la NBA en nuestra web.">
+        <meta name="keywords" content="Apuestas NBA, apuestas nba, apostar nba online">
+        <meta property="og:title" content="Apostar a NBA - Pronósticos deportivos NBA >> RETABET ESPAÑA">
+        <meta property="og:Description" content="Apuesta a NBA con RETABET, tu casa de apuestas deportivas. Consigue las mejores cuotas de apuestas de BALONCESTO y de la NBA en nuestra web.">
+        <meta property="og:url" content="https://apuestas.retabet.es/deportes/baloncesto/nba/41">
+
+    <link rel="preload" href="/css/layout.css?v=_BDwfUTAHUql3CtKgfKyTxQ3hFYtrSaQsopkorEixtQ" as="style">
+<link rel="preload" href="/css/skin_light.css?v=Hj2RceY3HReExfwI6ONaL-58HQ_tiai9txVRZetl0W8" as="style">
+
+<link rel="stylesheet" href="/css/layout.css?v=_BDwfUTAHUql3CtKgfKyTxQ3hFYtrSaQsopkorEixtQ">
+<link rel="stylesheet" href="/css/skin_light.css?v=Hj2RceY3HReExfwI6ONaL-58HQ_tiai9txVRZetl0W8">
+
+
+        <script defer="" src="/js/desktop.js?v=3GLC2A2TETfyugrGV2xSGAe5JazVWC8CSRuO47sfLRw"></script>
+        </head><body class="sports"><div id="defjs" hidden="">
+                <span class="defjf" data-src="/Scripts/rtds.js?4" data-id="1" data-attributes="null"></span>
+                <span class="defjf" data-src="https://static.xenioo.com/webchat/xenioowebchat.js" data-id="3" data-attributes="{&quot;data-id&quot;:&quot;xenioo&quot;,&quot;data-node&quot;:&quot;app02&quot;}"></span>
+                <span class="defjf" data-src="https://login.retabet.es/jswrapper/retabet.es/integration.min.js" data-id="4" data-attributes="null"></span>
+        </div>
+
+
+
+    <div hidden="" id="wdata" data-url="https://apuestas.retabet.es" data-pu="" data-no="24" data-na="RETAbet" data-rt="" data-rta="https://rtds.retabet.es" data-mu="YOpNsH98aLZSn66YSK8l3Q" data-ps="pmKviz_l0Ktj17WuTyKTpA" data-li="1" data-dl="1" data-de="2" data-au="0" data-tt="3" data-tb="1000" data-sct="0" data-ci="es-ES" data-nn="N+CWRIfbI4sRm+ASrNt6Tuxc/TfRndTlgnIhhL7En40=" data-ap="False" data-tz="53" data-cu="es-ES" data-cli="Euo00UCqFgk_F7JNS63tZQ" data-ce="true" data-cbr="true" data-si="5206LPOtO9VJaDcYF6lYXJ-ygU8dbmBHXDduiK3aDzr1z8AxLdemCLm7MCI9xelY" data-ip="MoG5lu1r2JES_s3TBHV_RA" data-ua="hn_z1r2oCAaU_W0z3bnWBqxDpTMJXu6pp-bhxl70frrg4tPBnZuPio8qcKQ8UP6x9-PUMmxXvUsVEuCWmQAmHYBYjuQ4cqexPZCpF1Rci_P4wsxwu5kOgwlPEsw6yRTSngmY8wABjpT6tG2dB7420w" data-fp="false" data-vs="1.2209.0.0" data-pps="" data-ppc="" data-rel="[&quot;/TSPD/&quot;]" data-lurl="login" data-rurl="registro" data-furl="forgot password" data-paurl="area-privada">
+</div>
+<div id="selopts" hidden="">[]</div>
+<div id="cuData" hidden="" data-i="1" data-ds="," data-sg="." data-d="2" data-pp="n €" data-np="-n€" data-cd="EUR" data-s="€"></div>
+
+<header class="jheader header ">
+
+        <div class="header-new__wrapper">
+            <div class="header-new__left">
+
+    <div class="jhlogo header__logo">
+        <a href="/" title="retabet.es">
+            <span>
+                retabet.es
+            </span>
+        </a>
+    </div>
+
+
+
+
+
+    <nav class="jnav header__principal-nav" data-i="1">
+                <a href="/" title="Deportes" class="jlink jnavlink  " data-pin="SportsbookHome" data-u="/" data-l="" data-ac="Header_Nav" data-aa="Deportes" data-an="Secciones_Header">
+
+                    Deportes
+                </a>
+                <a href="/live" title="Live" class="jlink jnavlink  " data-pin="SportsbookLive" data-u="/live" data-l="31" data-ac="Header_Nav" data-aa="Live" data-an="Secciones_Header">
+
+                    Live
+                </a>
+                <a href="/juegos-virtuales" title="Virtuales" class="jlink jnavlink  " data-pin="VirtualGames" data-u="/juegos-virtuales" data-l="71" data-ac="Header_Nav" data-aa="Virtuales" data-an="Secciones_Header">
+
+                    Virtuales
+                </a>
+                <a href="/casino" title="Casino" class="jlink jnavlink  " data-pin="Casino" data-u="/casino" data-l="43,44,25,37" data-ac="Header_Nav" data-aa="Casino" data-an="Secciones_Header">
+
+                    Casino
+                </a>
+                <a href="/ruleta-en-vivo" title="Ruleta en vivo" class="jlink jnavlink  " data-pin="CasinoLiveRoulette" data-u="/ruleta-en-vivo" data-l="" data-ac="Header_Nav" data-aa="Ruleta en vivo" data-an="Secciones_Header">
+
+                    Ruleta en vivo
+                </a>
+                <a href="/slots" title="Slots" class="jlink jnavlink  " data-pin="CasinoSlots" data-u="/slots" data-l="" data-ac="Header_Nav" data-aa="Slots" data-an="Secciones_Header">
+
+                    Slots
+                </a>
+                <a href="/promociones" title="Promociones" class="jlink jnavlink  " data-pin="SportsbookPromotions" data-u="/promociones" data-l="36" data-ac="Header_Nav" data-aa="Promociones" data-an="Secciones_Header">
+
+                    Promociones
+                </a>
+    </nav>
+    <div data-jsfile="navMenu.section.js?v=tME5PzfZ54xGB269naOKpHK-RnwrxmnlnMGtNxgQjKk" class="ljs" hidden="hidden"></div>
+
+            </div>
+            <div class="header-new__right jheaderlogin">
+                <a class="header__search jsearch" data-as="headerSearch"><i class="ico-l icon__bold icon-search"></i></a>
+
+
+<div class="header-new__btn-login jloginForm">
+        <button type="button" class="btn btn-m btn__contrast-outline jlogin jopl" tabindex="1">
+            Entrar
+        </button>
+            <a href="/registro" title="Regístrate" class="btn btn-m btn__primary jlink" tabindex="1" data-eug="" data-url="/registro">
+                Regístrate
+            </a>
+        <div class="none jloginPanel">
+
+
+    <article class="login privatearea ">
+
+        <div class="login__header">
+            <h4 class=" ">
+                <span class="login__text-hi">Hola,</span>
+                <span class="login__text-sign">Accede a tu cuenta</span>
+            </h4>
+        </div>
+        <form id="loginForm" data-fp="False" data-spm="false" data-sse="false" class="form" action="/deportes/baloncesto/nba/41" method="post">
+                <div class="form__row">
+                    <div class="form__element jfl">
+                        <label for="Username" class="form__label">
+                            Nombre de usuario
+                        </label>
+                        <div class="form__field-wrapper">
+                            <i class="ico-m-l icon-user form__icon"></i>
+                            <input type="text" id="Username" name="Username" autocomplete="on" class="fld form__field jlun" data-val="[{&quot;id&quot;:1},{&quot;id&quot;:5,&quot;params&quot;:[&quot;2&quot;]}]" data-ull="" tabindex="1">
+                            <i id="usClr" class="ico-m icon-remove-sign jinputerase form__erase none animated fadeIn" tabindex="-1"></i>
+                        </div>
+                        <div class="form__field-info">
+                            <p class="jv none" data-id="Username"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form__row">
+                    <div class="form__element jfl">
+                        <label for="Password" class="form__label">
+                            Contraseña
+                        </label>
+                        <div class="form__field-wrapper">
+                            <i class="ico-m icon-key form__icon"></i>
+                            <input type="password" id="Password" name="Password" autocomplete="on" class="fld form__field jfsubmit" data-ft="5" data-val="[{&quot;id&quot;:1},{&quot;id&quot;:5,&quot;params&quot;:[&quot;3&quot;]}]" tabindex="2">
+                            <i id="pwdHider" class="jpweye ico-m icon-eye form__see-password none animated fadeIn" tabindex="-1"></i>
+                        </div>
+                        <div class="form__field-info">
+                            <p class="jv none" data-id="Password"></p>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" id="IsFromBetSlip" name="IsFromBetSlip" class="fld jfrombs" value="false">
+                    <div class="form__row">
+                        <a data-id="8" class="jforgot link link--secondary">
+                            ¿Olvidaste tu contraseña o usuario?
+                        </a>
+                    </div>
+
+
+
+
+    <div hidden="" class="jmd  jmdKo" data-t="6" data-cc="false ">
+
+            <span class="jmti">
+                ¡Ups!
+            </span>
+
+    </div>
+
+<div class="progress-button jsbcnt">
+
+    <button type="button" class="submitBtn disabled jbsubmit btn btn-m btn__secondary" id="DoLogin" disabled="">
+        <span>Entrar a tu cuenta</span>
+    </button>
+
+    <!-- circle to show on waiting -->
+    <svg id="waiting" style="position: absolute; top: 0px; left: 50%;" class="progress-circle jbwait" width="40" height="40" x="0px" y="0px" viewBox="0 0 70 70" xml:space="preserve">
+    <path d="m35,2.5c17.955803,0 32.5,14.544199 32.5,32.5c0,17.955803 -14.544197,32.5 -32.5,32.5c-17.955803,0 -32.5,-14.544197 -32.5,-32.5c0,-17.955801 14.544197,-32.5 32.5,-32.5z"></path>
+    </svg>
+
+</div>
+
+    <div class="none" id="valMsgs">
+            <div data-tag="1">El campo no puede estar vacío</div>
+            <div data-tag="4,16,15,14,10,8,105">El formato del campo no es correcto</div>
+            <div data-tag="100">El valor de los campos no coincide.</div>
+            <div data-tag="5,6,7">La longitud del campo no es correcta</div>
+            <div data-tag="101">¿Eres un robot?</div>
+            <div data-tag="102">El campo debe ser marcado obligatoriamente</div>
+            <div data-tag="104,107">Debes introducir un número de cuenta válido.</div>
+            <div data-tag="17">El valor introducido es menor de lo permitido</div>
+            <div data-tag="18">El valor introducido es mayor de lo permitido</div>
+            <div data-tag="-1">Error desconocido</div>
+            <div data-tag="103">El valor debe ser un número con 2 decimales como máximo.</div>
+    </div>
+<div class="none jvfe">
+    <p class="form__validation form__validation--error animated fadeInUp jv none">{msg}</p>
+</div>
+
+
+            <div class="login__register">
+                <p class="text_m-l text_semibold text_center">¿Aún no tienes cuenta?</p>
+                <a href="/registro" title="Regístrate" class="jlink btn btn-m btn__primary-outline">
+                    Regístrate
+                </a>
+            </div>
+
+            <input class="jurlpl fld" type="hidden" id="UrlPostLogin" name="UrlPostLogin">
+        <input name="__RequestVerificationToken" type="hidden" value="CfDJ8C_SUljOM-ZKmEhEqAjfXhVUVAEd33zo5a5tNv_6dfmp_-fycw3A_TiWJIUzbnZvHuQ-OMmhioCpOPWXHQg5B9I1A4DE1ZrlXDd9lloQ0gU7K4bF2jk72dS2ZAtFISiqQAXUE233Huh284HI8RKpDP0"></form>
+    </article>
+    <div data-jsfile="login.section.js?v=rPzpL_sTWM0GPifOUxK26dWwAnxcJ4BAsLUCGgMlR1Q" class="ljs" hidden="hidden"></div>
+
+        </div>
+<div id="forgotPwd">
+
+        <div class="modal jmo modal_contraseña" style="display:none;">
+            <div class="modal__wrapper">
+                    <form class="modal__content animate jcontent jformModal" action="/deportes/baloncesto/nba/41" method="post">
+
+        <div class="modal__header jheader">
+            <h4 id="modalHeader">
+            </h4>
+                <span class="jmocl close"><i class="icon-multiply"></i></span>
+        </div>
+        <div id="modalBody" class="modal__body">
+        </div>
+
+                    <input name="__RequestVerificationToken" type="hidden" value="CfDJ8C_SUljOM-ZKmEhEqAjfXhVUVAEd33zo5a5tNv_6dfmp_-fycw3A_TiWJIUzbnZvHuQ-OMmhioCpOPWXHQg5B9I1A4DE1ZrlXDd9lloQ0gU7K4bF2jk72dS2ZAtFISiqQAXUE233Huh284HI8RKpDP0"></form>
+            </div>
+        </div>
+
+</div>
+
+<div data-jsfile="forgotPassword.section.js?v=mKdHpqsS2l9rrlL-fyiMSkBfkPsjltOiQpbuvPWiuKY" class="ljs" hidden="hidden"></div></div>
+
+
+            </div>
+        </div>
+        <div class="header-new__wrapper">
+
+
+    <nav class="jsportsNav jnav " data-i="4">
+        <ul class="horizontalnav">
+
+
+                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="SportsbookHome" data-u="/" data-l="" data-ac="Header_Nav" data-aa="Inicio" data-an="Modalidades_Header" data-di="">
+                        <a class="horizontalnav__item-wrapper" href="/" title="Inicio">
+                            <i class="ico-l icon-home horizontalnav__icon"></i>
+                            <span class="horizontalnav__label">Inicio</span>
+                        </a>
+                    </li>
+                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="SportsbookLive" data-u="/live" data-l="31" data-ac="Header_Nav" data-aa="Live" data-an="Modalidades_Header" data-di="">
+                        <a class="horizontalnav__item-wrapper" href="/live" title="Live">
+                            <i class="ico-l icon-live horizontalnav__icon"></i>
+                            <span class="horizontalnav__label">Live</span>
+                        </a>
+                    </li>
+                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="SportsbookDiscipline" data-u="/deportes/futbol/1" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav" data-aa="Fútbol" data-an="Modalidades_Header" data-di="1">
+                        <a class="horizontalnav__item-wrapper" href="/deportes/futbol/1" title="Fútbol">
+                            <i class="ico-l mod-mod_1 horizontalnav__icon"></i>
+                            <span class="horizontalnav__label">Fútbol</span>
+                        </a>
+                    </li>
+                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="SportsbookDiscipline" data-u="/deportes/tenis/8" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav" data-aa="Tenis" data-an="Modalidades_Header" data-di="8">
+                        <a class="horizontalnav__item-wrapper" href="/deportes/tenis/8" title="Tenis">
+                            <i class="ico-l mod-mod_8 horizontalnav__icon"></i>
+                            <span class="horizontalnav__label">Tenis</span>
+                        </a>
+                    </li>
+                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   active" data-pin="SportsbookDiscipline" data-u="/deportes/baloncesto/5" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav" data-aa="Baloncesto" data-an="Modalidades_Header" data-di="5">
+                        <a class="horizontalnav__item-wrapper" href="/deportes/baloncesto/5" title="Baloncesto">
+                            <i class="ico-l mod-mod_5 horizontalnav__icon"></i>
+                            <span class="horizontalnav__label">Baloncesto</span>
+                        </a>
+                    </li>
+                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="SportsbookDiscipline" data-u="/deportes/balonmano/12" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav" data-aa="Balonmano" data-an="Modalidades_Header" data-di="12">
+                        <a class="horizontalnav__item-wrapper" href="/deportes/balonmano/12" title="Balonmano">
+                            <i class="ico-l mod-mod_12 horizontalnav__icon"></i>
+                            <span class="horizontalnav__label">Balonmano</span>
+                        </a>
+                    </li>
+                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="SportsbookDiscipline" data-u="/deportes/beisbol/45" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav" data-aa="Béisbol" data-an="Modalidades_Header" data-di="45">
+                        <a class="horizontalnav__item-wrapper" href="/deportes/beisbol/45" title="Béisbol">
+                            <i class="ico-l mod-mod_45 horizontalnav__icon"></i>
+                            <span class="horizontalnav__label">Béisbol</span>
+                        </a>
+                    </li>
+                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="ESports" data-u="/esports" data-l="SportsbookCategory,SportsbookDiscipline,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav" data-aa="Esports" data-an="Modalidades_Header" data-di="114">
+                        <a class="horizontalnav__item-wrapper" href="/esports" title="Esports">
+                            <i class="ico-l mod-mod_114 horizontalnav__icon"></i>
+                            <span class="horizontalnav__label">Esports</span>
+                        </a>
+                    </li>
+                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="SportsbookDiscipline" data-u="/deportes/hockey-hielo/26" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav" data-aa="Hockey Hielo" data-an="Modalidades_Header" data-di="26">
+                        <a class="horizontalnav__item-wrapper" href="/deportes/hockey-hielo/26" title="Hockey Hielo">
+                            <i class="ico-l mod-mod_26 horizontalnav__icon"></i>
+                            <span class="horizontalnav__label">Hockey Hielo</span>
+                        </a>
+                    </li>
+                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="SportsbookDiscipline" data-u="/deportes/ligas-electronicas/118" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav" data-aa="Ligas Electrónicas" data-an="Modalidades_Header" data-di="118">
+                        <a class="horizontalnav__item-wrapper" href="/deportes/ligas-electronicas/118" title="Ligas Electrónicas">
+                            <i class="ico-l mod-mod_118 horizontalnav__icon"></i>
+                            <span class="horizontalnav__label">Ligas Electrónicas</span>
+                        </a>
+                    </li>
+                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="SportsbookDiscipline" data-u="/deportes/tenis-de-mesa/87" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav" data-aa="Tenis de Mesa" data-an="Modalidades_Header" data-di="87">
+                        <a class="horizontalnav__item-wrapper" href="/deportes/tenis-de-mesa/87" title="Tenis de Mesa">
+                            <i class="ico-l mod-mod_87 horizontalnav__icon"></i>
+                            <span class="horizontalnav__label">Tenis de Mesa</span>
+                        </a>
+                    </li>
+                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="SportsbookDiscipline" data-u="/deportes/voleibol/16" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav" data-aa="Voleibol" data-an="Modalidades_Header" data-di="16">
+                        <a class="horizontalnav__item-wrapper" href="/deportes/voleibol/16" title="Voleibol">
+                            <i class="ico-l mod-mod_16 horizontalnav__icon"></i>
+                            <span class="horizontalnav__label">Voleibol</span>
+                        </a>
+                    </li>
+                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="SportsbookGreyhounds" data-u="/deportes/galgos" data-l="40" data-ac="Header_Nav" data-aa="Galgos" data-an="Modalidades_Header" data-di="">
+                        <a class="horizontalnav__item-wrapper" href="/deportes/galgos" title="Galgos">
+                            <i class="ico-l mod-mod_27 horizontalnav__icon"></i>
+                            <span class="horizontalnav__label">Galgos</span>
+                        </a>
+                    </li>
+                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="SportsbookHorses" data-u="/deportes/caballos" data-l="49" data-ac="Header_Nav" data-aa="Caballos" data-an="Modalidades_Header" data-di="">
+                        <a class="horizontalnav__item-wrapper" href="/deportes/caballos" title="Caballos">
+                            <i class="ico-l mod-mod_28 horizontalnav__icon"></i>
+                            <span class="horizontalnav__label">Caballos</span>
+                        </a>
+                    </li>
+                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink jsports  " data-pin="" data-u="" data-l="" data-ac="Header_Nav" data-aa="Más deportes" data-an="Modalidades_Header" data-di="">
+                        <a class="horizontalnav__item-wrapper" title="Más deportes">
+                            <i class="ico-l mod-mod_sports horizontalnav__icon"></i>
+                            <span class="horizontalnav__label">Más deportes</span>
+                        </a>
+                    </li>
+        </ul>
+    </nav>
+    <div data-jsfile="navMenu.section.js?v=tME5PzfZ54xGB269naOKpHK-RnwrxmnlnMGtNxgQjKk" class="ljs" hidden="hidden"></div>
+
+
+
+    <ul class="jnav jsec none" data-i="2"></ul>
+    <div data-jsfile="navMenu.section.js?v=tME5PzfZ54xGB269naOKpHK-RnwrxmnlnMGtNxgQjKk" class="ljs" hidden="hidden"></div>
+
+
+
+
+
+    <nav class="jnav jesportsNav jsecE none" data-i="8">
+        <ul class=""></ul>
+    </nav>
+
+<div data-jsfile="esportsnav.section.js?v=CpxRLSHqJUNAOeZPMXmZJ7M1rTb8_2cw9Jso8XELkfM" class="ljs" hidden="hidden"></div>    <div data-jsfile="navMenu.section.js?v=tME5PzfZ54xGB269naOKpHK-RnwrxmnlnMGtNxgQjKk" class="ljs" hidden="hidden"></div>
+
+            <div class="header__bottom-right">
+
+
+    <ul class="jnav header__bottom__nav-icons " data-i="3">
+                <li>
+                    <a href="/calendario" title="Calendario" class="jlink jnavlink  " data-pin="SportsbookCalendar" data-u="/calendario" data-l="" data-ac="Header" data-aa="Calendario" data-an="Calendario_Header">
+                        <i class="ico-m-l icon-calendar"></i>
+                        <span class="tooltip">Calendario</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://ls.sir.sportradar.com/retabet/es" title="Resultados en directo" class=" jnavlink  " data-pin="" data-u="https://ls.sir.sportradar.com/retabet/es" data-l="" data-ac="Header" data-aa="Resultados" data-an="Resultados_Header" target="'_blank'">
+                        <i class="ico-m-l icon-trophy"></i>
+                        <span class="tooltip">Resultados en directo</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://s5.sir.sportradar.com/retabet/es" title="Estadísticas" class=" jnavlink  " data-pin="" data-u="https://s5.sir.sportradar.com/retabet/es" data-l="" data-ac="Header" data-aa="Estadisticas" data-an="Estadisticas_Header" target="'_blank'">
+                        <i class="ico-m-l icon-bar-chart"></i>
+                        <span class="tooltip">Estadísticas</span>
+                    </a>
+                </li>
+                <li>
+                    <a title="Accede al chat" class=" jnavlink  jchbot" data-pin="" data-u="" data-l="" data-ac="Header" data-aa="Chat" data-an="Chat_Header">
+                        <i class="ico-m-l icon-bubbles"></i>
+                        <span class="tooltip">Accede al chat</span>
+                    </a>
+                </li>
+    </ul>
+    <div data-jsfile="navMenu.section.js?v=tME5PzfZ54xGB269naOKpHK-RnwrxmnlnMGtNxgQjKk" class="ljs" hidden="hidden"></div>
+
+
+    <ul class="header__bottom__nav-links ">
+                <li>
+                    <a href="https://www.retabet.es/?setUG=true&amp;map&amp;utm_source=Mailify&amp;utm_medium=email&amp;utm_campaign=((News))#establishmentsSec" title="Locales" class="" target="'_blank'">
+
+
+Locales                        <span class="tooltip">Locales</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://blog.retabet.es/" title="Blog" class="" target="'_blank'">
+
+
+Blog                        <span class="tooltip">Blog</span>
+                    </a>
+                </li>
+    </ul>
+
+    <div data-jsfile="navMenu.section.js?v=tME5PzfZ54xGB269naOKpHK-RnwrxmnlnMGtNxgQjKk" class="ljs" hidden="hidden"></div>
+
+
+
+
+
+<div tabindex="0" class="select-noform select-noform-dark options--available ">
+        <a href="https://www.retabet.es/?setUG=true" class="select-noform_active" title="Retabet Estatal">
+            Retabet Estatal
+        </a>
+</div>
+            </div>
+        </div>
+
+
+    <div class="header__more-sports jnav jsportsMenu none " data-i="6">
+        <ul class="verticalnav verticalnav--columns verticalnav--contrast">
+                    <li class="verticalnav__item">
+                        <a href="/deportes/futbol-americano/31" title="Fútbol Americano" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/futbol-americano/31" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Fútbol Americano" data-an="Modalidades_Header" data-di="31">
+                            <i class="verticalnav__icon ico-m-l mod-mod_31"></i>
+                            <span class="verticalnav__label">Fútbol Americano</span>
+                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="verticalnav__item">
+                        <a href="/deportes/ciclismo/4" title="Ciclismo" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/ciclismo/4" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Ciclismo" data-an="Modalidades_Header" data-di="4">
+                            <i class="verticalnav__icon ico-m-l mod-mod_4"></i>
+                            <span class="verticalnav__label">Ciclismo</span>
+                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="verticalnav__item">
+                        <a href="/deportes/mma/108" title="MMA" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/mma/108" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="MMA" data-an="Modalidades_Header" data-di="108">
+                            <i class="verticalnav__icon ico-m-l mod-mod_108"></i>
+                            <span class="verticalnav__label">MMA</span>
+                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="verticalnav__item">
+                        <a href="/deportes/boxeo/29" title="Boxeo" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/boxeo/29" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Boxeo" data-an="Modalidades_Header" data-di="29">
+                            <i class="verticalnav__icon ico-m-l mod-mod_29"></i>
+                            <span class="verticalnav__label">Boxeo</span>
+                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="verticalnav__item">
+                        <a href="/deportes/formula-1/6" title="Fórmula 1" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/formula-1/6" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Fórmula 1" data-an="Modalidades_Header" data-di="6">
+                            <i class="verticalnav__icon ico-m-l mod-mod_6"></i>
+                            <span class="verticalnav__label">Fórmula 1</span>
+                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="verticalnav__item">
+                        <a href="/deportes/motociclismo/9" title="Motociclismo" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/motociclismo/9" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Motociclismo" data-an="Modalidades_Header" data-di="9">
+                            <i class="verticalnav__icon ico-m-l mod-mod_9"></i>
+                            <span class="verticalnav__label">Motociclismo</span>
+                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="verticalnav__item">
+                        <a href="/deportes/formula-e/127" title="Fórmula E" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/formula-e/127" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Fórmula E" data-an="Modalidades_Header" data-di="127">
+                            <i class="verticalnav__icon ico-m-l mod-mod_127"></i>
+                            <span class="verticalnav__label">Fórmula E</span>
+                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="verticalnav__item">
+                        <a href="/deportes/golf/18" title="Golf" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/golf/18" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Golf" data-an="Modalidades_Header" data-di="18">
+                            <i class="verticalnav__icon ico-m-l mod-mod_18"></i>
+                            <span class="verticalnav__label">Golf</span>
+                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="verticalnav__item">
+                        <a href="/deportes/rugby-union/15" title="Rugby Union" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/rugby-union/15" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Rugby Union" data-an="Modalidades_Header" data-di="15">
+                            <i class="verticalnav__icon ico-m-l mod-mod_15"></i>
+                            <span class="verticalnav__label">Rugby Union</span>
+                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="verticalnav__item">
+                        <a href="/deportes/dardos/76" title="Dardos" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/dardos/76" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Dardos" data-an="Modalidades_Header" data-di="76">
+                            <i class="verticalnav__icon ico-m-l mod-mod_76"></i>
+                            <span class="verticalnav__label">Dardos</span>
+                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="verticalnav__item">
+                        <a href="/deportes/snooker/72" title="Snooker" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/snooker/72" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Snooker" data-an="Modalidades_Header" data-di="72">
+                            <i class="verticalnav__icon ico-m-l mod-mod_72"></i>
+                            <span class="verticalnav__label">Snooker</span>
+                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="verticalnav__item">
+                        <a href="/deportes/cricket/97" title="Cricket" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/cricket/97" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Cricket" data-an="Modalidades_Header" data-di="97">
+                            <i class="verticalnav__icon ico-m-l mod-mod_97"></i>
+                            <span class="verticalnav__label">Cricket</span>
+                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="verticalnav__item">
+                        <a href="/deportes/waterpolo/23" title="Waterpolo" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/waterpolo/23" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Waterpolo" data-an="Modalidades_Header" data-di="23">
+                            <i class="verticalnav__icon ico-m-l mod-mod_23"></i>
+                            <span class="verticalnav__label">Waterpolo</span>
+                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="verticalnav__item">
+                        <a href="/deportes/badminton/88" title="Badminton" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/badminton/88" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Badminton" data-an="Modalidades_Header" data-di="88">
+                            <i class="verticalnav__icon ico-m-l mod-mod_88"></i>
+                            <span class="verticalnav__label">Badminton</span>
+                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="verticalnav__item">
+                        <a href="/deportes/bolsa/34" title="Bolsa" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/bolsa/34" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Bolsa" data-an="Modalidades_Header" data-di="34">
+                            <i class="verticalnav__icon ico-m-l mod-mod_34"></i>
+                            <span class="verticalnav__label">Bolsa</span>
+                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="verticalnav__item">
+                        <a href="/deportes/actualidad/24" title="Actualidad" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/actualidad/24" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Actualidad" data-an="Modalidades_Header" data-di="24">
+                            <i class="verticalnav__icon ico-m-l mod-mod_24"></i>
+                            <span class="verticalnav__label">Actualidad</span>
+                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="verticalnav__item">
+                        <a href="/deportes/futbol-playa/43" title="Fútbol Playa" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/futbol-playa/43" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Fútbol Playa" data-an="Modalidades_Header" data-di="43">
+                            <i class="verticalnav__icon ico-m-l mod-mod_43"></i>
+                            <span class="verticalnav__label">Fútbol Playa</span>
+                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="verticalnav__item">
+                        <a href="/deportes/rugby-league/95" title="Rugby League" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/rugby-league/95" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Rugby League" data-an="Modalidades_Header" data-di="95">
+                            <i class="verticalnav__icon ico-m-l mod-mod_95"></i>
+                            <span class="verticalnav__label">Rugby League</span>
+                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="verticalnav__item">
+                        <a href="/deportes/otros-deportes-de-motor/14" title="Otros Deportes de Motor" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/otros-deportes-de-motor/14" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Otros Deportes de Motor" data-an="Modalidades_Header" data-di="14">
+                            <i class="verticalnav__icon ico-m-l mod-mod_14"></i>
+                            <span class="verticalnav__label">Otros Deportes de Motor</span>
+                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="verticalnav__item">
+                        <a href="/deportes/pelota-mano/2" title="Pelota Mano" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/pelota-mano/2" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Pelota Mano" data-an="Modalidades_Header" data-di="2">
+                            <i class="verticalnav__icon ico-m-l mod-mod_2"></i>
+                            <span class="verticalnav__label">Pelota Mano</span>
+                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="verticalnav__item">
+                        <a href="/deportes/futbol-australiano/98" title="Fútbol Australiano" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/futbol-australiano/98" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Fútbol Australiano" data-an="Modalidades_Header" data-di="98">
+                            <i class="verticalnav__icon ico-m-l mod-mod_98"></i>
+                            <span class="verticalnav__label">Fútbol Australiano</span>
+                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
+                        </a>
+                    </li>
+        </ul>
+    </div>
+    <div data-jsfile="navMenu.section.js?v=tME5PzfZ54xGB269naOKpHK-RnwrxmnlnMGtNxgQjKk" class="ljs" hidden="hidden"></div>
+</header>
+
+<div data-jsfile="header.section.js?v=Uucyabh6zg8iDg482ZXdQPbDlW0ReT91HH6XrlK8lVI" class="ljs" hidden="hidden"></div>
+
+
+
+
+    <div class="content jcontent  streaming-wider">
+
+
+
+<main id="pag" class="jlay main__wrapper jwpc " data-pin="SportsbookSubdiscipline" data-t="0" data-sk="SportsbookSubdiscipline-41" data-cat="[&quot;Public&quot;,&quot;Sportsbook&quot;,&quot;DisciplineRelated&quot;]" data-url="/deportes/baloncesto/nba/41" data-curl="https://apuestas.retabet.es/deportes/baloncesto/nba/41" data-red="" data-tit="Apostar a NBA - Pronósticos deportivos NBA >> RETABET ESPAÑA" data-ht="1" data-lay="4" data-pargs="{&quot;ParamList&quot;:{&quot;d&quot;:&quot;5&quot;,&quot;sd&quot;:&quot;41&quot;}}" data-icp="false" data-tracks="{&quot;Category&quot;:&quot;Deportes&quot;,&quot;Action&quot;:&quot;Competición&quot;,&quot;Tags&quot;:&quot;&quot;,&quot;Discipline&quot;:&quot;Baloncesto&quot;,&quot;SubDiscipline&quot;:&quot;NBA&quot;,&quot;Categories&quot;:&quot;Public,Sportsbook,DisciplineRelated&quot;,&quot;Page&quot;:&quot;SportsbookSubdiscipline&quot;}" data-bc="sports" data-ss="true">
+
+    <div class="blay"></div>
+    <div class="clay">
+
+
+
+<div class="layout layout__sportsbook2">
+    <section data-cont="1" class="jpanel panel__filter-side">
+
+
+    <section id="w_1-p_1-wt_38" class="jqw  widget_type_38 widget__filter-side mod_5" data-wt="38" data-pa="1" data-co="0" data-po="1" data-sw="false" data-vi="True" data-sl="True" data-ti="False" data-sc="True" data-pwi="74" data-nrc="0" data-ic="false" data-vtw="null" data-sn="">
+
+
+
+
+<div class="filter__mod-nav jdi" data-di="5" data-dds="Baloncesto"><div class="headline headline--brandfont"><h2 class="title_xl">Baloncesto</h2></div><div class="filter__mod-group filter__mod-group--dest jsct"><ul class="verticalnav"><li class="verticalnav__item jit" data-i="0"><a href="/deportes/baloncesto/5" title="Baloncesto de Hoy" class="verticalnav__link jlink" rel="" data-pin="SportsbookDiscipline" data-ct="0"><span class="verticalnav__label">Baloncesto de Hoy</span></a></li></ul></div><div class="filter__mod-group filter__mod-group--dest jsct none"></div><div class="filter__mod-group filter__mod-group--dest jschi"><ul class="verticalnav"><li class="verticalnav__item jit active" data-i="41"><a href="/deportes/baloncesto/nba/41" title="NBA  " class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="0"><span class="verticalnav__label">NBA  </span></a></li><li class="verticalnav__item jit" data-i="35"><a href="/deportes/baloncesto/liga-acb/35" title="Liga ACB" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="0"><span class="verticalnav__label">Liga ACB</span></a></li><li class="verticalnav__item jit" data-i="83"><a href="/deportes/baloncesto/euroliga/83" title="Euroliga" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="0"><span class="verticalnav__label">Euroliga</span></a></li><li class="verticalnav__item jit" data-i="583"><a href="/deportes/baloncesto/liga-femenina/583" title="Liga Femenina" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="0"><span class="verticalnav__label">Liga Femenina</span></a></li></ul></div><div class="filter__mod-group filter__mod-group--country jscca"><ul class="verticalnav"><li class="verticalnav__item jit" data-i="233"><a href="/deportes/baloncesto/5/estados-unidos/233" title="ESTADOS UNIDOS" class="verticalnav__link" rel="" data-ct="1"><span class="verticalnav__bandera"><img src="https://cdn.retabet.es/apuestas/es/SubdisciplineCategories/US.svg"></span><span class="verticalnav__label">ESTADOS UNIDOS</span><i class="ico-s icon-chevron-up verticalnav__arrow jiticr"></i></a><ul class="jitul verticalnav"><li class="verticalnav__item jit active" data-i="41"><a href="/deportes/baloncesto/nba/41" title="NBA  " class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">NBA  </span></a></li><li class="verticalnav__item jit" data-i="316"><a href="/deportes/baloncesto/wnba/316" title="WNBA" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">WNBA</span></a></li><li class="verticalnav__item jit" data-i="253"><a href="/deportes/baloncesto/ncaa/253" title="NCAA" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">NCAA</span></a></li><li class="verticalnav__item jit" data-i="2760"><a href="/deportes/baloncesto/ncaa-femenina/2760" title="NCAA Femenina" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">NCAA Femenina</span></a></li><li class="verticalnav__item"><a href="/deportes/baloncesto/5/estados-unidos/233" title="ESTADOS UNIDOS" class="jlink jael verticalnav__link verticalnav__link--right"><span class="verticalnav__label">Todos los eventos</span></a></li></ul></li><li class="verticalnav__item jit" data-i="253"><a href="/deportes/baloncesto/5/europa/253" title="EUROPA" class="verticalnav__link" rel="" data-ct="1"><span class="verticalnav__bandera"><img src="https://cdn.retabet.es/apuestas/es/SubdisciplineCategories/EUR.svg"></span><span class="verticalnav__label">EUROPA</span><i class="ico-s icon-chevron-down verticalnav__arrow jiticr"></i></a><ul class="jitul verticalnav none"><li class="verticalnav__item jit" data-i="83"><a href="/deportes/baloncesto/euroliga/83" title="Euroliga" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Euroliga</span></a></li><li class="verticalnav__item jit" data-i="4242"><a href="/deportes/baloncesto/basketball-champions-league/4242" title="Basketball Champions League" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Basketball Champions League</span></a></li><li class="verticalnav__item jit" data-i="5743"><a href="/deportes/baloncesto/liga-adriatica/5743" title="Liga Adriática" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Liga Adriática</span></a></li><li class="verticalnav__item jit" data-i="347"><a href="/deportes/baloncesto/eurobasket/347" title="Eurobasket" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Eurobasket</span></a></li><li class="verticalnav__item"><a href="/deportes/baloncesto/5/europa/253" title="EUROPA" class="jlink jael verticalnav__link verticalnav__link--right none"><span class="verticalnav__label">Todos los eventos</span></a></li></ul></li><li class="verticalnav__item jit" data-i="68"><a href="/deportes/baloncesto/5/espana/68" title="ESPAÑA" class="verticalnav__link" rel="" data-ct="1"><span class="verticalnav__bandera"><img src="https://cdn.retabet.es/apuestas/es/SubdisciplineCategories/ES.svg"></span><span class="verticalnav__label">ESPAÑA</span><i class="ico-s icon-chevron-down verticalnav__arrow jiticr"></i></a><ul class="jitul verticalnav none"><li class="verticalnav__item jit" data-i="35"><a href="/deportes/baloncesto/liga-acb/35" title="Liga ACB" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Liga ACB</span></a></li><li class="verticalnav__item jit" data-i="583"><a href="/deportes/baloncesto/liga-femenina/583" title="Liga Femenina" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Liga Femenina</span></a></li><li class="verticalnav__item"><a href="/deportes/baloncesto/5/espana/68" title="ESPAÑA" class="jlink jael verticalnav__link verticalnav__link--right none"><span class="verticalnav__label">Todos los eventos</span></a></li></ul></li><li class="verticalnav__item jit" data-i="110"><a href="/deportes/baloncesto/5/italia/110" title="ITALIA" class="verticalnav__link" rel="" data-ct="1"><span class="verticalnav__bandera"><img src="https://cdn.retabet.es/apuestas/es/SubdisciplineCategories/IT.svg"></span><span class="verticalnav__label">ITALIA</span><i class="ico-s icon-chevron-down verticalnav__arrow jiticr"></i></a><ul class="jitul verticalnav none"><li class="verticalnav__item jit" data-i="318"><a href="/deportes/baloncesto/italia-lega-basket-serie-a/318" title="Italia Lega Basket Serie A" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Italia Lega Basket Serie A</span></a></li><li class="verticalnav__item"><a href="/deportes/baloncesto/5/italia/110" title="ITALIA" class="jlink jael verticalnav__link verticalnav__link--right none"><span class="verticalnav__label">Todos los eventos</span></a></li></ul></li><li class="verticalnav__item jit" data-i="57"><a href="/deportes/baloncesto/5/alemania/57" title="ALEMANIA" class="verticalnav__link" rel="" data-ct="1"><span class="verticalnav__bandera"><img src="https://cdn.retabet.es/apuestas/es/SubdisciplineCategories/DE.svg"></span><span class="verticalnav__label">ALEMANIA</span><i class="ico-s icon-chevron-down verticalnav__arrow jiticr"></i></a><ul class="jitul verticalnav none"><li class="verticalnav__item jit" data-i="974"><a href="/deportes/baloncesto/alemania-bundesliga/974" title="Alemania Bundesliga" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Alemania Bundesliga</span></a></li><li class="verticalnav__item"><a href="/deportes/baloncesto/5/alemania/57" title="ALEMANIA" class="jlink jael verticalnav__link verticalnav__link--right none"><span class="verticalnav__label">Todos los eventos</span></a></li></ul></li><li class="verticalnav__item jit" data-i="75"><a href="/deportes/baloncesto/5/francia/75" title="FRANCIA" class="verticalnav__link" rel="" data-ct="1"><span class="verticalnav__bandera"><img src="https://cdn.retabet.es/apuestas/es/SubdisciplineCategories/FR.svg"></span><span class="verticalnav__label">FRANCIA</span><i class="ico-s icon-chevron-down verticalnav__arrow jiticr"></i></a><ul class="jitul verticalnav none"><li class="verticalnav__item jit" data-i="1554"><a href="/deportes/baloncesto/francia-lnb-elite/1554" title="Francia LNB Élite" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Francia LNB Élite</span></a></li><li class="verticalnav__item"><a href="/deportes/baloncesto/5/francia/75" title="FRANCIA" class="jlink jael verticalnav__link verticalnav__link--right none"><span class="verticalnav__label">Todos los eventos</span></a></li></ul></li><li class="verticalnav__item jit" data-i="225"><a href="/deportes/baloncesto/5/turquia/225" title="TURQUÍA" class="verticalnav__link" rel="" data-ct="1"><span class="verticalnav__bandera"><img src="https://cdn.retabet.es/apuestas/es/SubdisciplineCategories/TR.svg"></span><span class="verticalnav__label">TURQUÍA</span><i class="ico-s icon-chevron-down verticalnav__arrow jiticr"></i></a><ul class="jitul verticalnav none"><li class="verticalnav__item jit" data-i="1186"><a href="/deportes/baloncesto/turquia-bsl/1186" title="Turquía BSL" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Turquía BSL</span></a></li><li class="verticalnav__item"><a href="/deportes/baloncesto/5/turquia/225" title="TURQUÍA" class="jlink jael verticalnav__link verticalnav__link--right none"><span class="verticalnav__label">Todos los eventos</span></a></li></ul></li><li class="verticalnav__item jit" data-i="89"><a href="/deportes/baloncesto/5/grecia/89" title="GRECIA" class="verticalnav__link" rel="" data-ct="1"><span class="verticalnav__bandera"><img src="https://cdn.retabet.es/apuestas/es/SubdisciplineCategories/GR.svg"></span><span class="verticalnav__label">GRECIA</span><i class="ico-s icon-chevron-down verticalnav__arrow jiticr"></i></a><ul class="jitul verticalnav none"><li class="verticalnav__item jit" data-i="308"><a href="/deportes/baloncesto/grecia-gbl/308" title="Grecia GBL" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Grecia GBL</span></a></li><li class="verticalnav__item"><a href="/deportes/baloncesto/5/grecia/89" title="GRECIA" class="jlink jael verticalnav__link verticalnav__link--right none"><span class="verticalnav__label">Todos los eventos</span></a></li></ul></li><li class="verticalnav__item jit" data-i="103"><a href="/deportes/baloncesto/5/israel/103" title="ISRAEL" class="verticalnav__link" rel="" data-ct="1"><span class="verticalnav__bandera"><img src="https://cdn.retabet.es/apuestas/es/SubdisciplineCategories/IL.svg"></span><span class="verticalnav__label">ISRAEL</span><i class="ico-s icon-chevron-down verticalnav__arrow jiticr"></i></a><ul class="jitul verticalnav none"><li class="verticalnav__item jit" data-i="6216"><a href="/deportes/baloncesto/israel-superliga/6216" title="Israel Superliga" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Israel Superliga</span></a></li><li class="verticalnav__item"><a href="/deportes/baloncesto/5/israel/103" title="ISRAEL" class="jlink jael verticalnav__link verticalnav__link--right none"><span class="verticalnav__label">Todos los eventos</span></a></li></ul></li><li class="verticalnav__item jit" data-i="122"><a href="/deportes/baloncesto/5/corea-del-sur/122" title="COREA DEL SUR" class="verticalnav__link" rel="" data-ct="1"><span class="verticalnav__bandera"><img src="https://cdn.retabet.es/apuestas/es/SubdisciplineCategories/KR.svg"></span><span class="verticalnav__label">COREA DEL SUR</span><i class="ico-s icon-chevron-down verticalnav__arrow jiticr"></i></a><ul class="jitul verticalnav none"><li class="verticalnav__item jit" data-i="1702"><a href="/deportes/baloncesto/corea-del-sur-kbl/1702" title="Corea del Sur KBL" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Corea del Sur KBL</span></a></li><li class="verticalnav__item"><a href="/deportes/baloncesto/5/corea-del-sur/122" title="COREA DEL SUR" class="jlink jael verticalnav__link verticalnav__link--right none"><span class="verticalnav__label">Todos los eventos</span></a></li></ul></li><li class="verticalnav__item jit" data-i="0"><a href="/deportes/baloncesto/5/regiones" title="Más Regiones" class="verticalnav__link jlink" rel="" data-pin="SportsbookRegions" data-ct="0"><span class="verticalnav__label">Más Regiones</span><i class="ico-s icon-chevron-right verticalnav__arrow jiticr"></i></a></li></ul></div><div class="filter__mod-group filter__mod-group--porras jscmu none"></div></div>    <div data-jsfile="sportsbookMenu.widget.js?v=znjJeAaH-5uGyINB6dJiPjt-tbHyVTeZmmWC21-v1r8" class="ljs" hidden="hidden"></div>
+
+
+    <div hidden="" id="aw1-1" data-v="{&quot;SelectedPageName&quot;:&quot;SportsbookSubdiscipline&quot;,&quot;SelectedDisciplineId&quot;:5,&quot;SelectedSubdisciplineId&quot;:41,&quot;SelectedCategoryId&quot;:null,&quot;MaxPromotedSubdisciplines&quot;:4,&quot;MaxNumberOfCategories&quot;:10,&quot;MaxNumberOfMutuels&quot;:1,&quot;ExpandedCategories&quot;:null,&quot;VisibleTitleBox&quot;:false,&quot;TitleBox&quot;:null}"></div>
+
+
+
+    </section>
+</section>
+    <section data-cont="2" class="jpanel panel__central">
+
+
+
+    <section id="w_1-p_2-wt_106_c" class="jqw  widget_type_106_c" data-wt="106" data-pa="2" data-co="0" data-po="1" data-sw="false" data-vi="True" data-sl="True" data-ti="False" data-sc="False" data-pwi="4" data-nrc="0" data-ic="true" data-vtw="null" data-sn="SportsNoResult">
+
+
+
+
+    <div class="jdata" data-section="sportsNoResult" data-hash="PyjtOZ-2gadSXfwTIK7Ws1oMsxHKC1aEOAT2tBYnb48"></div>
+
+
+<div data-jsfile="sportsNoResult.section.js?v=PyjtOZ-2gadSXfwTIK7Ws1oMsxHKC1aEOAT2tBYnb48" class="ljs" hidden="hidden"></div>
+    <div data-jsfile="sectionWrapper.widget.js?v=xxaM-WzvGe4qczxR6RkNOjhAIRt29kzxVJ5NaSvCXPE" class="ljs" hidden="hidden"></div>
+
+
+    <div hidden="" id="aw2-1" data-v="{&quot;ShowTitle&quot;:true,&quot;FromDiscipline&quot;:false,&quot;DisciplineId&quot;:5,&quot;FromCategory&quot;:false,&quot;CategoryId&quot;:null,&quot;FromSubdiscipline&quot;:true,&quot;SubdisciplineId&quot;:41,&quot;ParentHtmlId&quot;:&quot;w_1-p_2-wt_106_c&quot;,&quot;HtmlId&quot;:&quot;w_1-p_2-wt_106_c_SportsNoResult&quot;,&quot;ClassName&quot;:null,&quot;VisibleTitleBox&quot;:false,&quot;TitleBox&quot;:null}"></div>
+
+
+
+    </section>
+
+    <section id="w_2-p_2-wt_43" class="jqw  widget_type_43" data-wt="43" data-pa="2" data-co="0" data-po="2" data-sw="false" data-vi="True" data-sl="True" data-ti="False" data-sc="True" data-pwi="75" data-nrc="0" data-ic="false" data-vtw="null" data-sn="">
+
+
+
+
+<div class="headline headline--greyline headline--brandfont">
+    <h2 class="title_m-l">
+            NBA
+    </h2>
+</div>
+<div hidden="" class="jwdata" data-d="Baloncesto"></div>
+
+
+    <div class="module__header-filters">
+            <div class="widget__filter-offer mod_5">
+                <ul class="tab__group">
+                    <li class="tab__item tab__item--primary jtab active" data-i="2">
+                        Eventos
+                    </li>
+                    <li class="tab__item tab__item--primary jtab " data-i="3">
+                        Largo plazo
+                    </li>
+                </ul>
+            </div>
+
+            <div class="list-events__select-options">
+                    <div class="jrm select-noform">
+                        <div class="jsm select-noform_active" data-i="300298">
+                            <span>Ganador partido</span>
+                            <i class="icon-chevron-thin-down jar"></i>
+                        </div>
+                        <ul class="none select-noform__options joml">
+                                    <li class="jom" tabindex="0" data-i="300300">
+                                        <span>Hándicap</span>
+                                    </li>
+                                    <li class="jom" tabindex="0" data-i="300302">
+                                        <span>Más/menos puntos</span>
+                                    </li>
+                                    <li class="jom" tabindex="0" data-i="300304">
+                                        <span>Más/menos puntos LOCAL</span>
+                                    </li>
+                                    <li class="jom" tabindex="0" data-i="300305">
+                                        <span>Más/menos puntos VISITANTE</span>
+                                    </li>
+                                    <li class="jom" tabindex="0" data-i="300323">
+                                        <span>1º tiempo: ganador</span>
+                                    </li>
+                                    <li class="jom" tabindex="0" data-i="300324">
+                                        <span>1º tiempo: hándicap</span>
+                                    </li>
+                                    <li class="jom" tabindex="0" data-i="300325">
+                                        <span>1º tiempo: más/menos puntos</span>
+                                    </li>
+                        </ul>
+                    </div>
+                    <div class="jrm select-noform">
+                        <div class="jsm select-noform_active" data-i="300300">
+                            <span>Hándicap</span>
+                            <i class="icon-chevron-thin-down jar"></i>
+                        </div>
+                        <ul class="none select-noform__options joml">
+                                    <li class="jom" tabindex="0" data-i="300298">
+                                        <span>Ganador partido</span>
+                                    </li>
+                                    <li class="jom" tabindex="0" data-i="300302">
+                                        <span>Más/menos puntos</span>
+                                    </li>
+                                    <li class="jom" tabindex="0" data-i="300304">
+                                        <span>Más/menos puntos LOCAL</span>
+                                    </li>
+                                    <li class="jom" tabindex="0" data-i="300305">
+                                        <span>Más/menos puntos VISITANTE</span>
+                                    </li>
+                                    <li class="jom" tabindex="0" data-i="300323">
+                                        <span>1º tiempo: ganador</span>
+                                    </li>
+                                    <li class="jom" tabindex="0" data-i="300324">
+                                        <span>1º tiempo: hándicap</span>
+                                    </li>
+                                    <li class="jom" tabindex="0" data-i="300325">
+                                        <span>1º tiempo: más/menos puntos</span>
+                                    </li>
+                        </ul>
+                    </div>
+                    <div class="jrm select-noform">
+                        <div class="jsm select-noform_active" data-i="300302">
+                            <span>Más/menos puntos</span>
+                            <i class="icon-chevron-thin-down jar"></i>
+                        </div>
+                        <ul class="none select-noform__options joml">
+                                    <li class="jom" tabindex="0" data-i="300298">
+                                        <span>Ganador partido</span>
+                                    </li>
+                                    <li class="jom" tabindex="0" data-i="300300">
+                                        <span>Hándicap</span>
+                                    </li>
+                                    <li class="jom" tabindex="0" data-i="300304">
+                                        <span>Más/menos puntos LOCAL</span>
+                                    </li>
+                                    <li class="jom" tabindex="0" data-i="300305">
+                                        <span>Más/menos puntos VISITANTE</span>
+                                    </li>
+                                    <li class="jom" tabindex="0" data-i="300323">
+                                        <span>1º tiempo: ganador</span>
+                                    </li>
+                                    <li class="jom" tabindex="0" data-i="300324">
+                                        <span>1º tiempo: hándicap</span>
+                                    </li>
+                                    <li class="jom" tabindex="0" data-i="300325">
+                                        <span>1º tiempo: más/menos puntos</span>
+                                    </li>
+                        </ul>
+                    </div>
+            </div>
+    </div>
+
+
+
+<article class="module__list-events">
+
+
+<div id="react_0HNCD4MK09B4S"><div class="jsbdate"><div class="jtit accordion accordion_l "><h3 class="accordion__text">Mañana</h3><div class=""></div><i class="ico-m icon-minus jshow" data-i="egd_0"></i></div><ul class="event__list jbgroup" data-i="egd_0"><li class="jlink jev event__item" data-u="/deportes/boston-celtics-new-york-knicks-ev30017727" data-d="5" data-sdi="41" data-hv="0" data-il="0" data-i="30017727"><div class="event__tournament"></div><a href="/deportes/boston-celtics-new-york-knicks-ev30017727" title="Boston Celtics - New York Knicks" class="event__players"><ul class="event__players-name"><li>Boston Celtics</li><li>New York Knicks</li></ul></a><div class="event__bets"><div class="bets__column"><ul class="bets__option-list jbet"><li class="jo betbox" data-i="3832480287"><span class="jqt betbox__option">1</span><span class="jpr betbox__odd">1,19</span></li><li class="jo betbox" data-i="3832480286"><span class="jqt betbox__option">2</span><span class="jpr betbox__odd">4,94</span></li></ul></div><div class="bets__column"><ul class="bets__option-list jbet"><li class="jo betbox" data-i="3832480323"><span class="jqt betbox__option">Boston Celtics (-10,5)</span><span class="jpr betbox__odd">1,96</span></li><li class="jo betbox" data-i="3832480322"><span class="jqt betbox__option">New York Knicks (+10,5)</span><span class="jpr betbox__odd">1,89</span></li></ul></div><div class="bets__column"><ul class="bets__option-list jbet"><li class="jo betbox" data-i="3832480316"><span class="jqt betbox__option">+ de 211</span><span class="jpr betbox__odd">1,90</span></li><li class="jo betbox" data-i="3832480317"><span class="jqt betbox__option">- de 211</span><span class="jpr betbox__odd">1,93</span></li></ul></div></div><div class="event__more-info"><span class="event__day">Mañana</span><span class="event__time">01:10</span></div><div class="jt_homemorebets event__more-bets jmr"><span>+414</span></div></li><li class="jlink jev event__item" data-u="/deportes/oklahoma-city-thunder-denver-nuggets-ev30054757" data-d="5" data-sdi="41" data-hv="0" data-il="0" data-i="30054757"><div class="event__tournament"></div><a href="/deportes/oklahoma-city-thunder-denver-nuggets-ev30054757" title="Oklahoma City Thunder - Denver Nuggets" class="event__players"><ul class="event__players-name"><li>Oklahoma City Thunder</li><li>Denver Nuggets</li></ul></a><div class="event__bets"><div class="bets__column"><ul class="bets__option-list jbet"><li class="jo betbox" data-i="3833340251"><span class="jqt betbox__option">1</span><span class="jpr betbox__odd">1,19</span></li><li class="jo betbox" data-i="3833340250"><span class="jqt betbox__option">2</span><span class="jpr betbox__odd">4,90</span></li></ul></div><div class="bets__column"><ul class="bets__option-list jbet"><li class="jo betbox" data-i="3833340269"><span class="jqt betbox__option">Oklahoma City Thunder (-10,5)</span><span class="jpr betbox__odd">1,95</span></li><li class="jo betbox" data-i="3833340268"><span class="jqt betbox__option">Denver Nuggets (+10,5)</span><span class="jpr betbox__odd">1,89</span></li></ul></div><div class="bets__column"><ul class="bets__option-list jbet"><li class="jo betbox" data-i="3833340244"><span class="jqt betbox__option">+ de 230,5</span><span class="jpr betbox__odd">1,89</span></li><li class="jo betbox" data-i="3833340245"><span class="jqt betbox__option">- de 230,5</span><span class="jpr betbox__odd">1,93</span></li></ul></div></div><div class="event__more-info"><span class="event__day">Mañana</span><span class="event__time">03:40</span></div><div class="jt_homemorebets event__more-bets jmr"><span>+415</span></div></li></ul><div class="jtit accordion accordion_l "><h3 class="accordion__text">viernes, 9 de mayo de 2025</h3><div class=""></div><i class="ico-m icon-minus jshow" data-i="egd_1"></i></div><ul class="event__list jbgroup" data-i="egd_1"><li class="jlink jev event__item" data-u="/deportes/minnesota-timberwolves-golden-state-warriors-ev30069644" data-d="5" data-sdi="41" data-hv="0" data-il="0" data-i="30069644"><div class="event__tournament"></div><a href="/deportes/minnesota-timberwolves-golden-state-warriors-ev30069644" title="Minnesota Timberwolves - Golden State Warriors" class="event__players"><ul class="event__players-name"><li>Minnesota Timberwolves</li><li>Golden State Warriors</li></ul></a><div class="event__bets"><div class="bets__column"><ul class="bets__option-list jbet"><li class="jo betbox" data-i="3835333243"><span class="jqt betbox__option">1</span><span class="jpr betbox__odd">1,18</span></li><li class="jo betbox" data-i="3835333242"><span class="jqt betbox__option">2</span><span class="jpr betbox__odd">5,15</span></li></ul></div><div class="bets__column"><ul class="bets__option-list jbet"><li class="jo betbox" data-i="3835333313"><span class="jqt betbox__option">Minnesota Timberwolves (-10,5)</span><span class="jpr betbox__odd">1,90</span></li><li class="jo betbox" data-i="3835333312"><span class="jqt betbox__option">Golden State Warriors (+10,5)</span><span class="jpr betbox__odd">1,95</span></li></ul></div><div class="bets__column"><ul class="bets__option-list jbet"><li class="jo betbox" data-i="3835333306"><span class="jqt betbox__option">+ de 201</span><span class="jpr betbox__odd">1,93</span></li><li class="jo betbox" data-i="3835333307"><span class="jqt betbox__option">- de 201</span><span class="jpr betbox__odd">1,89</span></li></ul></div></div><div class="event__more-info"><span class="event__day">09/05</span><span class="event__time">02:30</span></div><div class="jt_homemorebets event__more-bets jmr"><span>+83</span></div></li></ul><div class="jtit accordion accordion_l "><h3 class="accordion__text">sábado, 10 de mayo de 2025</h3><div class=""></div><i class="ico-m icon-minus jshow" data-i="egd_2"></i></div><ul class="event__list jbgroup" data-i="egd_2"><li class="jlink jev event__item" data-u="/deportes/indiana-pacers-cleveland-cavaliers-ev30028455" data-d="5" data-sdi="41" data-hv="0" data-il="0" data-i="30028455"><div class="event__tournament"></div><a href="/deportes/indiana-pacers-cleveland-cavaliers-ev30028455" title="Indiana Pacers - Cleveland Cavaliers" class="event__players"><ul class="event__players-name"><li>Indiana Pacers</li><li>Cleveland Cavaliers</li></ul></a><div class="event__bets"><div class="bets__column"><ul class="bets__option-list jbet"><li class="jo betbox" data-i="3834391826"><span class="jqt betbox__option">1</span><span class="jpr betbox__odd">2,22</span></li><li class="jo betbox" data-i="3834391825"><span class="jqt betbox__option">2</span><span class="jpr betbox__odd">1,71</span></li></ul></div><div class="bets__column"><ul class="bets__option-list jbet"><li class="jo betbox" data-i="3834391842"><span class="jqt betbox__option">Indiana Pacers (+2,5)</span><span class="jpr betbox__odd">1,93</span></li><li class="jo betbox" data-i="3834391841"><span class="jqt betbox__option">Cleveland Cavaliers (-2,5)</span><span class="jpr betbox__odd">1,92</span></li></ul></div><div class="bets__column"><ul class="bets__option-list jbet"><li class="jo betbox" data-i="3834391819"><span class="jqt betbox__option">+ de 229,5</span><span class="jpr betbox__odd">1,93</span></li><li class="jo betbox" data-i="3834391820"><span class="jqt betbox__option">- de 229,5</span><span class="jpr betbox__odd">1,90</span></li></ul></div></div><div class="event__more-info"><span class="event__day">10/05</span><span class="event__time">01:30</span></div><div class="jt_homemorebets event__more-bets jmr"><span>+24</span></div></li></ul></div></div><div hidden="" class="jcr" data-cid="react_0HNCD4MK09B4S" data-cn="$R.Jsx.s.sportsbookDate.SportsbookDateIndex" data-cp="{&quot;wid&quot;:&quot;w_2-p_2-wt_43&quot;,&quot;initialData&quot;:{&quot;e&quot;:[{&quot;i&quot;:30017727,&quot;d&quot;:&quot;Boston Celtics - New York Knicks&quot;,&quot;di&quot;:5,&quot;sdi&quot;:41,&quot;dd&quot;:&quot;Baloncesto&quot;,&quot;scd&quot;:null,&quot;sdd&quot;:&quot;NBA&quot;,&quot;ei&quot;:null,&quot;ed&quot;:null,&quot;du&quot;:&quot;2025-05-07T23:10:00Z&quot;,&quot;ds&quot;:&quot;08/05&quot;,&quot;lds&quot;:&quot;jueves, 8 de mayo de 2025&quot;,&quot;rd&quot;:2,&quot;ts&quot;:&quot;01:10&quot;,&quot;il&quot;:false,&quot;ns&quot;:true,&quot;pp&quot;:true,&quot;mp&quot;:false,&quot;bbb&quot;:false,&quot;hv&quot;:0,&quot;ci&quot;:null,&quot;cd&quot;:null,&quot;s&quot;:null,&quot;p&quot;:[{&quot;i&quot;:8378445,&quot;n&quot;:&quot;Boston Celtics&quot;,&quot;sn&quot;:&quot;BOS&quot;,&quot;t&quot;:2,&quot;h&quot;:true,&quot;p&quot;:[{&quot;i&quot;:903674,&quot;d&quot;:&quot;Jayson Tatum&quot;},{&quot;i&quot;:903559,&quot;d&quot;:&quot;Kristaps Porzingis&quot;},{&quot;i&quot;:903700,&quot;d&quot;:&quot;Derrick White&quot;},{&quot;i&quot;:903673,&quot;d&quot;:&quot;Jaylen Brown&quot;},{&quot;i&quot;:903546,&quot;d&quot;:&quot;Jrue Holiday&quot;},{&quot;i&quot;:1296725,&quot;d&quot;:&quot;Payton Pritchard&quot;},{&quot;i&quot;:903655,&quot;d&quot;:&quot;Al Horford&quot;},{&quot;i&quot;:1399233,&quot;d&quot;:&quot;Luke Kornet&quot;}]},{&quot;i&quot;:8378443,&quot;n&quot;:&quot;New York Knicks&quot;,&quot;sn&quot;:&quot;NEW&quot;,&quot;t&quot;:3,&quot;h&quot;:false,&quot;p&quot;:[{&quot;i&quot;:1296282,&quot;d&quot;:&quot;Karl-Anthony Towns&quot;},{&quot;i&quot;:1296740,&quot;d&quot;:&quot;J. Brunson&quot;},{&quot;i&quot;:903600,&quot;d&quot;:&quot;Mikal Bridges&quot;},{&quot;i&quot;:1296263,&quot;d&quot;:&quot;Mitchell Robinson&quot;},{&quot;i&quot;:954958,&quot;d&quot;:&quot;Cameron Payne&quot;},{&quot;i&quot;:903536,&quot;d&quot;:&quot;Josh Hart&quot;},{&quot;i&quot;:903695,&quot;d&quot;:&quot;Og Anunoby&quot;},{&quot;i&quot;:1379603,&quot;d&quot;:&quot;Miles Mcbride&quot;}]}],&quot;nb&quot;:415,&quot;ih&quot;:false,&quot;b&quot;:[{&quot;i&quot;:1171886908,&quot;mi&quot;:300298,&quot;md&quot;:&quot;Ganador partido&quot;,&quot;rmd&quot;:&quot;Ganador partido&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3832480287,&quot;t&quot;:&quot;1&quot;,&quot;p&quot;:&quot;1,19&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3832480286,&quot;t&quot;:&quot;2&quot;,&quot;p&quot;:&quot;4,94&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1171886923,&quot;mi&quot;:300300,&quot;md&quot;:&quot;Hándicap&quot;,&quot;rmd&quot;:&quot;Hándicap&quot;,&quot;l&quot;:false,&quot;p&quot;:false,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3832480323,&quot;t&quot;:&quot;Boston Celtics (-10,5)&quot;,&quot;p&quot;:&quot;1,96&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3832480322,&quot;t&quot;:&quot;New York Knicks (+10,5)&quot;,&quot;p&quot;:&quot;1,89&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1171886920,&quot;mi&quot;:300302,&quot;md&quot;:&quot;Más/menos puntos&quot;,&quot;rmd&quot;:&quot;Más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3832480316,&quot;t&quot;:&quot;+ de 211&quot;,&quot;p&quot;:&quot;1,90&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3832480317,&quot;t&quot;:&quot;- de 211&quot;,&quot;p&quot;:&quot;1,93&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172381277,&quot;mi&quot;:300304,&quot;md&quot;:&quot;Boston Celtics: más/menos puntos&quot;,&quot;rmd&quot;:&quot;Boston Celtics: más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3833942322,&quot;t&quot;:&quot;+ de 111,5&quot;,&quot;p&quot;:&quot;1,87&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3833942323,&quot;t&quot;:&quot;- de 111,5&quot;,&quot;p&quot;:&quot;1,95&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1171886904,&quot;mi&quot;:300305,&quot;md&quot;:&quot;New York Knicks: más/menos puntos&quot;,&quot;rmd&quot;:&quot;New York Knicks: más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3832480280,&quot;t&quot;:&quot;+ de 100,5&quot;,&quot;p&quot;:&quot;1,94&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3832480281,&quot;t&quot;:&quot;- de 100,5&quot;,&quot;p&quot;:&quot;1,87&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1171889399,&quot;mi&quot;:300323,&quot;md&quot;:&quot;1º tiempo: ganador&quot;,&quot;rmd&quot;:&quot;1º tiempo: ganador&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3832487392,&quot;t&quot;:&quot;Boston Celtics&quot;,&quot;p&quot;:&quot;1,27&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3832487391,&quot;t&quot;:&quot;New York Knicks&quot;,&quot;p&quot;:&quot;3,84&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1171889410,&quot;mi&quot;:300324,&quot;md&quot;:&quot;1º tiempo: hándicap&quot;,&quot;rmd&quot;:&quot;1º tiempo: hándicap&quot;,&quot;l&quot;:false,&quot;p&quot;:false,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3832487414,&quot;t&quot;:&quot;Boston Celtics (-7)&quot;,&quot;p&quot;:&quot;1,89&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3832487413,&quot;t&quot;:&quot;New York Knicks (+7)&quot;,&quot;p&quot;:&quot;1,94&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1171889396,&quot;mi&quot;:300325,&quot;md&quot;:&quot;1º tiempo: más/menos puntos&quot;,&quot;rmd&quot;:&quot;1º tiempo: más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3832487385,&quot;t&quot;:&quot;+ de 108,5&quot;,&quot;p&quot;:&quot;1,93&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3832487386,&quot;t&quot;:&quot;- de 108,5&quot;,&quot;p&quot;:&quot;1,91&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null}],&quot;mt&quot;:null,&quot;pt&quot;:null,&quot;pb&quot;:null,&quot;hcp&quot;:false,&quot;ctbg&quot;:null,&quot;bbtbg&quot;:null,&quot;si&quot;:0,&quot;sti&quot;:0,&quot;sb&quot;:null,&quot;cbl&quot;:true,&quot;ip&quot;:false},{&quot;i&quot;:30054757,&quot;d&quot;:&quot;Oklahoma City Thunder - Denver Nuggets&quot;,&quot;di&quot;:5,&quot;sdi&quot;:41,&quot;dd&quot;:&quot;Baloncesto&quot;,&quot;scd&quot;:null,&quot;sdd&quot;:&quot;NBA&quot;,&quot;ei&quot;:null,&quot;ed&quot;:null,&quot;du&quot;:&quot;2025-05-08T01:40:00Z&quot;,&quot;ds&quot;:&quot;08/05&quot;,&quot;lds&quot;:&quot;jueves, 8 de mayo de 2025&quot;,&quot;rd&quot;:2,&quot;ts&quot;:&quot;03:40&quot;,&quot;il&quot;:false,&quot;ns&quot;:true,&quot;pp&quot;:true,&quot;mp&quot;:false,&quot;bbb&quot;:false,&quot;hv&quot;:0,&quot;ci&quot;:null,&quot;cd&quot;:null,&quot;s&quot;:null,&quot;p&quot;:[{&quot;i&quot;:8392348,&quot;n&quot;:&quot;Oklahoma City Thunder&quot;,&quot;sn&quot;:&quot;OKL&quot;,&quot;t&quot;:2,&quot;h&quot;:true,&quot;p&quot;:[{&quot;i&quot;:1298835,&quot;d&quot;:&quot;Isaiah Hartenstein&quot;},{&quot;i&quot;:903644,&quot;d&quot;:&quot;Luguentz Dort&quot;},{&quot;i&quot;:1379887,&quot;d&quot;:&quot;Aaron Wiggins&quot;},{&quot;i&quot;:1314985,&quot;d&quot;:&quot;Isaiah Joe&quot;},{&quot;i&quot;:2741610,&quot;d&quot;:&quot;Cason Wallace&quot;},{&quot;i&quot;:1710136,&quot;d&quot;:&quot;Chet Holmgren&quot;},{&quot;i&quot;:903643,&quot;d&quot;:&quot;Shai Gilgeous-Alexander&quot;},{&quot;i&quot;:1721085,&quot;d&quot;:&quot;Jalen Williams&quot;},{&quot;i&quot;:903620,&quot;d&quot;:&quot;Alex Caruso&quot;}]},{&quot;i&quot;:8392347,&quot;n&quot;:&quot;Denver Nuggets&quot;,&quot;sn&quot;:&quot;DEN&quot;,&quot;t&quot;:3,&quot;h&quot;:false,&quot;p&quot;:[{&quot;i&quot;:1379732,&quot;d&quot;:&quot;Christian Braun&quot;},{&quot;i&quot;:948981,&quot;d&quot;:&quot;Michael Porter Jr.&quot;},{&quot;i&quot;:903686,&quot;d&quot;:&quot;Nikola Jokic&quot;},{&quot;i&quot;:903606,&quot;d&quot;:&quot;Aaron Gordon&quot;},{&quot;i&quot;:903583,&quot;d&quot;:&quot;Russell Westbrook&quot;},{&quot;i&quot;:903688,&quot;d&quot;:&quot;Jamal Murray&quot;},{&quot;i&quot;:1712679,&quot;d&quot;:&quot;Peyton Watson&quot;}]}],&quot;nb&quot;:416,&quot;ih&quot;:false,&quot;b&quot;:[{&quot;i&quot;:1172172470,&quot;mi&quot;:300298,&quot;md&quot;:&quot;Ganador partido&quot;,&quot;rmd&quot;:&quot;Ganador partido&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3833340251,&quot;t&quot;:&quot;1&quot;,&quot;p&quot;:&quot;1,19&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3833340250,&quot;t&quot;:&quot;2&quot;,&quot;p&quot;:&quot;4,90&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172172479,&quot;mi&quot;:300300,&quot;md&quot;:&quot;Hándicap&quot;,&quot;rmd&quot;:&quot;Hándicap&quot;,&quot;l&quot;:false,&quot;p&quot;:false,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3833340269,&quot;t&quot;:&quot;Oklahoma City Thunder (-10,5)&quot;,&quot;p&quot;:&quot;1,95&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3833340268,&quot;t&quot;:&quot;Denver Nuggets (+10,5)&quot;,&quot;p&quot;:&quot;1,89&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172172467,&quot;mi&quot;:300302,&quot;md&quot;:&quot;Más/menos puntos&quot;,&quot;rmd&quot;:&quot;Más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3833340244,&quot;t&quot;:&quot;+ de 230,5&quot;,&quot;p&quot;:&quot;1,89&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3833340245,&quot;t&quot;:&quot;- de 230,5&quot;,&quot;p&quot;:&quot;1,93&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172172469,&quot;mi&quot;:300304,&quot;md&quot;:&quot;Oklahoma City Thunder: más/menos puntos&quot;,&quot;rmd&quot;:&quot;Oklahoma City Thunder: más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3833340248,&quot;t&quot;:&quot;+ de 120,5&quot;,&quot;p&quot;:&quot;1,91&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3833340249,&quot;t&quot;:&quot;- de 120,5&quot;,&quot;p&quot;:&quot;1,91&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172172468,&quot;mi&quot;:300305,&quot;md&quot;:&quot;Denver Nuggets: más/menos puntos&quot;,&quot;rmd&quot;:&quot;Denver Nuggets: más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3833340246,&quot;t&quot;:&quot;+ de 109,5&quot;,&quot;p&quot;:&quot;1,87&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3833340247,&quot;t&quot;:&quot;- de 109,5&quot;,&quot;p&quot;:&quot;1,94&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172174261,&quot;mi&quot;:300323,&quot;md&quot;:&quot;1º tiempo: ganador&quot;,&quot;rmd&quot;:&quot;1º tiempo: ganador&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3833344488,&quot;t&quot;:&quot;Oklahoma City Thunder&quot;,&quot;p&quot;:&quot;1,28&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3833344487,&quot;t&quot;:&quot;Denver Nuggets&quot;,&quot;p&quot;:&quot;3,77&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172174257,&quot;mi&quot;:300324,&quot;md&quot;:&quot;1º tiempo: hándicap&quot;,&quot;rmd&quot;:&quot;1º tiempo: hándicap&quot;,&quot;l&quot;:false,&quot;p&quot;:false,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3833344480,&quot;t&quot;:&quot;Oklahoma City Thunder (-7)&quot;,&quot;p&quot;:&quot;1,91&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3833344479,&quot;t&quot;:&quot;Denver Nuggets (+7)&quot;,&quot;p&quot;:&quot;1,93&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172174275,&quot;mi&quot;:300325,&quot;md&quot;:&quot;1º tiempo: más/menos puntos&quot;,&quot;rmd&quot;:&quot;1º tiempo: más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3833344525,&quot;t&quot;:&quot;+ de 118,5&quot;,&quot;p&quot;:&quot;1,93&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3833344526,&quot;t&quot;:&quot;- de 118,5&quot;,&quot;p&quot;:&quot;1,90&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null}],&quot;mt&quot;:null,&quot;pt&quot;:null,&quot;pb&quot;:null,&quot;hcp&quot;:false,&quot;ctbg&quot;:null,&quot;bbtbg&quot;:null,&quot;si&quot;:0,&quot;sti&quot;:0,&quot;sb&quot;:null,&quot;cbl&quot;:true,&quot;ip&quot;:false},{&quot;i&quot;:30069644,&quot;d&quot;:&quot;Minnesota Timberwolves - Golden State Warriors&quot;,&quot;di&quot;:5,&quot;sdi&quot;:41,&quot;dd&quot;:&quot;Baloncesto&quot;,&quot;scd&quot;:null,&quot;sdd&quot;:&quot;NBA&quot;,&quot;ei&quot;:null,&quot;ed&quot;:null,&quot;du&quot;:&quot;2025-05-09T00:30:00Z&quot;,&quot;ds&quot;:&quot;09/05&quot;,&quot;lds&quot;:&quot;viernes, 9 de mayo de 2025&quot;,&quot;rd&quot;:0,&quot;ts&quot;:&quot;02:30&quot;,&quot;il&quot;:false,&quot;ns&quot;:true,&quot;pp&quot;:false,&quot;mp&quot;:false,&quot;bbb&quot;:false,&quot;hv&quot;:0,&quot;ci&quot;:null,&quot;cd&quot;:null,&quot;s&quot;:null,&quot;p&quot;:[{&quot;i&quot;:8397629,&quot;n&quot;:&quot;Minnesota Timberwolves&quot;,&quot;sn&quot;:&quot;MIN&quot;,&quot;t&quot;:2,&quot;h&quot;:true,&quot;p&quot;:null},{&quot;i&quot;:8397627,&quot;n&quot;:&quot;Golden State Warriors&quot;,&quot;sn&quot;:&quot;GOL&quot;,&quot;t&quot;:3,&quot;h&quot;:false,&quot;p&quot;:null}],&quot;nb&quot;:84,&quot;ih&quot;:false,&quot;b&quot;:[{&quot;i&quot;:1172842344,&quot;mi&quot;:300298,&quot;md&quot;:&quot;Ganador partido&quot;,&quot;rmd&quot;:&quot;Ganador partido&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3835333243,&quot;t&quot;:&quot;1&quot;,&quot;p&quot;:&quot;1,18&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3835333242,&quot;t&quot;:&quot;2&quot;,&quot;p&quot;:&quot;5,15&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172842369,&quot;mi&quot;:300300,&quot;md&quot;:&quot;Hándicap&quot;,&quot;rmd&quot;:&quot;Hándicap&quot;,&quot;l&quot;:false,&quot;p&quot;:false,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3835333313,&quot;t&quot;:&quot;Minnesota Timberwolves (-10,5)&quot;,&quot;p&quot;:&quot;1,90&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3835333312,&quot;t&quot;:&quot;Golden State Warriors (+10,5)&quot;,&quot;p&quot;:&quot;1,95&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172842366,&quot;mi&quot;:300302,&quot;md&quot;:&quot;Más/menos puntos&quot;,&quot;rmd&quot;:&quot;Más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3835333306,&quot;t&quot;:&quot;+ de 201&quot;,&quot;p&quot;:&quot;1,93&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3835333307,&quot;t&quot;:&quot;- de 201&quot;,&quot;p&quot;:&quot;1,89&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172842343,&quot;mi&quot;:300304,&quot;md&quot;:&quot;Minnesota Timberwolves: más/menos puntos&quot;,&quot;rmd&quot;:&quot;Minnesota Timberwolves: más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3835333240,&quot;t&quot;:&quot;+ de 105,5&quot;,&quot;p&quot;:&quot;1,87&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3835333241,&quot;t&quot;:&quot;- de 105,5&quot;,&quot;p&quot;:&quot;1,95&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172842342,&quot;mi&quot;:300305,&quot;md&quot;:&quot;Golden State Warriors: más/menos puntos&quot;,&quot;rmd&quot;:&quot;Golden State Warriors: más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3835333238,&quot;t&quot;:&quot;+ de 95,5&quot;,&quot;p&quot;:&quot;2,02&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3835333239,&quot;t&quot;:&quot;- de 95,5&quot;,&quot;p&quot;:&quot;1,82&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172944992,&quot;mi&quot;:300323,&quot;md&quot;:&quot;1º tiempo: ganador&quot;,&quot;rmd&quot;:&quot;1º tiempo: ganador&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3835614880,&quot;t&quot;:&quot;Minnesota Timberwolves&quot;,&quot;p&quot;:&quot;1,30&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3835614879,&quot;t&quot;:&quot;Golden State Warriors&quot;,&quot;p&quot;:&quot;3,62&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172944988,&quot;mi&quot;:300324,&quot;md&quot;:&quot;1º tiempo: hándicap&quot;,&quot;rmd&quot;:&quot;1º tiempo: hándicap&quot;,&quot;l&quot;:false,&quot;p&quot;:false,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3835614872,&quot;t&quot;:&quot;Minnesota Timberwolves (-6,5)&quot;,&quot;p&quot;:&quot;1,93&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3835614871,&quot;t&quot;:&quot;Golden State Warriors (+6,5)&quot;,&quot;p&quot;:&quot;1,91&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172944989,&quot;mi&quot;:300325,&quot;md&quot;:&quot;1º tiempo: más/menos puntos&quot;,&quot;rmd&quot;:&quot;1º tiempo: más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3835614873,&quot;t&quot;:&quot;+ de 98&quot;,&quot;p&quot;:&quot;1,92&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3835614874,&quot;t&quot;:&quot;- de 98&quot;,&quot;p&quot;:&quot;1,92&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null}],&quot;mt&quot;:null,&quot;pt&quot;:null,&quot;pb&quot;:null,&quot;hcp&quot;:false,&quot;ctbg&quot;:null,&quot;bbtbg&quot;:null,&quot;si&quot;:0,&quot;sti&quot;:0,&quot;sb&quot;:null,&quot;cbl&quot;:true,&quot;ip&quot;:false},{&quot;i&quot;:30028455,&quot;d&quot;:&quot;Indiana Pacers - Cleveland Cavaliers&quot;,&quot;di&quot;:5,&quot;sdi&quot;:41,&quot;dd&quot;:&quot;Baloncesto&quot;,&quot;scd&quot;:null,&quot;sdd&quot;:&quot;NBA&quot;,&quot;ei&quot;:null,&quot;ed&quot;:null,&quot;du&quot;:&quot;2025-05-09T23:30:00Z&quot;,&quot;ds&quot;:&quot;10/05&quot;,&quot;lds&quot;:&quot;sábado, 10 de mayo de 2025&quot;,&quot;rd&quot;:0,&quot;ts&quot;:&quot;01:30&quot;,&quot;il&quot;:false,&quot;ns&quot;:true,&quot;pp&quot;:false,&quot;mp&quot;:false,&quot;bbb&quot;:false,&quot;hv&quot;:0,&quot;ci&quot;:null,&quot;cd&quot;:null,&quot;s&quot;:null,&quot;p&quot;:[{&quot;i&quot;:8383860,&quot;n&quot;:&quot;Indiana Pacers&quot;,&quot;sn&quot;:&quot;IND&quot;,&quot;t&quot;:2,&quot;h&quot;:true,&quot;p&quot;:null},{&quot;i&quot;:8383858,&quot;n&quot;:&quot;Cleveland Cavaliers&quot;,&quot;sn&quot;:&quot;CLE&quot;,&quot;t&quot;:3,&quot;h&quot;:false,&quot;p&quot;:null}],&quot;nb&quot;:25,&quot;ih&quot;:false,&quot;b&quot;:[{&quot;i&quot;:1172544659,&quot;mi&quot;:300298,&quot;md&quot;:&quot;Ganador partido&quot;,&quot;rmd&quot;:&quot;Ganador partido&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3834391826,&quot;t&quot;:&quot;1&quot;,&quot;p&quot;:&quot;2,22&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3834391825,&quot;t&quot;:&quot;2&quot;,&quot;p&quot;:&quot;1,71&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172544666,&quot;mi&quot;:300300,&quot;md&quot;:&quot;Hándicap&quot;,&quot;rmd&quot;:&quot;Hándicap&quot;,&quot;l&quot;:false,&quot;p&quot;:false,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3834391842,&quot;t&quot;:&quot;Indiana Pacers (+2,5)&quot;,&quot;p&quot;:&quot;1,93&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3834391841,&quot;t&quot;:&quot;Cleveland Cavaliers (-2,5)&quot;,&quot;p&quot;:&quot;1,92&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172544656,&quot;mi&quot;:300302,&quot;md&quot;:&quot;Más/menos puntos&quot;,&quot;rmd&quot;:&quot;Más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3834391819,&quot;t&quot;:&quot;+ de 229,5&quot;,&quot;p&quot;:&quot;1,93&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3834391820,&quot;t&quot;:&quot;- de 229,5&quot;,&quot;p&quot;:&quot;1,90&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172544658,&quot;mi&quot;:300304,&quot;md&quot;:&quot;Indiana Pacers: más/menos puntos&quot;,&quot;rmd&quot;:&quot;Indiana Pacers: más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3834391823,&quot;t&quot;:&quot;+ de 114,5&quot;,&quot;p&quot;:&quot;2,02&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3834391824,&quot;t&quot;:&quot;- de 114,5&quot;,&quot;p&quot;:&quot;1,82&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1173102768,&quot;mi&quot;:300305,&quot;md&quot;:&quot;Cleveland Cavaliers: más/menos puntos&quot;,&quot;rmd&quot;:&quot;Cleveland Cavaliers: más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3836082072,&quot;t&quot;:&quot;+ de 115,5&quot;,&quot;p&quot;:&quot;1,92&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3836082073,&quot;t&quot;:&quot;- de 115,5&quot;,&quot;p&quot;:&quot;1,90&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null}],&quot;mt&quot;:null,&quot;pt&quot;:null,&quot;pb&quot;:null,&quot;hcp&quot;:false,&quot;ctbg&quot;:null,&quot;bbtbg&quot;:null,&quot;si&quot;:0,&quot;sti&quot;:0,&quot;sb&quot;:null,&quot;cbl&quot;:true,&quot;ip&quot;:false}],&quot;m&quot;:[{&quot;i&quot;:300298,&quot;md&quot;:&quot;Ganador partido&quot;,&quot;o&quot;:1},{&quot;i&quot;:300300,&quot;md&quot;:&quot;Hándicap&quot;,&quot;o&quot;:2},{&quot;i&quot;:300302,&quot;md&quot;:&quot;Más/menos puntos&quot;,&quot;o&quot;:3},{&quot;i&quot;:300304,&quot;md&quot;:&quot;Más/menos puntos LOCAL&quot;,&quot;o&quot;:4},{&quot;i&quot;:300305,&quot;md&quot;:&quot;Más/menos puntos VISITANTE&quot;,&quot;o&quot;:5},{&quot;i&quot;:300323,&quot;md&quot;:&quot;1º tiempo: ganador&quot;,&quot;o&quot;:6},{&quot;i&quot;:300324,&quot;md&quot;:&quot;1º tiempo: hándicap&quot;,&quot;o&quot;:7},{&quot;i&quot;:300325,&quot;md&quot;:&quot;1º tiempo: más/menos puntos&quot;,&quot;o&quot;:8}]},&quot;disciplineId&quot;:5,&quot;resources&quot;:{&quot;mplus&quot;:&quot;Multi +&quot;,&quot;pplus&quot;:&quot;Player +&quot;,&quot;betBuilder&quot;:&quot;Crea tu apuesta&quot;,&quot;primeLabel&quot;:&quot;Prime&quot;,&quot;rd1&quot;:&quot;Hoy&quot;,&quot;rd2&quot;:&quot;Mañana&quot;,&quot;ups&quot;:&quot;Ups&quot;,&quot;noResults&quot;:&quot;No se han encontrado resultados.&quot;,&quot;moreBets&quot;:&quot;Más apuestas&quot;,&quot;moreOptions&quot;:&quot;Ver más opciones&quot;},&quot;selectedOptionIds&quot;:[],&quot;numberOfMarkets&quot;:3,&quot;selectedMarketsIds&quot;:null,&quot;sportsUrl&quot;:&quot;/deportes&quot;,&quot;isEventTitleVisible&quot;:false,&quot;isEventDisciplineIconVisible&quot;:false,&quot;fromEncounter&quot;:false,&quot;betBuilderEnabled&quot;:true,&quot;maxOptionsPerBet&quot;:3,&quot;isPrimeEnabled&quot;:true}" data-co="false"></div>    <div data-jsfile="sportsbookDate.section.js?v=QPr7o7VM8Y_cmKDfxSahqCh60fcI2qzXYlY3Rwc1ybg" class="ljs" hidden="hidden"></div>
+</article>
+
+<div data-jsfile="sportsbookSubdiscipline.widget.js?v=0eN63JXlgxlluqC2ZwYdfY-n1VI8RoYwDRapos9eoEI" class="ljs" hidden="hidden"></div>
+
+    <div hidden="" id="aw2-2" data-v="{&quot;DisciplineId&quot;:5,&quot;SubdisciplineId&quot;:41,&quot;NumberOfBets&quot;:10,&quot;NumberOfEvents&quot;:0,&quot;OutrigthsNumberOfEvents&quot;:20,&quot;NumberOfOptions&quot;:10,&quot;NumberOfMarketsToShow&quot;:3,&quot;SelectedMarketsIds&quot;:null,&quot;SelectedTabId&quot;:null,&quot;VisibleTitleBox&quot;:false,&quot;TitleBox&quot;:null}"></div>
+
+
+
+    </section>
+
+    <section id="w_3-p_2-wt_61" class="jqw  mkt_texts contentbox contentbox--radius-m widget_type_61" data-wt="61" data-pa="2" data-co="0" data-po="3" data-sw="false" data-vi="True" data-sl="True" data-ti="False" data-sc="False" data-pwi="258" data-nrc="0" data-ic="false" data-vtw="null" data-sn="">
+
+
+
+        <div class="jhccollapse accordion accordion_m">
+            <h1 class="accordion__text">Apostar a NBA - Pronósticos deportivos NBA &gt;&gt; RETABET ESPAÑA</h1>
+            <i class="ico-m icon-chevron-small-up jicon"></i>
+        </div>
+    <div class="jhtmlcontent mkt_texts__content contentbox__content text_s-m" data-collapsed="false">
+        <p style="margin-top: 0; margin-bottom: 0; text-align: justify; line-height: normal; font-size: 8.5pt"><span style="font-family: Poppins">¿Eres un fanático del baloncesto y de la NBA? Vive los partidos al máximo a través de nuestras&nbsp;</span><strong><span style="font-family: Poppins">apuestas en la NBA.</span></strong><span style="font-family: Poppins">&nbsp;La NBA es conocida por su intensidad, talento y espectáculo en la cancha, y ahora puedes formar parte de la acción al realizar tus apuestas en cada partido y evento destacado. ¡Disfruta de la mejor liga de baloncesto del mundo!</span></p>
+<p style="margin-top: 0; margin-bottom: 0; line-height: normal; font-size: 8.5pt"><span style="font-family: Poppins">&nbsp;</span></p>
+<h2>
+    <p style="margin-top: 0; margin-bottom: 0; text-align: justify; line-height: normal; font-size: 8.5pt"><strong><span style="font-family: Poppins">Apuesta al Campeón de la NBA</span></strong></p>
+</h2>
+<p style="margin-top: 0; margin-bottom: 0; line-height: normal; font-size: 8.5pt"><span style="font-family: Poppins">&nbsp;</span></p>
+<p style="margin-top: 0; margin-bottom: 0; text-align: justify; line-height: normal; font-size: 8.5pt"><span style="font-family: Poppins">Apostar al campeón de la NBA es una experiencia emocionante que te permite anticipar qué equipo se alzará con el título en la próxima temporada. Evalúa el rendimiento de los equipos, las dinámicas en la liga y utiliza tus conocimientos para realizar cualquier apuesta en&nbsp;</span><strong><span style="font-family: Poppins">RETABET</span></strong><span style="font-family: Poppins">.</span></p>
+<p style="margin-top: 0; margin-bottom: 0; text-align: justify; line-height: normal; font-size: 8.5pt"><span style="font-family: Poppins">&nbsp;</span></p>
+<p style="margin-top: 0; margin-bottom: 0; text-align: justify; line-height: normal; font-size: 8.5pt"><span style="font-family: Poppins">La competición de baloncesto por antonomasia tiene al inicio de cada temporada varios favoritos para hacerse con el anillo. Cada año son varios los aspirantes a levantar el Anillo de la NBA. Históricamente, <strong>Los Angeles Lakers</strong> y los <strong>Boston&nbsp;</strong><strong>Celtics&nbsp;</strong>son los dos equipos más grandes de la liga americana. Uno de la <strong>Conferencia </strong><strong>Este </strong>y el otro de la <strong>Conferencia </strong><strong>Oeste</strong>. Rivales históricos por los que han pasado grandísimos jugadores de baloncesto. A este grupo de franquicias ganadoras, en los últimos años se han unido los <strong>Golden </strong><strong>State </strong><strong>Warriors </strong>de <strong>Stephen </strong><strong>Curry</strong>, los <strong>Miami </strong><strong>Heat </strong>de <strong>Lebron </strong><strong>James </strong>y <strong>Dwayne </strong><strong>Wade</strong>, o los <strong>Chicago </strong><strong>Bulls </strong>de <strong>Michael </strong><strong>Jordan </strong>y <strong>Scottie </strong><strong>Pippen</strong>. ¿Se estará gestando un nuevo equipo que domine el baloncesto estadounidense durante los próximos años?</span></p>
+<p style="margin-top: 0; margin-bottom: 0; text-align: justify; line-height: normal; font-size: 8.5pt"><br></p>
+<h2>
+    <p style="margin-top: 0; margin-bottom: 0; text-align: justify; line-height: normal; font-size: 8.5pt"><strong><span style="font-family: Poppins">Cuotas y pronósticos de la NBA</span></strong></p>
+</h2>
+<p style="margin-top: 0; margin-bottom: 0; line-height: normal; font-size: 8.5pt"><span style="font-family: Poppins">&nbsp;</span></p>
+<p style="margin-top: 0; margin-bottom: 0; text-align: justify; line-height: normal"><span style="font-family: Poppins; font-size: 8.5pt">En RETABET, te ofrecemos las mejores cuotas y mercados de baloncesto que te permitirán tomar decisiones más acertadas en tus apuestas. Nuestras cuotas competitivas reflejan las posibles ganancias en juego, mientras que nuestros pronósticos deportivos te proporcionan insights valiosos para abordar tus apuestas con mayor confianza y perspicacia, no solo en la NBA, también en otras competiciones de baloncesto como la&nbsp;</span><a href="https://apuestas.retabet.es/deportes/baloncesto/euroliga-s83" style="text-decoration: none"><strong><u><span style="font-family: Poppins; font-size: 8.5pt; color: rgba(0, 0, 0, 1)">Euroliga</span></u></strong></a><span style="font-family: Poppins; font-size: 8.5pt">, la</span><a href="https://apuestas.retabet.es/deportes/baloncesto/liga-acb-s35" style="text-decoration: none"><strong><u><span style="font-family: Poppins; font-size: 8.5pt; color: rgba(17, 85, 204, 1)">&nbsp;</span></u></strong><strong><u><span style="font-family: Poppins; font-size: 8.5pt; color: rgba(0, 0, 0, 1)">Liga ACB</span></u></strong></a><span style="font-family: Poppins; font-size: 8.5pt">.</span></p>
+<p style="margin-top: 0; margin-bottom: 12pt; line-height: normal; font-size: 8.5pt"><span style="font-family: Poppins">&nbsp;</span></p>
+<h2>
+    <p style="margin-top: 0; margin-bottom: 0; text-align: justify; line-height: normal; font-size: 8.5pt"><strong><span style="font-family: Poppins">Cómo Apostar en la NBA paso a paso</span></strong></p>
+</h2>
+<p style="margin-top: 0; margin-bottom: 0; line-height: normal; font-size: 8.5pt"><span style="font-family: Poppins">&nbsp;</span></p>
+<p style="margin-top: 0; margin-bottom: 0; text-align: justify; line-height: normal"><span style="font-family: Poppins; font-size: 8.5pt">Apostar en la NBA desde nuestra página web es muy sencillo. Solo tienes que ir a la sección de&nbsp;</span><a href="https://apuestas.retabet.es/deportes/baloncesto-m5" style="text-decoration: none"><strong><u><span style="font-family: Poppins; font-size: 8.5pt; color: rgba(0, 0, 0, 1)">apuestas en baloncesto</span></u></strong></a><span style="font-family: Poppins; font-size: 8.5pt">&nbsp;en nuestro menú principal. Allí encontrarás una amplia variedad de opciones, entre ellas las apuestas de la NBA. Echa un vistazo a las cuotas y selecciona tus apuestas. ¡Así de fácil!</span></p>
+<p style="margin-top: 0; margin-bottom: 0; line-height: normal; font-size: 8.5pt"><span style="font-family: Poppins">&nbsp;</span></p>
+<p style="margin-top: 0; margin-bottom: 0; text-align: justify; line-height: normal; font-size: 8.5pt"><span style="font-family: Poppins">Descubre la pasión, el talento y la emoción de las apuestas en baloncesto en RETABET. Ya sea en la NBA, la Euroliga, la Liga ACB. Te invitamos a formar parte de la acción y disfrutar de la experiencia única que el mundo del baloncesto tiene para ofrecer.</span></p>
+    </div>
+    <div data-jsfile="htmlContent.widget.js?v=8iumHKsvzpx5Nf4oqTAjAnlt1ASnbTT__lTcL-iNhaA" class="ljs" hidden="hidden"></div>
+
+
+    <div hidden="" id="aw2-3" data-v="{&quot;HtmlContentId&quot;:0,&quot;ClassName&quot;:&quot;mkt_texts contentbox contentbox--radius-m&quot;,&quot;DisciplineId&quot;:5,&quot;SubdisciplineId&quot;:41,&quot;TitleVisible&quot;:null,&quot;VisibleTitleBox&quot;:false,&quot;TitleBox&quot;:null}"></div>
+
+
+
+    </section>
+</section>
+    <section data-cont="3" class="jpanel panel__betslip">
+
+
+    <section id="w_1-p_3-wt_6" class="jqw  widget_type_6" data-wt="6" data-pa="3" data-co="0" data-po="1" data-sw="false" data-vi="True" data-sl="True" data-ti="False" data-sc="False" data-pwi="76" data-nrc="1" data-ic="false" data-vtw="null" data-sn="">
+
+
+
+
+    <div class="video jstreamingContainer jactiveStreaming" data-active="True" data-unpinone="False" data-sc="30073173" data-sbu="False">
+
+
+    <div class="video__content jcontwr " data-pex="0" data-min="0">
+
+        <div class="jvideoSection " data-ty="2" data-sc="30073173" data-sec="pse">
+
+                <div class="str__control_bar">
+<div id="react_0HNCD4MK09B53"><div tabindex="0"><i class="jlistArr ico-s icon-reorder"></i><i class="ico-s mod-mod_8"></i><div><span class="str__list_item active"> <!-- -->D. Yastremska - A. Potapova</span><span class=" tag_streaming tag_streaming--prime"><i class="icon-youtube-play"></i>Prime</span></div><ul class="str__list none jlistCont"><li data-sc="30091676" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_1"></i><span>Corinthians - Red Bull Bragantino</span></div></li><li data-sc="30105993" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_8"></i><span>Rogers, Anna / Sanchez, Ana Sofia - Motosono, Kianah / Schoppe, Ellie</span></div></li><li data-sc="30095660" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_87"></i><span>V. Dyrl - M. Unguryan</span></div></li><li data-sc="30095386" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_87"></i><span>S. Yakimenko - V. Kondratenko</span></div></li><li data-sc="30106824" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Spain (zoyir) - France (Serenity)</span></div></li><li data-sc="30107326" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Italy (Klever) - Germany (Samurai)</span></div></li><li data-sc="30106680" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>FC Porto (hotShot) - S.L. Benfica (LaikingDast)</span></div></li><li data-sc="30106730" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>SC Braga (Kodak) - Sporting CP (Kray)</span></div></li><li data-sc="30107026" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Ukraine (Andrew) - Ghana (pimchik)</span></div></li><li data-sc="30107061" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Czechia (Smetana) - United States (Sheva)</span></div></li><li data-sc="30113805" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Newcastle UTD (FAITH) - Arsenal (POWER)</span></div></li><li data-sc="30113817" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Napoli (HORIZON) - Barcelona (EDEN)</span></div></li><li data-sc="30113991" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Atlanta United (NOBODY) - Los Angeles FC (APOLLO)</span></div></li><li data-sc="30113956" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Boca Juniors (Jindrich) - Palmeiras (Spike)</span></div></li><li data-sc="30114163" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>River Plate (Jadon) - Boca Juniors (Jindrich)</span></div></li><li data-sc="30114184" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Flamengo (Fede) - Palmeiras (Spike)</span></div></li><li data-sc="30114188" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Borussia Dortmund (Dante) - Eintracht Frankfurt (Ashton)</span></div></li><li data-sc="30114200" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Arsenal (Millie) - Manchester Utd (Florie)</span></div></li><li data-sc="30107210" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Memphis Grizzlies (Linkor) - Dallas Mavericks (MaaaS1K)</span></div></li><li data-sc="30107238" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Los Angeles Clippers (Mikki) - Milwaukee Bucks (Yaro)</span></div></li><li data-sc="30113617" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Memphis Grizzlies (Underrated) - Milwaukee Bucks (SPOOKY)</span></div></li><li data-sc="30113622" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Dallas Mavericks (GUARD) - Denver Nuggets (RAZE)</span></div></li><li data-sc="30113766" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Los Angeles Lakers (Karma) - Boston Celtics (Taapz)</span></div></li><li data-sc="30113789" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Miami Heat (CRYPTO) - Toronto Raptors (CRUCIAL)</span></div></li><li data-sc="30114164" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>New York Knicks (Oscar) - Los Angeles Lakers (Damian)</span></div></li><li data-sc="c1745971210949721" data-vt="4" class="jes str__list_item"><div><i class="ico-s mod-mod_27"></i><span>Carreras 24 h</span></div></li><li data-sc="c1745971212885707" data-vt="4" class="jes str__list_item"><div><i class="ico-s mod-mod_28"></i><span>Carreras 24 h</span></div></li></ul></div></div><div hidden="" class="jcr" data-cid="react_0HNCD4MK09B53" data-cn="$R.Jsx.s.streaming.StreamingEventList" data-cp="{&quot;initialData&quot;:{&quot;e&quot;:[{&quot;ty&quot;:2,&quot;c&quot;:&quot;30073173&quot;,&quot;t&quot;:&quot;D. Yastremska - A. Potapova&quot;,&quot;ic&quot;:&quot;8&quot;,&quot;st&quot;:&quot;WTA Roma&quot;,&quot;cd&quot;:null,&quot;ip&quot;:true},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30091676&quot;,&quot;t&quot;:&quot;Corinthians - Red Bull Bragantino&quot;,&quot;ic&quot;:&quot;1&quot;,&quot;st&quot;:&quot;Brasil Paulista Femenino&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30105993&quot;,&quot;t&quot;:&quot;Rogers, Anna / Sanchez, Ana Sofia - Motosono, Kianah / Schoppe, Ellie&quot;,&quot;ic&quot;:&quot;8&quot;,&quot;st&quot;:&quot;ITF Indian Harbour Beach Femenino&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30095660&quot;,&quot;t&quot;:&quot;V. Dyrl - M. Unguryan&quot;,&quot;ic&quot;:&quot;87&quot;,&quot;st&quot;:&quot;Setka Cup Masculina&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30095386&quot;,&quot;t&quot;:&quot;S. Yakimenko - V. Kondratenko&quot;,&quot;ic&quot;:&quot;87&quot;,&quot;st&quot;:&quot;Setka Cup Masculina&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30106824&quot;,&quot;t&quot;:&quot;Spain (zoyir) - France (Serenity)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - International Battle - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30107326&quot;,&quot;t&quot;:&quot;Italy (Klever) - Germany (Samurai)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - International Battle - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30106680&quot;,&quot;t&quot;:&quot;FC Porto (hotShot) - S.L. Benfica (LaikingDast)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Primeira Liga Battle - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30106730&quot;,&quot;t&quot;:&quot;SC Braga (Kodak) - Sporting CP (Kray)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Primeira Liga Battle - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30107026&quot;,&quot;t&quot;:&quot;Ukraine (Andrew) - Ghana (pimchik)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Volta International Battle 2x3 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30107061&quot;,&quot;t&quot;:&quot;Czechia (Smetana) - United States (Sheva)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Volta International Battle 2x3 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113805&quot;,&quot;t&quot;:&quot;Newcastle UTD (FAITH) - Arsenal (POWER)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - GG League - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113817&quot;,&quot;t&quot;:&quot;Napoli (HORIZON) - Barcelona (EDEN)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - GG League - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113991&quot;,&quot;t&quot;:&quot;Atlanta United (NOBODY) - Los Angeles FC (APOLLO)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - GG League - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113956&quot;,&quot;t&quot;:&quot;Boca Juniors (Jindrich) - Palmeiras (Spike)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Valhalla Cup - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30114163&quot;,&quot;t&quot;:&quot;River Plate (Jadon) - Boca Juniors (Jindrich)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Valhalla Cup - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30114184&quot;,&quot;t&quot;:&quot;Flamengo (Fede) - Palmeiras (Spike)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Valhalla Cup - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30114188&quot;,&quot;t&quot;:&quot;Borussia Dortmund (Dante) - Eintracht Frankfurt (Ashton)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Valhalla Cup - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30114200&quot;,&quot;t&quot;:&quot;Arsenal (Millie) - Manchester Utd (Florie)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Valkiria Cup - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30107210&quot;,&quot;t&quot;:&quot;Memphis Grizzlies (Linkor) - Dallas Mavericks (MaaaS1K)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - NBA Battle - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30107238&quot;,&quot;t&quot;:&quot;Los Angeles Clippers (Mikki) - Milwaukee Bucks (Yaro)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - NBA Battle - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113617&quot;,&quot;t&quot;:&quot;Memphis Grizzlies (Underrated) - Milwaukee Bucks (SPOOKY)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - GG League - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113622&quot;,&quot;t&quot;:&quot;Dallas Mavericks (GUARD) - Denver Nuggets (RAZE)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - GG League - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113766&quot;,&quot;t&quot;:&quot;Los Angeles Lakers (Karma) - Boston Celtics (Taapz)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - GG League - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113789&quot;,&quot;t&quot;:&quot;Miami Heat (CRYPTO) - Toronto Raptors (CRUCIAL)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - GG League - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30114164&quot;,&quot;t&quot;:&quot;New York Knicks (Oscar) - Los Angeles Lakers (Damian)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - Valhalla League - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false}],&quot;es&quot;:null,&quot;t&quot;:null,&quot;l&quot;:[{&quot;ty&quot;:4,&quot;c&quot;:&quot;c1745971210949721&quot;,&quot;t&quot;:&quot;Streaming 24h&quot;,&quot;ic&quot;:&quot;27&quot;,&quot;st&quot;:null,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:4,&quot;c&quot;:&quot;c1745971212885707&quot;,&quot;t&quot;:&quot;Streaming 24h&quot;,&quot;ic&quot;:&quot;28&quot;,&quot;st&quot;:null,&quot;cd&quot;:null,&quot;ip&quot;:false}],&quot;ine&quot;:false,&quot;hml&quot;:true},&quot;subscription&quot;:{&quot;type&quot;:14,&quot;param&quot;:{&quot;sdd&quot;:[],&quot;ste&quot;:[1],&quot;spe&quot;:null,&quot;cc&quot;:&quot;ES&quot;,&quot;ec&quot;:[&quot;3 W\u0026B&quot;,&quot;6 W\u0026B&quot;]}},&quot;wid&quot;:&quot;w_1-p_3-wt_6&quot;,&quot;selectedEvent&quot;:{&quot;sec&quot;:&quot;pse&quot;,&quot;ty&quot;:2,&quot;c&quot;:&quot;30073173&quot;,&quot;t&quot;:&quot;D. Yastremska - A. Potapova&quot;,&quot;ic&quot;:&quot;8&quot;,&quot;st&quot;:&quot;WTA Roma&quot;,&quot;cd&quot;:null,&quot;ip&quot;:true},&quot;hasVideoSelector&quot;:true,&quot;resources&quot;:{&quot;greyhounds&quot;:&quot;Galgos&quot;,&quot;horses&quot;:&quot;Caballos&quot;,&quot;greyhoundsAndHorses&quot;:&quot;Carreras 24 h&quot;,&quot;primeLabel&quot;:&quot;Prime&quot;},&quot;isPrimeEnabled&quot;:true}" data-co="false"></div>
+                    <ul class="str__controls jstroplst">
+
+                            <li data-t="4" class="str__control_item jstropt none">
+                                <i class="ico-s icon-expand"></i>
+                            </li>
+                            <li data-t="5" class="str__control_item jstropt ">
+                                <i class="ico-s icon-contract"></i>
+                            </li>
+
+                                <li data-t="2" class="str__control_item jstropt jpinunpin">
+                                    <i class="ico-s icon-pin"></i>
+                                </li>
+
+
+                    </ul>
+                </div>
+                <div class="play jplayerWrapper" data-pt="1">
+
+
+
+
+    <div id="video" class="jintPlayer none" data-pt="1" data-pid="15" data-src="" data-prot="1" data-apiurl="https://wab.performfeeds.com/livestreamlaunch/1gjkdo1pbegih1g5qqlyjwqldf/9f6le1j3km0e15260qn93h74w?_fmt=json&amp;_fld=sl,aLng,pa,sTok,mFmt" data-apihead="{&quot;Authorization&quot;:&quot;Bearer VXjTKRKheQrlH0UHbMxmhhg-6zZukoEbRi0mxJtdW5-GhtIVACawOmB2HP7cVnRqxLXWFlicCGF0xJ75cVM16xUlcvU5KL6zvDBrkqe6H9LjpFYj04P7b1h7qBY6Xiapbh_Sh9V_B9lXlUk-zu_Lj6eDKgcEcK1SpT6r4iVRoP1mDVkCtYQpocRDzc91rRPOSmW9p6D1m168R8BoF57yPgOdNa1zuYZY2u-S-5GnD6UFTCdKaXF_lDlOJXl8F_tHi4i8k08JwIwdktHzFQYQ99duZIWO4nIXUQjpfikh7baHi7mkKdMOTpInTiwTSFt0u4el37ZH2FB5YwQayCKlhA&quot;}" data-an="UA-34961270-1" data-drm="">
+
+    <script src="/js/video.js?v=cgtYl4qcGXYRWYqGwa16sWUVoL1Gml9DOfVHMaQMUJw"></script>
+    <div id="videocontainer">
+        <video class="jshakaplayer vjs-fluid" disableremoteplayback="" autoplay="" muted="muted">
+        </video>
+    </div>
+
+    </div>
+
+                    <p class="play_no_str__text jnovid none">
+                        <span>
+                            en este momento no hay video disponible
+                        </span>
+                    </p>
+                </div>
+
+                <a href="/live/d-yastremska-a-potapova-sc30073173" class="str__bets-link jlink" title="D. Yastremska - A. Potapova">
+                    Ver apuestas
+                    <i class="ico-s icon__bold icon-chevron-thin-right"></i>
+                </a>
+        </div>
+    </div>
+    <div id="login" class="jstPrEnded widget__login_bg none">
+
+        <div class="widget__login">
+            <a class="btn btn-m btn__contrast-outline jlb jt_streamingLog">
+                Entrar a mi cuenta
+            </a>
+            <span class="widget__login_footer-links">
+                <a class="widget__login_text_button jlink jt_streamingReg">
+                    Quiero registrarme
+                    <i class="icon-text-arrow-right icon__bold"></i>
+                </a>
+            </span>
+        </div>
+    </div>
+    <div data-jsfile="streaming.section.js?v=K9IXm3CDCeY7V2LPCt0n_uqSLa0Rayyp5b57q8Lt-Xk" class="ljs" hidden="hidden"></div>
+
+    </div>
+    <div data-jsfile="streaming.widget.js?v=y6DsDbtcBFroCKpeEqKty8uFmvFPmuNsaRhIDA1X26c" class="ljs" hidden="hidden"></div>
+
+
+    <div hidden="" id="aw3-1" data-v="{&quot;QueryStringEventId&quot;:0,&quot;IsPinUnpinEnabled&quot;:true,&quot;HasMinimizeMagnifyOption&quot;:false,&quot;IsOnlyActiveInUnpinnedMode&quot;:false,&quot;HasVideoSelector&quot;:true,&quot;HasScrollTopButton&quot;:false,&quot;DoesShowBetsLinkBar&quot;:true,&quot;VisibleTitleBox&quot;:false,&quot;TitleBox&quot;:null}"></div>
+
+
+
+    </section>
+
+    <section id="w_4-p_3-wt_55" class="jqw  mod_28 widget_type_55" data-wt="55" data-pa="3" data-co="0" data-po="4" data-sw="false" data-vi="True" data-sl="True" data-ti="False" data-sc="False" data-pwi="141" data-nrc="0" data-ic="false" data-vtw="null" data-sn="">
+
+
+
+    <div class="jgg contentbox contentbox--radius-m games-casino__home" data-flu="">
+        <div class="jgcl accordion accordion_m">
+            <h2 class="accordion__text">
+                Juegos casino
+            </h2>
+            <i class="jgcli ico-m icon-chevron-up"></i>
+        </div>
+        <div class="jgl contentbox__content">
+            <ul class="games__list-home">
+                    <li class="jt_casGame jgm game__item ">
+
+                        <div class="game__img">
+                            <picture>
+                                <img src="https://cdn.retabet.es/apuestas/es/CasinoGames/halloween_fortune_6.jpg">
+                            </picture>
+                        </div>
+
+                        <span class="game__name jgn">Halloween Fortune</span>
+
+
+
+                        <div class="game__buttons jgm jgmb" data-gt="gpas_hfortune_pop" data-ct="ngm_desktop" data-gtt="AZA" data-n="Halloween Fortune" data-pid="1" data-url="/halloween-fortune-cg-p1-igpas_hfortune_pop" data-ccd="0" data-sic="ico-xs" data-slic="ico-s" data-cm="real">
+                                    <button class="btn btn-m btn__casino">
+                                        JUGAR
+                                    </button>
+                        </div>
+                    </li>
+                    <li class="jt_casGame jgm game__item ">
+
+                        <div class="game__img">
+                            <picture>
+                                <img src="https://cdn.retabet.es/apuestas/es/CasinoGames/FEED_OInk_Oink_Oink.jpg">
+                            </picture>
+                        </div>
+
+                        <span class="game__name jgn">Oink Oink Oink</span>
+
+
+
+                        <div class="game__buttons jgm jgmb" data-gt="gpas_oinka1_pop" data-ct="ngm_desktop" data-gtt="AZA" data-n="Oink Oink Oink" data-pid="1" data-url="/oink-oink-oink-cg-p1-igpas_oinka1_pop" data-ccd="0" data-sic="ico-xs" data-slic="ico-s" data-cm="real">
+                                    <button class="btn btn-m btn__casino">
+                                        JUGAR
+                                    </button>
+                        </div>
+                    </li>
+                    <li class="jt_casGame jgm game__item ">
+
+                        <div class="game__img">
+                            <picture>
+                                <img src="https://cdn.retabet.es/apuestas/es/CasinoGames/NL_dragon_bonanza.jpg">
+                            </picture>
+                        </div>
+
+                        <span class="game__name jgn">Dragon Bonanza</span>
+
+
+
+                        <div class="game__buttons jgm jgmb" data-gt="gpas_goldhit3_pop" data-ct="ngm_desktop" data-gtt="AZA" data-n="Dragon Bonanza" data-pid="1" data-url="/dragon-bonanza-cg-p1-igpas_goldhit3_pop" data-ccd="0" data-sic="ico-xs" data-slic="ico-s" data-cm="real">
+                                    <button class="btn btn-m btn__casino">
+                                        JUGAR
+                                    </button>
+                        </div>
+                    </li>
+                    <li class="jt_casGame jgm game__item ">
+
+                        <div class="game__img">
+                            <picture>
+                                <img src="https://cdn.retabet.es/apuestas/es/CasinoGames/FEED_Big_Circus.jpg">
+                            </picture>
+                        </div>
+
+                        <span class="game__name jgn">BIG CIRCUS </span>
+
+
+
+                        <div class="game__buttons jgm jgmb" data-gt="gpas_bcircuslo_pop" data-ct="ngm_desktop" data-gtt="AZA" data-n="BIG CIRCUS " data-pid="1" data-url="/big-circus-cg-p1-igpas_bcircuslo_pop" data-ccd="0" data-sic="ico-xs" data-slic="ico-s" data-cm="real">
+                                    <button class="btn btn-m btn__casino">
+                                        JUGAR
+                                    </button>
+                        </div>
+                    </li>
+                    <li class="jt_casGame jgm game__item ">
+
+                        <div class="game__img">
+                            <picture>
+                                <img src="https://cdn.retabet.es/apuestas/es/CasinoGames/piggies_and_the_bank_0.jpg">
+                            </picture>
+                        </div>
+
+                        <span class="game__name jgn">Piggies and The Bank</span>
+
+
+
+                        <div class="game__buttons jgm jgmb" data-gt="gpas_engageb1_pop" data-ct="ngm_desktop" data-gtt="AZA" data-n="Piggies and The Bank" data-pid="1" data-url="/piggies-and-the-bank-cg-p1-igpas_engageb1_pop" data-ccd="0" data-sic="ico-xs" data-slic="ico-s" data-cm="real">
+                                    <button class="btn btn-m btn__casino">
+                                        JUGAR
+                                    </button>
+                        </div>
+                    </li>
+                    <li class="jt_casGame jgm game__item ">
+
+                        <div class="game__img">
+                            <picture>
+                                <img src="https://cdn.retabet.es/apuestas/es/CasinoGames/FEED_Wild_Pistolero.jpg">
+                            </picture>
+                        </div>
+
+                        <span class="game__name jgn">Wild Pistolero</span>
+
+
+
+                        <div class="game__buttons jgm jgmb" data-gt="gpas_wpistolo_pop" data-ct="ngm_desktop" data-gtt="AZA" data-n="Wild Pistolero" data-pid="1" data-url="/wild-pistolero-cg-p1-igpas_wpistolo_pop" data-ccd="0" data-sic="ico-xs" data-slic="ico-s" data-cm="real">
+                                    <button class="btn btn-m btn__casino">
+                                        JUGAR
+                                    </button>
+                        </div>
+                    </li>
+            </ul>
+        </div>
+    </div>
+    <div data-jsfile="quickGames.widget.js?v=HmlVpIfddkyYOkgAMPcyLlgAY_7yKDdSOXPCbhmoEUc" class="ljs" hidden="hidden"></div>
+
+
+    <div hidden="" id="aw3-4" data-v="{&quot;NumGames&quot;:6,&quot;ProviderId&quot;:null,&quot;VisibleTitleBox&quot;:false,&quot;TitleBox&quot;:null}"></div>
+
+
+
+    </section>
+</section>
+    <section data-cont="4" class="jpanel floatbetslip__panel">
+
+
+    <section id="w_1-p_4-wt_6" class="jqw  none widget_type_6" data-wt="6" data-pa="4" data-co="0" data-po="1" data-sw="false" data-vi="False" data-sl="True" data-ti="False" data-sc="False" data-pwi="180" data-nrc="1" data-ic="false" data-vtw="null" data-sn="">
+
+
+
+
+    <div class="video jstreamingContainer " data-active="False" data-unpinone="True" data-sc="30073173" data-sbu="False">
+
+
+    <div class="video__content jcontwr " data-pex="0" data-min="0">
+
+            <div class="video__collapsedheader jcollapseHeaderSection none">
+                <div tabindex="0" class="jminTabCont" data-reactroot="">
+                    <i class="mod-mod_8"></i>
+                    <span class="jminTab str__list_item active">D. Yastremska - A. Potapova</span>
+
+                    <span class=" tag_streaming tag_streaming--prime">
+                        <i class="icon-youtube-play"></i>
+                            Prime
+                    </span>
+                </div>
+                <i class="icon-chevron-up jholdup"></i>
+            </div>
+        <div class="jvideoSection " data-ty="2" data-sc="30073173" data-sec="pse">
+
+                <div class="str__control_bar">
+<div id="react_0HNCD4MK09B54"><div tabindex="0"><i class="jlistArr ico-s icon-reorder"></i><i class="ico-s mod-mod_8"></i><div><span class="str__list_item active"> <!-- -->D. Yastremska - A. Potapova</span><span class=" tag_streaming tag_streaming--prime"><i class="icon-youtube-play"></i>Prime</span></div><ul class="str__list none jlistCont"><li data-sc="30091676" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_1"></i><span>Corinthians - Red Bull Bragantino</span></div></li><li data-sc="30105993" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_8"></i><span>Rogers, Anna / Sanchez, Ana Sofia - Motosono, Kianah / Schoppe, Ellie</span></div></li><li data-sc="30095660" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_87"></i><span>V. Dyrl - M. Unguryan</span></div></li><li data-sc="30095386" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_87"></i><span>S. Yakimenko - V. Kondratenko</span></div></li><li data-sc="30106824" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Spain (zoyir) - France (Serenity)</span></div></li><li data-sc="30107326" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Italy (Klever) - Germany (Samurai)</span></div></li><li data-sc="30106680" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>FC Porto (hotShot) - S.L. Benfica (LaikingDast)</span></div></li><li data-sc="30106730" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>SC Braga (Kodak) - Sporting CP (Kray)</span></div></li><li data-sc="30107026" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Ukraine (Andrew) - Ghana (pimchik)</span></div></li><li data-sc="30107061" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Czechia (Smetana) - United States (Sheva)</span></div></li><li data-sc="30113805" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Newcastle UTD (FAITH) - Arsenal (POWER)</span></div></li><li data-sc="30113817" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Napoli (HORIZON) - Barcelona (EDEN)</span></div></li><li data-sc="30113991" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Atlanta United (NOBODY) - Los Angeles FC (APOLLO)</span></div></li><li data-sc="30113956" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Boca Juniors (Jindrich) - Palmeiras (Spike)</span></div></li><li data-sc="30114163" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>River Plate (Jadon) - Boca Juniors (Jindrich)</span></div></li><li data-sc="30114184" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Flamengo (Fede) - Palmeiras (Spike)</span></div></li><li data-sc="30114188" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Borussia Dortmund (Dante) - Eintracht Frankfurt (Ashton)</span></div></li><li data-sc="30114200" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Arsenal (Millie) - Manchester Utd (Florie)</span></div></li><li data-sc="30107210" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Memphis Grizzlies (Linkor) - Dallas Mavericks (MaaaS1K)</span></div></li><li data-sc="30107238" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Los Angeles Clippers (Mikki) - Milwaukee Bucks (Yaro)</span></div></li><li data-sc="30113617" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Memphis Grizzlies (Underrated) - Milwaukee Bucks (SPOOKY)</span></div></li><li data-sc="30113622" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Dallas Mavericks (GUARD) - Denver Nuggets (RAZE)</span></div></li><li data-sc="30113766" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Los Angeles Lakers (Karma) - Boston Celtics (Taapz)</span></div></li><li data-sc="30113789" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Miami Heat (CRYPTO) - Toronto Raptors (CRUCIAL)</span></div></li><li data-sc="30114164" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>New York Knicks (Oscar) - Los Angeles Lakers (Damian)</span></div></li><li data-sc="c1745971210949721" data-vt="4" class="jes str__list_item"><div><i class="ico-s mod-mod_27"></i><span>Carreras 24 h</span></div></li><li data-sc="c1745971212885707" data-vt="4" class="jes str__list_item"><div><i class="ico-s mod-mod_28"></i><span>Carreras 24 h</span></div></li></ul></div></div><div hidden="" class="jcr" data-cid="react_0HNCD4MK09B54" data-cn="$R.Jsx.s.streaming.StreamingEventList" data-cp="{&quot;initialData&quot;:{&quot;e&quot;:[{&quot;ty&quot;:2,&quot;c&quot;:&quot;30073173&quot;,&quot;t&quot;:&quot;D. Yastremska - A. Potapova&quot;,&quot;ic&quot;:&quot;8&quot;,&quot;st&quot;:&quot;WTA Roma&quot;,&quot;cd&quot;:null,&quot;ip&quot;:true},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30091676&quot;,&quot;t&quot;:&quot;Corinthians - Red Bull Bragantino&quot;,&quot;ic&quot;:&quot;1&quot;,&quot;st&quot;:&quot;Brasil Paulista Femenino&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30105993&quot;,&quot;t&quot;:&quot;Rogers, Anna / Sanchez, Ana Sofia - Motosono, Kianah / Schoppe, Ellie&quot;,&quot;ic&quot;:&quot;8&quot;,&quot;st&quot;:&quot;ITF Indian Harbour Beach Femenino&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30095660&quot;,&quot;t&quot;:&quot;V. Dyrl - M. Unguryan&quot;,&quot;ic&quot;:&quot;87&quot;,&quot;st&quot;:&quot;Setka Cup Masculina&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30095386&quot;,&quot;t&quot;:&quot;S. Yakimenko - V. Kondratenko&quot;,&quot;ic&quot;:&quot;87&quot;,&quot;st&quot;:&quot;Setka Cup Masculina&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30106824&quot;,&quot;t&quot;:&quot;Spain (zoyir) - France (Serenity)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - International Battle - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30107326&quot;,&quot;t&quot;:&quot;Italy (Klever) - Germany (Samurai)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - International Battle - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30106680&quot;,&quot;t&quot;:&quot;FC Porto (hotShot) - S.L. Benfica (LaikingDast)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Primeira Liga Battle - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30106730&quot;,&quot;t&quot;:&quot;SC Braga (Kodak) - Sporting CP (Kray)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Primeira Liga Battle - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30107026&quot;,&quot;t&quot;:&quot;Ukraine (Andrew) - Ghana (pimchik)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Volta International Battle 2x3 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30107061&quot;,&quot;t&quot;:&quot;Czechia (Smetana) - United States (Sheva)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Volta International Battle 2x3 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113805&quot;,&quot;t&quot;:&quot;Newcastle UTD (FAITH) - Arsenal (POWER)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - GG League - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113817&quot;,&quot;t&quot;:&quot;Napoli (HORIZON) - Barcelona (EDEN)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - GG League - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113991&quot;,&quot;t&quot;:&quot;Atlanta United (NOBODY) - Los Angeles FC (APOLLO)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - GG League - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113956&quot;,&quot;t&quot;:&quot;Boca Juniors (Jindrich) - Palmeiras (Spike)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Valhalla Cup - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30114163&quot;,&quot;t&quot;:&quot;River Plate (Jadon) - Boca Juniors (Jindrich)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Valhalla Cup - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30114184&quot;,&quot;t&quot;:&quot;Flamengo (Fede) - Palmeiras (Spike)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Valhalla Cup - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30114188&quot;,&quot;t&quot;:&quot;Borussia Dortmund (Dante) - Eintracht Frankfurt (Ashton)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Valhalla Cup - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30114200&quot;,&quot;t&quot;:&quot;Arsenal (Millie) - Manchester Utd (Florie)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Valkiria Cup - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30107210&quot;,&quot;t&quot;:&quot;Memphis Grizzlies (Linkor) - Dallas Mavericks (MaaaS1K)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - NBA Battle - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30107238&quot;,&quot;t&quot;:&quot;Los Angeles Clippers (Mikki) - Milwaukee Bucks (Yaro)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - NBA Battle - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113617&quot;,&quot;t&quot;:&quot;Memphis Grizzlies (Underrated) - Milwaukee Bucks (SPOOKY)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - GG League - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113622&quot;,&quot;t&quot;:&quot;Dallas Mavericks (GUARD) - Denver Nuggets (RAZE)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - GG League - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113766&quot;,&quot;t&quot;:&quot;Los Angeles Lakers (Karma) - Boston Celtics (Taapz)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - GG League - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113789&quot;,&quot;t&quot;:&quot;Miami Heat (CRYPTO) - Toronto Raptors (CRUCIAL)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - GG League - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30114164&quot;,&quot;t&quot;:&quot;New York Knicks (Oscar) - Los Angeles Lakers (Damian)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - Valhalla League - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false}],&quot;es&quot;:null,&quot;t&quot;:null,&quot;l&quot;:[{&quot;ty&quot;:4,&quot;c&quot;:&quot;c1745971210949721&quot;,&quot;t&quot;:&quot;Streaming 24h&quot;,&quot;ic&quot;:&quot;27&quot;,&quot;st&quot;:null,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:4,&quot;c&quot;:&quot;c1745971212885707&quot;,&quot;t&quot;:&quot;Streaming 24h&quot;,&quot;ic&quot;:&quot;28&quot;,&quot;st&quot;:null,&quot;cd&quot;:null,&quot;ip&quot;:false}],&quot;ine&quot;:false,&quot;hml&quot;:true},&quot;subscription&quot;:{&quot;type&quot;:14,&quot;param&quot;:{&quot;sdd&quot;:[],&quot;ste&quot;:[1],&quot;spe&quot;:null,&quot;cc&quot;:&quot;ES&quot;,&quot;ec&quot;:[&quot;3 W\u0026B&quot;,&quot;6 W\u0026B&quot;]}},&quot;wid&quot;:&quot;w_1-p_4-wt_6&quot;,&quot;selectedEvent&quot;:{&quot;sec&quot;:&quot;pse&quot;,&quot;ty&quot;:2,&quot;c&quot;:&quot;30073173&quot;,&quot;t&quot;:&quot;D. Yastremska - A. Potapova&quot;,&quot;ic&quot;:&quot;8&quot;,&quot;st&quot;:&quot;WTA Roma&quot;,&quot;cd&quot;:null,&quot;ip&quot;:true},&quot;hasVideoSelector&quot;:true,&quot;resources&quot;:{&quot;greyhounds&quot;:&quot;Galgos&quot;,&quot;horses&quot;:&quot;Caballos&quot;,&quot;greyhoundsAndHorses&quot;:&quot;Carreras 24 h&quot;,&quot;primeLabel&quot;:&quot;Prime&quot;},&quot;isPrimeEnabled&quot;:true}" data-co="false"></div>
+                    <ul class="str__controls jstroplst">
+
+                            <li data-t="4" class="str__control_item jstropt none">
+                                <i class="ico-s icon-expand"></i>
+                            </li>
+                            <li data-t="5" class="str__control_item jstropt ">
+                                <i class="ico-s icon-contract"></i>
+                            </li>
+
+                                <li data-t="1" class="str__control_item jstropt jpinunpin">
+                                    <i class="ico-s icon-pin"></i>
+                                </li>
+
+
+                                <li data-t="6" class="str__control_item jstropt jminmag">
+                                    <i class="ico-l icon-chevron-down"></i>
+                                </li>
+                    </ul>
+                </div>
+                <div class="play jplayerWrapper" data-pt="1">
+
+
+
+
+    <div id="video" class="jintPlayer none" data-pt="1" data-pid="15" data-src="" data-prot="1" data-apiurl="https://wab.performfeeds.com/livestreamlaunch/1gjkdo1pbegih1g5qqlyjwqldf/9f6le1j3km0e15260qn93h74w?_fmt=json&amp;_fld=sl,aLng,pa,sTok,mFmt" data-apihead="{&quot;Authorization&quot;:&quot;Bearer S9lkZZjfdtGlKCiieLg8b75oSDVWBGZQ9hLaomJFT2QX3XtsK9ESG-aFAPaBODYAl_auR3_FJJxoUDZlMh1sV-FGWc3YLRVxpkfWq1_yHIRzzsmyRrhWpp3ZTcwFGF9zR4h9HJW1ld-jN_rUkqmUIl40M8KX-Z7jtqVFieoHWk6YA83I4wvIcUzZsPQxgFMIb9v6jysolU5yZjLPNj3lmErvvUAqjau9P20K_mg-mRtd57TyIstu3jQupCKlxHv7vTgFAXldChxbzDPb9DS1z5QSg0d_U5ZrKA8i3tz7jpLNBKw_cZIfrbsLRwv2ACnunpvxRwNaTBM8r49WC9h6Yw&quot;}" data-an="UA-34961270-1" data-drm="">
+
+    <script src="/js/video.js?v=cgtYl4qcGXYRWYqGwa16sWUVoL1Gml9DOfVHMaQMUJw"></script>
+    <div id="videocontainer">
+        <video class="jshakaplayer vjs-fluid" disableremoteplayback="" autoplay="" muted="muted">
+        </video>
+    </div>
+
+    </div>
+
+                    <p class="play_no_str__text jnovid none">
+                        <span>
+                            en este momento no hay video disponible
+                        </span>
+                    </p>
+                </div>
+
+                <a href="/live/d-yastremska-a-potapova-sc30073173" class="str__bets-link jlink" title="D. Yastremska - A. Potapova">
+                    Ver apuestas
+                    <i class="ico-s icon__bold icon-chevron-thin-right"></i>
+                </a>
+        </div>
+    </div>
+    <div id="login" class="jstPrEnded widget__login_bg none">
+
+        <div class="widget__login">
+            <a class="btn btn-m btn__contrast-outline jlb jt_streamingLog">
+                Entrar a mi cuenta
+            </a>
+            <span class="widget__login_footer-links">
+                <a class="widget__login_text_button jlink jt_streamingReg">
+                    Quiero registrarme
+                    <i class="icon-text-arrow-right icon__bold"></i>
+                </a>
+            </span>
+        </div>
+    </div>
+    <div data-jsfile="streaming.section.js?v=K9IXm3CDCeY7V2LPCt0n_uqSLa0Rayyp5b57q8Lt-Xk" class="ljs" hidden="hidden"></div>
+
+    </div>
+    <div data-jsfile="streaming.widget.js?v=y6DsDbtcBFroCKpeEqKty8uFmvFPmuNsaRhIDA1X26c" class="ljs" hidden="hidden"></div>
+
+
+    <div hidden="" id="aw4-1" data-v="{&quot;QueryStringEventId&quot;:0,&quot;IsPinUnpinEnabled&quot;:true,&quot;HasMinimizeMagnifyOption&quot;:true,&quot;IsOnlyActiveInUnpinnedMode&quot;:true,&quot;HasVideoSelector&quot;:true,&quot;HasScrollTopButton&quot;:false,&quot;DoesShowBetsLinkBar&quot;:true,&quot;VisibleTitleBox&quot;:false,&quot;TitleBox&quot;:null}"></div>
+
+
+
+    </section>
+
+    <section id="w_2-p_4-wt_106_c" class="jqw  widget_type_106_c" data-wt="106" data-pa="4" data-co="0" data-po="2" data-sw="false" data-vi="True" data-sl="True" data-ti="False" data-sc="False" data-pwi="70" data-nrc="0" data-ic="true" data-vtw="null" data-sn="BetslipUserBetsSwitcher">
+
+
+
+
+    <div class="jdata" data-section="betslipUserBetsSwitcher" data-hash="BbkDGL4-jAGQsuevbrrZIAnz05UnQRKYzMPZaF4Usuw"></div>
+
+    <nav class="ticket__nav jbusw
+        jcol collapsed
+        ">
+        <div hidden="" class="jdata" data-btype="106" data-bsec="Betslip" data-utype="106" data-usec="UserBets" data-csu="true" data-ssec="Betslip"></div>
+        <div class="ticket__nav-item">
+            <div class="switcher-content switcher-content--ticket">
+                <input id="rbet" type="radio" value="betslip" name="switcher">
+                <label for="rbet">
+                    Boleto
+                    <span class="jqlop counter counter--small">
+                        0
+                    </span>
+                </label>
+                <input id="ruserb" type="radio" value="userbets" name="switcher">
+                <label for="ruserb">
+                    Mis apuestas
+                </label>
+            </div>
+        </div>
+            <i class="jbback ticket__nav-item icon-chevron-thin-down ico-s jt_bcDesplegar"></i>
+    </nav>
+    <div data-jsfile="sectionWrapper.widget.js?v=xxaM-WzvGe4qczxR6RkNOjhAIRt29kzxVJ5NaSvCXPE" class="ljs" hidden="hidden"></div>
+
+
+    <div hidden="" id="aw4-2" data-v="{&quot;ShowBack&quot;:true,&quot;IsUserBetsAlwaysEnabled&quot;:true,&quot;ParentHtmlId&quot;:&quot;w_2-p_4-wt_106_c&quot;,&quot;HtmlId&quot;:&quot;w_2-p_4-wt_106_c_BetslipUserBetsSwitcher&quot;,&quot;ClassName&quot;:null,&quot;VisibleTitleBox&quot;:false,&quot;TitleBox&quot;:null}"></div>
+
+
+
+    </section>
+
+    <section id="w_3-p_4-wt_106_c" class="jqw  none  betslip_container janimateSquare widget_type_106_c" data-wt="106" data-pa="4" data-co="0" data-po="3" data-sw="false" data-vi="False" data-sl="True" data-ti="False" data-sc="False" data-pwi="47" data-nrc="0" data-ic="true" data-vtw="null" data-sn="Betslip">
+
+
+
+
+    <div class="jdata" data-section="betslip" data-hash="z8ZXs2UbkTieIdWwvbUghWXHPhqVQSkkTU8T2S1_Moc"></div>
+
+<article class="ticket animated jstep" data-step="0">
+    <div class="ticket__content ticket__content--empty wrapper-large">
+        <div class="ticket__titulo">
+            <div class="ticket__illustration">
+                <i class="icon-ticket"></i>
+            </div>
+            <h6 class="title title_l">
+                El boleto está vacio
+            </h6>
+        </div>
+        <div class="ticket__texto text">
+            <p class="title title_m">
+                ¡No hay apuestas seleccionadas!
+            </p>
+            <p>
+                Por favor, navega por nuestra oferta deportiva y selecciona tus apuestas
+            </p>
+        </div>
+        <ul class="list-nav">
+            <li>
+                <a href="/live" data-url="/live" class="jemptyp list-nav__item jt_bcIr" data-lnk="Live">
+                    <i class="ico-m icon-live list-nav__icon"></i>
+                    <span class="list-nav__texto text">
+                        Live
+                    </span>
+                    <span class="list-nav__numero">56</span>
+                    <i class="ico-s icon-chevron-thin-right list-nav__arrow"></i>
+                </a>
+            </li>
+            <li>
+                <a href="/calendario" data-url="/calendario" class="jemptyp list-nav__item jt_bcIr" data-lnk="Calendario">
+                    <i class="ico-m icon-calendar list-nav__icon"></i>
+                    <span class="list-nav__texto text">
+                        Hoy
+                    </span>
+                    <span class="list-nav__numero">346</span>
+                    <i class="ico-s icon-chevron-thin-right list-nav__arrow"></i>
+                </a>
+            </li>
+            <li>
+                <a href="/" data-url="/" class="jemptyp list-nav__item jt_bcIr" data-lnk="Home">
+                    <i class="ico-m icon-home list-nav__icon"></i>
+                    <span class="list-nav__texto text">
+                        Inicio
+                    </span>
+                    <i class="ico-s icon-chevron-thin-right list-nav__arrow"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+</article><div class="jbsloading loading ticket__panel none">
+    <div class="windows8">
+    <div class="wBall" id="wBall_1">
+        <div class="wInnerBall"></div>
+    </div>
+    <div class="wBall" id="wBall_2">
+        <div class="wInnerBall"></div>
+    </div>
+    <div class="wBall" id="wBall_3">
+        <div class="wInnerBall"></div>
+    </div>
+    <div class="wBall" id="wBall_4">
+        <div class="wInnerBall"></div>
+    </div>
+    <div class="wBall" id="wBall_5">
+        <div class="wInnerBall"></div>
+    </div>
+    <i class="icon-reta2"></i>
+</div>
+</div>    <div data-jsfile="betslip.section.js?v=z8ZXs2UbkTieIdWwvbUghWXHPhqVQSkkTU8T2S1_Moc" class="ljs" hidden="hidden"></div>
+    <div data-jsfile="sectionWrapper.widget.js?v=xxaM-WzvGe4qczxR6RkNOjhAIRt29kzxVJ5NaSvCXPE" class="ljs" hidden="hidden"></div>
+
+
+    <div hidden="" id="aw4-3" data-v="{&quot;ParentHtmlId&quot;:&quot;w_3-p_4-wt_106_c&quot;,&quot;HtmlId&quot;:&quot;w_3-p_4-wt_106_c_Betslip&quot;,&quot;ClassName&quot;:&quot;betslip_container janimateSquare&quot;,&quot;VisibleTitleBox&quot;:false,&quot;TitleBox&quot;:null}"></div>
+
+
+
+    </section>
+
+    <section id="w_14-p_4-wt_106_c" class="jqw  none  betslip_container betslip_container--userbets widget_type_106_c" data-wt="106" data-pa="4" data-co="0" data-po="14" data-sw="false" data-vi="False" data-sl="True" data-ti="False" data-sc="False" data-pwi="95" data-nrc="0" data-ic="true" data-vtw="null" data-sn="UserBets">
+
+
+
+
+    <div class="jdata" data-section="userBets" data-hash="5RFWZowPD2P-Yt41H4kksEoERfQYRWC8L4gfmBKS6TM"></div>
+
+
+<div class="ticket__content ticket__content--loggedout wrapper-large jlogin">
+    <div class="ticket__titulo">
+        <div class="ticket__illustration">
+            <i class="icon-user-ticket"></i>
+        </div>
+        <h6 class="title title_m title--minus">
+            Para ver tus apuestas:
+        </h6>
+    </div>
+    <div class="ticket__texto">
+        <button class="btn btn-m btn__secondary-outline jlog">
+            Entra en tu cuenta
+        </button>
+        <p>
+            o <a href="/registro" class="jlink"><span class="link-inline">regístrate</span> <i class="icon-text-arrow-right"></i></a>
+        </p>
+    </div>
+</div>
+
+<div data-jsfile="userBets.section.js?v=5RFWZowPD2P-Yt41H4kksEoERfQYRWC8L4gfmBKS6TM" class="ljs" hidden="hidden"></div>    <div data-jsfile="sectionWrapper.widget.js?v=xxaM-WzvGe4qczxR6RkNOjhAIRt29kzxVJ5NaSvCXPE" class="ljs" hidden="hidden"></div>
+
+
+    <div hidden="" id="aw4-14" data-v="{&quot;DateFrom&quot;:&quot;2025-05-04T00:00:00&quot;,&quot;DateTo&quot;:&quot;2025-05-07T23:59:59&quot;,&quot;LastDays&quot;:0,&quot;StatusConfigurations&quot;:[{&quot;Status&quot;:3,&quot;ShowDateFilter&quot;:false,&quot;LastDays&quot;:null,&quot;IconClass&quot;:null},{&quot;Status&quot;:2,&quot;ShowDateFilter&quot;:false,&quot;LastDays&quot;:null,&quot;IconClass&quot;:null},{&quot;Status&quot;:4,&quot;ShowDateFilter&quot;:false,&quot;LastDays&quot;:30,&quot;IconClass&quot;:null},{&quot;Status&quot;:1,&quot;ShowDateFilter&quot;:true,&quot;LastDays&quot;:null,&quot;IconClass&quot;:&quot;ico-m icon-calendar&quot;}],&quot;Status&quot;:null,&quot;TabsClasses&quot;:null,&quot;ContainerClasses&quot;:&quot;ticket__userbets&quot;,&quot;TabsNavClasses&quot;:&quot;tab__group--fullwidth&quot;,&quot;AlwaysVisible&quot;:false,&quot;ShowNotLoggedInView&quot;:false,&quot;ParentHtmlId&quot;:null,&quot;HtmlId&quot;:null,&quot;ClassName&quot;:&quot;betslip_container betslip_container--userbets&quot;,&quot;VisibleTitleBox&quot;:false,&quot;TitleBox&quot;:null}"></div>
+
+
+
+    </section>
+</section>
+    <section data-cont="6" class="jpanel searcher__panel">
+
+
+    <section id="w_1-p_6-wt_106_c" class="jqw  widget_type_106_c" data-wt="106" data-pa="6" data-co="0" data-po="1" data-sw="false" data-vi="True" data-sl="True" data-ti="False" data-sc="False" data-pwi="24" data-nrc="0" data-ic="true" data-vtw="null" data-sn="Searcher">
+
+
+
+
+    <div class="jdata" data-section="searcher" data-hash="u_iuzCffABACpNOUqQuIv5nH1YJEH72wMOFJqu5etGU"></div>
+<div class="jsearcherpanel">
+
+</div>
+
+<div data-jsfile="searcher.section.js?v=u_iuzCffABACpNOUqQuIv5nH1YJEH72wMOFJqu5etGU" class="ljs" hidden="hidden"></div>    <div data-jsfile="sectionWrapper.widget.js?v=xxaM-WzvGe4qczxR6RkNOjhAIRt29kzxVJ5NaSvCXPE" class="ljs" hidden="hidden"></div>
+
+
+    <div hidden="" id="aw6-1" data-v="{&quot;MaxPromotedElements&quot;:15,&quot;MaxSuggestElements&quot;:10,&quot;MaxResultElements&quot;:15,&quot;InputText&quot;:null,&quot;IsSearch&quot;:false,&quot;ParentHtmlId&quot;:&quot;w_1-p_6-wt_106_c&quot;,&quot;HtmlId&quot;:&quot;w_1-p_6-wt_106_c_Searcher&quot;,&quot;ClassName&quot;:null,&quot;VisibleTitleBox&quot;:false,&quot;TitleBox&quot;:null}"></div>
+
+
+
+    </section>
+</section>
+</div>
+    </div>
+    <div class="alay"></div>
+</main>
+</div>
+
+    <div id="pamc">
+        <div class="modal jmo " style="display:none;">
+    <div class="modal__wrapper">
+        <form class="modal__content animate" action="/deportes/baloncesto/nba/41" method="post">
+            <div class="modal__header">
+    <h4 id="modalHeader">
+    </h4>
+        <span class="jmocl close"><i class="icon-multiply"></i></span>
+</div>
+<div id="modalBody" class="modal__body">
+</div>
+        </form>
+    </div>
+</div>
+    </div>
+
+<script defer="" src="https://www.retabet.es/js/cookiemodal.js"></script>
+<div class="jpckmsg" data-ckdom="1" data-cui="es-ES" hidden=""></div>
+<div data-jsfile="cookieConfigMessage.section.js?v=LVC4IzO-Axa8gi9eaU57o5RGb6rsfEXO4F-DbgtcJME" class="ljs" hidden="hidden"></div>
+
+    <div>
+    <div class="modal jmo modal_session" id="sessionCountdownMessage" style="display:none;">
+    <div class="modal__wrapper">
+        <form class="modal__content animate" action="/deportes/baloncesto/nba/41" method="post">
+            <div class="modal__header">
+    <h4 id="modalHeader">
+Tu sesión online esta apunto de caducar    </h4>
+        <span class="jmocl close"><i class="icon-multiply"></i></span>
+</div>
+<div id="modalBody" class="modal__body">
+<div class="modal__title">
+    <h4>Tu sesión online caducará en breve</h4>
+</div>
+<div class="modal__container">
+    <div class="modal__box">
+        <div class="jtmpl" hidden="">{sec}s.</div>
+        <span class="modal__num jval"></span>
+        <p>
+             Porfavor haz click en "Continuar" para seguir jugando o haz click en "Salir" para terminar ahora tu sesión
+        </p>
+    </div>
+</div>
+<div class="modal__footer">
+    <div class="botonera">
+        <button type="button" class="jcontinue btn btn-m btn__secondary-outline">
+            <span>Continuar</span>
+        </button>
+        <button type="button" class="jlogOff btn btn-m btn__secondary-outline">
+            <span>Salir</span>
+        </button>
+    </div>
+</div>
+</div>
+        </form>
+    </div>
+</div>
+</div>
+
+
+<div id="casinoMessage">
+    <div class="modal jmo " style="display:none;">
+    <div class="modal__wrapper">
+        <form class="modal__content animate" action="/deportes/baloncesto/nba/41" method="post">
+            <div class="modal__header">
+    <h4 id="modalHeader">
+    </h4>
+</div>
+<div id="modalBody" class="modal__body">
+</div>
+        </form>
+    </div>
+</div>
+</div>
+
+<div data-jsfile="casinoMessage.section.js?v=i5QENHiJ4mx5hJwYbRxUCOoX2q05PcIXDfGpWKa3jn0" class="ljs" hidden="hidden"></div>
+
+
+    <footer class="jfooter ">
+<section class="footer__cont">
+  <nav class="footer__nav">
+    <div class="footer__menu">
+      <h3>
+        <a href="/" title="Deportes">Deportes</a>
+      </h3>
+      <ul>
+        <li class="footer__menu-item">
+          <a href="/" title="Apuestas deportivas">Apuestas deportivas</a>
+        </li>
+        <li class="footer__menu-item">
+          <a href="/live" title="Apuestas en directo">Apuestas en directo</a>
+        </li>
+        <li class="footer__menu-item">
+          <a href="/deportes/futbol-m1" title="Apuestas de fútbol">Apuestas de fútbol</a>
+        </li>
+        <li class="footer__menu-item">
+          <a href="/deportes/baloncesto-m5" title="Apuestas de baloncesto">Apuestas de baloncesto</a>
+        </li>
+        <li class="footer__menu-item">
+          <a href="/deportes/tenis-m8" title="Apuestas de tenis">Apuestas de tenis</a>
+        </li>
+        <li class="footer__menu-item">
+          <a href="/esports" title="Apuestas de Esports">Apuestas de Esports</a>
+        </li>
+        <li class="footer__menu-item">
+          <a href="/juegos-virtuales" title="Apuestas virtuales">Apuestas virtuales</a>
+        </li>
+      </ul>
+    </div>
+    <div class="footer__menu">
+      <h3>
+        <a href="/casino" title="Casino">Casino</a>
+      </h3>
+      <ul>
+        <li class="footer__menu-item">
+          <a href="/casino" title="Juegos de casino">Juegos de casino</a>
+        </li>
+        <li class="footer__menu-item">
+          <a href="/ruleta-en-vivo" title="Ruleta en vivo">Ruleta en vivo</a>
+        </li>
+        <li class="footer__menu-item">
+          <a href="/slots" title="Slots online">Slots online</a>
+        </li>
+        <li class="footer__menu-item">
+          <a href="/blackjack" title="Blackjack online">Blackjack online</a>
+        </li>
+      </ul>
+    </div>
+    <div class="footer__menu">
+      <h3>
+        <a href="https://www.retabet.es/?setUG=true#aboutSec" target="_blank" title="Sobre nosotros">Sobre nosotros</a>
+      </h3>
+      <ul>
+        <li class="footer__menu-item">
+          <a href="https://www.retabet.es/?setUG=true&amp;map&amp;utm_source=Mailify&amp;utm_medium=email&amp;utm_campaign=((News))#establishmentsSec" target="_blank" title="Tiendas y locales">Tiendas y locales</a>
+        </li>
+        <li class="footer__menu-item">
+          <a href="https://retabet.es/mobile" target="_blank" title="Descargar Apps">Descargar Apps</a>
+        </li>
+        <li class="footer__menu-item">
+          <a href="https://blog.retabet.es/" target="_blank" title="Blog">Blog</a>
+        </li>
+        <li class="footer__menu-item">
+          <a href="/contacto#afiliados" title="Afiliados">Afiliados</a>
+        </li>
+        <li class="footer__menu-item">
+          <a href="/contacto" title="Contacto">Contacto</a>
+        </li>
+        <li class="footer__menu-item">
+          <a href="https://www.retabet.es/files/es/pdf/Clausula_informativa_tratamiento_ESTATAL.pdf" title="Cláusulas informativas" target="_blank">Cláusulas informativas</a>
+        </li>
+        <li class="footer__menu-item">
+          <a href="https://www.retabet.es/files/es/pdf/normativa_RETA_Estatal.pdf" title="Normativa Retabet" target="_blank">Normativa Retabet</a>
+        </li>
+        <li class="footer__menu-item">
+          <a href="/sitemap" title="Mapa del sitio">Mapa del sitio</a>
+        </li>
+      </ul>
+    </div>
+    <div class="footer__menu">
+      <h3>
+        <a href="/ayuda" title="Sobre nosotros">Ayuda</a>
+      </h3>
+      <ul>
+        <li class="footer__menu-item">
+          <a href="/ayuda#tarjeta_reta" title="Tarjeta Retabet">Tarjeta Retabet</a>
+        </li>
+        <li class="footer__menu-item">
+          <a href="/ayuda#metodos_ingreso" title="Métodos de ingreso">Métodos de ingreso</a>
+        </li>
+        <li class="footer__menu-item">
+          <a href="/ayuda#metodos_cobro" title="Métodos de cobro">Métodos de cobro</a>
+        </li>
+        <li class="footer__menu-item">
+          <a href="/ayuda#normativa_retabet" title="Reglas de juego">Reglas de juego</a>
+        </li>
+      </ul>
+    </div>
+    <div class="footer__menu">
+      <h3>
+        <a href="/juego-mas-seguro" title="Juego más seguro">Juego más seguro</a>
+      </h3>
+      <ul>
+        <li class="footer__menu-item">
+          <a href="/juego-mas-seguro" title="Medidas multidisciplinares">Medidas multidisciplinares</a>
+        </li>
+        <li class="footer__menu-item">
+          <a href="/juego-mas-seguro" title="¿Tengo problemas con el juego?">¿Tengo problemas con el juego?</a>
+        </li>
+        <li class="footer__menu-item">
+          <a href="/autoexclusion" title="Autoexclusión">Autoexclusión</a>
+        </li>
+      </ul>
+    </div>
+    <div class="footer__menu">
+      <h3>
+        <a href="/juego-autorizado" title="Juego autorizado">Juego autorizado</a>
+      </h3>
+      <ul>
+        <li class="footer__menu-item">
+          <a href="/juego-autorizado" title="juego autorizado">Juego autorizado</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="footer__icons">
+    <ul class="footer__payment">
+      <li>
+        <i class="icon-tarjeta-reta"></i>
+      </li>
+      <li>
+        <i class="logos-cc-visa"></i>
+      </li>
+      <li>
+        <i class="logos-mastercard"></i>
+      </li>
+      <li>
+        <i class="logos-cc-paypal"></i>
+      </li>
+      <li>
+        <i class="icon-tienda"></i>
+      </li>
+      <li>
+        <i class="logos-bizum2"></i>
+      </li>
+    </ul>
+    <ul class="footer__logos footer__logos--estatal">
+      <li class="footer__logo footer__logo--diversion">
+        <a href="https://www.ordenacionjuego.es/operadores-juego/operadores-licencia/operadores/ekasa-apuestas-online-sa" title="sin diversión no hay juego">
+          <img src="https://cdn.retabet.es/apuestas/es/webfooterimages/sindiversion_nojuego.svg" alt="sin diversión no hay juego" loading="lazy">
+        </a>
+      </li>
+      <li class="footer__logo footer__logo--responsable">
+        <a href="https://www.ordenacionjuego.es/operadores-juego/operadores-licencia/operadores/ekasa-apuestas-online-sa" title="juega responsable">
+          <img src="https://cdn.retabet.es/apuestas/es/webfooterimages/juega_responsable.svg" alt="juega responsable" loading="lazy">
+        </a>
+      </li>
+      <li class="footer__logo">
+        <a href="https://www.ordenacionjuego.es/participantes-juego/juego-seguro/rgiaj" title="autoprohibicion">
+          <img src="https://cdn.retabet.es/apuestas/es/webfooterimages/autoprohibicion.svg" alt="autoprohibicion" loading="lazy">
+        </a>
+      </li>
+      <li class="footer__logo">
+        <a href="https://www.boe.es/buscar/act.php?id=BOE-A-2011-9280 " title="mas18">
+          <img src="https://cdn.retabet.es/apuestas/es/webfooterimages/mas_18.svg" alt="mas18" loading="lazy">
+        </a>
+      </li>
+      <li class="footer__logo footer__logo--bien">
+        <a href="https://www.ordenacionjuego.es/participantes-juego/juego-autorizado" title="Juego autorizado">
+          <img src="https://cdn.retabet.es/apuestas/es/webfooterimages/logo-juego-autorizado.jpg" alt="Juego autorizado" loading="lazy">
+        </a>
+      </li>
+      <li class="footer__logo footer__logo--seguro">
+        <a href="https://www.ordenacionjuego.es/participantes-juego/juego-seguro" title="jugar seguro">
+          <img src="https://cdn.retabet.es/apuestas/es/webfooterimages/juego_seguro.png" alt="Juego seguro" loading="lazy">
+        </a>
+      </li>
+    </ul>
+  </div>
+</section>
+<section class="footer__business-info">
+  <div>
+    <p class="footer__text"> © EKASA apuestas online S.A., Parque Tecnológico de Zamudio edificio. 407 1ª planta, 48170 ZAMUDIO (BIZKAIA) · A95774857 · Licencias concedidas por la DGOJ 326/GA/1060, 327/GO/1060, 341/ADC/1060, 340/AOC/1060, 451/AHC/1060, 454/MAZ/1060, 455/BLJ/1060 y 456/RLT/1060.
+    </p>
+    <ul class="footer__social">
+      <li>
+        <a href="https://www.facebook.com/Retabet" target="_blank" title="Facebok">
+          <i class="icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a href="https://twitter.com/Retabet?lang=es" target="_blank" title="Twitter">
+          <i class="icon-logoX"></i>
+        </a>
+      </li>
+      <li>
+        <a href="https://www.instagram.com/retabet/" target="_blank" title="Instagram">
+          <i class="icon-instagram"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div>
+    <ul class="footer__links">
+      <li>
+        <a href="https://www.retabet.es/files/es/pdf/politica-privacidad-Grupo-Retabet.pdf" target="_blank" title="Política de privacidad">Política de privacidad</a>
+      </li>
+      <li>
+        <a href="https://www.retabet.es/files/es/pdf/contrato-de-juego-Retabet-Apuestas.pdf" target="_blank" title="Términos y condiciones">Términos y condiciones</a>
+      </li>
+      <li>
+        <a href="/politica-cookies" title="Política de cookies" target="_blank">Política de cookies</a>
+      </li>
+    </ul>
+  </div>
+</section>        <div hidden="" id="initHora" data-hour="23" data-min="52" data-sec="5"></div>
+        <section class="footer__time">
+            <div class="footer__time-box">
+                <span id="hora">23:52:15</span>
+
+    <div tabindex="0" class="select-noform select-noform-dark jdivtz ">
+        <div class="select-noform_active">
+            <span>(UTC+01:00) Bruselas, Copenhague, Madrid, París</span>
+        </div>
+        <ul id="tzlst" class="none select-noform__options ps_scroll ps"><div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; right: 0px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div></ul>
+    </div>
+
+            </div>
+            <div class="footer__lastlogin">
+
+
+
+            </div>
+        </section>
+    <div class="modal jmo " style="display:none;">
+    <div class="modal__wrapper">
+        <form class="modal__content animate" action="/deportes/baloncesto/nba/41" method="post">
+            <div class="modal__header">
+    <h4 id="modalHeader">
+    </h4>
+        <span class="jmocl close"><i class="icon-multiply"></i></span>
+</div>
+<div id="modalBody" class="modal__body">
+</div>
+        </form>
+    </div>
+</div>
+</footer>
+
+<div data-jsfile="footer.section.js?v=5czERWbmkzVlFPzd-dkWtxxyIaPG-f9BY6lDUNjSa4Q" class="ljs" hidden="hidden"></div>
+
+
+
+<div id="msgList">
+</div>
+
+<div id="amtp" hidden="hidden">
+
+    <div class="jm jmsg msg msg-generic msg--error animated fadeInDown none" data-tp="6" data-ocl="true">
+            <span class="msg__icon icon__bold"></span>
+<div class="msg__text_content">
+        <p class="msg__title title_m jmti">
+        </p>
+        <p class="msg__text jmtx">
+        </p>
+</div>            <span class="jmcls msg__close icon__bold ico-s" onclick="$(this).parent().remove();"></span>
+
+    </div>
+
+    <div class="jm jmsg msg msg-generic msg--success animated fadeInDown none" data-tp="5" data-ocl="true">
+            <span class="msg__icon icon__bold"></span>
+<div class="msg__text_content">
+        <p class="msg__title title_m jmti">
+        </p>
+        <p class="msg__text jmtx">
+        </p>
+</div>            <span class="jmcls msg__close icon__bold ico-s" onclick="$(this).parent().remove();"></span>
+
+    </div>
+
+    <div class="jm jmsg msg msg-generic msg--warning animated fadeInDown none" data-tp="7" data-ocl="true">
+            <span class="msg__icon icon__bold"></span>
+<div class="msg__text_content">
+        <p class="msg__title title_m jmti">
+        </p>
+        <p class="msg__text jmtx">
+        </p>
+</div>            <span class="jmcls msg__close icon__bold ico-s" onclick="$(this).parent().remove();"></span>
+
+    </div>
+
+    <div class="jm jmsg msg msg-generic msg--info animated fadeInDown none" data-tp="8" data-ocl="true">
+            <span class="msg__icon icon__bold"></span>
+<div class="msg__text_content">
+        <p class="msg__title title_m jmti">
+        </p>
+        <p class="msg__text jmtx">
+        </p>
+</div>            <span class="jmcls msg__close icon__bold ico-s" onclick="$(this).parent().remove();"></span>
+
+    </div>
+</div>
+
+<div id="amst" hidden="hidden">
+    <span class="amstm" data-id="1">Sin conexión</span>
+    <span class="amstm" data-id="2">Debes iniciar sesión para ver esta sección</span>
+    <span class="amstm" data-id="3">Error al intentar abrir el juego, intentalo mas tarde</span>
+    <span class="amstm" data-id="5">El usuario está autoexcluido en casino y no puede jugar.</span>
+    <span class="amstm" data-id="6">El usuario está autoexcluido en casino y no puede jugar</span>
+    <span class="amstm" data-id="7">El usuario está autoexcluido en slots y no puede jugar</span>
+    <span class="amstm" data-id="8">Lo sentimos ha ocurrido un error, <b>cierra el navegador y vuelve a intentarlo más tarde</b>. Si el problema persiste, contacta con nuestro Servicio de Atención al Cliente. Referencia: {error}</span>
+</div>
+    <div class="jsiteloading loading" style="display: none;">
+    <div class="windows8">
+    <div class="wBall" id="wBall_1">
+        <div class="wInnerBall"></div>
+    </div>
+    <div class="wBall" id="wBall_2">
+        <div class="wInnerBall"></div>
+    </div>
+    <div class="wBall" id="wBall_3">
+        <div class="wInnerBall"></div>
+    </div>
+    <div class="wBall" id="wBall_4">
+        <div class="wInnerBall"></div>
+    </div>
+    <div class="wBall" id="wBall_5">
+        <div class="wInnerBall"></div>
+    </div>
+    <i class="icon-reta2"></i>
+</div>
+</div>
+
+
+
+
+    <div id="w-chbot" class="jcd" data-providerid="1" data-startonopen="true" data-is="true" data-io="false" data-chs="0">
+
+    <div hidden="" class="jxc" data-key="def3dc47-abc2-4288-8ced-ac937b544c66" data-cau="False" data-cid="0" data-cia="False" data-cug="apuestas" data-cde="0" data-ccd="retabet.es" data-utzs="1" data-ugtzs="1">
+    </div>
+    </div>
+
+<div data-jsfile="chatBot2.section.js?v=s9oOooRpgzKYSKvD-51O4Yq7wPFBTEkKjN67mm4aIf0" class="ljs" hidden="hidden"></div>
+    <img class="reta-square" src="/reta-square.jpg?638822515256060597" alt="Retabet square" style="max-width:0%">
+
+
+
+
+    <div id="modalFactory">
+
+        <div class="modal jmo jModal" style="display:none;">
+            <div class="modal__wrapper">
+                    <form class="modal__content animate jcontent jformModal" action="/deportes/baloncesto/nba/41" method="post">
+
+        <div class="modal__header jheader">
+            <h4 id="modalHeader">
+            </h4>
+                <span class="jmocl close"><i class="icon-multiply"></i></span>
+        </div>
+        <div id="modalBody" class="modal__body">
+        </div>
+
+                    </form>
+            </div>
+        </div>
+
+    </div>
+
+
+<script src="https://rtds.retabet.es/Scripts/rtds.js?4"></script><script src="https://apuestas.retabet.es/js/modules/navMenu.section.js?v=tME5PzfZ54xGB269naOKpHK-RnwrxmnlnMGtNxgQjKk"></script><script src="https://apuestas.retabet.es/js/modules/login.section.js?v=rPzpL_sTWM0GPifOUxK26dWwAnxcJ4BAsLUCGgMlR1Q"></script><script src="https://apuestas.retabet.es/js/modules/forgotPassword.section.js?v=mKdHpqsS2l9rrlL-fyiMSkBfkPsjltOiQpbuvPWiuKY"></script><script src="https://apuestas.retabet.es/js/modules/esportsnav.section.js?v=CpxRLSHqJUNAOeZPMXmZJ7M1rTb8_2cw9Jso8XELkfM"></script><script src="https://apuestas.retabet.es/js/modules/header.section.js?v=Uucyabh6zg8iDg482ZXdQPbDlW0ReT91HH6XrlK8lVI"></script><script src="https://apuestas.retabet.es/js/modules/sportsbookMenu.widget.js?v=znjJeAaH-5uGyINB6dJiPjt-tbHyVTeZmmWC21-v1r8"></script><script src="https://apuestas.retabet.es/js/modules/sportsNoResult.section.js?v=PyjtOZ-2gadSXfwTIK7Ws1oMsxHKC1aEOAT2tBYnb48"></script><script src="https://apuestas.retabet.es/js/modules/sectionWrapper.widget.js?v=xxaM-WzvGe4qczxR6RkNOjhAIRt29kzxVJ5NaSvCXPE"></script><script src="https://apuestas.retabet.es/js/modules/sportsbookDate.section.js?v=QPr7o7VM8Y_cmKDfxSahqCh60fcI2qzXYlY3Rwc1ybg"></script><script src="https://apuestas.retabet.es/js/modules/sportsbookSubdiscipline.widget.js?v=0eN63JXlgxlluqC2ZwYdfY-n1VI8RoYwDRapos9eoEI"></script><script src="https://apuestas.retabet.es/js/modules/htmlContent.widget.js?v=8iumHKsvzpx5Nf4oqTAjAnlt1ASnbTT__lTcL-iNhaA"></script><script src="https://apuestas.retabet.es/js/modules/streaming.section.js?v=K9IXm3CDCeY7V2LPCt0n_uqSLa0Rayyp5b57q8Lt-Xk"></script><script src="https://apuestas.retabet.es/js/modules/streaming.widget.js?v=y6DsDbtcBFroCKpeEqKty8uFmvFPmuNsaRhIDA1X26c"></script><script src="https://apuestas.retabet.es/js/modules/quickGames.widget.js?v=HmlVpIfddkyYOkgAMPcyLlgAY_7yKDdSOXPCbhmoEUc"></script><script src="https://apuestas.retabet.es/js/modules/betslip.section.js?v=z8ZXs2UbkTieIdWwvbUghWXHPhqVQSkkTU8T2S1_Moc"></script><script src="https://apuestas.retabet.es/js/modules/userBets.section.js?v=5RFWZowPD2P-Yt41H4kksEoERfQYRWC8L4gfmBKS6TM"></script><script src="https://apuestas.retabet.es/js/modules/searcher.section.js?v=u_iuzCffABACpNOUqQuIv5nH1YJEH72wMOFJqu5etGU"></script><script src="https://apuestas.retabet.es/js/modules/cookieConfigMessage.section.js?v=LVC4IzO-Axa8gi9eaU57o5RGb6rsfEXO4F-DbgtcJME"></script><script src="https://apuestas.retabet.es/js/modules/casinoMessage.section.js?v=i5QENHiJ4mx5hJwYbRxUCOoX2q05PcIXDfGpWKa3jn0"></script><script src="https://apuestas.retabet.es/js/modules/footer.section.js?v=5czERWbmkzVlFPzd-dkWtxxyIaPG-f9BY6lDUNjSa4Q"></script><script src="https://apuestas.retabet.es/js/modules/chatBot2.section.js?v=s9oOooRpgzKYSKvD-51O4Yq7wPFBTEkKjN67mm4aIf0"></script><link rel="stylesheet" href="https://www.retabet.es/css/cookiemodal.css">
+<div class="modal__cookies-allow jckModal" data-ckt="1" data-ckna="ac" data-ckvl="{ &quot;t&quot;: true, &quot;a&quot;: true, &quot;c&quot;: true }" data-ckexp="365" data-ckd=".retabet.es" data-ln="es-ES">
+    <p>
+        Utilizamos cookies propias y de terceros para analizar nuestros servicios y mostrarte anuncios basados en tus intereses. Puedes obtener más información, configurarlas o rechazar su uso pulsando <a class="jconf modal__cookies-allow__link-config" data-d="https://www.retabet.es/">AQUÍ</a>.
+    </p>
+    <div class="banner__cookies-botones">
+            <button class="btn btn__secondary jreject">
+                Rechazar
+            </button>
+       <button class="btn btn__secondary jaccept">
+           Aceptar
+       </button>
+    </div>
+</div><script src="https://static.xenioo.com/webchat/xenioowebchat.js" data-id="xenioo" data-node="app02"></script></body></html>
+
 """
-import re
 from parsel import Selector
+import re
+import dateparser
 import json
-from difflib import SequenceMatcher
-response = Selector(response)
-from parsing_logic import parse_match as pm_logic
+import ast
+import datetime
+import traceback
+import pytz
+from bookies_configurations import list_of_markets_V2
+
 html_cleaner = re.compile("<.*?>")
 
-list_of_markets = ["¿Quién ganará el partido?", "Más/Menos Goles", "¿Resultado exacto?"]
-# list_of_markets = ["Línea de Juego", "Total Puntos - Adicional (Incluida Prórroga)"]
-# list_of_markets = ["1-2", "Más de / Menos de"]
-
-
-selection_keys = response.xpath("//div[@class='parent-container-event open']").extract()
-odds = []
-for selection_key in selection_keys:
-    selection_key = selection_key.replace("  ", "").replace("\n", "").replace("...", "")
-    clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
-    clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) > 2]
-    print(clean_selection_keys)
-    for selection_key02 in clean_selection_keys:
-        if clean_selection_keys[0] in list_of_markets:
-            market = clean_selection_keys[0]
-        else:
-            market = "empty"
-            continue
-        if (
-            (
-                re.search('[a-zA-Z]', selection_key02) is not None
-                or ":" in selection_key02
-            )
-            and "¿" not in selection_key02
-            and market in list_of_markets
-        ):
-            result = selection_key02
-        elif (
-            re.search('[a-zA-Z]', selection_key02) is None
-            and market in list_of_markets
-        ):
-            odd = selection_key02
-        try:
+response = Selector(response)
+sport = "Football"
+match_infos = []
+list_of_markets = list_of_markets_V2["RetaBet"]["1"]
+print("list_of_markets", list_of_markets)
+html_cleaner = re.compile("<.*?>")
+try:
+    selection_keys = response.xpath("//div[@class='bets__wrapper jbgroup jgroup']").extract()
+    odds = []
+    for selection_key in selection_keys:
+        selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t",
+                                                                                                    "")
+        clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
+        clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
+        # print(clean_selection_keys)
+        for selection_key02 in clean_selection_keys:
+            if clean_selection_keys[0] in list_of_markets:
+                market = clean_selection_keys[0]
+            else:
+                market = "empty"
             if (
-                market in list_of_markets
-                and result != "empty"
-                and odd != "empty"
+                selection_key02 != market
+                and market in list_of_markets
+                and re.search('[a-zA-Z]', selection_key02) is not None
+                or "-" in selection_key02
+                or "1" == selection_key02
+                or "2" == selection_key02
             ):
-                if market == "¿Resultado exacto?":
-                    result = result.replace(response.meta.get("home_team"), "").replace(response.meta.get("away_team"), "")
-                odds.append({"Market": market, "Result": result, "Odds": odd})
-                result = "empty"
+                result = selection_key02
                 odd = "empty"
-        except UnboundLocalError as e:
-            pass
-        except NameError:
-            pass
-print(odds)
+            elif (
+                re.search("[a-zA-Z]", selection_key02) is None
+                and "-" not in selection_key02
+                and "+" not in selection_key02
+                and "," in selection_key02
+                and market in list_of_markets
+            ):
+                odd = selection_key02
+            try:
+                if (
+                    market in list_of_markets
+                    and result != "empty"
+                    and odd != "empty"
+                ):
+                    odds.append({"Market": market, "Result": result, "Odds": odd})
+                    result = "empty"
+                    odd = "empty"
+            except UnboundLocalError:
+                pass
+            except NameError:
+                pass
+except:
+    pass
+print('odds', odds)

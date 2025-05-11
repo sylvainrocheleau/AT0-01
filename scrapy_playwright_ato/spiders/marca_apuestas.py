@@ -1,6 +1,7 @@
 import scrapy
 import random
 import re
+import os
 import requests
 from ..items import ScrapersItem
 from ..settings import proxy_prefix, proxy_suffix
@@ -9,7 +10,7 @@ from ..bookies_configurations import get_context_infos, bookie_config, normalize
 # This spider is not updated to V2, because it needs to make a third request to get Resultado Exacto.
 # Cliking on Resultado Exacto did not work, because for some odd reasons, when using Playwright, a match page is redirected
 # to its comp page. The JS script ending with 'desktop/js/jquery-3.6.0.min.js' is responsible for redirection, but it
-# is alson the script that makes Resultado Exacto clickable.
+# is also the script that makes Resultado Exacto clickable.
 
 class TwoStepsSpider(scrapy.Spider):
     name = "MarcaApuestas"
@@ -18,7 +19,7 @@ class TwoStepsSpider(scrapy.Spider):
     proxy_ip = str
     user_agent_hash = int
     header = {'Accept': '*/*', 'Connection': 'keep-alive', 'User-Agent': '', 'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'es-ES;q=0.5,en;q=0.3', 'Cache-Control': 'max-age=0', 'DNT': '1', 'Upgrade-Insecure-Requests': '1', 'Referer': 'https://google.com', 'Pragma': 'no-cache'}
-
+    custom_settings = {"REDIRECT_ENABLED": True}
     def start_requests(self):
         context_infos = get_context_infos(bookie_name=self.name)
         self.context_infos = [x for x in context_infos if x["proxy_ip"] not in []]
@@ -96,15 +97,23 @@ class TwoStepsSpider(scrapy.Spider):
             try:
                 if market.css('span.mkt-name::text').get() is not None:
                     market_name = market.css('span.mkt-name::text').get().strip()
+                    # print("market_name", market_name)
+                # else:
+                    # print("else market", market_name)
 
                 if market_name in response.meta.get("list_of_markets"):
+                    # print("market in list", market_name)
                     if market_name == "Línea de Juego" and response.meta.get("sport") == "Basketball":
+
                         for bet in market.css('tbody').css('tr'):
+                            # print("bet", bet)
                             result = bet.css('div.team-name').css('a::text').get().strip()
                             odd = bet.css('td.mkt-sort')[-1].css('span.price.dec::text').get().strip()
                             odds.append({'Market': market_name, 'Result': result, 'Odds': odd})
                     else:
+
                         for bet in market.css('button[name="add-to-slip"]'):
+                            # print("else bet", bet)
                             if (
                                 "Total" in market_name
                                 and bet.css('span.seln-name::text').get() is not None
@@ -126,6 +135,7 @@ class TwoStepsSpider(scrapy.Spider):
                                 odd = float(bet.css('span.price.dec::text').get())
                                 odds.append({"Market": market_name, "Result": result, "Odds": odd})
             except Exception as e:
+                # print("error", e)
                 continue
         if response.meta.get("sport") == "Football":
             response_xpath = response.xpath(
@@ -160,7 +170,8 @@ class TwoStepsSpider(scrapy.Spider):
                             },
                         )
                     except Exception as e:
-                        print(e)
+                        continue
+                        # print("error", e)
         else:
             item["Bets"] = normalize_odds_variables(
                 odds, response.meta.get("sport"), item["Home_Team"], item["Away_Team"]
@@ -202,13 +213,33 @@ class TwoStepsSpider(scrapy.Spider):
         item["Sport"] = response.meta.get("sport")
         item["Competition"] = response.meta.get("competition")
         item["Competition_Url"] = response.meta.get("competition_url")
-        item["Sport_Url"] = response.meta.get("sport_url")
+        # item["Sport_Url"] = response.meta.get("sport_url")
         item["Bets"] = normalize_odds_variables(
             response.meta.get("odds"), response.meta.get("sport"),
             response.meta.get("home_team"), response.meta.get("away_team")
         )
         yield item
 
+    def raw_html(self, response):
+        try:
+            print("### TEST OUTPUT")
+            print("Headers", response.headers)
+            # print(response.text)
+            print("Proxy_ip", self.proxy_ip)
+            parent = os.path.dirname(os.getcwd())
+            with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/" + self.name + "_response" + ".txt", "w") as f:
+                f.write(response.text) # response.meta["playwright_page"]
+            # print("custom setting", self.custom_settings)
+            # print(response.meta["playwright_page"])
+        except Exception as e:
+            print(e)
+
     def closed(self, reason):
-        # Step 3: Send a post request to notify the webhook that the spider has run
-        requests.post("https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
+        # try:
+        #     if os.environ.get("USER") == "sylvain":
+        #         pass
+        # except Exception as e:
+        #     requests.post(
+        #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
+        requests.post(
+            "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
