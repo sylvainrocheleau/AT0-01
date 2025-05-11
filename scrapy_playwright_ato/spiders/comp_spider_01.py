@@ -11,7 +11,7 @@ from scrapy.exceptions import CloseSpider
 from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError, TimeoutError, TCPTimedOutError
 from ..items import ScrapersItem
-from ..settings import get_custom_playwright_settings
+from ..settings import get_custom_playwright_settings, LOCAL_USERS
 from ..bookies_configurations import get_context_infos, bookie_config
 from ..parsing_logic import parse_competition
 from ..utilities import Helpers
@@ -44,7 +44,7 @@ class TwoStepsSpider(scrapy.Spider):
         context_infos = get_context_infos(bookie_name=["all_bookies"])
         # FILTER BY BOOKIE AND COMPETITION
         try:
-            if os.environ["USER"] == "sylvain":
+            if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
                 # No filters
                 # competitions = bookie_config(bookie=["all_bookies"])

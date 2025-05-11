@@ -7,7 +7,7 @@ import re
 import requests
 from difflib import SequenceMatcher
 # from pymongo import MongoClient
-# from scrapy_playwright_ato.settings import SYSTEM_VERSION
+from scrapy_playwright_ato.settings import LOCAL_USERS
 from scrapy_playwright_ato.utilities import Connect, Helpers
 
 
@@ -390,10 +390,10 @@ def bookie_config(bookie):
             print(e)
             pass
         try:
-            if os.environ["USER"] == "sylvain":
+            if os.environ["USER"] in LOCAL_USERS:
                 # data = data.iloc[0:1]
                 data = data
-                data = data.loc[data["competition"] == "Bundesliga Alemana"] # CONMEBOL - Copa Libertadores
+                data = data.loc[data["competition"] == "NBA"] # CONMEBOL - Copa Libertadores
                 # FOOTBALL: UEFA Champions League, Serie A Italiana, Premier League Inglesa, La Liga Española, Bundesliga Alemana, Eurocopa 2024,
                 #           Argentina - Primera división, España - Segunda división
                 # Basketball: NBA, Liga ACB
@@ -1238,8 +1238,8 @@ if __name__ == "__main__":
     # get_context_infos("WilliamHill")
     # normalize_odds_variables()
     try:
-        if os.environ["USER"] == "sylvain":
+        if os.environ["USER"] in LOCAL_USERS:
             SYSTEM_VERSION = "V1"
-            print(bookie_config("Luckia"))
+            print(bookie_config("Bwin"))
     except:
         pass

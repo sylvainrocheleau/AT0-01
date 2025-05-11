@@ -7,7 +7,7 @@ import time
 import traceback
 # from scrapy.exceptions import CloseSpider
 from ..items import ScrapersItem
-from ..settings import ALL_SPORTS_API_KEY
+from ..settings import ALL_SPORTS_API_KEY, LOCAL_USERS
 from ..bookies_configurations import bookie_config
 from ..utilities import Helpers, Connect
 
@@ -33,7 +33,7 @@ class APISpider(scrapy.Spider):
     def start_requests(self):
         # FILTERS
         try:
-            if os.environ["USER"] == "sylvain":
+            if os.environ["USER"] in LOCAL_USERS:
                 # No filters
                 # list_of_competitions = bookie_config(bookie=["AllSportAPI"])
                 # Filter by competition

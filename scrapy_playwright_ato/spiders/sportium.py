@@ -16,20 +16,20 @@ from ..items import ScrapersItem
 from ..parsing_logic import parse_competition, parse_match
 from ..bookies_configurations import normalize_odds_variables, bookie_config, list_of_markets_V2, get_context_infos
 from ..utilities import Helpers
-from ..settings import proxy_prefix_http, proxy_suffix
+from ..settings import proxy_prefix_http, proxy_suffix, LOCAL_USERS
 
 
 class WebsocketsSpider(Spider):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         try:
-            if os.environ["USER"] == "sylvain":
+            if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                # self.competitions = [x for x in bookie_config(bookie=["Sportium"]) if x["competition_id"] == "UEFAChampionsLeague"]
-                # self.match_filter = {"type": "bookie_and_comp", "params": ["Sportium", "UEFAChampionsLeague"]}
+                self.competitions = [x for x in bookie_config(bookie=["Sportium"]) if x["competition_id"] == "UEFAChampionsLeague"]
+                self.match_filter = {"type": "bookie_and_comp", "params": ["Sportium", "UEFAChampionsLeague"]}
 
-                self.competitions = bookie_config(bookie=["Sportium"])
-                self.match_filter = {"type": "bookie_id", "params": ["Sportium"]}
+                # self.competitions = bookie_config(bookie=["Sportium"])
+                # self.match_filter = {"type": "bookie_id", "params": ["Sportium"]}
         except:
             self.competitions = bookie_config(bookie=["Sportium"])
             self.match_filter = {"type": "bookie_id", "params": ["Sportium"]}
@@ -210,7 +210,7 @@ destination:/api/events/{match_id}
         # item = ScrapersItem()
         try:
             try:
-                if os.environ["USER"] == "sylvain":
+                if os.environ["USER"] in LOCAL_USERS:
                     self.debug = True
             except:
                 pass

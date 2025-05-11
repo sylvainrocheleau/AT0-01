@@ -12,7 +12,7 @@ from scrapy import Spider
 from ..items import ScrapersItem
 from ..bookies_configurations import normalize_odds_variables, bookie_config, get_context_infos, list_of_markets_V2
 from ..parsing_logic import parse_competition, parse_match
-from ..settings import proxy_prefix_http, proxy_suffix
+from ..settings import proxy_prefix_http, proxy_suffix, LOCAL_USERS
 from ..utilities import Helpers
 
 
@@ -25,7 +25,7 @@ class WebsocketsSpider(Spider):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         try:
-            if os.environ["USER"] == "sylvain":
+            if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
                 # self.competitions = [x for x in bookie_config(bookie=["Betsson"]) if x["competition_id"] == "UEFAChampionsLeague"]
                 # self.match_filter = {"type": "bookie_and_comp", "params": ["Betsson", "UEFAChampionsLeague"]}
@@ -181,7 +181,7 @@ class WebsocketsSpider(Spider):
 
     async def parse_match(self, response):
         try:
-            if os.environ["USER"] == "sylvain":
+            if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
         except:
             pass

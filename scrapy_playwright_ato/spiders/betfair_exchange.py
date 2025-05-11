@@ -11,7 +11,7 @@ import signal
 import traceback
 from scrapy.exceptions import CloseSpider
 from ..items import ScrapersItem
-from ..settings import proxy_prefix, proxy_suffix
+from ..settings import proxy_prefix, proxy_suffix, LOCAL_USERS
 from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables, list_of_markets_V2
 from ..utilities import Helpers, Connect
 
@@ -54,7 +54,7 @@ class TwoStepsJsonSpider(scrapy.Spider):
         self.context_infos = [x for x in context_infos if x["proxy_ip"] not in []]
         try:
 
-            if os.environ["USER"] == "sylvain":
+            if os.environ["USER"] in LOCAL_USERS:
                 # NO FILTERS
                 pass
                 # FILTER BY COMPETITION

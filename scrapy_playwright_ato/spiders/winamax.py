@@ -12,7 +12,7 @@ from scrapy_playwright.page import PageMethod
 from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError, TimeoutError
 from ..items import ScrapersItem
-from ..settings import get_custom_playwright_settings, soltia_user_name, soltia_password
+from ..settings import get_custom_playwright_settings, soltia_user_name, soltia_password, LOCAL_USERS
 from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables, list_of_markets_V2
 
 
@@ -45,7 +45,7 @@ class TwoStepsSpider(scrapy.Spider):
     found_no_matches_count = {}
     found_no_odds_count = {}
     try:
-        if os.environ["USER"] == "sylvain":
+        if os.environ["USER"] in LOCAL_USERS:
             debug = True
     except:
         debug = False

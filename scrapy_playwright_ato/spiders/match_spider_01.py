@@ -6,7 +6,7 @@ from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeo
 from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError, TimeoutError, TCPTimedOutError
 from ..items import ScrapersItem
-from ..settings import get_custom_playwright_settings
+from ..settings import get_custom_playwright_settings, LOCAL_USERS
 from ..bookies_configurations import get_context_infos, normalize_odds_variables, list_of_markets_V2
 from ..parsing_logic import parse_match as parse_match_logic
 from ..utilities import Helpers
@@ -18,7 +18,7 @@ class MetaSpider(scrapy.Spider):
     custom_settings = get_custom_playwright_settings(browser="Chrome", rotate_headers=False)
     custom_settings.update({"CONCURRENT_REQUESTS_PER_DOMAIN": 2, })
     try:
-        if os.environ["USER"] == "sylvain":
+        if os.environ["USER"] in LOCAL_USERS:
             debug = True
             match_filter_enabled = True
     except:

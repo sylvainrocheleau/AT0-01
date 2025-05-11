@@ -5,13 +5,14 @@ import dateparser
 import pytz
 import traceback
 from scrapy_playwright_ato.utilities import Connect, Helpers
+from scrapy_playwright_ato.settings import LOCAL_USERS
 
 
 
 class ScrapersPipeline:
     # overwrite
     try:
-        if os.environ["USER"] == "sylvain":
+        if os.environ["USER"] in LOCAL_USERS:
             f = open("demo_data.txt", "w")
     except:
         pass
@@ -571,7 +572,7 @@ class ScrapersPipeline:
             if "data_dict" in item.keys():
                 del item["data_dict"]
             try:
-                if os.environ["USER"] == "sylvain":
+                if os.environ["USER"] in LOCAL_USERS:
                     # print("data")
                     f = open("demo_data.txt", "a")
                     f.write(str(item))
@@ -586,7 +587,7 @@ class ScrapersPipeline:
                 del item["data_dict"]
             # item["updated_on"] = datetime.datetime.now(tz=datetime.timezone.utc).replace(microsecond=0).replace(tzinfo=None)
             try:
-                if os.environ["USER"] == "sylvain":
+                if os.environ["USER"] in LOCAL_USERS:
                     # print("data")
                     f = open("demo_data.txt", "a")
                     f.write(str(item))

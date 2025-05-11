@@ -31,10 +31,11 @@ ITEM_PIPELINES = {
 
 # ATO settings
 ###################
+LOCAL_USERS = ["sylvain","rickiel"]
 try:
-    if os.environ["USER"] == "sylvain":
-        TEST_ENV = "server"
-        # TEST_ENV = "local"
+    if os.environ["USER"] in LOCAL_USERS:
+        # TEST_ENV = "server"
+        TEST_ENV = "local"
         PLAYWRIGHT_HEADLESS = False
 except KeyError:
     TEST_ENV = "server"
