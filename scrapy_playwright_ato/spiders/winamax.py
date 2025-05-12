@@ -17,6 +17,13 @@ from ..bookies_configurations import get_context_infos, bookie_config, normalize
 
 
 class TwoStepsSpider(scrapy.Spider):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            if os.environ["USER"] in LOCAL_USERS:
+                self.debug = True
+        except:
+            self.debug = False
     name = "WinaMax"
     proxy_ip = str
     user_agent_hash = int
@@ -44,13 +51,9 @@ class TwoStepsSpider(scrapy.Spider):
     match_infos = {}
     found_no_matches_count = {}
     found_no_odds_count = {}
-    try:
-        if os.environ["USER"] in LOCAL_USERS:
-            debug = True
-    except:
-        debug = False
 
     def start_requests(self):
+
         if self.debug:
             print("### opening file response_body_match_requests.txt")
             f = open("response_body_match_requests.txt", "w")
@@ -214,10 +217,10 @@ class TwoStepsSpider(scrapy.Spider):
         # page.on("request", on_request)
         # await page.route("**/*", on_request)
         page.on("response", on_response)
-        # await page.route(
-        #     "**/*",
-        #     lambda route: route.abort() if self.should_block_request(route.request) else route.continue_()
-        # )
+        await page.route(
+            "**/*",
+            lambda route: route.abort() if self.should_block_request(route.request) else route.continue_()
+        )
         await page.reload()
 
         if len(self.match_infos[competition_url]) > 0:
@@ -268,7 +271,7 @@ class TwoStepsSpider(scrapy.Spider):
                     ]
                 )
 
-                # if "https://www.winamax.es/apuestas-deportivas/match/59805730" == match_info["url"]:
+                # if "https://www.winamax.es/apuestas-deportivas/match/51103775" == match_info["url"]:
                 try:
                     yield scrapy.Request(
                         url=match_info["url"],
@@ -316,12 +319,15 @@ class TwoStepsSpider(scrapy.Spider):
                                     for key, value in matches["bets"].items():
                                         if value["betTitle"] in list_of_markets_V2[self.name][sport_id]:
                                             market = value["betTitle"]
+                                            if market == "Resultado":
+                                                market = "Match Result"
                                             for outcome in value["outcomes"]:
                                                 odd = matches["odds"][str(outcome)]
                                                 result = matches["outcomes"][str(outcome)]["label"]
                                                 if str(result) not in self.results[match_url]:
                                                     self.results[match_url].append(str(result))
                                                     self.odds[match_url].append({"Market": market, "Result": result, "Odds": odd})
+
                     else:
                         if self.debug:
                             f = open("response_body_parse_match.txt", "a")
@@ -371,11 +377,9 @@ class TwoStepsSpider(scrapy.Spider):
             lambda route: route.abort() if self.should_block_request(route.request) else route.continue_()
         )
         await page.reload()
-
-        await asyncio.sleep(15)
-
-        print(f"Waiting for 15 seconds for {match_url}")
-        await asyncio.sleep(15)
+        if len(self.odds[match_url]) < 0:
+            await asyncio.sleep(15)
+            print(f"Waiting for 15 seconds for {match_url}")
 
         if len(self.odds[match_url]) > 0:
             f = open("response_body_parse_match.txt", "a")
