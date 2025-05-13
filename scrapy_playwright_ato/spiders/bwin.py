@@ -45,6 +45,7 @@ class TwoStepsSpider(scrapy.Spider):
                 yield scrapy.Request(
                     url=data["url"],
                     callback=self.match_requests,
+                    #callback=self.raw_html,
                     meta=dict(
                         sport= data["sport"],
                         competition = data["competition"],
@@ -116,7 +117,7 @@ class TwoStepsSpider(scrapy.Spider):
 
         await page.close()
         await page.context.close()
-        # print("Match_infos", match_infos)
+        print("Match_infos", match_infos)
         for match_info in match_infos:
             context_info = random.choice([x for x in self.context_infos if x["cookies"] is not None])
             # self.match_url = match_info["url"]
@@ -174,16 +175,17 @@ class TwoStepsSpider(scrapy.Spider):
                 )
                 )
 
-            if "https://sports.bwin.es/es/sports/eventos/granada-eibar-2:7609147" == match_info["url"]:
-                try:
-                    yield scrapy.Request(
-                        url=match_info["url"],
-                        callback=self.raw_html,
-                        meta=params,
-                        errback=self.errback,
-                    )
-                except PlaywrightTimeoutError:
-                    continue
+            #if "https://sports.bwin.es/es/sports/eventos/granada-eibar-2:7609147" == match_info["url"]:
+            try:
+                yield scrapy.Request(
+                    url=match_info["url"],
+                    callback=self.parse_match,
+                    #callback=self.raw_html,
+                    meta=params,
+                    errback=self.errback,
+                )
+            except PlaywrightTimeoutError:
+                continue
 
     async def parse_match(self, response):
         page = response.meta["playwright_page"]
