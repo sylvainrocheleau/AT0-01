@@ -117,7 +117,8 @@ class TwoStepsSpider(scrapy.Spider):
 
         await page.close()
         await page.context.close()
-        print("Match_infos", match_infos)
+        #njenjevndfvfj
+        # print("Match_infos", match_infos)
         for match_info in match_infos:
             context_info = random.choice([x for x in self.context_infos if x["cookies"] is not None])
             # self.match_url = match_info["url"]
