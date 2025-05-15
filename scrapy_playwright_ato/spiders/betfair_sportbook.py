@@ -7,15 +7,23 @@ import time
 import os
 import dateparser
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
+from scrapy_playwright.page import PageMethod
 from parsel import Selector
 from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError, TimeoutError
 from ..items import ScrapersItem
-from ..settings import get_custom_playwright_settings, soltia_user_name, soltia_password
+from ..settings import get_custom_playwright_settings, soltia_user_name, soltia_password, LOCAL_USERS
 from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables
 
 
 class TwoStepsSpider(scrapy.Spider):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            if os.environ["USER"] in LOCAL_USERS:
+                self.debug = True
+        except:
+            self.debug = False
     name = "BetfairSportsbook"
     match_url = str
     comp_url = str
@@ -59,10 +67,18 @@ class TwoStepsSpider(scrapy.Spider):
                         #     "cookies": self.cookies,
                         # },
                     },
+
                     playwright_accept_request_predicate = {
                         'activate': True,
                         # 'position': 1
                     },
+                    # playwright_page_methods=[
+                    #     PageMethod(
+                    #         method="wait_for_timeout",
+                    #         timeout=5000,
+                    #
+                    #     ),
+                    # ],
             ),
             )
 
@@ -70,8 +86,7 @@ class TwoStepsSpider(scrapy.Spider):
         page = response.meta["playwright_page"]
         if response.url not in ["https://www.betfair.es/sport/basketball", "https://www.betfair.es/sport/football"]:
             html_cleaner = re.compile("<.*?>")
-            xpath_results = response.xpath(
-                "//li[contains(@class, 'com-coupon-line-new-layout betbutton-layout avb-row avb-table market-avb')]").extract()
+            xpath_results = response.xpath("//div[contains(@class, 'event-information ui-event')]").extract()
             match_infos = []
             for xpath_result in xpath_results:
                 # print(xpath_result)
@@ -79,8 +94,7 @@ class TwoStepsSpider(scrapy.Spider):
                     xpath_result = Selector(xpath_result)
                     home_team = xpath_result.xpath("//span[@class='team-name']//@title").extract()[0].replace("@ ", "")
                     away_team = xpath_result.xpath("//span[@class='team-name']//@title").extract()[1].replace("@ ", "")
-                    url = xpath_result.xpath(
-                        "//a[@class=\"ui-nav markets-number-arrow ui-top event-link ui-gtm-click\"]/@href").extract()[0]
+                    url = xpath_result.xpath("//a[@class='ui-nav event-team-container ui-top event-link ui-gtm-click']/@href").extract()[0]
                     date = xpath_result.xpath("//span[@class='date ui-countdown']").extract()[0]
                     date = re.sub(html_cleaner, "", date)
                     date = dateparser.parse(''.join(date))
@@ -226,7 +240,6 @@ class TwoStepsSpider(scrapy.Spider):
             item["Sport"] = response.meta.get("sport")
             item["Competition"] = response.meta.get("competition")
             item["Date"] = response.meta.get("start_date")
-            item["date_confidence"] = 2
             item["Match_Url"] = response.meta.get("match_url")
             item["Competition_Url"] = response.meta.get("competition_url")
             item["proxy_ip"] = self.proxy_ip
@@ -311,12 +324,9 @@ class TwoStepsSpider(scrapy.Spider):
         yield item
 
     def closed(self, reason):
-        # try:
-        #     if os.environ.get("USER") == "sylvain":
-        #         pass
-        # except Exception as e:
-        #     requests.post(
-        #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
-        requests.post(
-            "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
+        if self.debug is True:
+            pass
+        else:
+            requests.post(
+                "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
 
