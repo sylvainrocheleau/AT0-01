@@ -12,6 +12,13 @@ from ..bookies_configurations import bookie_config
 from ..utilities import Helpers, Connect
 
 class APISpider(scrapy.Spider):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            if os.environ["USER"] in LOCAL_USERS:
+                self.debug = True
+        except:
+            self.debug = False
     name = "AllSportAPI"
     number_of_runs = 0
     pipeline_type = ["teams", "matches", "delete_matches"]  # "normalize_teams"
@@ -37,7 +44,7 @@ class APISpider(scrapy.Spider):
                 # No filters
                 # list_of_competitions = bookie_config(bookie=["AllSportAPI"])
                 # Filter by competition
-                list_of_competitions = [x for x in bookie_config(bookie=["AllSportAPI"]) if x["competition_id"] == "NBA"]
+                list_of_competitions = [x for x in bookie_config(bookie=["AllSportAPI"]) if x["competition_id"] == "PremierLeagueInglesa"]
                 pass
         except:
             list_of_competitions = bookie_config(bookie=["AllSportAPI"])
@@ -47,6 +54,7 @@ class APISpider(scrapy.Spider):
             self.data_dict = {}
             try:
                 url = f"https://allsportsapi2.p.rapidapi.com/api/tournament/{tournament_id}/season/{season_id}/matches/next/{str(self.page_count)}"
+                # TODO add a function get all teams, see get_all_teams_for_competition
                 yield scrapy.Request(
                     url=url,
                     callback=self.parse,
@@ -79,6 +87,8 @@ class APISpider(scrapy.Spider):
             cursor.close()
             connection.close()
         except Exception as e:
+            if self.debug:
+                print("error from response", response.text)
             jsonresponse = {}
             print("parsing error", e, "on", response.meta.get("competition_id"))
             Helpers().insert_log(level="CRITICIAL", type="CODE", error=response.meta.get("competition_id"), message=traceback.format_exc())
