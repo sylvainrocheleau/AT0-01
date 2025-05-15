@@ -1,14 +1,18 @@
+import random
 import scrapy
 import re
 import requests
 import datetime
 import os
+import json
 import dateparser
+from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 from parsel import Selector
 from scrapy.spidermiddlewares.httperror import HttpError
+from scrapy_playwright.page import PageMethod
 from twisted.internet.error import DNSLookupError, TimeoutError
 from ..items import ScrapersItem
-from ..bookies_configurations import bookie_config, normalize_odds_variables
+from ..bookies_configurations import bookie_config, normalize_odds_variables, get_context_infos
 
 
 
@@ -18,55 +22,62 @@ class TwoStepsSpider(scrapy.Spider):
     match_url = str
     comp_url = str
     custom_settings = {
-        "DOWNLOAD_HANDLERS": {
-            "http": "scrapy_zyte_api.ScrapyZyteAPIDownloadHandler",
-            "https": "scrapy_zyte_api.ScrapyZyteAPIDownloadHandler",
-    },
-        "DOWNLOADER_MIDDLEWARES": {
-            "scrapy_zyte_api.ScrapyZyteAPIDownloaderMiddleware": 1000,
-        },
-        "SPIDER_MIDDLEWARES": {
-            "scrapy_zyte_api.ScrapyZyteAPISpiderMiddleware": 100,
-        },
-        "REQUEST_FINGERPRINTER_CLASS": "scrapy_zyte_api.ScrapyZyteAPIRequestFingerprinter",
-        "TWISTED_REACTOR": "twisted.internet.asyncioreactor.AsyncioSelectorReactor",
-        "ZYTE_API_TRANSPARENT_MODE": True,
-        "ZYTE_API_KEY": "0ef225b8366548fb84767f6bf5e74653",
-        "CONCURRENT_REQUESTS_PER_DOMAIN": 5,
+        "COOKIES_ENABLED": False,
     }
 
+
     def start_requests(self):
+        context_infos = get_context_infos(bookie_name=self.name)
+        self.context_infos = [x for x in context_infos if x["proxy_ip"]]
         for data in bookie_config(self.name):
             if len(data["url"]) < 5:
                 continue
-            self.comp_url=data["url"]
-            yield scrapy.Request(
-                url=data["url"],
-                callback=self.match_requests,
-                errback=self.errback,
-                meta={
-                    "sport" : data["sport"],
-                    "competition" : data["competition"],
-                    "list_of_markets" : data["list_of_markets"],
-                    "competition_url" : data["url"],
-                    "zyte_api_automap": {
-                        "geolocation": "ES",
-                        "browserHtml": True,
-                        "actions":[
-                            {
-                              "action": "waitForSelector",
-                              "selector": {
-                                  "type": "xpath",
-                                  "value": "//article[@class='module__list-events']",
-                                  "state": "visible",
-                              }
-                            }
-                        ]
-                    },
-                },
-            )
+            context_info = random.choice([x for x in self.context_infos])
+            self.proxy_ip = context_info["proxy_ip"]
+            # self.comp_url=data["url"]
+            #self.cookies = json.loads(context_info["cookies"])
+            try:
+                yield scrapy.Request(
+                    url=data["url"],
+                    callback=self.raw_html,
+                    meta=dict(
+                        sport=data["sport"],
+                        competition=data["competition"],
+                        list_of_markets=data["list_of_markets"],
+                        competition_url=data["url"],
+                        playwright=True,
+                        playwright_include_page=True,
+                        playwright_context=data["url"],
+                        playwright_page_methods=[
+                            PageMethod(
+                                method="wait_for_selector",
+                                selector="//article[@class='module__list-events']",
+                            ),
+                        ],
+
+                        playwright_context_kwargs={
+                            "user_agent": context_info["user_agent"],
+                            "java_script_enabled": True,
+                            "ignore_https_errors": True,
+                            "proxy": {
+                                "server": "http://" + context_info["proxy_ip"] + ":58542/",
+                                "username": "",
+                                "password": "",
+                            },
+                            # {"storage_state": {"cookies": json.loads(data["cookies"])}}
+                        },
+                        playwright_accept_request_predicate={
+                            'activate': True,
+                        },
+                ),
+                    errback=self.errback,
+                )
+            except PlaywrightTimeoutError:
+                continue
 
     async def match_requests(self,response):
+        page = response.meta["playwright_page"]
+
         xpath_results = response.xpath("//li[@class='jlink jev event__item']").extract()
         match_infos = []
         for xpath_result in xpath_results:
@@ -209,7 +220,6 @@ class TwoStepsSpider(scrapy.Spider):
     async def errback(self, failure):
         item = ScrapersItem()
         print("### errback triggered")
-        print("cookies:", self.cookies)
         # print("user_gent_hash", self.user_agent_hash)
         # item["proxy_ip"] = self.proxy_ip
         try:
