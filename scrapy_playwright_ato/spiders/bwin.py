@@ -45,7 +45,7 @@ class TwoStepsSpider(scrapy.Spider):
                 yield scrapy.Request(
                     url=data["url"],
                     callback=self.match_requests,
-                    #callback=self.raw_html,
+                    errback=self.errback,
                     meta=dict(
                         sport= data["sport"],
                         competition = data["competition"],
@@ -54,13 +54,6 @@ class TwoStepsSpider(scrapy.Spider):
                         playwright = True,
                         playwright_include_page = True,
                         playwright_context = data["url"],
-                        playwright_page_methods= [
-                            PageMethod(
-                                method="wait_for_selector",
-                                selector="div.participants-pair-game",
-                            ),
-                        ],
-
                         playwright_context_kwargs = {
                             "user_agent": context_info["user_agent"],
                             "java_script_enabled": True,
@@ -78,8 +71,13 @@ class TwoStepsSpider(scrapy.Spider):
                         playwright_accept_request_predicate = {
                             'activate': True,
                         },
+                        playwright_page_methods=[
+                            PageMethod(
+                                method="wait_for_selector",
+                                selector="div.participants-pair-game",
+                            ),
+                        ],
                 ),
-                    errback=self.errback,
                 )
             except PlaywrightTimeoutError:
                 continue
@@ -117,7 +115,6 @@ class TwoStepsSpider(scrapy.Spider):
 
         await page.close()
         await page.context.close()
-        #njenjevndfvfj
         # print("Match_infos", match_infos)
         for match_info in match_infos:
             context_info = random.choice([x for x in self.context_infos if x["cookies"] is not None])
