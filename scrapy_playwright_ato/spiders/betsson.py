@@ -6,6 +6,7 @@ import random
 import datetime
 import requests
 import scrapy
+import asyncio
 from numpy.random import randint
 from websockets_proxy import Proxy, proxy_connect
 from scrapy import Spider
@@ -27,11 +28,11 @@ class WebsocketsSpider(Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                # self.competitions = [x for x in bookie_config(bookie=["Betsson"]) if x["competition_id"] == "UEFAChampionsLeague"]
-                # self.match_filter = {"type": "bookie_and_comp", "params": ["Betsson", "UEFAChampionsLeague"]}
+                self.competitions = [x for x in bookie_config(bookie=["Betsson"]) if x["competition_id"] == "PremierLeagueInglesa"]
+                self.match_filter = {"type": "bookie_and_comp", "params": ["Betsson", "PremierLeagueInglesa"]}
 
-                self.competitions = bookie_config(bookie=["Betsson"])
-                self.match_filter = {"type": "bookie_id", "params": ["Betsson"]}
+                # self.competitions = bookie_config(bookie=["Betsson"])
+                # self.match_filter = {"type": "bookie_id", "params": ["Betsson"]}
         except:
             self.competitions = bookie_config(bookie=["Betsson"])
             self.match_filter = {"type": "bookie_id", "params": ["Betsson"]}
@@ -77,6 +78,19 @@ class WebsocketsSpider(Spider):
                     "sport": {"id": {"@nin": [181]}}}, "subscribe": False},
             "rid": rid},
     }
+    async def keep_alive(self, interval=5):
+        while True:
+            try:
+                if self.ws.closed:
+                    print("WebSocket connection is closed. Exiting keep_alive.")
+                    break
+                await self.ws.send("")
+                # await self.ws.recv()
+                print("PING sent at", datetime.datetime.now())
+                await asyncio.sleep(interval)
+            except Exception as e:
+                print(f"Error in keep_alive: {e}")
+                break
 
     async def parse(self, response):
         item = ScrapersItem()
@@ -86,10 +100,11 @@ class WebsocketsSpider(Spider):
             'wss://eu-swarm-ws-re.betconstruct.com/',
             proxy=proxy,
             user_agent_header=context_info.get("user_agent")
-        ) as ws:
+        ) as self.ws:
+            # keep_alive_task = asyncio.create_task(self.keep_alive())
             for key,values in self.payloads.items():
-                await ws.send(json.dumps(values))
-                await ws.recv()
+                await self.ws.send(json.dumps(values))
+                await self.ws.recv()
 
             for competition in self.competitions:
                 betsson_competition_id = int(competition["competition_url_id"].split("competition=")[1].split("&")[0])
@@ -97,7 +112,7 @@ class WebsocketsSpider(Spider):
                     betsson_sport_id = 1
                 elif competition["sport_id"] == "2":
                     betsson_sport_id = 3
-                await ws.send(json.dumps({
+                await self.ws.send(json.dumps({
                     "command": "get",
                     "params": {
                         "source": "betting",
@@ -114,10 +129,12 @@ class WebsocketsSpider(Spider):
                     "rid": self.rid},
                 )
                 )
-                matches_details = await ws.recv()
+                matches_details = await self.ws.recv()
+                # print("matches_details", matches_details)
                 matches_details = matches_details.replace("null", '0').replace("true", '0').replace("false", '0')
                 matches_details = eval(matches_details)
                 matches_details.update({"betsson_competition_id": betsson_competition_id, "betsson_sport_id": betsson_sport_id})
+
                 # print("matches", matches_details)
                 # url example https://sportsbook.betsson.es/#/sport/?type=0&region=20001&competition=566&sport=1&game=27082038
 
@@ -130,6 +147,7 @@ class WebsocketsSpider(Spider):
                     map_matches_urls=self.map_matches_urls,
                     debug=self.debug
                 )
+                # print("match_infos", match_infos)
                 try:
                     if len(match_infos) > 0:
                         match_infos = Helpers().normalize_team_names(
@@ -150,6 +168,7 @@ class WebsocketsSpider(Spider):
                                     },
                                 ]
                             }
+                            # print("data_dict", item["data_dict"])
                             item["pipeline_type"] = ["match_urls"]
                             yield item
                         else:
@@ -176,8 +195,8 @@ class WebsocketsSpider(Spider):
                 except Exception as e:
                     print(traceback.format_exc())
                     Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
-
-            await ws.close()
+            # keep_alive_task.cancel()
+            await self.ws.close()
 
     async def parse_match(self, response):
         try:
@@ -197,17 +216,18 @@ class WebsocketsSpider(Spider):
             'wss://eu-swarm-ws-re.betconstruct.com/',
             proxy=proxy,
             user_agent_header=context_info.get("user_agent")
-        ) as ws:
+        ) as self.ws:
+            # keep_alive_task = asyncio.create_task(self.keep_alive())
             for key,values in self.payloads.items():
-                await ws.send(json.dumps(values))
-                await ws.recv()
+                await self.ws.send(json.dumps(values))
+                await self.ws.recv()
             for key, value in matches_details_and_urls.items():
                 for data in value:
                     if data["sport_id"] == "1":
                         betsson_sport_id = 1
                     elif data["sport_id"] == "2":
                         betsson_sport_id = 3
-                    await ws.send(json.dumps(
+                    await self.ws.send(json.dumps(
                         {"command": "get",
                          "params": {
                              "source": "betting",
@@ -225,7 +245,7 @@ class WebsocketsSpider(Spider):
                          "rid": self.rid}
                         )
                     )
-                    response_odds = await ws.recv()
+                    response_odds = await self.ws.recv()
 
                     odds = parse_match(
                         bookie_id=data["bookie_id"],
@@ -283,6 +303,8 @@ class WebsocketsSpider(Spider):
 
                         item["pipeline_type"] = ["match_odds"]
                         yield item
+            # keep_alive_task.cancel()
+            await self.ws.close()
 
     def closed(self, reason):
         if self.debug is True:
