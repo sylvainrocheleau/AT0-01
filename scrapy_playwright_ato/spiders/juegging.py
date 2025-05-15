@@ -4,48 +4,38 @@ import re
 import requests
 import dateparser
 import datetime
-# from scrapy_splash import SplashRequest
-# from w3lib.http import basic_auth_header
 from parsel import Selector
-from urllib.parse import urlencode
 from ..items import ScrapersItem
 from ..bookies_configurations import bookie_config, normalize_odds_variables
+from ..settings import LOCAL_USERS
 
-API_KEY = "d3566962-a316-410d-be3d-5b4a24a33a3b"
-
-def get_scrapeops_url(url):
-    payload = {'api_key': API_KEY, 'url': url, 'country': 'es',}
-    proxy_url = 'https://proxy.scrapeops.io/v1/?' + urlencode(payload)
-    return proxy_url
-
-bookie_name = "Juegging"
-list_of_competitions = bookie_config(bookie_name)
 
 class TwoStepsSpider(scrapy.Spider):
-    name = bookie_name
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            if os.environ["USER"] in LOCAL_USERS:
+                self.debug = True
+        except:
+            self.debug = False
+    name = "Juegging"
     custom_settings = {
-        # "DOWNLOAD_DELAY": 5,
-        "DOWNLOAD_TIMEOUT": 120,
-        "DOWNLOAD_DELAY": 0,
-        # "CONCURRENT_REQUESTS": 20,
-        # "CLOSESPIDER_TIMEOUT": 60 * 100,
-        "CONCURRENT_REQUESTS_PER_DOMAIN": 10,
-        "AUTOTHROTTLE_ENABLED": False,
+        "COOKIES_ENABLED": False,
     }
 
     def start_requests(self):
-        for data in list_of_competitions:
+        for data in bookie_config(self.name):
             yield scrapy.Request(
-                url=get_scrapeops_url(data["url"]),
+                url=data["url"],
                 callback=self.match_requests,
                 meta={
+                    "proxy": "http://0ef225b8366548fb84767f6bf5e74653:@api.zyte.com:8011/",
                     "sport": data["sport"],
                     "competition": data["competition"],
                     "list_of_markets": data["list_of_markets"],
                     "competition_url": data["url"],
                 },
             )
-
 
     def match_requests(self,response):
         xpath_results = response.xpath("//div[@class='infoEve']").extract()
@@ -63,13 +53,13 @@ class TwoStepsSpider(scrapy.Spider):
                      "date": date})
             except IndexError:
                 continue
-
         for match_info in match_infos:
             # print("processing", url)
             yield scrapy.Request(
-                url=get_scrapeops_url(match_info["url"]),
+                url=match_info["url"],
                 callback=self.parse_match,
                 meta={
+                    "proxy": "http://0ef225b8366548fb84767f6bf5e74653:@api.zyte.com:8011/",
                     "sport": response.meta.get("sport"),
                     "competition": response.meta.get("competition"),
                     "list_of_markets": response.meta.get("list_of_markets"),
@@ -81,9 +71,7 @@ class TwoStepsSpider(scrapy.Spider):
                 },
             )
 
-
     def parse_match(self, response):
-        # Step 3: Once the page is scraped this function extracts the fields as needed
         html_cleaner = re.compile('<.*?>')
         item = ScrapersItem()
         try:
@@ -258,11 +246,8 @@ class TwoStepsSpider(scrapy.Spider):
             f.write(response.text) # response.meta["playwright_page"]
 
     def closed(self, reason):
-        # try:
-        #     if os.environ.get("USER") == "sylvain":
-        #         pass
-        # except Exception as e:
-        #     requests.post(
-        #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
-        requests.post(
-            "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
+        if self.debug:
+            pass
+        else:
+            requests.post(
+                "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
