@@ -15,13 +15,20 @@ from scrapy.exceptions import CloseSpider
 from twisted.internet.error import DNSLookupError, TimeoutError
 from ..items import ScrapersItem
 from ..settings import get_custom_playwright_settings, soltia_user_name, soltia_password
-from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables
+from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables, LOCAL_USERS
 
 
 
 # list_of_competitions = [random.choice([x for x in list_of_competitions])]
 
 class TwoStepsSpider(scrapy.Spider):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            if os.environ["USER"] in LOCAL_USERS:
+                self.debug = True
+        except:
+            self.debug = False
     name = "DaznBet"
     match_url = str
     comp_url = str
@@ -44,6 +51,7 @@ class TwoStepsSpider(scrapy.Spider):
             try:
                 yield scrapy.Request(
                     url=data["url"].replace("https://www.daznbet.es/es-es/deportes/", "https://sb-pp-esfe.daznbet.es/"),
+                    # url=data["url"],
                     callback=self.match_requests,
                     meta=dict(
                         sport= data["sport"],
@@ -62,9 +70,6 @@ class TwoStepsSpider(scrapy.Spider):
                                 "username": soltia_user_name,
                                 "password": soltia_password,
                             },
-                            # "storage_state" : {
-                            #     "cookies": self.cookies,
-                            # },
                         },
                         playwright_accept_request_predicate = {
                             'activate': True,
@@ -80,7 +85,6 @@ class TwoStepsSpider(scrapy.Spider):
                     errback=self.errback,
                 )
             except PlaywrightTimeoutError:
-                # print("Time out out on ", self.match_url)
                 continue
 
     async def match_requests(self,response):
@@ -370,12 +374,9 @@ class TwoStepsSpider(scrapy.Spider):
         yield item
 
     def closed(self, reason):
-        # try:
-        #     if os.environ.get("USER") == "sylvain":
-        #         pass
-        # except Exception as e:
-        #     requests.post(
-        #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
-        requests.post(
-            "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
+        if self.debug is True:
+            pass
+        else:
+            requests.post(
+                "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
 

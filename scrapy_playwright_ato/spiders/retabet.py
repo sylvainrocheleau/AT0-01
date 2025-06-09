@@ -9,11 +9,18 @@ from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError, TimeoutError
 from ..items import ScrapersItem
 from ..bookies_configurations import bookie_config, normalize_odds_variables
+from ..settings import LOCAL_USERS
 
 
 
 class TwoStepsSpider(scrapy.Spider):
-    from ..bookies_configurations import bookie_config
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            if os.environ["USER"] in LOCAL_USERS:
+                self.debug = True
+        except:
+            self.debug = False
     name = "RetaBet"
     match_url = str
     comp_url = str
@@ -40,6 +47,8 @@ class TwoStepsSpider(scrapy.Spider):
             if len(data["url"]) < 5:
                 continue
             self.comp_url=data["url"]
+            if self.debug is True:
+                print("Requesting competition", data["competition"], "from", self.name, "with url", data["url"])
             yield scrapy.Request(
                 url=data["url"],
                 callback=self.match_requests,
@@ -246,13 +255,10 @@ class TwoStepsSpider(scrapy.Spider):
         yield item
 
     def closed(self, reason):
-        # try:
-        #     if os.environ.get("USER") == "sylvain":
-        #         pass
-        # except Exception as e:
-        #     requests.post(
-        #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
-        requests.post(
-            "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
+        if self.debug is True:
+            pass
+        else:
+            requests.post(
+                "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
 
 

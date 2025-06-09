@@ -21,7 +21,7 @@ class APISpider(scrapy.Spider):
             self.debug = False
     name = "AllSportAPI"
     number_of_runs = 0
-    pipeline_type = ["teams", "matches", "delete_matches"]  # "normalize_teams"
+    pipeline_type = ["teams", "matches"]  # "normalize_teams"
     page_count = 0
     data_dict = {}
 
@@ -44,7 +44,9 @@ class APISpider(scrapy.Spider):
                 # No filters
                 # list_of_competitions = bookie_config(bookie=["AllSportAPI"])
                 # Filter by competition
-                list_of_competitions = [x for x in bookie_config(bookie=["AllSportAPI"]) if x["competition_id"] == "PremierLeagueInglesa"]
+                list_of_competitions = [x for x in bookie_config(bookie=["AllSportAPI"]) if x["competition_id"] == "ATP"]
+                if self.debug:
+                    print("list of competitions", list_of_competitions)
                 pass
         except:
             list_of_competitions = bookie_config(bookie=["AllSportAPI"])
@@ -55,6 +57,8 @@ class APISpider(scrapy.Spider):
             try:
                 url = f"https://allsportsapi2.p.rapidapi.com/api/tournament/{tournament_id}/season/{season_id}/matches/next/{str(self.page_count)}"
                 # TODO add a function get all teams, see get_all_teams_for_competition
+                if self.debug:
+                    print("url", url)
                 yield scrapy.Request(
                     url=url,
                     callback=self.parse,
@@ -95,29 +99,43 @@ class APISpider(scrapy.Spider):
 
         if "events" in jsonresponse:
             for data in jsonresponse["events"]:
-                if data["status"]["type"] == "notstarted":
-                    date = datetime.datetime.fromtimestamp(data["startTimestamp"], tz=datetime.timezone.utc).replace(tzinfo=None)
-                    self.data_dict[data["id"]] = {
-                        "bookie_id": self.name,
-                        "sport_id": response.meta.get("sport_id"),
-                        "competition_id": response.meta.get("competition_id"),
-                        "numerical_team_id": data["id"],
-                        "match_id": Helpers().build_ids(
-                            id_type="match_id",
-                            data=
-                            {
-                                "date": date,
-                                "teams": [data["homeTeam"]["name"], data["awayTeam"]["name"]]
-                            }
-                        ),
-                        "home_team": data["homeTeam"]["name"],
-                        "home_team_id": data["homeTeam"]["id"],
-                        "home_team_short_name": data["homeTeam"]["shortName"],
-                        "away_team": data["awayTeam"]["name"],
-                        "away_team_id": data["awayTeam"]["id"],
-                        "away_team_short_name": data["awayTeam"]["shortName"],
-                        "date": date,
-                    }
+                try:
+                    if data["status"]["type"] == "notstarted":
+                        date = datetime.datetime.fromtimestamp(data["startTimestamp"], tz=datetime.timezone.utc).replace(tzinfo=None)
+                        try:
+                            home_team_short_name =  data["homeTeam"]["shortName"]
+                        except KeyError:
+                            home_team_short_name = data["homeTeam"]["name"]
+                        try:
+                            away_team_short_name = data["awayTeam"]["shortName"]
+                        except KeyError:
+                            away_team_short_name = data["awayTeam"]["name"]
+                        self.data_dict[data["id"]] = {
+                            "bookie_id": self.name,
+                            "sport_id": response.meta.get("sport_id"),
+                            "competition_id": response.meta.get("competition_id"),
+                            "numerical_team_id": data["id"],
+                            "match_id": Helpers().build_ids(
+                                id_type="match_id",
+                                data=
+                                {
+                                    "date": date,
+                                    "teams": [data["homeTeam"]["name"], data["awayTeam"]["name"]]
+                                }
+                            ),
+                            "home_team": data["homeTeam"]["name"],
+                            "home_team_id": data["homeTeam"]["id"],
+                            "home_team_short_name": home_team_short_name,
+                            "away_team": data["awayTeam"]["name"],
+                            "away_team_id": data["awayTeam"]["id"],
+                            "away_team_short_name": away_team_short_name,
+                            "date": date,
+                        }
+                except Exception as e:
+                    if self.debug:
+                        print("error from data", data, e, response.meta.get("competition_id"))
+                    Helpers().insert_log(level="CRITICIAL", type="CODE", error=response.meta.get("competition_id"), message=traceback.format_exc())
+                    continue
 
             next_page = jsonresponse["hasNextPage"]
             if next_page:
@@ -142,6 +160,8 @@ class APISpider(scrapy.Spider):
                 item["data_dict"] = self.data_dict
                 self.page_count = 0
                 self.data_dict = {}
+                if self.debug:
+                    print("data_dict", item["data_dict"])
                 yield item
 
 

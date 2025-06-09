@@ -17,7 +17,7 @@ CONCURRENT_REQUESTS = 200
 CONCURRENT_REQUESTS_PER_DOMAIN = 2 # equals the number of units divided by 2
 CONCURRENT_ITEMS = 500
 LOG_LEVEL = "INFO"
-# DOWNLOAD_DELAY = 5
+DOWNLOAD_DELAY = 2
 DOWNLOAD_TIMEOUT = 200
 CLOSESPIDER_TIMEOUT = 60*80
 COOKIES_ENABLED = True
@@ -34,9 +34,9 @@ ITEM_PIPELINES = {
 LOCAL_USERS = ["sylvain","rickiel"]
 try:
     if os.environ["USER"] in LOCAL_USERS:
-        # TEST_ENV = "server"
-        TEST_ENV = "local"
-        PLAYWRIGHT_HEADLESS = False
+        TEST_ENV = "server"
+        # TEST_ENV = "local"
+        PLAYWRIGHT_HEADLESS = True
 except KeyError:
     TEST_ENV = "server"
     PLAYWRIGHT_HEADLESS = True
@@ -45,9 +45,6 @@ except KeyError:
 ALL_SPORTS_API_KEY = "uNqyISH2ausxwgyW2rhoRZHUWIMd7GYU" # free plan
 SQL_USER = "spider_rw_03"
 SQL_PWD = "43&trdGhqLlM"
-mongo_user = "ATO_01"
-mongo_password = "GFT6&&acs!"
-ATO_DB_01 = "mongodb://"+mongo_user+":"+mongo_password+"@172.105.28.151:27017/ATO"
 list_of_proxies = [
     "115.124.36.119", "185.106.126.109", "185.107.152.14", "185.119.48.24", "185.119.49.69",
     "185.159.43.180", "185.166.172.76", "185.212.86.69", "194.38.59.88", "46.226.144.182"
@@ -234,8 +231,7 @@ def should_abort_request(request):
     )
 
 PLAYWRIGHT_ABORT_REQUEST = should_abort_request
-page_method_time_out = 120*1000
-
+# page_method_time_out = 120*1000
 
 def get_custom_playwright_settings(browser, rotate_headers):
     custom_settings = {}
@@ -247,18 +243,7 @@ def get_custom_playwright_settings(browser, rotate_headers):
         if rotate_headers is True:
             custom_settings.update({"PLAYWRIGHT_PROCESS_REQUEST_HEADERS": custom_headers_chrome})
         playwright_browser_type = "chromium"
-    # try:
-    #     # TODO try removing this
-    #     if TEST_ENV == "local":
-    #         custom_settings.update(
-    #             {"PLAYWRIGHT_LAUNCH_OPTIONS":
-    #                  {
-    #                      "headless": PLAYWRIGHT_HEADLESS,
-    #                      "timeout": 100*1000, # 25000 * 1000,
-    #                  }
-    #              },
-    #         )
-    # except KeyError:
+
     custom_settings.update(
         {"PLAYWRIGHT_LAUNCH_OPTIONS":
              {"headless": PLAYWRIGHT_HEADLESS,
@@ -267,17 +252,13 @@ def get_custom_playwright_settings(browser, rotate_headers):
                   # "firefox": "/ms-playwright/firefox/firefox/firefox",
                   # "webkit": "/ms-playwright/webkit/pw_run.sh",
               # }[playwright_browser_type],
-              "timeout": 100*1000, # 100*1000
+              "timeout": 60*1000, # 100*1000
               "args": ["--no-sandbox"],
               },
          }
     )
 
     custom_settings.update({
-    #     "EXTENSIONS" : {
-    #     "scrapy.extensions.memusage.MemoryUsage": None,
-    #     "scrapy_playwright.memusage.ScrapyPlaywrightMemoryUsageExtension": 0,
-    # },
         "PLAYWRIGHT_MAX_CONTEXTS": 8,
         # "PLAYWRIGHT_MAX_CONTEXTS": 10,
         "PLAYWRIGHT_MAX_PAGES_PER_CONTEXT": 10,
@@ -296,7 +277,7 @@ def get_custom_playwright_settings(browser, rotate_headers):
             # "firefox": "/ms-playwright/firefox/firefox/firefox",
             # "webkit": "/ms-playwright/webkit/pw_run.sh",
         # },
-        "PLAYWRIGHT_DEFAULT_NAVIGATION_TIMEOUT" : 100*1000, # 25000, 7200
+        "PLAYWRIGHT_DEFAULT_NAVIGATION_TIMEOUT" : 60*1000, # 25000, 7200
         "PLAYWRIGHT_BROWSER_TYPE" : playwright_browser_type,
         # "PLAYWRIGHT_CONTEXTS": {
         #     "context_01": {
@@ -310,7 +291,25 @@ def get_custom_playwright_settings(browser, rotate_headers):
     )
     return custom_settings
 
-
+def get_custom_settings_for_zyte_api():
+    zyte_settings = {
+        "DOWNLOAD_HANDLERS": {
+            "http": "scrapy_zyte_api.ScrapyZyteAPIDownloadHandler",
+            "https": "scrapy_zyte_api.ScrapyZyteAPIDownloadHandler",
+        },
+        "DOWNLOADER_MIDDLEWARES": {
+            "scrapy_zyte_api.ScrapyZyteAPIDownloaderMiddleware": 1000,
+        },
+        "SPIDER_MIDDLEWARES": {
+            "scrapy_zyte_api.ScrapyZyteAPISpiderMiddleware": 100,
+        },
+        "REQUEST_FINGERPRINTER_CLASS": "scrapy_zyte_api.ScrapyZyteAPIRequestFingerprinter",
+        "TWISTED_REACTOR": "twisted.internet.asyncioreactor.AsyncioSelectorReactor",
+        "ZYTE_API_TRANSPARENT_MODE": True,
+        "ZYTE_API_KEY": "0ef225b8366548fb84767f6bf5e74653",
+        "CONCURRENT_REQUESTS_PER_DOMAIN": 5,
+    }
+    return zyte_settings
 
 
 

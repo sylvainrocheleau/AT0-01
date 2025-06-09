@@ -28,7 +28,11 @@ class TwoStepsSpider(scrapy.Spider):
     proxy_ip = str
     user_agent_hash = int
     custom_settings = get_custom_playwright_settings(browser="Chrome", rotate_headers=False)
-    custom_settings.update({"CONCURRENT_REQUESTS_PER_DOMAIN": 2})
+    custom_settings.update({
+        "CONCURRENT_REQUESTS_PER_DOMAIN": 2,
+        "HTTPCACHE_ENABLED": False,
+        "PLAYWRIGHT_MAX_CONTEXTS": 2,
+    })
 
     def should_block_request(self, request):
         strings_to_block = [
@@ -51,6 +55,7 @@ class TwoStepsSpider(scrapy.Spider):
     match_infos = {}
     found_no_matches_count = {}
     found_no_odds_count = {}
+    custom_timeout = {}
 
     def start_requests(self):
 
@@ -112,6 +117,7 @@ class TwoStepsSpider(scrapy.Spider):
         competition_url = response.meta.get("competition_url")
         self.match_infos.update({competition_url: []})
         self.found_no_matches_count.update({competition_url: 0})
+        self.custom_timeout.update({competition_url: datetime.datetime.now() + datetime.timedelta(seconds=30)})
 
         def on_request(request):
             if "transport=polling" in request.url:
@@ -134,7 +140,23 @@ class TwoStepsSpider(scrapy.Spider):
 
         async def on_response(response):
             if "transport=polling" in response.url:
+                if self.debug:
+                    print(f"Number of retries for {competition_url} : {self.found_no_matches_count[competition_url]}")
                 try:
+                    if len(self.match_infos[competition_url]) > 0:
+                        if self.debug:
+                            print(f"Exiting on_response: found matches for {competition_url}")
+                        page.remove_listener("response", on_response)
+                        return
+                    elif datetime.datetime.now() > self.custom_timeout[competition_url]:
+                        print(f"Exiting on_response: custom timeout reached for {competition_url}")
+                        page.remove_listener("response", on_response)
+                        return
+                    elif self.found_no_matches_count[competition_url] > 7:
+                        print(f"Exiting on_response: after {self.found_no_matches_count[competition_url]} retries for {competition_url}")
+                        page.remove_listener("response", on_response)
+                        return
+
                     response_body = await response.text()
                     if (
                         "[\"m\",{\"teasers\"" in response_body
@@ -160,6 +182,8 @@ class TwoStepsSpider(scrapy.Spider):
                                                 self.match_infos[competition_url].append(
                                                     {"url": url, "web_url": web_url, "home_team": home_team,
                                                      "away_team": away_team, "date": date})
+                                        elif value["competitor1Name"] is None:
+                                            pass
                                         else:
                                             if self.debug:
                                                 print(f"PROBLEM PARSING MATCHES {competition_url}")
@@ -167,49 +191,52 @@ class TwoStepsSpider(scrapy.Spider):
                                                     f = open("response_body_match_requests.txt", "a")
                                                     f.write(f"PROBLEM PARSING MATCHES {competition_url}")
                                                     f.write("\n")
-                                                    f.write(response_body[0:1000])
+                                                    # f.write(response_body[0:1000])
+                                                    f.write(str(self.matches_details))
+                                                    f.write("\n")
+                                                    f.write(f"tournamentid {value['tournamentId']} status {value['status']} home_team {value['competitor1Name']}")
                                                     f.write("\n")
                                                     f.write("\n")
                                                     f.close()
                     else:
-                        # if self.debug:
-                        #     print(f"NOT FOUND MATCHES {competition_url}")
-                        #     f = open("response_body_parse_match.txt", "a")
-                        #     f.write(f"NOT FOUND MATCHES {competition_url}")
-                        #     f.write(competition_url)
-                        #     f.write("\n")
-                        #     f.write(response_body[0:1000])
-                        #     f.write("\n")
-                        #     f.close()
                         self.found_no_matches_count[competition_url] += 1
-                        if self.found_no_matches_count[competition_url] == 5:
-                            await page.route(
-                                "**/*",
-                                lambda route: route.abort() if self.should_block_request(
-                                    route.request) else route.continue_()
-                            )
-                            await page.reload()
-                            print(f"Reloading page {competition_url}")
-                            if self.debug:
-                                f = open("response_body_match_requests.txt", "a")
-                                f.write("\n")
-                                f.write("\n")
-                                f.close()
+                        # if self.found_no_matches_count[competition_url] == 3 and len(self.match_infos[competition_url]) == 0:
+                        #     await page.route(
+                        #         "**/*",
+                        #         lambda route: route.abort() if self.should_block_request(
+                        #             route.request) else route.continue_()
+                        #     )
+                        #     await page.reload()
+                        #     print(f"Reloading page after {self.found_no_matches_count[competition_url]} retries for {competition_url}")
+                        #     if self.debug:
+                        #         f = open("response_body_match_requests.txt", "a")
+                        #         f.write("\n")
+                        #         f.write("\n")
+                        #         f.close()
 
-                        if self.found_no_matches_count[competition_url] > 10:
-                            print(f"Closing page and context after no matches for {self.found_no_matches_count[competition_url]}  {competition_url}")
-                            if self.debug:
-                                f = open("response_body_match_requests.txt", "a")
-                                f.write(f"Closing page and context after no matches for {self.found_no_matches_count[competition_url]}  {competition_url}")
-                                f.write("\n")
-                                f.write("\n")
-                                f.close()
-                            await page.close()
-                            await page.context.close()
+                        # if self.found_no_matches_count[competition_url] > 7:
+                        #     print(f"Closing page and context after {self.found_no_matches_count[competition_url]} retries for {competition_url}")
+                        #     if self.debug:
+                        #         f = open("response_body_match_requests.txt", "a")
+                        #         f.write(f"Closing page and context after no matches for {self.found_no_matches_count[competition_url]}  {competition_url}")
+                        #         f.write("\n")
+                        #         f.write("\n")
+                        #         f.close()
+                        #     await page.close()
+                        #     await page.context.close()
+                        #     return
 
-                except Error:
+                except Error as e:
                     if self.debug:
                         print("Error getting response body from match_requests")
+                        if self.debug:
+                            f = open("response_body_match_requests.txt", "a")
+                            f.write(f"Error getting response body from match_requests {competition_url}")
+                            f.write("\n")
+                            # f.write(response_body[0:1000])
+                            f.write(str(e))
+                            f.write("\n")
+                            f.close()
                     return
 
 
@@ -221,20 +248,38 @@ class TwoStepsSpider(scrapy.Spider):
             "**/*",
             lambda route: route.abort() if self.should_block_request(route.request) else route.continue_()
         )
-        await page.reload()
+        await asyncio.sleep(5)
+        try:
+            if len(self.match_infos[competition_url]) == 0:
+                print(f"First reload for {competition_url}")
+                await page.reload()
+        except Exception as e:
+            pass
 
-        if len(self.match_infos[competition_url]) > 0:
-            if self.debug:
-                print(f"matches infos {self.match_infos[competition_url]}")
-                f = open("response_body_match_requests.txt", "a")
-                f.write(f"found matches for {competition} {competition_url} {len(self.match_infos[competition_url])} ")
-                f.write(str(self.match_infos[competition_url]))
-                f.write("\n")
-                f.write("\n")
-                f.close()
-                # print(f"found matches for {competition} {competition_url} {len(self.match_infos[competition_url])} ")
-            await page.close()
-            await page.context.close()
+
+        try:
+            if len(self.match_infos[competition_url]) == 0:
+                await asyncio.sleep(15)
+                print(f"Waiting for 15 seconds for {competition_url}")
+                print(f"Second reload for {competition_url}")
+                await page.reload()
+
+            elif len(self.match_infos[competition_url]) > 0:
+                if self.debug:
+                    print(f"matches infos {self.match_infos[competition_url]}")
+                    f = open("response_body_match_requests.txt", "a")
+                    f.write(f"found matches for {competition} {competition_url} {len(self.match_infos[competition_url])} ")
+                    f.write(str(self.match_infos[competition_url]))
+                    f.write("\n")
+                    f.write("\n")
+                    f.close()
+        finally:
+            try:
+                await page.close()
+                await page.context.close()
+                print(f"Closed page and context after match_requests with {len(self.match_infos[competition_url])} matches for  {competition_url}")
+            except Error as e:
+                pass
 
             for match_info in self.match_infos[competition_url]:
                 context_info = random.choice([x for x in self.context_infos])
@@ -297,6 +342,7 @@ class TwoStepsSpider(scrapy.Spider):
         match_url = response.meta.get("match_url")
         competition_url = response.meta.get("competition_url")
         self.found_no_odds_count.update({match_url: 0})
+        self.custom_timeout.update({match_url: datetime.datetime.now() + datetime.timedelta(seconds=30)})
 
         self.odds.update({match_url: []})
         self.results.update({match_url: []})
@@ -307,9 +353,22 @@ class TwoStepsSpider(scrapy.Spider):
 
         async def on_response(response):
             if "transport=polling" in response.url:
-                # if self.debug:
-                #     print(f"parse match intercepted response : {response.url}")
+                if self.debug:
+                    print(f"Number of retries for {match_url} : {self.found_no_odds_count[match_url]}")
                 try:
+                    if len(self.odds[match_url]) > 0:
+                        if self.debug:
+                            print(f"Exiting on_response: found odds for {match_url}")
+                        page.remove_listener("response", on_response)
+                        return
+                    elif datetime.datetime.now() > self.custom_timeout[match_url]:
+                        print(f"Exiting on_response: custom timeout reached for {match_url}")
+                        page.remove_listener("response", on_response)
+                        return
+                    elif self.found_no_odds_count[match_url] > 7:
+                        print(f"Exiting on_response: {self.found_no_odds_count[match_url]} retries for {match_url}")
+                        page.remove_listener("response", on_response)
+                        return
                     response_body = await response.text()
                     if "[\"m\",{\"matches\"" in response_body:
                         response_match = json_repair.repair_json(response_body, return_objects=True)
@@ -337,33 +396,37 @@ class TwoStepsSpider(scrapy.Spider):
                             f.write("\n")
                             f.close()
                         self.found_no_odds_count[match_url] += 1
-                        if self.found_no_odds_count[match_url] == 5:
-                            await page.route(
-                                "**/*",
-                                lambda route: route.abort() if self.should_block_request(
-                                    route.request) else route.continue_()
-                            )
-                            await page.reload()
-                            print(f"Reloading page {match_url}")
-                            f = open("response_body_parse_match.txt", "a")
-                            f.write(f"Reloading page {match_url}")
-                            f.write("\n")
-                            f.write("\n")
-                            f.close()
-                        if self.found_no_odds_count[match_url] > 10:
-                            print(f"Closing page and context after no odds for {self.found_no_odds_count[match_url]}  {match_url}")
-                            f = open("response_body_parse_match.txt", "a")
-                            f.write(f"Closing page and context after no odds for {self.found_no_odds_count[match_url]}  {match_url}")
-                            f.write("\n")
-                            f.write("\n")
-                            f.close()
-                            await page.close()
-                            await page.context.close()
+                        # if self.found_no_odds_count[match_url] == 3 and len(self.odds[match_url]) == 0:
+                        #     await page.route(
+                        #         "**/*",
+                        #         lambda route: route.abort() if self.should_block_request(
+                        #             route.request) else route.continue_()
+                        #     )
+                        #     await page.reload()
+                        #     print(f"Reloading page {match_url}")
+                        #     f = open("response_body_parse_match.txt", "a")
+                        #     f.write(f"Reloading page {match_url}")
+                        #     f.write("\n")
+                        #     f.write("\n")
+                        #     f.close()
+                        # if self.found_no_odds_count[match_url] > 7:
+                        #     print(f"Closing page and context after no odds for {self.found_no_odds_count[match_url]}  {match_url}")
+                        #     f = open("response_body_parse_match.txt", "a")
+                        #     f.write(f"Closing page and context after no odds for {self.found_no_odds_count[match_url]}  {match_url}")
+                        #     f.write("\n")
+                        #     f.write("\n")
+                        #     f.close()
+                        #     await page.close()
+                        #     await page.context.close()
+                        #     return
 
-                except Error:
+                except Error as e:
                     if self.debug:
                         f = open("response_body_parse_match.txt", "a")
                         f.write(f"Error getting response body from parse_match {match_url}")
+                        f.write("\n")
+                        f.write(str(e))
+                        f.write("\n")
                         f.write("\n")
                         f.close()
                         print("Error getting response body from parse_match")
@@ -376,43 +439,61 @@ class TwoStepsSpider(scrapy.Spider):
             "**/*",
             lambda route: route.abort() if self.should_block_request(route.request) else route.continue_()
         )
-        await page.reload()
-        if len(self.odds[match_url]) < 0:
-            await asyncio.sleep(15)
-            print(f"Waiting for 15 seconds for {match_url}")
+        await asyncio.sleep(5)
+        try:
+            if len(self.odds[match_url]) == 0:
+                print(f"First reloading for {match_url}")
+                await page.reload()
+        except Exception as e:
+            pass
 
-        if len(self.odds[match_url]) > 0:
-            f = open("response_body_parse_match.txt", "a")
-            f.write(f"found odds {len(self.odds[match_url])} for {match_url}")
-            f.write("\n")
-            f.write("\n")
-            f.close()
 
-            await page.close()
-            await page.context.close()
+        try:
+            if len(self.odds[match_url]) == 0:
+                await asyncio.sleep(15)
+                print(f"Waiting for 15 seconds for {match_url}")
+                print(f"Second reloading for {match_url}")
+                await page.reload()
+
+            elif len(self.odds[match_url]) > 0:
+                f = open("response_body_parse_match.txt", "a")
+                f.write(f"found odds {len(self.odds[match_url])} for {match_url}")
+                f.write("\n")
+                f.write("\n")
+                f.close()
+                try:
+                    item["Home_Team"] = home_team
+                    item["Away_Team"] = away_team
+                    item["Bets"] = normalize_odds_variables(
+                        self.odds[match_url], sport ,item["Home_Team"], item["Away_Team"]
+                    )
+                    # item["Bets"] = self.odds[match_url]
+                    item["extraction_time_utc"] = datetime.datetime.now()
+                    item["Sport"] = sport
+                    item["Competition"] = competition
+                    item["Date"] = start_date
+                    item["Match_Url"] = match_url
+                    item["Competition_Url"] = competition_url
+                    item["proxy_ip"] = self.proxy_ip
+                    if len(self.odds[match_url]) == 0:
+                        print(f"odds empty for {match_url}")
+                    print("item[Match_Url]", item["Match_Url"] )
+                    yield item
+
+                except Exception as e:
+                    item["Competition_Url"] = competition_url
+                    item["Match_Url"] = match_url
+                    item["error_message"] = str(e)
+                    yield item
+        except Exception as e:
+            pass
+        finally:
             try:
-                item["Home_Team"] = home_team
-                item["Away_Team"] = away_team
-                item["Bets"] = normalize_odds_variables(
-                    self.odds[match_url], sport ,item["Home_Team"], item["Away_Team"]
-                )
-                # item["Bets"] = self.odds[match_url]
-                item["extraction_time_utc"] = datetime.datetime.now()
-                item["Sport"] = sport
-                item["Competition"] = competition
-                item["Date"] = start_date
-                item["Match_Url"] = match_url
-                item["Competition_Url"] = competition_url
-                item["proxy_ip"] = self.proxy_ip
-                if len(self.odds[match_url]) == 0:
-                    print(f"odds empty for {match_url}")
-                yield item
-
-            except Exception as e:
-                item["Competition_Url"] = competition_url
-                item["Match_Url"] = match_url
-                item["error_message"] = str(e)
-                yield item
+                await page.close()
+                await page.context.close()
+                print(f"Closed page and context after parse_match with {len(self.odds[match_url])} odds for {match_url}")
+            except Error as e:
+                pass
 
 
     def raw_html(self, response):
@@ -479,6 +560,7 @@ class TwoStepsSpider(scrapy.Spider):
             print("Unable to close page or context")
             pass
         yield item
+
 
     def closed(self, reason):
         if self.debug is True:

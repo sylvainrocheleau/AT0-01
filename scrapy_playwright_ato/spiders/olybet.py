@@ -29,55 +29,55 @@ class TwoStepsSpider(scrapy.Spider):
         context_infos = get_context_infos(bookie_name=self.name)
         self.context_infos = [x for x in context_infos if x["proxy_ip"] not in ["46.226.144.182"]]
         for data in bookie_config(self.name):
-            if data["url"] != "https://apuestas.olybet.es/es/competicion/12044-euroliga":
-                print("### START REQUESTS", data["url"])
-                context_info = random.choice([x for x in self.context_infos if x["cookies"] is not None])
-                self.proxy_ip = context_info["proxy_ip"]
-                if len(data["url"]) < 5:
-                    continue
-                self.comp_url=data["url"]
-                try:
-                    yield scrapy.Request(
-                        url=data["url"],
-                        callback=self.match_requests,
-                        errback=self.errback,
-                        meta=dict(
-                            sport= data["sport"],
-                            competition = data["competition"],
-                            list_of_markets = data["list_of_markets"],
-                            competition_url = data["url"],
-                            proxy_ip = self.proxy_ip,
-                            playwright = True,
-                            playwright_include_page = True,
-                            playwright_context = data["url"],
-                            playwright_context_kwargs = {
-                                "user_agent": context_info["user_agent"],
-                                "java_script_enabled": True,
-                                "ignore_https_errors": True,
-                                "proxy": {
-                                    "server": "http://"+context_info["proxy_ip"]+":58542/",
-                                    "username": soltia_user_name,
-                                    "password": soltia_password,
-                                },
-                                "storage_state" : {
-                                    "cookies": json.loads(context_info["cookies"])
-                                },
+            # if data["url"] != "https://apuestas.olybet.es/es/competicion/12044-euroliga":
+            print("### START REQUESTS", data["url"])
+            context_info = random.choice([x for x in self.context_infos if x["cookies"] is not None])
+            self.proxy_ip = context_info["proxy_ip"]
+            if len(data["url"]) < 5:
+                continue
+            self.comp_url=data["url"]
+            try:
+                yield scrapy.Request(
+                    url=data["url"],
+                    callback=self.match_requests,
+                    errback=self.errback,
+                    meta=dict(
+                        sport= data["sport"],
+                        competition = data["competition"],
+                        list_of_markets = data["list_of_markets"],
+                        competition_url = data["url"],
+                        proxy_ip = self.proxy_ip,
+                        playwright = True,
+                        playwright_include_page = True,
+                        playwright_context = data["url"],
+                        playwright_context_kwargs = {
+                            "user_agent": context_info["user_agent"],
+                            "java_script_enabled": True,
+                            "ignore_https_errors": True,
+                            "proxy": {
+                                "server": "http://"+context_info["proxy_ip"]+":58542/",
+                                "username": soltia_user_name,
+                                "password": soltia_password,
                             },
-                            playwright_accept_request_predicate = {
-                                'activate': True,
-                                # 'position': 1
+                            "storage_state" : {
+                                "cookies": json.loads(context_info["cookies"])
                             },
-                            playwright_page_methods=[
-                                PageMethod(
-                                    method="wait_for_selector",
-                                    selector="//div[@class='lines']",
-                                ),
-                            ],
-                    ),
-                    )
-                except PlaywrightTimeoutError:
-                    print("Time out out on ", data["url"])
-                    continue
+                        },
+                        playwright_accept_request_predicate = {
+                            'activate': True,
+                            # 'position': 1
+                        },
+                        playwright_page_methods=[
+                            PageMethod(
+                                method="wait_for_selector",
+                                selector="//div[@class='lines']",
+                            ),
+                        ],
+                ),
+                )
+            except PlaywrightTimeoutError:
+                print("Time out out on ", data["url"])
+                continue
 
     async def match_requests(self,response):
         # print("### MATCH REQUESTS")

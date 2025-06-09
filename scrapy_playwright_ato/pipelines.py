@@ -14,7 +14,11 @@ class ScrapersPipeline:
     try:
         if os.environ["USER"] in LOCAL_USERS:
             f = open("demo_data.txt", "w")
+            debug = True
+        else:
+            debug = False
     except:
+        debug = False
         pass
 
     def process_item(self, item, spider):
@@ -29,11 +33,12 @@ class ScrapersPipeline:
                 end_connection = datetime.datetime.now()
                 print("Time taken to connect to db:", (end_connection - start_connection).total_seconds())
 
-                query_insert_match_odds = (
-                    "INSERT INTO ATO_production.V2_Matches_Odds "
-                    "(bet_id, match_id, bookie_id, market, market_binary, result, back_odd, web_url, updated_date) "
-                    "VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s) "
-                    "ON DUPLICATE KEY UPDATE back_odd = VALUES(back_odd), updated_date = VALUES(updated_date)"
+                query_insert_match_odds = ("""
+                    INSERT INTO ATO_production.V2_Matches_Odds
+                    (bet_id, match_id, bookie_id, market, market_binary, result, back_odd, web_url, updated_date)
+                    VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    ON DUPLICATE KEY UPDATE back_odd = VALUES(back_odd), updated_date = VALUES(updated_date)
+                    """
                 )
                 query_update_match_urls = """
                     UPDATE ATO_production.V2_Matches_Urls
@@ -45,6 +50,7 @@ class ScrapersPipeline:
                 batch_update_match_urls = []
 
                 for data in item["data_dict"]["odds"]:
+                    match_id = item["data_dict"]["match_id"]
                     try:
                         values_01 = (
                             data["bet_id"],
@@ -65,6 +71,8 @@ class ScrapersPipeline:
                         batch_insert_match_odds.append(values_01)
                         batch_update_match_urls.append(values_02)
                     except Exception as e:
+                        if self.debug:
+                            print(traceback.format_exc())
                         Helpers().insert_log(level="CRITICAL", type="CODE", error=str(e), message=traceback.format_exc())
 
                 # if batch_insert_match_odds:
@@ -73,20 +81,23 @@ class ScrapersPipeline:
                     try:
                         cursor.execute(query_insert_match_odds, entry)
                     except Exception as e:
-                        Helpers().insert_log(level="CRITICAL", type="CODE", error=str(e),
-                                             message=traceback.format_exc())
+                        if self.debug:
+                            print(traceback.format_exc())
+                        Helpers().insert_log(level="CRITICAL", type="CODE", error=str(e),message=traceback.format_exc())
                         print(f"Error at index {i}: {entry}")
                         break
                 if batch_update_match_urls:
                     cursor.executemany(query_update_match_urls, batch_update_match_urls)
                 connection.commit()
             except Exception as e:
+                if self.debug:
+                    print(traceback.format_exc())
                 Helpers().insert_log(level="CRITICAL", type="CODE", error=str(e), message=traceback.format_exc())
                 # print(traceback.format_exc())
             finally:
                 try:
                     end_time = datetime.datetime.now()
-                    print("Time taken to update V2_Matches_Odds:", (end_time - start_time).total_seconds())
+                    print(f"Time taken to update V2_Matches_Odds for {match_id}:", (end_time - start_time).total_seconds())
                     cursor.close()
                     connection.close()
                 except Exception:
@@ -107,6 +118,8 @@ class ScrapersPipeline:
                 cursor.execute(query_insert_dutcher_queue, (item["data_dict"]["match_id"],))
                 connection.commit()
             except Exception as e:
+                if self.debug:
+                    print(traceback.format_exc())
                 Helpers().insert_log(level="CRITICAL", type="CODE", error=str(e), message=traceback.format_exc())
                 pass
             finally:
@@ -119,10 +132,18 @@ class ScrapersPipeline:
                     pass
 
         elif "pipeline_type" in item.keys() and "match_urls" in item["pipeline_type"]:
-            # print(f"UPDATING V2_Matches_Urls and competitions status")
-            start_time = datetime.datetime.now()
+
             # TODO if there is a mismatch between UTC and Spain time, we need to report it
             try:
+                print(f"UPDATING V2_Matches_Urls and competitions status for ")
+                for key, value in item["data_dict"].items():
+                    if key == "match_infos":
+                        print("new matches", len(value))
+                    if key == "map_matches":
+                        print("matches in db", len(value))
+                    if key == "comp_infos":
+                        print("competition_url_id", value[0]["competition_url_id"])
+                start_time = datetime.datetime.now()
                 connection = Connect().to_db(db="ATO_production", table=None)
                 cursor = connection.cursor()
                 create_match_urls = []
@@ -182,6 +203,7 @@ class ScrapersPipeline:
                                     data["url"],
                                     data["match_id"],
                                     data["bookie_id"],
+                                    data["competition_id"],
                                     data["home_team"],
                                     data["home_team_normalized"],
                                     data["home_team_status"],
@@ -201,6 +223,7 @@ class ScrapersPipeline:
                                 data["url"],
                                 data["match_id"],
                                 data["bookie_id"],
+                                data["competition_id"],
                                 data["home_team"],
                                 data["home_team_normalized"],
                                 data["home_team_status"],
@@ -211,19 +234,24 @@ class ScrapersPipeline:
                             ]
                         )
 
-                query_create_match_urls = (
-                    "INSERT INTO ATO_production.V2_Matches_Urls "
-                    "(match_url_id,	match_id, bookie_id, sport_id, web_url) "
-                    "VALUES(%s, %s, %s, %s, %s)"
+                query_create_match_urls = ("""
+                    INSERT IGNORE INTO ATO_production.V2_Matches_Urls
+                    (match_url_id,match_id, bookie_id, sport_id, web_url)
+                    VALUES(%s, %s, %s, %s, %s)
+                    """
                 )
+                if self.debug:
+                    print("create_match_urls", create_match_urls)
+                    print("create_match_urls_with_no_ids", create_match_urls_with_no_ids)
                 cursor.executemany(query_create_match_urls, create_match_urls)
                 connection.commit()
 
+                # TODO add competiton_id
                 query_create_match_urls_with_no_ids = """
                     INSERT IGNORE INTO ATO_production.V2_Matches_Urls_No_Ids
-                    (message, match_url_id, match_id, bookie_id, home_team, home_team_normalized, home_team_status,
+                    (message, match_url_id, match_id, bookie_id, competition_id, home_team, home_team_normalized, home_team_status,
                     away_team, away_team_normalized, away_team_status, date)
-                    VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """
                 cursor.executemany(query_create_match_urls_with_no_ids, create_match_urls_with_no_ids)
                 connection.commit()
@@ -257,11 +285,13 @@ class ScrapersPipeline:
                         connection.commit()
 
             except Exception as e:
+                if self.debug:
+                    print(traceback.format_exc())
                 Helpers().insert_log(level="CRITICAL", type="CODE", error=str(e), message=traceback.format_exc())
             finally:
                 try:
                     end_time = datetime.datetime.now()
-                    print("Time taken to update V2_Matches_Urls and competitions status:", (end_time - start_time).total_seconds())
+                    print(f"Time taken to update V2_Matches_Urls and competitions status for ", (end_time - start_time).total_seconds())
                     cursor.close()
                     connection.close()
                 except Exception:
@@ -286,6 +316,8 @@ class ScrapersPipeline:
                     cursor.execute(query_update_competitions, values)
                     connection.commit()
             except Exception as e:
+                if self.debug:
+                    print(traceback.format_exc())
                 Helpers().insert_log(level="CRITICIAL", type="CODE", error=e, message=traceback.format_exc())
             finally:
                 try:
@@ -316,6 +348,8 @@ class ScrapersPipeline:
                     cursor.execute(query_update_match, values)
                     connection.commit()
             except Exception as e:
+                if self.debug:
+                    print(traceback.format_exc())
                 Helpers().insert_log(level="CRITICIAL", type="CODE", error=e, message=traceback.format_exc())
             finally:
                 try:
@@ -390,6 +424,8 @@ class ScrapersPipeline:
                 connection.commit()
 
             except Exception as e:
+                if self.debug:
+                    print(traceback.format_exc())
                 Helpers().insert_log(level="CRITICIAL", type="CODE", error=e, message=traceback.format_exc())
             finally:
                 try:
@@ -407,6 +443,8 @@ class ScrapersPipeline:
                     print("RUNNING: change_normalized_team_names_from_betfair_to_all_sport() with debug", debug, "on", competition_id)
                     Helpers().change_normalized_team_names_from_betfair_to_all_sport(competition_id=competition_id, debug=debug )
                 except Exception as e:
+                    if self.debug:
+                        print(traceback.format_exc())
                     Helpers().insert_log(level="CRITICAL", type="CODE", error=str(e), message=traceback.format_exc())
 
             if "pipeline_type" in item.keys() and "matches" in item["pipeline_type"]:
@@ -437,6 +475,8 @@ class ScrapersPipeline:
                         cursor.execute(query_insert_matches, values)
                     connection.commit()
                 except Exception as e:
+                    if self.debug:
+                        print(traceback.format_exc())
                     Helpers().insert_log(level="CRITICIAL", type="CODE", error=e, message=traceback.format_exc())
                 finally:
                     try:
@@ -465,13 +505,17 @@ class ScrapersPipeline:
                     cursor.execute(query_find_old_matches)
                     old_matches = cursor.fetchall()
                     print(f"DELETING {len(old_matches)} matches from V2_Matches")
+                    print("old_matches", old_matches)
                     old_matches = [x[0] for x in old_matches]
                     old_matches = list(set(old_matches))
                     for match in old_matches:
+                        print("deleting from pipeline", match)
                         cursor.execute(query_delete_matches, (match,))
                     connection.commit()
 
                 except Exception as e:
+                    if self.debug:
+                        print(traceback.format_exc())
                     Helpers().insert_log(level="CRITICIAL", type="CODE", error=e, message=traceback.format_exc())
                 finally:
                     try:
@@ -491,11 +535,14 @@ class ScrapersPipeline:
                 cursor.execute("TRUNCATE TABLE ATO_production.V2_Exchanges")
                 connection.commit()
                 # print("Truncated V2_Exchanges", datetime.datetime.now())
-                query_exchange = (
-                    "INSERT INTO ATO_production.V2_Exchanges "
-                    "(bet_id, date, sport, competition, home_team, away_team, market, market_binary, "
-                    "result, exchange, lay_odds, liquidity, url, updated_time) "
-                    "VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                query_exchange = ("""
+                    INSERT INTO ATO_production.V2_Exchanges
+                    (bet_id, date, sport, competition, home_team, away_team, market, market_binary,
+                    result, exchange, lay_odds, liquidity, url, updated_time)
+                    VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    ON DUPLICATE KEY UPDATE result = VALUES(result), lay_odds = VALUES(lay_odds),
+                    liquidity = VALUES(liquidity), updated_time = VALUES(updated_time)
+                    """
                 )
                 batch_insert_exchanges = []
                 for key, value in item["data_dict"].items():
@@ -514,6 +561,8 @@ class ScrapersPipeline:
                 # print("Updated V2_Exchanges", datetime.datetime.now())
 
             except Exception as e:
+                if self.debug:
+                    print(traceback.format_exc())
                 Helpers().insert_log(level="CRITICIAL", type="CODE", error=e, message=traceback.format_exc())
             finally:
                 try:
@@ -557,6 +606,8 @@ class ScrapersPipeline:
                 cursor.execute(query_insert_odds_match_maker)
                 connection.commit()
             except Exception as e:
+                if self.debug:
+                    print(traceback.format_exc())
                 Helpers().insert_log(level="CRITICAL", type="CODE", error=str(e), message=traceback.format_exc())
             finally:
                 try:

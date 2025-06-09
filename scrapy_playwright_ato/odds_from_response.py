@@ -1,1836 +1,1756 @@
 response = """
-<!DOCTYPE html><html lang="es"><head data-skin="0">
-<script type="text/javascript">
-(function(){
-try {
-function getterHook(obj, name, cb) {
-    if (document.__defineGetter__) {
-        document.__defineGetter__(name, cb);
-        return;
+<!DOCTYPE html><html class="vn-25 click-interaction system-colors-v2 ready header-shown th-bwin device-desktop unauthenticated product-sports breadcrumbs-visible landscape content-right content-left scrollable-content card-content header-sticky event-details-page main-activated language-switcher-shown content-messages-hidden" lang="es-ES" data-domain=".bwin.es"><head>
+    <meta charset="utf-8">
+    <title>Granada - Eibar LaLiga 2 Fútbol | bwin</title>
+    <meta name="apple-mobile-web-app-title" content="bwin">
+    <meta name="description" content="Apuesta hoy en Granada - Eibar. Disfruta de las mejores cuotas y opciones de pronósticos de la LaLiga 2 y de todo el Fútbol en bwin.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <script async="" src="//www.googletagmanager.com/gtm.js?id=GTM-N48RN3R"></script><script type="text/javascript" async="" src="https://www.googletagmanager.com/gtag/js?id=G-G43V0B844S&amp;cx=c&amp;_slc=1"></script><script type="text/javascript" async="" src="https://www.googletagmanager.com/gtag/js?id=G-K4DRGSQVE6&amp;cx=c&amp;_slc=1"></script><script type="text/javascript" async="" src="https://www.googletagmanager.com/gtag/js?id=G-T43E30LM45&amp;cx=c&amp;_slc=1"></script><script async="" src="https://www.google-analytics.com/analytics.js"></script><script>
+        window.VERSION='25.18.0.12602-gd166d7795';window.SINGLE_DOMAIN='1';
+        function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+}
+function load(endpoint) {
+    const lang = getCookie('lang') || 'en';
+    const headers = {
+        'x-bwin-browser-url': location.href,
+        'x-bwin-browser-referrer': document.referrer,
+        'X-From-Product': 'host-app',
+    };
+    if (endpoint[1].header) {
+      headers[`x-bwin-${endpoint[0]}-api`] = endpoint[1].header;
     }
-    if ((obj && obj.prototype && Object) &&
-        (Object.getOwnPropertyDescriptor) &&
-        (Object.getOwnPropertyDescriptor(obj.prototype, name)) &&
-        (Object.getOwnPropertyDescriptor(obj.prototype, name).get) &&
-        (Object.getOwnPropertyDescriptor(obj.prototype, name).configurable)) {
-        Object.defineProperty(obj.prototype, name, { get : cb });
-        return;
+    return fetch(`${(endpoint[1].url ? endpoint[1].url : '')}/${lang}/api/clientconfig`, {
+        cache: 'no-store',
+        headers: headers,
+        credentials: 'include'
+    })
+        .then(res => res.json())
+        .then(config => { window['clientConfig'] = window['clientConfig'] || {}; Object.assign(window['clientConfig'], config); })
+        .catch(err => console.error(endpoint, err));
+}
+function boot() {
+    window['_endpoints'] = Object.entries({"host-app":{"enabled":true,"header":"prod","keyOverride":null,"url":null},"sf":{"enabled":true,"header":"prod","keyOverride":null,"url":null},"sports":{"enabled":true,"header":"prod","keyOverride":null,"url":null}});
+    return Promise.all(window['_endpoints'].map(endpoint => load(endpoint)));
+}
+window['_boot'] = boot();
+    </script>
+    <style>
+.click-interaction .bottom-nav .menu-item {pointer-events: all; will-change: transform;}
+.click-interaction .bottom-nav .menu-item:after {z-index: -1;}
+.click-interaction .bottom-nav {contain: content;}
+</style>
+<style>
+#vc-client-promotion .vc-client-promotion-container .default-client-promo .slide-content .more-info-left,
+#vc-client-promotion .vc-client-promotion-container .swiper-bg-container .slide-content .more-info-left {
+    float:none !important;
+}
+</style>
+<!-- OneTrust Cookies Consent Notice start for bwin.es -->
+<script>
+function loadOneTrust(domainScriptId) {
+if(window.location.href == window.parent.location.href){
+var jsElm = document.createElement("script");
+jsElm.setAttribute( 'type', "application/javascript" );
+jsElm.setAttribute( 'src', "https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" );
+jsElm.setAttribute( 'data-document-language', true );
+jsElm.setAttribute( 'charset', "UTF-8" );
+jsElm.setAttribute( 'data-domain-script', domainScriptId );
+document.body.appendChild(jsElm);
+}
+}
+
+function OptanonWrapper() {
+OneTrust.changeLanguage(window.clientConfig.vnPage.languageCode);
+var policyLinkTemplate = "https://help.bwin.es/{culture}/general-information/security/cookies-notice";
+var policyLink = policyLinkTemplate.replace('{culture}',window.clientConfig.vnPage.lang );
+if(document.getElementById('onetrust-policy-text')){
+document.getElementById('onetrust-policy-text').children[0].href = policyLink;
+}
+document.getElementById('ot-pc-desc').children[0].href = policyLink;
+}
+
+window['_boot'].then((clientConf) => {
+setTimeout(function(){
+loadOneTrust("598065e0-eda5-49b2-8945-ba3a4ceb647c");
+}, 5000);
+});
+</script>
+
+<!-- OneTrust Cookies Consent Notice end for bwin.es -->
+<script>
+function setCookie_gl(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    var expires = "expires=" + d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+window.onload = function() {
+    var btn = document.getElementById("action-kyc")
+if (btn != null){
+    btn.addEventListener("click", function(e){
+        e.preventDefault();
+        setCookie_gl('clsd-s', 'm2=kyc_test', 10);
+        location.href = btn.href
+    });
+}
+};
+
+</script>
+<style>
+@media screen and (max-width: 375px) {
+.wrapper-sr .sr-card-wrapper .sr-card-widget .sr-card-container-bottom .pleyer-count {
+width: 19% !important;
+}
+.wrapper-sr .sr-card-wrapper .sr-card-widget .sr-card-container-bottom .spin-section {
+line-height: 14px;
+}
+.sr-sub-wrapper .sr-card-wrapper .sr-card-widget .sr-card-container-bottom .spin-section {
+line-height: unset !important;
+width: 24% !important;
+}
+}
+@media screen and (max-width: 768px) {
+.wrapper-sr .sr-card-wrapper .sr-card-widget .sr-card-container-top .sr-card-total-prize .sr-card-total-prize-box .total-prize {
+    width: 40px !important ;
+}
+}
+</style>
+<script type="module">
+var m=[{r:/^(https:\/\/[a-z.-].*)\/+?([a-z]{2}(-[a-z]{2})?)\/(sports)(?:\/?$|\/\?|\?.+?$)/,g:"sports"},{r:/^(https:\/\/[a-z.-].*)\/+?([a-z]{2}(-[a-z]{2})?)\/.*(p\/)/,g:"public page"},{r:/^(https:\/\/[a-z.-].*)\/+?([a-z]{2}(-[a-z]{2})?)\/(sports)\/(events|събития|události|διοργάνωση|eventos|tournois|događaji|sportesemények|eventi|evenementen|wydarzenia|evenimente|события|podujatia|dogodki|etkinlik)/,g:"sports - events"},{r:/^(https:\/\/[a-z.-].*)\/+?([a-z]{2}(-[a-z]{2})?)\/(sports)\/(live|directo|en-vivo|en-direct|uživo|élő|ao-vivo|canlı)/,g:"sports - live"},{r:/^(https:\/\/[a-z.-]+)\/+?([a-z]{2}(-[a-z]{2})?)\/([^\/\?\#]+)(?:\/?$|\/\?|\?.+?$)/,g:"$4"},{r:/^(https:\/\/[a-z.-]+)\/+?([a-z]{2}(-[a-z]{2})?)\/(sports)\/([^\/\?\#]+-[\d]+)(\/[^?\#]*)?(\?.*)?$/,g:"sports - sport-type"},{r:/^(https:\/\/[a-z.-]+)\/+?([a-z]{2}(-[a-z]{2})?)\/([^\/\?\#]+)\/([^\/\?\#]+)/,g:"$4 - $5"}];function i(){for(let e of m){let t=e.r.exec(location.href);if(t)return e.g.replace(/\$(\d+)/g,(r,s)=>t[s])}return"none"}var f=window?.VERSIONS?.HOST||window?.VERSION||"0.0.0",p=f;var n=()=>((1+Math.random())*65536|0).toString(16).substring(1),c=n()+n()+"-"+n()+"-"+n()+"-"+n()+"-"+n()+n()+n(),l=!1,d=[],h=()=>{if(!window.dataLayer||!Array.isArray(window.dataLayer))return!1;for(let e of window.dataLayer)if(e&&typeof e=="object"&&e.event==="vanilla_gtm_loaded")return!0;return!1};function u(e){window.dataLayer.push(e)}function y(){l=!0;for(let e of d)requestIdleCallback(()=>u(e));d.length=0}function E(e){l?u(e):(d.push(e),h()&&y())}function a(e){return t=>requestIdleCallback(()=>E(e(t)))}var o="none",_=({value:e,attribution:t})=>({event:"webVital",inp_interaction:t?.interactionType||o,inp_target_element:t?.interactionTarget||o,inp_value:e,inp_page_group:i(),inp_app_version:p}),g=({attribution:e,value:t,navigationType:r})=>{let s=navigator.connection,{downlink:v=0}=s;return{event:"LCP_tracking",inp_app_version:p,inp_page_group:i(),inp_target_element:e?.element||o,inp_render_delay:Math.round(e?.elementRenderDelay||0),inp_load_delay:Math.round(e?.resourceLoadDelay||0),inp_load_duration:Math.round(e?.resourceLoadDuration||0),inp_ttfb:Math.round(e?.timeToFirstByte||0),inp_value:Math.round(t||0),inp_navigation_type:r,inp_url:e?.lcpEntry?.url||o,inp_ram:navigator.deviceMemory||0,inp_bandwidth:Math.round(v||0),inp_session:c}};var w=.1;"requestIdleCallback"in window&&Math.random()<w&&import("https://unpkg.com/web-vitals@4.1/dist/web-vitals.attribution.js?module").then(({onINP:e,onLCP:t})=>{let r={reportAllChanges:!0};e(a(_),r),t(a(g),r)}).catch(console.error);
+</script>
+
+<style>
+.pc-banner-tile .pc-t-h-cont p.txt-xtr-small{ display:none;}
+.pc-banner-tile .pc-t-h-cont p.txt-xtr-small span{ display:none !important;}
+.event-details .option-group-tabs.tab-bar .tab-bar-item .badge{display:none;}
+  #mypromotions-page .portal-center-wrapper {
+     max-width:1080px!important;
+  }
+.bet-generator-summary .btn.add-to-betslip{line-height:2.9em!important;}
+.wm-promo-wrapper{border-left:0!important;border-right:0!important;}
+
+.footer-nav-logos .footer-nav-logos-r .footer-nav-link:not(.btn) img{height:25px;}
+
+
+</style>
+<script>
+    function DisplayNoneById(id) {
+        document.getElementById(id).style.display = "none";
+    }
+</script>
+<script type="text/javascript">
+var focusOnPassword = function()
+{
+     window.dispatchEvent(new Event("revisePassword"));
+}
+</script>
+<script type="text/javascript">window.external = window.external || {}</script>
+<style>
+@media screen and (orientation:portrait) {
+  .slick-slide > .ng-scope{
+    height: auto!important;
+    padding-bottom: 0!important;
+    position: relative;
+  }
+  .slick-slide .teaser-image{
+    height: auto!important;
+  }
+  .slick-slide .terms{
+    bottom: 120px;
+  }
+}
+</style>
+<script type="text/javascript">
+var storeJumioRibbonLastUrl = function()
+{
+     var loc= window.location.href;
+     var d = new Date();
+     var currentDomain = "";
+     d.setTime(d.getTime() + (1*24*60*60*1000));
+     var expires = 'expires='+ d.toUTCString();
+	 if(window.clientConfig.m2Page !== undefined)
+	 {
+	 currentDomain = window.clientConfig.m2Page.domain;
+	 }
+	 else {
+	 currentDomain = window.clientConfig.vnPage.domain;
+	 }
+     document.cookie = 'jumioRibbonPrevLoc= '+ loc + ';'+ expires +';path=/; domain='+ currentDomain;
+     return true;
+}
+</script>
+<style>
+    .submit-result {
+        bottom: 60px !important;
+    }
+
+    @media only screen and (max-width: 321px) {
+
+#rg-test .question-individual {
+    font-size: 21px!important;
+   }
+}
+
+</style>
+<!--Google Analytics--><!--ESAllMobile-->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-96660650-4', 'auto', 'ESall');
+  ga('ESall.send', 'pageview');
+  ga('create', 'UA-96660650-6', 'auto', 'ESmobile');
+  ga('ESmobile.send', 'pageview');
+  ga('create', 'UA-96660650-7', 'auto', 'ALLbwin');
+  ga('ALLbwin.send', 'pageview');
+</script>
+<!--End Google Analytics-->
+<style> .showcase-container .showcase-media-mobile .tab-bar span.title {display: none;} </style>
+<style>
+.app__edit-bet-mode .smart-banner, .popup-on .smart-banner {
+display: none;
+}
+</style>
+    <link rel="dns-prefetch" href="//media.bwin.es"><link rel="dns-prefetch" href="//scmedia.bwin.es"><script src="https://scmedia.bwin.es/$-$/b70c42ab4d7d4d71945c14adf4b3bd7c.js" id="svoc" defer=""></script><meta name="format-detection" content="telephone=no"><script src="//scmedia.bwin.es/$-$/490ff7c8769044e69d75c84aa1b4b1a0.js" id="launch-darkly-js" defer=""></script><link rel="preconnect" href="https://www.bwin.es" crossorigin=""><script src="https://scmedia.itsfogo.com/$-$/7187bf0a675b46a89627b38d9d3d0f66.js" id="ot-banner-load" defer=""></script>
+
+    <!-- black, black-dark, bwin-light, bwin-dark -->
+<link rel="apple-touch-icon" sizes="180x180" href="https://scmedia.bwin.es/$-$/c27fbce4bdf84700990ff0544e003b23.png">
+<link rel="icon" type="image/x-icon" sizes="32x32" href="https://scmedia.bwin.es/$-$/7377673791a642239bcbc8a5091351e6.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://scmedia.bwin.es/$-$/2dafa44408d74c6b96531b5b135bb360.png">
+<link rel="manifest" href="/site.webmanifest" crossorigin="use-credentials">
+<link rel="shortcut icon" href="https://scmedia.bwin.es/$-$/947e0034cbd8481b992cf07f728a09b8.ico">
+<meta name="theme-color" content="#000000">
+<!-- cyrillic-ext 100 -->
+
+<!-- cyrillic-ext 300 -->
+
+<!-- cyrillic-ext 400 -->
+
+<!-- cyrillic-ext 500 -->
+
+<!-- cyrillic-ext 700 -->
+
+<!-- cyrillic-ext 900 -->
+
+<!-- cyrillic 100 -->
+
+<!-- cyrillic 300 -->
+
+<!-- cyrillic 400 -->
+
+<!-- cyrillic 500 -->
+
+<!-- cyrillic 700 -->
+
+<!-- cyrillic 900 -->
+
+<!-- greek-ext 100 -->
+
+<!-- greek-ext 300 -->
+
+<!-- greek-ext 400 -->
+
+<!-- greek-ext 500 -->
+
+<!-- greek-ext 700 -->
+
+<!-- greek-ext 900 -->
+
+<!-- greek 100 -->
+
+<!-- greek 300 -->
+
+<!-- greek 400 -->
+
+<!-- greek 500 -->
+
+<!-- greek 700 -->
+
+<!-- greek 900 -->
+
+<!-- cyrillic-ext 100 -->
+
+<!-- cyrillic-ext 300 -->
+
+<!-- cyrillic-ext 400 -->
+
+<!-- cyrillic-ext 500 -->
+
+<!-- cyrillic-ext 700 -->
+
+<!-- cyrillic-ext 900 -->
+
+<!-- cyrillic 100 -->
+
+<!-- cyrillic 300 -->
+
+<!-- cyrillic 400 -->
+
+<!-- cyrillic 500 -->
+
+<!-- cyrillic 700 -->
+
+<!-- cyrillic 900 -->
+
+<!-- latin-ext 100 -->
+<link rel="preload" as="font" type="font/woff2" href="https://scmedia.bwin.es/$-$/04b7b268bf0e494b87a1727e541a4233.woff2" crossorigin="">
+<!-- latin-ext 300 -->
+<link rel="preload" as="font" type="font/woff2" href="https://scmedia.bwin.es/$-$/0311485d5a76414abf29becfa539d3e0.woff2" crossorigin="">
+<!-- latin-ext 400 -->
+<link rel="preload" as="font" type="font/woff2" href="https://scmedia.bwin.es/$-$/36561729f0f34b799b4cc12b064d6734.woff2" crossorigin="">
+<!-- latin-ext 500 -->
+<link rel="preload" as="font" type="font/woff2" href="https://scmedia.bwin.es/$-$/aae8d5b622854ba3bd00ad95da750224.woff2" crossorigin="">
+<!-- latin-ext 700 -->
+<link rel="preload" as="font" type="font/woff2" href="https://scmedia.bwin.es/$-$/01770d4317ee484cb1298e129042ef95.woff2" crossorigin="">
+<!-- latin-ext 900 -->
+<link rel="preload" as="font" type="font/woff2" href="https://scmedia.bwin.es/$-$/46681737d01445ae8cacce5710d654b6.woff2" crossorigin="">
+<!-- latin 100 -->
+<link rel="preload" as="font" type="font/woff2" href="https://scmedia.bwin.es/$-$/7a7ed40c8c5844738c2698017122d512.woff2" crossorigin="">
+<!-- latin 300 -->
+<link rel="preload" as="font" type="font/woff2" href="https://scmedia.bwin.es/$-$/aa1772f14c9b404699af41a93b2ca814.woff2" crossorigin="">
+<!-- latin 400 -->
+<link rel="preload" as="font" type="font/woff2" href="https://scmedia.bwin.es/$-$/3619afc9cea64a788270c65fff3140b4.woff2" crossorigin="">
+<!-- latin 500 -->
+<link rel="preload" as="font" type="font/woff2" href="https://scmedia.bwin.es/$-$/343d8f849873478ea1b2162658a2c8e4.woff2" crossorigin="">
+<!-- latin 700 -->
+<link rel="preload" as="font" type="font/woff2" href="https://scmedia.bwin.es/$-$/a7f86e6f29a3457db34a9f681f0a5020.woff2" crossorigin="">
+<!-- latin 900 -->
+<link rel="preload" as="font" type="font/woff2" href="https://scmedia.bwin.es/$-$/dab8edb165d24eb39b4618946485a14c.woff2" crossorigin="">
+
+
+
+<style>
+    /* latin-ext */
+    @font-face {
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 100;
+        font-display: swap;
+        src: url(https://scmedia.bwin.es/$-$/04b7b268bf0e494b87a1727e541a4233.woff2) format('woff2');
+        unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        ascent-override: 100%;
+    }
+
+    @font-face {
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 300;
+        font-display: swap;
+        src: url(https://scmedia.bwin.es/$-$/0311485d5a76414abf29becfa539d3e0.woff2) format('woff2');
+        unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        ascent-override: 100%;
+    }
+
+    @font-face {
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url(https://scmedia.bwin.es/$-$/36561729f0f34b799b4cc12b064d6734.woff2) format('woff2');
+        unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        ascent-override: 100%;
+    }
+
+    @font-face {
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 500;
+        font-display: swap;
+        src: url(https://scmedia.bwin.es/$-$/aae8d5b622854ba3bd00ad95da750224.woff2) format('woff2');
+        unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        ascent-override: 100%;
+    }
+
+    @font-face {
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+        src: url(https://scmedia.bwin.es/$-$/01770d4317ee484cb1298e129042ef95.woff2) format('woff2');
+        unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        ascent-override: 100%;
+    }
+
+    @font-face {
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 900;
+        font-display: swap;
+        src: url(https://scmedia.bwin.es/$-$/46681737d01445ae8cacce5710d654b6.woff2) format('woff2');
+        unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        ascent-override: 100%;
+    }
+
+    /* latin */
+    @font-face {
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 100;
+        font-display: swap;
+        src: url(https://scmedia.bwin.es/$-$/7a7ed40c8c5844738c2698017122d512.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+ascent-override: 100%;
+    }
+
+    @font-face {
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 300;
+        font-display: swap;
+        src: url(https://scmedia.bwin.es/$-$/aa1772f14c9b404699af41a93b2ca814.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+ascent-override: 100%;
+    }
+
+    @font-face {
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url(https://scmedia.bwin.es/$-$/3619afc9cea64a788270c65fff3140b4.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+ascent-override: 100%;
+    }
+
+    @font-face {
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 500;
+        font-display: swap;
+        src: url(https://scmedia.bwin.es/$-$/343d8f849873478ea1b2162658a2c8e4.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+ascent-override: 100%;
+    }
+
+    @font-face {
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+        src: url(https://scmedia.bwin.es/$-$/a7f86e6f29a3457db34a9f681f0a5020.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+ascent-override: 100%;
+    }
+
+    @font-face {
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 900;
+        font-display: swap;
+        src: url(https://scmedia.bwin.es/$-$/dab8edb165d24eb39b4618946485a14c.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+ascent-override: 100%;
+    }
+</style>
+<!-- cyrillic-ext-300 -->
+
+<!-- cyrillic-ext-400 -->
+
+<!-- cyrillic-ext-500 -->
+
+<!-- cyrillic-ext-700 -->
+
+<!-- cyrillic-300 -->
+
+<!-- cyrillic-400 -->
+
+<!-- cyrillic-500 -->
+
+<!-- cyrillic-700 -->
+
+<!-- greek-ext-300 -->
+
+<!-- greek-ext-400 -->
+
+<!-- greek-ext-500 -->
+
+<!-- greek-ext-700 -->
+
+<!-- greek-300 -->
+
+<!-- greek-400 -->
+
+<!-- greek-500 -->
+
+<!-- greek-700 -->
+
+<!-- cyrillic-ext-300 -->
+
+<!-- cyrillic-ext-400 -->
+
+<!-- cyrillic-ext-500 -->
+
+<!-- cyrillic-ext-700 -->
+
+<!-- cyrillic-300 -->
+
+<!-- cyrillic-400 -->
+
+<!-- cyrillic-500 -->
+
+<!-- cyrillic-700 -->
+
+<!-- latin-ext-300 -->
+<link rel="preload" as="font" type="font/woff2" href="https://scmedia.bwin.es/$-$/266ff407f3e8450183d38411c331bfc8.woff2" crossorigin="">
+<!-- latin-ext-400 -->
+<link rel="preload" as="font" type="font/woff2" href="https://scmedia.bwin.es/$-$/88010c13a219409686b047dc4b6eb2df.woff2" crossorigin="">
+<!-- latin-ext-500 -->
+<link rel="preload" as="font" type="font/woff2" href="https://scmedia.bwin.es/$-$/895f2cbee72b4086a9613ff86b741f5b.woff2" crossorigin="">
+<!-- latin-ext-700 -->
+<link rel="preload" as="font" type="font/woff2" href="https://scmedia.bwin.es/$-$/d1b3c59359cc4057a5598a07fe74364f.woff2" crossorigin="">
+<!-- latin-300 -->
+<link rel="preload" as="font" type="font/woff2" href="https://scmedia.bwin.es/$-$/f6080c8bef3c4610b0ee76c8d5693949.woff2" crossorigin="">
+<!-- latin-400 -->
+<link rel="preload" as="font" type="font/woff2" href="https://scmedia.bwin.es/$-$/628373f34c74437bb387dd4240ee713b.woff2" crossorigin="">
+<!-- latin-500 -->
+<link rel="preload" as="font" type="font/woff2" href="https://scmedia.bwin.es/$-$/9673fc2c722545f7b4bb3ab7289a823a.woff2" crossorigin="">
+<!-- latin-700 -->
+<link rel="preload" as="font" type="font/woff2" href="https://scmedia.bwin.es/$-$/e72d83ba750d4429a8803f4fe3e2c2b8.woff2" crossorigin="">
+<!-- 600 -->
+<link rel="preload" as="font" type="font/woff2" href="https://scmedia.bwin.es/$-$/b9d57c525fc74678852233803d927f0b.woff2" crossorigin="">
+
+
+
+
+<style>
+    /* latin-ext */
+    @font-face {
+        font-family: 'Roboto Condensed';
+        font-style: normal;
+        font-weight: 300;
+        font-display: swap;
+        src: url(https://scmedia.bwin.es/$-$/266ff407f3e8450183d38411c331bfc8.woff2) format('woff2');
+        unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        ascent-override: 100%;
+    }
+
+    @font-face {
+        font-family: 'Roboto Condensed';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url(https://scmedia.bwin.es/$-$/88010c13a219409686b047dc4b6eb2df.woff2) format('woff2');
+        unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        ascent-override: 100%;
+    }
+
+    @font-face {
+        font-family: 'Roboto Condensed';
+        font-style: normal;
+        font-weight: 500;
+        font-display: swap;
+        src: url(https://scmedia.bwin.es/$-$/895f2cbee72b4086a9613ff86b741f5b.woff2) format('woff2');
+        unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        ascent-override: 100%;
+    }
+
+    @font-face {
+        font-family: 'Roboto Condensed';
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+        src: url(https://scmedia.bwin.es/$-$/d1b3c59359cc4057a5598a07fe74364f.woff2) format('woff2');
+        unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        ascent-override: 100%;
+    }
+
+    /* latin */
+    @font-face {
+        font-family: 'Roboto Condensed';
+        font-style: normal;
+        font-weight: 300;
+        font-display: swap;
+        src: url(https://scmedia.bwin.es/$-$/f6080c8bef3c4610b0ee76c8d5693949.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+ascent-override: 100%;
+    }
+
+    @font-face {
+        font-family: 'Roboto Condensed';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url(https://scmedia.bwin.es/$-$/628373f34c74437bb387dd4240ee713b.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+ascent-override: 100%;
+    }
+
+    @font-face {
+        font-family: 'Roboto Condensed';
+        font-style: normal;
+        font-weight: 500;
+        font-display: swap;
+        src: url(https://scmedia.bwin.es/$-$/9673fc2c722545f7b4bb3ab7289a823a.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+ascent-override: 100%;
+    }
+
+    @font-face {
+        font-family: 'Roboto Condensed';
+        font-style: normal;
+        font-weight: 600;
+        font-display: swap;
+        src: url(https://scmedia.bwin.es/$-$/b9d57c525fc74678852233803d927f0b.woff2) format('woff2');
+        ascent-override: 100%;
+    }
+
+    @font-face {
+        font-family: 'Roboto Condensed';
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+        src: url(https://scmedia.bwin.es/$-$/e72d83ba750d4429a8803f4fe3e2c2b8.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+ascent-override: 100%;
+    }
+</style>
+<!--font-weight-400 -->
+<link rel="preload" as="font" type="font/woff2" href="https://scmedia.bwin.es/$-$/702bf9f3c4744b7faedb214370008716.woff2" crossorigin="">
+<style>
+    @font-face {
+        font-display: swap;
+        font-family: 'Druk Wide LCG Web';
+        font-style: normal;
+        font-weight: 400;
+        src: url('https://scmedia.bwin.es/$-$/702bf9f3c4744b7faedb214370008716.woff2') format('woff2');
+    }
+</style>
+<!-- black, black-dark, bwin, bwin-dark -->
+<link rel="preload" as="image" href="https://scmedia.bwin.es/$-$/b823fa8dc20f4c3ba4a4469d694907b3.svg">
+<link rel="preload" as="image" href="https://scmedia.bwin.es/$-$/54f526a0765f4bd283e2b95da87e0730.svg">
+
+<style>
+.brand-logo {
+    background: url('https://scmedia.bwin.es/$-$/b823fa8dc20f4c3ba4a4469d694907b3.svg') no-repeat center transparent;
+    background-size: contain;
+}
+
+.th-black vn-svg .brand-logo.navbar-switch-logo,
+.th-black-dark vn-svg .brand-logo.navbar-switch-logo,
+.th-bwin vn-svg .brand-logo.navbar-switch-logo,
+.th-bwin-dark vn-svg .brand-logo.navbar-switch-logo {
+   background: none;
+   transform: translateY(-9px);
+}
+</style>
+<style>
+:root {
+--input-valid-bg: url('https://scmedia.bwin.es/$-$/ce4b97e20c1149e6a179a51bf989e56d.svg');
+--selector-arrow-bg: url('https://scmedia.bwin.es/$-$/ba80623bf1e641098bfd3bdcf14c9c5f.png');
+}
+</style>
+
+    <link rel="canonical" href="https://www.bwin.es/es/sports/eventos/granada-eibar-2:7609147">
+    <base href="/">
+    <link rel="modulepreload" type="" href="/ClientDist/browser/chunk-osg1bvau.js"><link rel="modulepreload" type="" href="/ClientDist/browser/chunk-d3cku9i1.js"><link rel="modulepreload" type="" href="/ClientDist/browser/chunk-nxrycert.js"><link rel="modulepreload" type="" href="/ClientDist/browser/chunk-fka72f2l.js"><link rel="modulepreload" type="" href="/ClientDist/browser/chunk-maxvd0hb.js"><style>@keyframes pulse{0%{background-color:#a5a5a51a}50%{background-color:#a5a5a54d}to{background-color:#a5a5a51a}}@keyframes vertical-shimmer{to{transform:translate(100%)}}*,:before,:after{box-sizing:border-box}:root{--color-white:#fff;--color-black:#000;--theme-promo-bonus:#a374d5;--theme-promo-free-spins:#ff8a5c;--theme-promo-freetickets:#093863;--theme-promo-freebet:#2db343;--theme-promo-goldenchips:#daa719;--theme-promo-new:#ff3b30;--theme-promo:#1284e0;--theme-buildabet:#eb7e13;--theme-streaming:#e6a31b;--theme-promo-odds-boost:#cc003a;--theme-promo-backup-bet:#0064b5;--theme-promo-acca-boost:#a141e6;--theme-promo-number:#07213a;--theme-promo-sports:turquoise;--theme-promo-poker:#093863;--theme-promo-recommended:#000;--theme-sports-live:#d9342b;--theme-sports-live-v2:#d45050;--theme-esports-streaming:#9a22d2;--theme-gradient-5-start:#f5f5f5;--theme-gradient-5-end:#eaebec;--theme-info-bg:color-mix(in srgb,var(--theme-info),#fff 80%);--theme-success-bg:color-mix(in srgb,var(--theme-success),#fff 80%);--theme-warning-bg:color-mix(in srgb,var(--theme-warning),#fff 80%);--theme-danger-bg:color-mix(in srgb,var(--theme-danger),#fff 80%);--theme-info:#1284e0;--theme-success:#2db343;--theme-error:#ff3b30;--theme-warning:#f6bd00;--theme-danger:#ff3b30;--theme-body:#333;--theme-body-400:#e5e5e5;--theme-body-300:#d5d5d5;--theme-body-200:#0f0f0f;--theme-body-100:#acacac;--theme-body-90:#474747;--theme-body-80:#5c5c5c;--theme-body-70:#707070;--theme-body-60:#858585;--theme-body-50:#999;--theme-body-40:#adadad;--theme-body-30:#c1c1c1;--theme-body-20:#d6d6d6;--theme-body-10:#eaeaea;--theme-brand-01:#000;--theme-brand-02:#191919;--theme-brand-03:#000;--theme-accent-01:#fc0;--theme-accent-02:#333;--theme-text-highlight:#333;--theme-cta-01:#fc0;--theme-cta-02:#333;--theme-cta-ghost-light:#333;--theme-cta-ghost-dark:#fff;--theme-chat:#1284e0;--theme-gray-tint:#f5f5f5;--theme-body-txt:#333;--theme-body-bgd:#fff;--theme-body-bg:#fff;--theme-overlay:#333;--scrollbar-width:12px;--site-spacer:1rem;--site-spacer-m:.75rem;--site-spacer-s:.5rem;--site-spacer-xs:.25rem;--site-spacer-tiny:.125rem;--site-spacer-l:1.25rem;--site-spacer-xl:1.5rem;--site-spacer-2xl:1.75rem;--site-spacer-3xl:2rem;--site-spacer-4xl:2.25rem;--site-spacer-5xl:2.5rem;--site-spacer-6xl:3rem;--site-spacer-7xl:3.5rem;--site-spacer-8xl:4rem;--site-spacer-9xl:4.5rem;--site-spacer-10xl:5rem;--theme-h1-font-size:32px;--theme-h2-font-size:28px;--theme-h3-font-size:24px;--theme-h4-font-size:20px;--theme-h5-font-size:16px;--theme-h6-font-size:14px;--theme-txt-6xl-font-size:48px;--theme-txt-5xl-font-size:40px;--theme-txt-4xl-font-size:36px;--theme-txt-3xl-font-size:32px;--theme-txt-2xl-font-size:24px;--theme-txt-xl-font-size:20px;--theme-txt-lg-font-size:16px;--theme-txt-md-font-size:14px;--theme-txt-sm-font-size:12px;--theme-txt-xs-font-size:10px;--theme-txt-2xs-font-size:8px;--theme-font-normal:400;--theme-font-medium:500;--theme-font-bold:700;--theme-font-family-base:Roboto,Verdana,Arial,Helvetica,sans-serif;--theme-font-family-secondary:Roboto Condensed,Verdana,Arial,Helvetica,sans-serif;--theme-font-family-tertiary:Druk Wide LCG Web,Roboto,Verdana,Arial,Helvetica,sans-serif}body{background-color:var(--theme-body-bgd);color:var(--theme-body-txt);font-family:var(--theme-font-family-base);text-align:left;margin:0;font-size:1rem;font-weight:400;line-height:1.5}main{min-height:100vh;display:flex}.main-min-h-reset main{min-height:auto}.device-mobile.navigation-layout-open main{min-height:100vh}:root{--mat-dialog-container-small-max-width:none;--mat-dialog-container-max-width:none;--mat-dialog-container-min-width:auto}.loading{pointer-events:all;text-align:center;z-index:2000;width:100%;height:100%;position:fixed;inset:0}.loading>span:not(.loading-v1){display:none}.loading-v1,.splash-loading-spinner{--loading-v1-spinner-top:0;text-indent:-9999px;bottom:0;right:0;top:var(--loading-v1-spinner-top);--loading-v1-spinner-height:4rem;--loading-v1-spinner-width:4rem;--loading-v1-spinner-position:fixed;--loading-v1-spinner-border-width:.5rem;border:var(--loading-v1-spinner-border-width)solid #fc03;border-left:var(--loading-v1-spinner-border-width)solid #fc0;height:var(--loading-v1-spinner-height);position:var(--loading-v1-spinner-position);width:var(--loading-v1-spinner-width);z-index:9999;border-radius:50%;outline:1px solid #fff0;margin:auto;animation:1.1s linear infinite loadingspinnerrotate;display:block;left:0;overflow:hidden;transform:translateZ(0)}.loading-v1:after,.splash-loading-spinner:after{border-radius:50%;width:4rem;height:4rem}.loading-v1.alt-loading-spinner,.splash-loading-spinner.alt-loading-spinner{border-color:#00000080 #00000080 #00000080 #000}.splash-loading-spinner{--loading-v1-spinner-top:calc(50% + 35vh/2);--loading-v1-spinner-position:absolute;--loading-v1-spinner-height:3rem;--loading-v1-spinner-width:3rem}@media (max-width:959.98px){.splash-loading-spinner{--loading-v1-spinner-height:2.5rem;--loading-v1-spinner-width:2.5rem;--loading-v1-spinner-border-width:.2rem}}@keyframes loadingspinnerrotate{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.has-cashier-iframe .navigation-content-wrapper{position:relative}.has-cashier-iframe .navigation-content-wrapper .loading{background:var(--theme-body-bgd);opacity:1;z-index:2;position:absolute}.has-cashier-iframe .navigation-content-wrapper .loading .loading-v1{position:absolute}.loading-v2{z-index:9;background:#000;border-radius:25px;justify-content:center;align-items:center;width:55px;height:20px;margin:auto;display:flex;position:fixed;inset:0}.loading-v2 .dot-flashing{background-color:#858585;border-radius:20px;width:9px;height:9px;animation:.5s linear .2s infinite alternate dotFlashing;position:relative}.loading-v2 .dot-flashing:before,.loading-v2 .dot-flashing:after{content:"";display:inline-block;position:absolute;top:0}.loading-v2 .dot-flashing:before{background-color:#eaeaea;border-radius:20px;width:9px;height:9px;animation:.5s infinite alternate dotFlashing;left:-15px}.loading-v2 .dot-flashing:after{background-color:#eaeaea;border-radius:20px;width:9px;height:9px;animation:.5s .4s infinite alternate dotFlashing;left:15px}@keyframes dotFlashing{0%{background-color:var(--theme-cta-01)}50%,to{background-color:#eaeaea}}.loading-v3{z-index:9;border-radius:25px;justify-content:center;align-items:center;width:55px;height:20px;margin:auto;display:flex;position:fixed;inset:0}.loading-v3 .dot-flashing{background-color:#858585;border-radius:20px;width:9px;height:9px;animation:.5s linear .2s infinite alternate dotFlashing;position:relative}.loading-v3 .dot-flashing:before,.loading-v3 .dot-flashing:after{content:"";display:inline-block;position:absolute;top:0}.loading-v3 .dot-flashing:before{background-color:#eaeaea;border-radius:20px;width:9px;height:9px;animation:.5s infinite alternate dotFlashing;left:-15px}.loading-v3 .dot-flashing:after{background-color:#eaeaea;border-radius:20px;width:9px;height:9px;animation:.5s .4s infinite alternate dotFlashing;left:15px}.app-root{display:block}.app-root .slot-header{z-index:6;width:100%;display:block;position:sticky;top:0}@media (orientation:landscape){.device-mobile-phone.app-root .slot-header{position:static}}.header{background:var(--color-black);box-shadow:none;color:var(--color-white)}.navbar{font-family:var(--theme-font-family-base);min-height:56px;max-height:56px;padding:var(--site-spacer-s)var(--site-spacer-m);flex-wrap:wrap;justify-content:space-between;align-items:center;display:flex;position:relative}@media (max-width:599.98px){.navbar{padding-left:var(--site-spacer-s);padding-right:var(--site-spacer-s);min-height:56px}}.navbar.sub-nav-wrapper{box-shadow:none;min-height:48px;padding:0 var(--site-spacer-s);background-color:#0f0f0f;border-bottom:none;align-items:stretch}.navbar.sub-nav-wrapper.sub-nav-v2{background-color:var(--theme-body-bg);box-shadow:none}.header-shown:not(.header_sections-hidden) .slot-header{min-height:56px;display:block}@media (max-width:599.98px){.header-shown:not(.header_sections-hidden) .slot-header{min-height:56px}}.navbar-nav{flex-direction:column;margin-bottom:0;padding-left:0;list-style:none;display:flex}.fast-svg,.ds-icon-outline .fast-svg{--ds-icon-outline:currentColor;--ds-icon-stroke-size:0;--ds-icon-fill-primary:transparent;--ds-icon-fill-primary-opacity:0;--ds-icon-fill-secondary:transparent;--ds-icon-fill-secondary-opacity:0}.ds-icon-dualtone .fast-svg{--ds-icon-outline:currentColor;--ds-icon-stroke-size:0;--ds-icon-fill-primary:var(--semantic-color-supporting-brand-primary-base);--ds-icon-fill-primary-opacity:.6;--ds-icon-fill-secondary:var(--semantic-color-surface-container-lowest-base);--ds-icon-fill-secondary-opacity:.6}.ds-icon-filled .fast-svg{--ds-icon-outline:transparent;--ds-icon-stroke-size:0;--ds-icon-fill-primary:var(--semantic-color-on-surface-base);--ds-icon-fill-primary-opacity:1;--ds-icon-fill-secondary:var(--semantic-color-on-surface-base);--ds-icon-fill-secondary-opacity:1}.th-bwin,.th-black{--semantic-color-caution-active:#d7a500;--semantic-color-caution-active-inverse:#d7a500;--semantic-color-caution-base:#f6bd00;--semantic-color-caution-base-inverse:#f6bd00;--semantic-color-caution-container-active:#f9d96d;--semantic-color-caution-container-active-inverse:#d7a500;--semantic-color-caution-container-base:#fcecb6;--semantic-color-caution-container-base-inverse:#b88d00;--semantic-color-caution-container-hover:#fbe291;--semantic-color-caution-container-hover-inverse:#f6bd00;--semantic-color-caution-container-selected:#fbe291;--semantic-color-caution-container-selected-inverse:#f6bd00;--semantic-color-caution-hover:#f7c624;--semantic-color-caution-hover-inverse:#f7c624;--semantic-color-caution-outline-active:#d7a500;--semantic-color-caution-outline-active-inverse:#d7a500;--semantic-color-caution-outline-base:#f6bd00;--semantic-color-caution-outline-base-inverse:#f6bd00;--semantic-color-caution-outline-hover:#f7c624;--semantic-color-caution-outline-hover-inverse:#f7c624;--semantic-color-disabled-base:#eaeaea;--semantic-color-disabled-base-inverse:#474747;--semantic-color-disabled-outline:#d6d6d6;--semantic-color-disabled-outline-inverse:#474747;--semantic-color-l2-navigation-background-base:#000;--semantic-color-l2-navigation-on-background-base:#fff;--semantic-color-l2-navigation-on-background-divider:#333;--semantic-color-l2-navigation-on-background-subtle:#adadad;--semantic-color-l2-odds-button-background-active:#fff0b2;--semantic-color-l2-odds-button-background-active-inverse:#6a5c33;--semantic-color-l2-odds-button-background-active-selected:#fff0b2;--semantic-color-l2-odds-button-background-active-selected-inverse:#6a5c33;--semantic-color-l2-odds-button-background-base:#eaeaea;--semantic-color-l2-odds-button-background-base-inverse:#1f1f1f;--semantic-color-l2-odds-button-background-hover:#d6d6d6;--semantic-color-l2-odds-button-background-hover-inverse:#999;--semantic-color-l2-odds-button-background-hover-selected:#ffe066;--semantic-color-l2-odds-button-background-hover-selected-inverse:#736334;--semantic-color-l2-odds-button-background-selected:#fff0b2;--semantic-color-l2-odds-button-background-selected-inverse:#736334;--semantic-color-l2-odds-button-border-default-active:#d6d6d6;--semantic-color-l2-odds-button-border-default-active-inverse:#474747;--semantic-color-l2-odds-button-border-default-active-selected:#fc0;--semantic-color-l2-odds-button-border-default-active-selected-inverse:#fc0;--semantic-color-l2-odds-button-border-default-base:#d6d6d6;--semantic-color-l2-odds-button-border-default-base-inverse:#474747;--semantic-color-l2-odds-button-border-default-hover:#d6d6d6;--semantic-color-l2-odds-button-border-default-hover-inverse:#474747;--semantic-color-l2-odds-button-border-default-hover-selected:#fc0;--semantic-color-l2-odds-button-border-default-hover-selected-inverse:#fc0;--semantic-color-l2-odds-button-border-default-selected:#fc0;--semantic-color-l2-odds-button-border-default-selected-inverse:#fc0;--semantic-color-l2-odds-button-border-negative-active:#d6d6d6;--semantic-color-l2-odds-button-border-negative-active-inverse:#474747;--semantic-color-l2-odds-button-border-negative-active-selected:#fc0;--semantic-color-l2-odds-button-border-negative-active-selected-inverse:#fc0;--semantic-color-l2-odds-button-border-negative-base:#d6d6d6;--semantic-color-l2-odds-button-border-negative-base-inverse:#474747;--semantic-color-l2-odds-button-border-negative-hover:#d6d6d6;--semantic-color-l2-odds-button-border-negative-hover-inverse:#474747;--semantic-color-l2-odds-button-border-negative-hover-selected:#fc0;--semantic-color-l2-odds-button-border-negative-hover-selected-inverse:#fc0;--semantic-color-l2-odds-button-border-negative-selected:#fc0;--semantic-color-l2-odds-button-border-negative-selected-inverse:#fc0;--semantic-color-l2-odds-button-border-positive-active:#d6d6d6;--semantic-color-l2-odds-button-border-positive-active-inverse:#474747;--semantic-color-l2-odds-button-border-positive-active-selected:#fc0;--semantic-color-l2-odds-button-border-positive-active-selected-inverse:#fc0;--semantic-color-l2-odds-button-border-positive-base:#d6d6d6;--semantic-color-l2-odds-button-border-positive-base-inverse:#474747;--semantic-color-l2-odds-button-border-positive-hover:#d6d6d6;--semantic-color-l2-odds-button-border-positive-hover-inverse:#474747;--semantic-color-l2-odds-button-border-positive-hover-selected:#fc0;--semantic-color-l2-odds-button-border-positive-hover-selected-inverse:#fc0;--semantic-color-l2-odds-button-border-positive-selected:#fc0;--semantic-color-l2-odds-button-border-positive-selected-inverse:#fc0;--semantic-color-l2-odds-button-on-background-base:#333;--semantic-color-l2-odds-button-on-background-base-inverse:#fff;--semantic-color-l2-odds-button-on-background-base-inverse-active:#fff;--semantic-color-l2-odds-button-on-background-base-inverse-selected:#fff;--semantic-color-l2-odds-button-on-background-subtle:#858585;--semantic-color-l2-odds-button-on-background-subtle-inverse:#858585;--semantic-color-l2-odds-button-on-background-subtle-inverse-active:#858585;--semantic-color-l2-odds-button-on-background-subtle-inverse-selected:#858585;--semantic-color-l2-pill-current-background-active:#c1c1c1;--semantic-color-l2-pill-current-background-active-inverse:#1f1f1f;--semantic-color-l2-pill-current-background-base:#fff;--semantic-color-l2-pill-current-background-base-inverse:#1f1f1f;--semantic-color-l2-pill-current-background-hover:#d6d6d6;--semantic-color-l2-pill-current-background-hover-inverse:#5c5c5c;--semantic-color-l2-pill-current-background-selected:#eaeaea;--semantic-color-l2-pill-current-background-selected-inverse:#333;--semantic-color-l2-pill-current-border-active:#d6d6d6;--semantic-color-l2-pill-current-border-active-inverse:#474747;--semantic-color-l2-pill-current-border-base:#d6d6d6;--semantic-color-l2-pill-current-border-base-inverse:#474747;--semantic-color-l2-pill-current-border-hover:#d6d6d6;--semantic-color-l2-pill-current-border-hover-inverse:#474747;--semantic-color-l2-pill-current-border-selected:#eaeaea;--semantic-color-l2-pill-current-border-selected-inverse:#333;--semantic-color-l2-pill-current-on-background-base:#333;--semantic-color-l2-pill-current-on-background-base-inverse:#fff;--semantic-color-l2-pill-current-on-background-selected:#333;--semantic-color-l2-pill-current-on-background-selected-inverse:#fff;--semantic-color-l2-pill-strong-background-active:#fff5cc;--semantic-color-l2-pill-strong-background-active-inverse:#ffffff29;--semantic-color-l2-pill-strong-background-base:#fff0;--semantic-color-l2-pill-strong-background-base-inverse:#fff0;--semantic-color-l2-pill-strong-background-hover:#fffae5;--semantic-color-l2-pill-strong-background-hover-inverse:#ffffff14;--semantic-color-l2-pill-strong-background-selected:#fc0;--semantic-color-l2-pill-strong-background-selected-inverse:#fff;--semantic-color-l2-pill-strong-border-active:#fc0;--semantic-color-l2-pill-strong-border-active-inverse:#5c5c5c;--semantic-color-l2-pill-strong-border-base:#d6d6d6;--semantic-color-l2-pill-strong-border-base-inverse:#5c5c5c;--semantic-color-l2-pill-strong-border-hover:#fc0;--semantic-color-l2-pill-strong-border-hover-inverse:#5c5c5c;--semantic-color-l2-pill-strong-border-selected:#fc0;--semantic-color-l2-pill-strong-border-selected-inverse:#fff;--semantic-color-l2-pill-strong-on-background-base:#333;--semantic-color-l2-pill-strong-on-background-base-inverse:#fff;--semantic-color-l2-pill-strong-on-background-selected:#333;--semantic-color-l2-pill-strong-on-background-selected-inverse:#333;--semantic-color-l2-pill-subtle-background-active:#c1c1c1;--semantic-color-l2-pill-subtle-background-active-inverse:#1f1f1f;--semantic-color-l2-pill-subtle-background-base:#fff;--semantic-color-l2-pill-subtle-background-base-inverse:#1f1f1f;--semantic-color-l2-pill-subtle-background-hover:#d6d6d6;--semantic-color-l2-pill-subtle-background-hover-inverse:#5c5c5c;--semantic-color-l2-pill-subtle-background-selected:#eaeaea;--semantic-color-l2-pill-subtle-background-selected-inverse:#333;--semantic-color-l2-pill-subtle-border-active:#d6d6d6;--semantic-color-l2-pill-subtle-border-active-inverse:#474747;--semantic-color-l2-pill-subtle-border-base:#d6d6d6;--semantic-color-l2-pill-subtle-border-base-inverse:#474747;--semantic-color-l2-pill-subtle-border-hover:#d6d6d6;--semantic-color-l2-pill-subtle-border-hover-inverse:#474747;--semantic-color-l2-pill-subtle-border-selected:#eaeaea;--semantic-color-l2-pill-subtle-border-selected-inverse:#333;--semantic-color-l2-pill-subtle-on-background-base:#333;--semantic-color-l2-pill-subtle-on-background-base-inverse:#fff;--semantic-color-l2-pill-subtle-on-background-selected:#333;--semantic-color-l2-pill-subtle-on-background-selected-inverse:#fff;--semantic-color-l2-sheet-background-base:#fff;--semantic-color-l2-sheet-on-background-subtle:#858585;--semantic-color-l2-tabs-background-active:#d6d6d6;--semantic-color-l2-tabs-background-active-inverse:#1f1f1f;--semantic-color-l2-tabs-background-base:#fff0;--semantic-color-l2-tabs-background-base-inverse:#fff0;--semantic-color-l2-tabs-background-hover:#eaeaea;--semantic-color-l2-tabs-background-hover-inverse:#5c5c5c;--semantic-color-l2-tabs-background-selected:#f5f5f5;--semantic-color-l2-tabs-background-selected-inverse:#333;--semantic-color-l2-tabs-filled-on-background-active:#333;--semantic-color-l2-tabs-filled-on-background-active-inverse:#fc0;--semantic-color-l2-tabs-filled-on-background-base:#333;--semantic-color-l2-tabs-filled-on-background-base-inverse:#fff;--semantic-color-l2-tabs-filled-on-background-hover:#333;--semantic-color-l2-tabs-filled-on-background-hover-inverse:#fc0;--semantic-color-l2-tabs-filled-on-background-selected:#333;--semantic-color-l2-tabs-filled-on-background-selected-inverse:#fc0;--semantic-color-l2-tabs-underlined-indicator-selected:#fc0;--semantic-color-l2-tabs-underlined-indicator-selected-inverse:#fc0;--semantic-color-l2-tabs-underlined-on-background-active:#333;--semantic-color-l2-tabs-underlined-on-background-active-inverse:#fff;--semantic-color-l2-tabs-underlined-on-background-base:#333;--semantic-color-l2-tabs-underlined-on-background-base-inverse:#fff;--semantic-color-l2-tabs-underlined-on-background-hover:#333;--semantic-color-l2-tabs-underlined-on-background-hover-inverse:#fff;--semantic-color-l2-tabs-underlined-on-background-selected:#333;--semantic-color-l2-tabs-underlined-on-background-selected-inverse:#fff;--semantic-color-negative-active:#9f241e;--semantic-color-negative-active-inverse:#df332a;--semantic-color-negative-base:#bf2c24;--semantic-color-negative-base-inverse:#ff3b30;--semantic-color-negative-container-active:#ff8f89;--semantic-color-negative-container-active-inverse:#3f0e0c;--semantic-color-negative-container-base:#ffc7c4;--semantic-color-negative-container-base-inverse:#5f1612;--semantic-color-negative-container-hover:#ffaba6;--semantic-color-negative-container-hover-inverse:#7f1d18;--semantic-color-negative-container-selected:#ffaba6;--semantic-color-negative-container-selected-inverse:#7f1d18;--semantic-color-negative-hover:#df332a;--semantic-color-negative-hover-inverse:#ff574e;--semantic-color-negative-outline-active:#9f241e;--semantic-color-negative-outline-active-inverse:#df332a;--semantic-color-negative-outline-base:#bf2c24;--semantic-color-negative-outline-base-inverse:#ff3b30;--semantic-color-negative-outline-hover:#df332a;--semantic-color-negative-outline-hover-inverse:#ff574e;--semantic-color-on-caution-base:#333;--semantic-color-on-caution-base-inverse:#333;--semantic-color-on-caution-container:#333;--semantic-color-on-caution-container-inverse:#fff;--semantic-color-on-caution-container-selected:#333;--semantic-color-on-caution-container-selected-inverse:#fff;--semantic-color-on-caution-outline:#333;--semantic-color-on-caution-outline-inverse:#fff;--semantic-color-on-disabled-base:#adadad;--semantic-color-on-disabled-base-inverse:#858585;--semantic-color-on-disabled-outline:#c1c1c1;--semantic-color-on-disabled-outline-inverse:#858585;--semantic-color-on-negative-base:#fff;--semantic-color-on-negative-base-inverse:#111;--semantic-color-on-negative-container:#333;--semantic-color-on-negative-container-inverse:#fff;--semantic-color-on-negative-container-selected:#333;--semantic-color-on-negative-container-selected-inverse:#fff;--semantic-color-on-negative-outline:#bf2c24;--semantic-color-on-negative-outline-inverse:#fff;--semantic-color-on-positive-base:#fff;--semantic-color-on-positive-base-inverse:#fff;--semantic-color-on-positive-container:#333;--semantic-color-on-positive-container-inverse:#fff;--semantic-color-on-positive-container-selected:#333;--semantic-color-on-positive-container-selected-inverse:#fff;--semantic-color-on-positive-outline:#218632;--semantic-color-on-positive-outline-inverse:#fff;--semantic-color-on-primary-base:#333;--semantic-color-on-primary-base-inverse:#333;--semantic-color-on-primary-container:#333;--semantic-color-on-primary-container-inverse:#fff;--semantic-color-on-primary-container-selected:#333;--semantic-color-on-primary-container-selected-inverse:#fff;--semantic-color-on-primary-outline:#333;--semantic-color-on-primary-outline-inverse:#fff;--semantic-color-on-secondary-base:#fff;--semantic-color-on-secondary-base-inverse:#fff;--semantic-color-on-secondary-container:#333;--semantic-color-on-secondary-container-inverse:#fff;--semantic-color-on-secondary-container-selected:#333;--semantic-color-on-secondary-container-selected-inverse:#fff;--semantic-color-on-secondary-outline:#000;--semantic-color-on-secondary-outline-inverse:#fff;--semantic-color-on-supporting-blue-base:#fff;--semantic-color-on-supporting-blue-base-inverse:#000;--semantic-color-on-supporting-blue-strong:#fff;--semantic-color-on-supporting-blue-strong-inverse:#102c4b;--semantic-color-on-supporting-blue-subtle:#102c4b;--semantic-color-on-supporting-blue-subtle-inverse:#fff;--semantic-color-on-supporting-brand-primary-base:#333;--semantic-color-on-supporting-brand-primary-base-inverse:#333;--semantic-color-on-supporting-brand-primary-strong:#333;--semantic-color-on-supporting-brand-primary-strong-inverse:#333;--semantic-color-on-supporting-brand-primary-subtle:#333;--semantic-color-on-supporting-brand-primary-subtle-inverse:#333;--semantic-color-on-supporting-brand-secondary-base:#fff;--semantic-color-on-supporting-brand-secondary-base-inverse:#fff;--semantic-color-on-supporting-brand-secondary-strong:#fff;--semantic-color-on-supporting-brand-secondary-strong-inverse:#333;--semantic-color-on-supporting-brand-secondary-subtle:#333;--semantic-color-on-supporting-brand-secondary-subtle-inverse:#fff;--semantic-color-on-supporting-gray-base:#111;--semantic-color-on-supporting-gray-base-inverse:#fff;--semantic-color-on-supporting-gray-shade:#fff;--semantic-color-on-supporting-gray-shade-inverse:#111;--semantic-color-on-supporting-gray-strong:#fff;--semantic-color-on-supporting-gray-strong-inverse:#111;--semantic-color-on-supporting-gray-subtle:#111;--semantic-color-on-supporting-gray-subtle-inverse:#fff;--semantic-color-on-supporting-gray-tint:#111;--semantic-color-on-supporting-gray-tint-inverse:#fff;--semantic-color-on-supporting-green-base:#fff;--semantic-color-on-supporting-green-base-inverse:#0b2c10;--semantic-color-on-supporting-green-strong:#fff;--semantic-color-on-supporting-green-strong-inverse:#0b2c10;--semantic-color-on-supporting-green-subtle:#0b2c10;--semantic-color-on-supporting-green-subtle-inverse:#fff;--semantic-color-on-supporting-orange-base:#33190a;--semantic-color-on-supporting-orange-base-inverse:#33190a;--semantic-color-on-supporting-orange-strong:#fff;--semantic-color-on-supporting-orange-strong-inverse:#33190a;--semantic-color-on-supporting-orange-subtle:#33190a;--semantic-color-on-supporting-orange-subtle-inverse:#fff;--semantic-color-on-supporting-purple-base:#fff;--semantic-color-on-supporting-purple-base-inverse:#fff;--semantic-color-on-supporting-purple-strong:#fff;--semantic-color-on-supporting-purple-strong-inverse:#20163b;--semantic-color-on-supporting-purple-subtle:#20163b;--semantic-color-on-supporting-purple-subtle-inverse:#fff;--semantic-color-on-supporting-red-base:#fff;--semantic-color-on-supporting-red-base-inverse:#1f0706;--semantic-color-on-supporting-red-strong:#fff;--semantic-color-on-supporting-red-strong-inverse:#5f1612;--semantic-color-on-supporting-red-subtle:#5f1612;--semantic-color-on-supporting-red-subtle-inverse:#fff;--semantic-color-on-supporting-yellow-base:#1e1700;--semantic-color-on-supporting-yellow-base-inverse:#1e1700;--semantic-color-on-supporting-yellow-strong:#1e1700;--semantic-color-on-supporting-yellow-strong-inverse:#1e1700;--semantic-color-on-supporting-yellow-subtle:#1e1700;--semantic-color-on-supporting-yellow-subtle-inverse:#1e1700;--semantic-color-on-surface-base:#333;--semantic-color-on-surface-base-inverse:#fff;--semantic-color-on-surface-container-high-divider:#c1c1c1;--semantic-color-on-surface-container-high-divider-inverse:#707070;--semantic-color-on-surface-container-highest-divider:#adadad;--semantic-color-on-surface-container-highest-divider-inverse:#858585;--semantic-color-on-surface-container-highest-subtle:#858585;--semantic-color-on-surface-container-highest-subtle-inverse:#858585;--semantic-color-on-surface-container-low-divider:#c1c1c1;--semantic-color-on-surface-container-low-divider-inverse:#5c5c5c;--semantic-color-on-surface-container-lowest-divider:#d6d6d6;--semantic-color-on-surface-container-lowest-divider-inverse:#474747;--semantic-color-on-surface-divider:#c1c1c1;--semantic-color-on-surface-divider-inverse:#333;--semantic-color-on-surface-subtle:#858585;--semantic-color-on-surface-subtle-inverse:#adadad;--semantic-color-on-tertiary-base:#fff;--semantic-color-on-tertiary-base-inverse:#333;--semantic-color-on-tertiary-container:#333;--semantic-color-on-tertiary-container-inverse:#fff;--semantic-color-on-tertiary-container-selected:#333;--semantic-color-on-tertiary-container-selected-inverse:#333;--semantic-color-on-tertiary-outline:#000;--semantic-color-on-tertiary-outline-inverse:#fff;--semantic-color-on-utility-base:#ddedfe;--semantic-color-on-utility-base-inverse:#111;--semantic-color-on-utility-container:#004780;--semantic-color-on-utility-container-inverse:#ddedfe;--semantic-color-on-utility-container-selected:#004780;--semantic-color-on-utility-container-selected-inverse:#ddedfe;--semantic-color-on-utility-outline:#041f34;--semantic-color-on-utility-outline-inverse:#ddedfe;--semantic-color-opacity-default-active:#0006;--semantic-color-opacity-default-active-inverse:#ffffff7a;--semantic-color-opacity-default-base:#00000052;--semantic-color-opacity-default-base-inverse:#fff6;--semantic-color-opacity-default-hover:#0000003d;--semantic-color-opacity-default-hover-inverse:#ffffff52;--semantic-color-opacity-default-selected:#0000003d;--semantic-color-opacity-default-selected-inverse:#ffffff52;--semantic-color-opacity-skrim-strong:#00000052;--semantic-color-opacity-skrim-subtle:#00000014;--semantic-color-opacity-strong-active:#000000b8;--semantic-color-opacity-strong-active-inverse:#ffffffb8;--semantic-color-opacity-strong-base:#0009;--semantic-color-opacity-strong-base-inverse:#fff9;--semantic-color-opacity-strong-hover:#0000007a;--semantic-color-opacity-strong-hover-inverse:#ffffff7a;--semantic-color-opacity-strong-selected:#0000007a;--semantic-color-opacity-strong-selected-inverse:#ffffff7a;--semantic-color-opacity-subtle-active:#00000029;--semantic-color-opacity-subtle-active-inverse:#ffffff3d;--semantic-color-opacity-subtle-base:#0000001f;--semantic-color-opacity-subtle-base-inverse:#ffffff29;--semantic-color-opacity-subtle-hover:#00000014;--semantic-color-opacity-subtle-hover-inverse:#ffffff1f;--semantic-color-opacity-subtle-selected:#00000014;--semantic-color-opacity-subtle-selected-inverse:#ffffff1f;--semantic-color-opacity-subtle-transparent:#fff0;--semantic-color-positive-active:#1c6f29;--semantic-color-positive-active-inverse:#1c6f29;--semantic-color-positive-base:#218632;--semantic-color-positive-base-inverse:#218632;--semantic-color-positive-container-active:#69c878;--semantic-color-positive-container-active-inverse:#165921;--semantic-color-positive-container-base:#c2e9c9;--semantic-color-positive-container-base-inverse:#1c6f29;--semantic-color-positive-container-hover:#a5deae;--semantic-color-positive-container-hover-inverse:#218632;--semantic-color-positive-container-selected:#a5deae;--semantic-color-positive-container-selected-inverse:#218632;--semantic-color-positive-hover:#279c3a;--semantic-color-positive-hover-inverse:#279c3a;--semantic-color-positive-outline-active:#1c6f29;--semantic-color-positive-outline-active-inverse:#1c6f29;--semantic-color-positive-outline-base:#218632;--semantic-color-positive-outline-base-inverse:#218632;--semantic-color-positive-outline-hover:#279c3a;--semantic-color-positive-outline-hover-inverse:#279c3a;--semantic-color-primary-active:#cca300;--semantic-color-primary-active-inverse:#cca300;--semantic-color-primary-base:#fc0;--semantic-color-primary-base-inverse:#fc0;--semantic-color-primary-container-active:#fff5cc;--semantic-color-primary-container-active-inverse:#332900;--semantic-color-primary-container-base:#fff0b2;--semantic-color-primary-container-base-inverse:#6a5c33;--semantic-color-primary-container-hover:#ffe066;--semantic-color-primary-container-hover-inverse:#736334;--semantic-color-primary-container-selected:#fff0b2;--semantic-color-primary-container-selected-inverse:#736334;--semantic-color-primary-hover:#ffd633;--semantic-color-primary-hover-inverse:#ffd633;--semantic-color-primary-outline-active:#fc0;--semantic-color-primary-outline-active-inverse:#fc0;--semantic-color-primary-outline-base:#fc0;--semantic-color-primary-outline-base-inverse:#fc0;--semantic-color-primary-outline-hover:#fc0;--semantic-color-primary-outline-hover-inverse:#fc0;--semantic-color-secondary-active:#616161;--semantic-color-secondary-active-inverse:#616161;--semantic-color-secondary-base:#333;--semantic-color-secondary-base-inverse:#333;--semantic-color-secondary-container-active:#b5b5b5;--semantic-color-secondary-container-active-inverse:#474747;--semantic-color-secondary-container-base:#f0f0f0;--semantic-color-secondary-container-base-inverse:#5c5c5c;--semantic-color-secondary-container-hover:#d4d4d4;--semantic-color-secondary-container-hover-inverse:#707070;--semantic-color-secondary-container-selected:#d4d4d4;--semantic-color-secondary-container-selected-inverse:#707070;--semantic-color-secondary-hover:#525252;--semantic-color-secondary-hover-inverse:#525252;--semantic-color-secondary-outline-active:#333;--semantic-color-secondary-outline-active-inverse:#858585;--semantic-color-secondary-outline-base:#333;--semantic-color-secondary-outline-base-inverse:#858585;--semantic-color-secondary-outline-hover:#333;--semantic-color-secondary-outline-hover-inverse:#858585;--semantic-color-social-apple-active:#474747;--semantic-color-social-apple-base:#000;--semantic-color-social-apple-hover:#5c5c5c;--semantic-color-social-apple-outline-active:#474747;--semantic-color-social-apple-outline-base:#000;--semantic-color-social-apple-outline-hover:#5c5c5c;--semantic-color-social-entain-active:#8f00bf;--semantic-color-social-entain-base:#bf00ff;--semantic-color-social-entain-hover:#cf40ff;--semantic-color-social-entain-outline-active:#8f00bf;--semantic-color-social-entain-outline-base:#bf00ff;--semantic-color-social-entain-outline-hover:#cf40ff;--semantic-color-social-facebook-active:#314d86;--semantic-color-social-facebook-base:#4267b2;--semantic-color-social-facebook-hover:#718dc5;--semantic-color-social-facebook-outline-active:#314d86;--semantic-color-social-facebook-outline-base:#4267b2;--semantic-color-social-facebook-outline-hover:#718dc5;--semantic-color-social-google-active:#474747;--semantic-color-social-google-base:#000;--semantic-color-social-google-hover:#5c5c5c;--semantic-color-social-google-outline-active:#474747;--semantic-color-social-google-outline-base:#000;--semantic-color-social-google-outline-hover:#5c5c5c;--semantic-color-social-mlife-active:#73520d;--semantic-color-social-mlife-base:#996d12;--semantic-color-social-mlife-hover:#b3924d;--semantic-color-social-mlife-outline-active:#73520d;--semantic-color-social-mlife-outline-base:#996d12;--semantic-color-social-mlife-outline-hover:#b3924d;--semantic-color-social-on-apple-base:#fff;--semantic-color-social-on-apple-outline:#000;--semantic-color-social-on-entain-base:#fff;--semantic-color-social-on-entain-outline:#000;--semantic-color-social-on-facebook-base:#fff;--semantic-color-social-on-facebook-outline:#000;--semantic-color-social-on-google-base:#fff;--semantic-color-social-on-google-outline:#000;--semantic-color-social-on-mlife-base:#fff;--semantic-color-social-on-mlife-outine:#000;--semantic-color-social-on-paypal-base:#fff;--semantic-color-social-on-paypal-outline:#000;--semantic-color-social-on-yahoo-base:#fff;--semantic-color-social-on-yahoo-outline:#000;--semantic-color-social-paypal-active:#00548b;--semantic-color-social-paypal-base:#0070ba;--semantic-color-social-paypal-hover:#4094cb;--semantic-color-social-paypal-outline-active:#00548b;--semantic-color-social-paypal-outline-base:#0070ba;--semantic-color-social-paypal-outline-hover:#4094cb;--semantic-color-social-yahoo-active:#48019e;--semantic-color-social-yahoo-base:#6001d2;--semantic-color-social-yahoo-hover:#8841dd;--semantic-color-social-yahoo-outline-active:#48019e;--semantic-color-social-yahoo-outline-base:#6001d2;--semantic-color-social-yahoo-outline-hover:#8841dd;--semantic-color-supporting-blue-base:#0074cb;--semantic-color-supporting-blue-base-inverse:#1284e0;--semantic-color-supporting-blue-strong:#004780;--semantic-color-supporting-blue-strong-inverse:#a6d0f3;--semantic-color-supporting-blue-subtle:#c3e0f7;--semantic-color-supporting-blue-subtle-inverse:#004780;--semantic-color-supporting-brand-primary-base:#fc0;--semantic-color-supporting-brand-primary-base-inverse:#fc0;--semantic-color-supporting-brand-primary-strong:#cca300;--semantic-color-supporting-brand-primary-strong-inverse:#fff0b2;--semantic-color-supporting-brand-primary-subtle:#fff0b2;--semantic-color-supporting-brand-primary-subtle-inverse:#cca300;--semantic-color-supporting-brand-secondary-base:#333;--semantic-color-supporting-brand-secondary-base-inverse:#333;--semantic-color-supporting-brand-secondary-strong:#616161;--semantic-color-supporting-brand-secondary-strong-inverse:#d4d4d4;--semantic-color-supporting-brand-secondary-subtle:#d4d4d4;--semantic-color-supporting-brand-secondary-subtle-inverse:#262626;--semantic-color-supporting-gray-base:#adadad;--semantic-color-supporting-gray-base-inverse:#707070;--semantic-color-supporting-gray-shade:#111;--semantic-color-supporting-gray-shade-inverse:#fff;--semantic-color-supporting-gray-strong:#474747;--semantic-color-supporting-gray-strong-inverse:#adadad;--semantic-color-supporting-gray-subtle:#d6d6d6;--semantic-color-supporting-gray-subtle-inverse:#474747;--semantic-color-supporting-gray-tint:#eaeaea;--semantic-color-supporting-gray-tint-inverse:#262626;--semantic-color-supporting-green-base:#218632;--semantic-color-supporting-green-base-inverse:#2db343;--semantic-color-supporting-green-strong:#104319;--semantic-color-supporting-green-strong-inverse:#a5deae;--semantic-color-supporting-green-subtle:#c2e9c9;--semantic-color-supporting-green-subtle-inverse:#104319;--semantic-color-supporting-orange-base:#ee864b;--semantic-color-supporting-orange-base-inverse:#ee864b;--semantic-color-supporting-orange-strong:#9b562e;--semantic-color-supporting-orange-strong-inverse:#f8cfb7;--semantic-color-supporting-orange-subtle:#fadbc9;--semantic-color-supporting-orange-subtle-inverse:#713d20;--semantic-color-supporting-purple-base:#7e63c5;--semantic-color-supporting-purple-base-inverse:#7e63c5;--semantic-color-supporting-purple-strong:#4b3389;--semantic-color-supporting-purple-strong-inverse:#bfb1e2;--semantic-color-supporting-purple-subtle:#d4cbec;--semantic-color-supporting-purple-subtle-inverse:#3d2a6f;--semantic-color-supporting-red-base:#bf2c24;--semantic-color-supporting-red-base-inverse:#ff3b30;--semantic-color-supporting-red-strong:#7f1d18;--semantic-color-supporting-red-strong-inverse:#ffaba6;--semantic-color-supporting-red-subtle:#ffc7c4;--semantic-color-supporting-red-subtle-inverse:#7f1d18;--semantic-color-supporting-yellow-base:#f6bd00;--semantic-color-supporting-yellow-base-inverse:#f6bd00;--semantic-color-supporting-yellow-strong:#b88d00;--semantic-color-supporting-yellow-strong-inverse:#fbe291;--semantic-color-supporting-yellow-subtle:#fcecb6;--semantic-color-supporting-yellow-subtle-inverse:#b88d00;--semantic-color-surface-active:#d6d6d6;--semantic-color-surface-active-inverse:#707070;--semantic-color-surface-base:#f5f5f5;--semantic-color-surface-base-inverse:#111;--semantic-color-surface-container-high-active:#c1c1c1;--semantic-color-surface-container-high-active-inverse:#1f1f1f;--semantic-color-surface-container-high-base:#eaeaea;--semantic-color-surface-container-high-base-inverse:#474747;--semantic-color-surface-container-high-hover:#d6d6d6;--semantic-color-surface-container-high-hover-inverse:#999;--semantic-color-surface-container-high-selected:#eaeaea;--semantic-color-surface-container-high-selected-inverse:#474747;--semantic-color-surface-container-highest-active:#adadad;--semantic-color-surface-container-highest-active-inverse:#999;--semantic-color-surface-container-highest-base:#d6d6d6;--semantic-color-surface-container-highest-base-inverse:#5c5c5c;--semantic-color-surface-container-highest-hover:#c1c1c1;--semantic-color-surface-container-highest-hover-inverse:#858585;--semantic-color-surface-container-highest-selected:#d6d6d6;--semantic-color-surface-container-highest-selected-inverse:#5c5c5c;--semantic-color-surface-container-low-active:#d6d6d6;--semantic-color-surface-container-low-active-inverse:#1f1f1f;--semantic-color-surface-container-low-base:#f5f5f5;--semantic-color-surface-container-low-base-inverse:#333;--semantic-color-surface-container-low-hover:#eaeaea;--semantic-color-surface-container-low-hover-inverse:#5c5c5c;--semantic-color-surface-container-low-selected:#f5f5f5;--semantic-color-surface-container-low-selected-inverse:#333;--semantic-color-surface-container-lowest-active:#eaeaea;--semantic-color-surface-container-lowest-active-inverse:#707070;--semantic-color-surface-container-lowest-base:#fff;--semantic-color-surface-container-lowest-base-inverse:#1f1f1f;--semantic-color-surface-container-lowest-hover:#f5f5f5;--semantic-color-surface-container-lowest-hover-inverse:#474747;--semantic-color-surface-container-lowest-selected:#fff;--semantic-color-surface-container-lowest-selected-inverse:#1f1f1f;--semantic-color-surface-hover:#eaeaea;--semantic-color-surface-hover-inverse:#474747;--semantic-color-surface-outline-high-active:#eaeaea;--semantic-color-surface-outline-high-active-inverse:#474747;--semantic-color-surface-outline-high-base:#eaeaea;--semantic-color-surface-outline-high-base-inverse:#474747;--semantic-color-surface-outline-high-hover:#eaeaea;--semantic-color-surface-outline-high-hover-inverse:#474747;--semantic-color-surface-outline-high-selected:#eaeaea;--semantic-color-surface-outline-high-selected-inverse:#474747;--semantic-color-surface-outline-highest-active:#d6d6d6;--semantic-color-surface-outline-highest-active-inverse:#5c5c5c;--semantic-color-surface-outline-highest-base:#d6d6d6;--semantic-color-surface-outline-highest-base-inverse:#5c5c5c;--semantic-color-surface-outline-highest-hover:#d6d6d6;--semantic-color-surface-outline-highest-hover-inverse:#5c5c5c;--semantic-color-surface-outline-highest-selected:#d6d6d6;--semantic-color-surface-outline-highest-selected-inverse:#5c5c5c;--semantic-color-surface-outline-low-active:#d6d6d6;--semantic-color-surface-outline-low-active-inverse:#333;--semantic-color-surface-outline-low-base:#d6d6d6;--semantic-color-surface-outline-low-base-inverse:#333;--semantic-color-surface-outline-low-hover:#d6d6d6;--semantic-color-surface-outline-low-hover-inverse:#333;--semantic-color-surface-outline-low-selected:#d6d6d6;--semantic-color-surface-outline-low-selected-inverse:#333;--semantic-color-surface-outline-lowest-active:#eaeaea;--semantic-color-surface-outline-lowest-active-inverse:#333;--semantic-color-surface-outline-lowest-base:#eaeaea;--semantic-color-surface-outline-lowest-base-inverse:#333;--semantic-color-surface-outline-lowest-hover:#eaeaea;--semantic-color-surface-outline-lowest-hover-inverse:#333;--semantic-color-surface-outline-lowest-selected:#eaeaea;--semantic-color-surface-outline-lowest-selected-inverse:#333;--semantic-color-surface-selected:#f5f5f5;--semantic-color-surface-selected-inverse:#111;--semantic-color-tertiary-active:#616161;--semantic-color-tertiary-active-inverse:#c1c1c1;--semantic-color-tertiary-base:#333;--semantic-color-tertiary-base-inverse:#fff;--semantic-color-tertiary-container-active:#b5b5b5;--semantic-color-tertiary-container-active-inverse:#474747;--semantic-color-tertiary-container-base:#f0f0f0;--semantic-color-tertiary-container-base-inverse:#5c5c5c;--semantic-color-tertiary-container-hover:#d4d4d4;--semantic-color-tertiary-container-hover-inverse:#707070;--semantic-color-tertiary-container-selected:#d4d4d4;--semantic-color-tertiary-container-selected-inverse:#707070;--semantic-color-tertiary-hover:#525252;--semantic-color-tertiary-hover-inverse:#d6d6d6;--semantic-color-tertiary-outline-active:#333;--semantic-color-tertiary-outline-active-inverse:#c1c1c1;--semantic-color-tertiary-outline-base:#333;--semantic-color-tertiary-outline-base-inverse:#fff;--semantic-color-tertiary-outline-hover:#333;--semantic-color-tertiary-outline-hover-inverse:#d6d6d6;--semantic-color-utility-active:#059;--semantic-color-utility-active-inverse:#0074cb;--semantic-color-utility-base:#0064b3;--semantic-color-utility-base-inverse:#1284e0;--semantic-color-utility-container-active:#88c1ef;--semantic-color-utility-container-active-inverse:#083965;--semantic-color-utility-container-base:#c3e0f7;--semantic-color-utility-container-base-inverse:#004780;--semantic-color-utility-container-hover:#a6d0f3;--semantic-color-utility-container-hover-inverse:#059;--semantic-color-utility-container-selected:#a6d0f3;--semantic-color-utility-container-selected-inverse:#059;--semantic-color-utility-hover:#0074cb;--semantic-color-utility-hover-inverse:#4da2e7;--semantic-color-utility-outline-active:#059;--semantic-color-utility-outline-active-inverse:#0074cb;--semantic-color-utility-outline-base:#0064b3;--semantic-color-utility-outline-base-inverse:#1284e0;--semantic-color-utility-outline-hover:#0074cb;--semantic-color-utility-outline-hover-inverse:#4da2e7;--semantic-elevation-raised-1-blur:4px;--semantic-elevation-raised-1-box-shadow:0 2px 4px #00000014;--semantic-elevation-raised-1-opacity:#00000014;--semantic-elevation-raised-1-position-x:0;--semantic-elevation-raised-1-position-y:2px;--semantic-elevation-raised-1-spread:0;--semantic-elevation-raised-2-blur:8px;--semantic-elevation-raised-2-box-shadow:0 4px 8px #00000029;--semantic-elevation-raised-2-opacity:#00000029;--semantic-elevation-raised-2-position-x:0;--semantic-elevation-raised-2-position-y:4px;--semantic-elevation-raised-2-spread:0;--semantic-elevation-raised-3-blur:24px;--semantic-elevation-raised-3-box-shadow:0 4px 24px #0003;--semantic-elevation-raised-3-opacity:#0003;--semantic-elevation-raised-3-position-x:0;--semantic-elevation-raised-3-position-y:4px;--semantic-elevation-raised-3-spread:0;--semantic-elevation-raised-4-blur:40px;--semantic-elevation-raised-4-box-shadow:0 20px 40px #00000047;--semantic-elevation-raised-4-opacity:#00000047;--semantic-elevation-raised-4-position-x:0;--semantic-elevation-raised-4-position-y:20px;--semantic-elevation-raised-4-spread:0;--semantic-elevation-raised-5-blur:8px;--semantic-elevation-raised-5-box-shadow:0 -4px 8px #0003;--semantic-elevation-raised-5-opacity:#0003;--semantic-elevation-raised-5-position-x:0;--semantic-elevation-raised-5-position-y:-4px;--semantic-elevation-raised-5-spread:0;--semantic-radius-l2-badge-medium:4px;--semantic-radius-l2-badge-xsmall:4px;--semantic-radius-l2-button-large:4px;--semantic-radius-l2-button-medium:4px;--semantic-radius-l2-button-small:4px;--semantic-radius-l2-odds-button:4px;--semantic-radius-l2-pill:1000px;--semantic-radius-l2-search:1000px;--semantic-radius-l2-segment-item:2px;--semantic-radius-l2-segmented-control:4px;--semantic-radius-max:1000px;--semantic-radius-semi-rounded-lg:12px;--semantic-radius-semi-rounded-md:8px;--semantic-radius-semi-rounded-sm:4px;--semantic-radius-semi-rounded-xs:2px;--semantic-radius-semi-rounded-xxs:.5px;--semantic-radius-squared:0;--semantic-size-icon-large:20px;--semantic-size-icon-medium:16px;--semantic-size-icon-small:12px;--semantic-size-icon-xlarge:24px;--semantic-size-icon-xsmall:8px;--semantic-size-x1:4px;--semantic-size-x1-no-unit:4;--semantic-size-x10:40px;--semantic-size-x11:44px;--semantic-size-x12:48px;--semantic-size-x13:52px;--semantic-size-x14:56px;--semantic-size-x16:64px;--semantic-size-x18:72px;--semantic-size-x1half:6px;--semantic-size-x2:8px;--semantic-size-x20:80px;--semantic-size-x22:88px;--semantic-size-x23:92px;--semantic-size-x24:96px;--semantic-size-x25:100px;--semantic-size-x3:12px;--semantic-size-x35:140px;--semantic-size-x4:16px;--semantic-size-x5:20px;--semantic-size-x6:24px;--semantic-size-x8:32px;--semantic-size-x9:36px;--semantic-size-xhalf:2px;--semantic-size-xquarter:1px;--semantic-spacing-container-padding-2xl:16px;--semantic-spacing-container-padding-3xl:24px;--semantic-spacing-container-padding-4xl:32px;--semantic-spacing-container-padding-5xl:40px;--semantic-spacing-container-padding-lg:8px;--semantic-spacing-container-padding-md:6px;--semantic-spacing-container-padding-none:0;--semantic-spacing-container-padding-sm:4px;--semantic-spacing-container-padding-xl:12px;--semantic-spacing-container-padding-xs:2px;--semantic-spacing-inline-inline-none:0;--semantic-spacing-inline-lg:12px;--semantic-spacing-inline-md:8px;--semantic-spacing-inline-none:0;--semantic-spacing-inline-sm:4px;--semantic-spacing-inline-xl:16px;--semantic-spacing-inline-xs:2px;--semantic-spacing-stack-2xl:20px;--semantic-spacing-stack-3xl:24px;--semantic-spacing-stack-4xl:28px;--semantic-spacing-stack-5xl:32px;--semantic-spacing-stack-lg:12px;--semantic-spacing-stack-md:8px;--semantic-spacing-stack-none:0;--semantic-spacing-stack-sm:4px;--semantic-spacing-stack-stack-none:0;--semantic-spacing-stack-xl:16px;--semantic-spacing-stack-xs:2px;--semantic-typography-body-font-family:"Roboto Condensed";--semantic-typography-body-lg-font-size:16px;--semantic-typography-body-lg-font-weight:400;--semantic-typography-body-lg-line-height:24px;--semantic-typography-body-lg-paragraph-space:0;--semantic-typography-body-lg-strong-font-size:16px;--semantic-typography-body-lg-strong-font-weight:600;--semantic-typography-body-lg-strong-line-height:24px;--semantic-typography-body-lg-strong-paragraph-space:0;--semantic-typography-body-md-font-size:14px;--semantic-typography-body-md-font-weight:400;--semantic-typography-body-md-line-height:20px;--semantic-typography-body-md-paragraph-space:0;--semantic-typography-body-md-strong-font-size:14px;--semantic-typography-body-md-strong-font-weight:600;--semantic-typography-body-md-strong-line-height:20px;--semantic-typography-body-md-strong-paragraph-space:0;--semantic-typography-body-sm-font-size:12px;--semantic-typography-body-sm-font-weight:400;--semantic-typography-body-sm-line-height:16px;--semantic-typography-body-sm-paragraph-space:0;--semantic-typography-body-sm-strong-font-size:12px;--semantic-typography-body-sm-strong-font-weight:600;--semantic-typography-body-sm-strong-line-height:16px;--semantic-typography-body-sm-strong-paragraph-space:0;--semantic-typography-display-font-family:"Roboto Condensed";--semantic-typography-display-lg-font-size:56px;--semantic-typography-display-lg-font-weight:500;--semantic-typography-display-lg-line-height:80px;--semantic-typography-display-lg-paragraph-space:0;--semantic-typography-display-lg-strong-font-size:56px;--semantic-typography-display-lg-strong-font-weight:700;--semantic-typography-display-lg-strong-line-height:80px;--semantic-typography-display-lg-strong-paragraph-space:0;--semantic-typography-display-md-font-size:48px;--semantic-typography-display-md-font-weight:500;--semantic-typography-display-md-line-height:72px;--semantic-typography-display-md-paragraph-space:0;--semantic-typography-display-md-strong-font-size:48px;--semantic-typography-display-md-strong-font-weight:700;--semantic-typography-display-md-strong-line-height:72px;--semantic-typography-display-md-strong-paragraph-space:0;--semantic-typography-display-sm-font-size:40px;--semantic-typography-display-sm-font-weight:500;--semantic-typography-display-sm-line-height:56px;--semantic-typography-display-sm-paragraph-space:0;--semantic-typography-display-sm-strong-font-size:40px;--semantic-typography-display-sm-strong-font-weight:700;--semantic-typography-display-sm-strong-line-height:56px;--semantic-typography-display-sm-strong-paragraph-space:0;--semantic-typography-headline-font-family:"Roboto Condensed";--semantic-typography-headline-lg-font-size:32px;--semantic-typography-headline-lg-font-weight:400;--semantic-typography-headline-lg-line-height:44px;--semantic-typography-headline-lg-paragraph-space:0;--semantic-typography-headline-lg-strong-font-size:32px;--semantic-typography-headline-lg-strong-font-weight:700;--semantic-typography-headline-lg-strong-line-height:44px;--semantic-typography-headline-lg-strong-paragraph-space:0;--semantic-typography-headline-md-font-size:28px;--semantic-typography-headline-md-font-weight:400;--semantic-typography-headline-md-line-height:40px;--semantic-typography-headline-md-paragraph-space:0;--semantic-typography-headline-md-strong-font-size:28px;--semantic-typography-headline-md-strong-font-weight:700;--semantic-typography-headline-md-strong-line-height:40px;--semantic-typography-headline-md-strong-paragraph-space:0;--semantic-typography-headline-sm-font-size:24px;--semantic-typography-headline-sm-font-weight:400;--semantic-typography-headline-sm-line-height:36px;--semantic-typography-headline-sm-paragraph-space:0;--semantic-typography-headline-sm-strong-font-size:24px;--semantic-typography-headline-sm-strong-font-weight:700;--semantic-typography-headline-sm-strong-line-height:36px;--semantic-typography-headline-sm-strong-paragraph-space:0;--semantic-typography-headline-xl-font-size:36px;--semantic-typography-headline-xl-font-weight:400;--semantic-typography-headline-xl-line-height:52px;--semantic-typography-headline-xl-paragraph-space:0;--semantic-typography-headline-xl-strong-font-size:36px;--semantic-typography-headline-xl-strong-font-weight:700;--semantic-typography-headline-xl-strong-line-height:52px;--semantic-typography-headline-xl-strong-paragraph-space:0;--semantic-typography-label-font-family:"Roboto Condensed";--semantic-typography-label-lg-font-size:14px;--semantic-typography-label-lg-font-weight:400;--semantic-typography-label-lg-line-height:16px;--semantic-typography-label-lg-paragraph-space:0;--semantic-typography-label-lg-strong-font-size:14px;--semantic-typography-label-lg-strong-font-weight:600;--semantic-typography-label-lg-strong-line-height:16px;--semantic-typography-label-lg-strong-paragraph-space:0;--semantic-typography-label-md-font-size:12px;--semantic-typography-label-md-font-weight:400;--semantic-typography-label-md-line-height:16px;--semantic-typography-label-md-paragraph-space:0;--semantic-typography-label-md-strong-font-size:12px;--semantic-typography-label-md-strong-font-weight:600;--semantic-typography-label-md-strong-line-height:16px;--semantic-typography-label-md-strong-paragraph-space:0;--semantic-typography-label-sm-font-size:11px;--semantic-typography-label-sm-font-weight:400;--semantic-typography-label-sm-line-height:16px;--semantic-typography-label-sm-paragraph-space:0;--semantic-typography-label-sm-strong-font-size:11px;--semantic-typography-label-sm-strong-font-weight:600;--semantic-typography-label-sm-strong-line-height:16px;--semantic-typography-label-sm-strong-paragraph-space:0;--semantic-typography-label-xs-font-size:9px;--semantic-typography-label-xs-font-weight:400;--semantic-typography-label-xs-line-height:12px;--semantic-typography-label-xs-paragraph-space:0;--semantic-typography-label-xs-strong-font-size:9px;--semantic-typography-label-xs-strong-font-weight:600;--semantic-typography-label-xs-strong-line-height:12px;--semantic-typography-label-xs-strong-paragraph-space:0;--semantic-typography-title-font-family:"Roboto Condensed";--semantic-typography-title-lg-font-size:20px;--semantic-typography-title-lg-font-weight:400;--semantic-typography-title-lg-line-height:26px;--semantic-typography-title-lg-paragraph-space:0;--semantic-typography-title-lg-strong-font-size:20px;--semantic-typography-title-lg-strong-font-weight:700;--semantic-typography-title-lg-strong-line-height:26px;--semantic-typography-title-lg-strong-paragraph-space:0;--semantic-typography-title-md-font-size:16px;--semantic-typography-title-md-font-weight:400;--semantic-typography-title-md-line-height:24px;--semantic-typography-title-md-paragraph-space:0;--semantic-typography-title-md-strong-font-size:16px;--semantic-typography-title-md-strong-font-weight:700;--semantic-typography-title-md-strong-line-height:24px;--semantic-typography-title-md-strong-paragraph-space:0;--semantic-typography-title-sm-font-size:14px;--semantic-typography-title-sm-font-weight:400;--semantic-typography-title-sm-line-height:20px;--semantic-typography-title-sm-paragraph-space:0;--semantic-typography-title-sm-strong-font-size:14px;--semantic-typography-title-sm-strong-font-weight:700;--semantic-typography-title-sm-strong-line-height:20px;--semantic-typography-title-sm-strong-paragraph-space:0}@supports not selector(::-webkit-scrollbar){.ds-scrollbar{--ds-scrollbar-size-width-thin:thin;--ds-scrollbar-radius-border:var(--semantic-radius-max);--ds-scrollbar-size-min-height:var(--semantic-size-x6);--ds-scrollbar-size-width:var(--semantic-size-x1);--ds-scrollbar-size-width-no-unit:var(--semantic-size-x1-no-unit);--ds-scrollbar-enabled-color-background:var(--semantic-color-opacity-subtle-base);--ds-scrollbar-enabled-color-thumb:var(--semantic-color-opacity-strong-base);--ds-scrollbar-hover-color-background:var(--semantic-color-opacity-subtle-base);--ds-scrollbar-hover-color-thumb:var(--semantic-color-opacity-strong-active);scrollbar-color:var(--ds-scrollbar-enabled-color-thumb)var(--ds-scrollbar-enabled-color-background);scrollbar-width:var(--ds-scrollbar-size-width-thin)}}.ds-scrollbar{--ds-scrollbar-radius-border:var(--semantic-radius-max);--ds-scrollbar-size-min-height:var(--semantic-size-x6);--ds-scrollbar-size-width:var(--semantic-size-x1);--ds-scrollbar-size-width-no-unit:var(--semantic-size-x1-no-unit);--ds-scrollbar-enabled-color-background:var(--semantic-color-opacity-subtle-base);--ds-scrollbar-enabled-color-thumb:var(--semantic-color-opacity-strong-base);--ds-scrollbar-hover-color-background:var(--semantic-color-opacity-subtle-base);--ds-scrollbar-hover-color-thumb:var(--semantic-color-opacity-strong-active)}.ds-scrollbar ::-webkit-scrollbar{width:var(--ds-scrollbar-size-width)}.ds-scrollbar ::-webkit-scrollbar-track{background:var(--ds-scrollbar-enabled-color-background)}.ds-scrollbar ::-webkit-scrollbar-thumb{background:var(--ds-scrollbar-enabled-color-thumb);border-radius:var(--ds-scrollbar-radius-border)}.ds-scrollbar .ng-scrollbar{--scrollbar-border-radius:var(--ds-scrollbar-radius-border);--scrollbar-size:var(--ds-scrollbar-size-width);--scrollbar-thumb-color:var(--ds-scrollbar-enabled-color-thumb);--scrollbar-thumb-hover-color:var(--ds-scrollbar-hover-color-thumb);--scrollbar-track-color:var(--ds-scrollbar-enabled-color-background)}.ds-scrollbar.ds-scrollbar-inverse{--ds-scrollbar-enabled-color-background:var(--semantic-color-opacity-subtle-base-inverse);--ds-scrollbar-enabled-color-thumb:var(--semantic-color-opacity-subtle-active-inverse);--ds-scrollbar-hover-color-background:var(--semantic-color-opacity-subtle-base-inverse);--ds-scrollbar-hover-color-thumb:var(--semantic-color-opacity-subtle-hover-inverse)}@media (max-width:374px){.header .navbar{flex-wrap:nowrap}}</style><style>@keyframes pulse{0%{background-color:#a5a5a51a}50%{background-color:#a5a5a54d}to{background-color:#a5a5a51a}}@keyframes vertical-shimmer{to{transform:translate(100%)}}.splash{--splash-bg:#000;background:var(--splash-bg);opacity:1;z-index:9999;width:100%;height:100%;position:absolute;top:0;left:0;overflow:hidden}.splash.splash-x-product{--splash-bg:#fff;--loading-v1-spinner-top:0}.splash-loading-wrapper{text-align:center;flex-direction:column;justify-content:center;align-items:center;width:100%;height:100%;display:flex}.splash-loading-logo{width:90vw;max-width:500px;height:35vh}@media (max-width:959.98px){.splash .splash-loading-wrapper .splash-loading-logo{width:40vw;max-width:200px;height:30vh}}.app-root{display:none}@keyframes loadingspinnerrotate{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.simulated-splash{background:var(--theme-body-bg);z-index:9999;width:100%;height:100%;position:fixed;top:0;left:0;overflow:hidden}.simulated-splash__header{background:var(--color-black);align-items:center;min-height:56px;max-height:56px;padding:.5rem .75rem;display:flex;position:relative}@media (max-width:599.98px){.simulated-splash__header{min-height:56px;max-height:56px;padding-left:.5rem;padding-right:.5rem}}.simulated-splash__header .brand-logo{width:4rem;height:24px}</style><link rel="stylesheet" onload="this.onload=null;this.rel='stylesheet'" as="style" media="" type="text/css" href="/ClientDist/browser/themes-bwin-main.0f38c425c88a.css"><link rel="stylesheet" onload="this.onload=null;this.rel='stylesheet'" as="style" media="" type="text/css" href="/ClientDist/browser/bwin/themes-bwin-theme-v2-split-media.ce20ce8fda07.css"><link rel="preload" onload="this.onload=null;this.rel='stylesheet'" as="style" media="screen and (max-width: 599px)" type="text/css" href="/ClientDist/browser/bwin/media/themes-bwin-theme-v2-split-media-max-width-599-98.557a88d88b1d.css"><link rel="stylesheet" onload="this.onload=null;this.rel='stylesheet'" as="style" media="screen and (min-width: 600px)" type="text/css" href="/ClientDist/browser/bwin/media/themes-bwin-theme-v2-split-media-min-width-600.f259b5711aff.css"><link rel="stylesheet" onload="this.onload=null;this.rel='stylesheet'" as="style" media="screen and (min-width: 960px)" type="text/css" href="/ClientDist/browser/bwin/media/themes-bwin-theme-v2-split-media-min-width-960.5f9f3b6139dc.css"><link rel="stylesheet" onload="this.onload=null;this.rel='stylesheet'" as="style" media="screen and (min-width: 1280px)" type="text/css" href="/ClientDist/browser/bwin/media/themes-bwin-theme-v2-split-media-min-width-1280.3170ca2666cf.css"><link rel="preload" onload="this.onload=null;this.rel='stylesheet'" as="style" media="gt-mw" type="text/css" href="/ClientDist/browser/bwin/media/themes-bwin-theme-v2-split-media-min-width-1600.65fc7f7ed91d.css"><link rel="preload" onload="this.onload=null;this.rel='stylesheet'" as="style" media="screen and (min-width: 1920px)" type="text/css" href="/ClientDist/browser/bwin/media/themes-bwin-theme-v2-split-media-min-width-1920.892e9ed0e7b5.css">
+
+    <script type="text/javascript">
+     window._ptEnabled = true;
+     if ('serviceWorker' in navigator) {
+         partytown = {
+            forward: [
+  [
+    "dataLayer.push",
+    {
+      "preserveBehavior": true
+    }
+  ],
+  "mixpanel.track",
+  "fbq",
+  "ptWorkerLocation.set",
+  "ptSharedStorage.set"
+],
+            lib: '/ClientDist/browser/~partytown/',
+            debug: false,
+            globalFns: ["UET","UET_init","UET_push"],
+            logSendBeaconRequests: false,
+            logStackTraces: false,
+            loadScriptsOnMainThread: ["https://abtest-ld-v2.s3.eu-north-1.amazonaws.com/LD-Prod/LaunchDarkly_setup.js","https://abtest-ld-v2.s3.eu-north-1.amazonaws.com/LD-Beta/LaunchDarkly_setup.js","https://track.adform.net/serving/scripts/trackpoint/","https://p.iivt.com/"],
+            logGetters: false,
+            logSetters: false,
+            get: function(options) {
+
+                 const ptDebugMode = false;
+                 const ptLogGetters = false;
+
+                 // options.name is just the property, without any further information
+                 // in case there is a nodeName (e.g `#document`) we will get `document.height`
+                 // in case there is no nodeName (e.g `Screen`) we will take the `constructor` to get `screen.height`
+                 const name = `${options.nodeName ? options.nodeName.replace('#','').toLowerCase() : options.constructor.toLowerCase()}.${options.name}`;
+
+                 const logGetter = (value) => {
+                      if (ptDebugMode && ptLogGetters) {
+                         console.debug('partytown SharedStorage Get', name, { value });
+                     }
+                 }
+
+                 if (options.window.ptSharedStorage?.has(name)) {
+                     const value = options.window.ptSharedStorage.get(name);
+                     logGetter(value);
+                     return value;
+                 } else if (name === 'document.cookie' && options.window.ptCookieStorage?.get?.() != null) {
+                     const value = options.window.ptCookieStorage.get();
+                     logGetter(value);
+                     return value;
+                 }
+
+                 return options.continue;
+            },
+            set: function(options) {
+                 // options.name is just the property, without any further information
+                 // in case there is a nodeName (e.g `#document`) we will get `document.height`
+                 // in case there is no nodeName (e.g `Screen`) we will take the `constructor` to get `screen.height`
+                 const name = `${options.nodeName && options.nodeName.replace ? options.nodeName.replace('#','').toLowerCase() : options.constructor.toLowerCase()}.${options.name}`;
+
+                 if (name === 'document.cookie' && options.window.ptCookieStorage?.get?.() != null) {
+                     const getCookieAttributes = (cookie) => {
+                         const cookieParts = cookie.split(';');
+                         const expired = isCookieExpired(cookieParts);
+                         const nameAndValue = cookieParts[0].split('=');
+                         const name = nameAndValue[0].trim();
+                         const value = nameAndValue[1].trim();
+                         return { value, expired, name }
+                     }
+
+                     const isCookieExpired = (cookieParts) => {
+                         const expiredParts = cookieParts.filter(cookiePart => cookiePart.includes('expires'));
+                         const maxAgeStr = cookieParts.find(cookiePart => cookiePart.includes('max-age'))?.split?.('=')[1];
+                         const maxAge = maxAgeStr ? parseInt(maxAgeStr) : 1;
+                         const expiredPart = expiredParts[expiredParts.length - 1]?.split?.('=');
+                         const expiredDate = expiredPart ? new Date(expiredPart[1]) : undefined;
+                         return (expiredDate && expiredDate.getTime() <= Date.now()) || maxAge <= 0;
+                     }
+                     const existingValue = options.window.ptCookieStorage.get();
+                     let newValue = options.value;
+
+                     const { value: cookieValue, name: cookieName, expired } = getCookieAttributes(newValue);
+                     let newCookie = `${cookieName}=${cookieValue}`;
+                     const oldCookie = existingValue.split(';').find(cookiePart => cookiePart.includes(`${cookieName}=`))?.trim?.();
+                     const cookieExists = !!oldCookie;
+                     let updatedCookies = existingValue;
+                     if (expired && cookieExists) {
+                         // delete
+                         updatedCookies = updatedCookies.replace(`${oldCookie}; `, '');
+                         updatedCookies = updatedCookies.replace(`${oldCookie};`, '');
+                         updatedCookies = updatedCookies.replace(`;${oldCookie}`, '');
+                         updatedCookies = updatedCookies.replace(`; ${oldCookie}`, '');
+                     } else {
+                         // update / set
+                         if (cookieExists) {
+                             updatedCookies = updatedCookies.replace(oldCookie, newCookie);
+                         } else {
+                             updatedCookies = `${updatedCookies}; ${newCookie}`;
+                         }
+                     }
+                     newValue = updatedCookies;
+                     options.window.ptCookieStorage.set(newValue);
+
+                     const ptDebugMode =  false;
+                     const ptLogSetters = false;
+                     if (ptDebugMode && ptLogSetters) {
+                         console.debug('partytown SharedStorage Set newValue', name, { newValue });
+                     }
+                 }
+                 return options.continue;
+            },
+            resolveSendBeaconRequestParameters: function(url) {
+                const setKeepAliveToFalseHosts = [];
+                if (setKeepAliveToFalseHosts.some(host => url.hostname.includes(host))) {
+                    return { keepalive: false };
+                }
+            },
+            resolveUrl: function(url, location, type) {
+                const proxiedHosts = ["www.google-analytics.com","googleads.g.doubleclick.net","secure.quantserve.com","bat.bing.com","static.ads-twitter.com","fls.doubleclick.net","www.googleadservices.com","googleadservices.com","cdn.stape.io","content.zeotap.com","connect.facebook.net","sdk.optimove.net","js.adsrvr.org","adnxs.com","c.amazon-adsystem.com","analytics.tiktok.com","growthbuddy.app","sportradarserving.com","tag.growthbuddy.app","www.google.com","us.connextra.com","sc-static.net","onetag-sys.com","lh.trafficguard.ai","tgtag.io","assets.anytrack.io","scripts.prdredir.com","zz.connextra.com","stats.g.doubleclick.net","ads.mythad.com","www.google.pt","s.yimg.com","s1.kwai.net","js.digvert.com","optimove-sdk-web.optimove.net","ap4r.com","rmsi-5584-adswizz.attribution.adswizz.com","scripts.mediamathrdrt.com","tags.srv.stackadapt.com"];
+
+                const ignoreScriptConstraintRequest = ['doubleclick.net'];
+
+                const properType = type === 'script' || ignoreScriptConstraintRequest.some(host => url.hostname.endsWith(host));
+                if (properType && proxiedHosts.some(host => url.hostname.endsWith(host))) {
+                    const proxyUrl = new URL(`${location.origin}/reverse-proxy`);
+                    proxyUrl.searchParams.append('url', url.href);
+                    return proxyUrl;
+                }
+                return url;
+            },
+            enableEventReplay: true,
+            fallbackTimeout: 30000,
+            swPath: 'partytown-sw.js?1' || undefined
+        };
+
+     }
+</script>
+
+<script type="text/partytown-x" ptscope="worker">(function(){
+     window.global = document;
+     const ptStorage = {};
+     window.ptSharedStorage = window.ptSharedStorage ?? {
+         set: (key, value) => {
+             ptStorage[key] = value;
+         },
+         get: (key) => {
+             return ptStorage[key];
+         },
+         has: (key) => {
+             return key in ptStorage;
+         }
+     }
+     let ptCookies = null;
+     window.ptCookieStorage = window.ptCookieStorage ?? {
+         set: (value) => {
+            ptCookies = value;
+         },
+         get: () => {
+             return ptCookies;
+         }
+     }
+     // make sure routes are forwarded
+     window.ptWorkerLocation = window.ptWorkerLocation ?? {
+         set: (loc) => {},
+     };
+     const workerLocation = window.ptWorkerLocation;
+     const origSet = workerLocation.set;
+     let appLocation = {
+         hash: window.location.hash,
+         protocol: window.location.protocol,
+         host: window.location.host,
+         hostname: window.location.hostname,
+         href: window.location.href,
+         origin: window.location.origin,
+         pathname: window.location.pathname,
+         port: window.location.port,
+         search: window.location.search
+     };
+     Object.defineProperty(window, 'location', {
+         get: () => {
+             return appLocation;
+         },
+         set: () => void 0
+     });
+     Object.defineProperty(document, 'location', {
+         get: () => {
+             return appLocation;
+         },
+         set: () => void 0
+     });
+     workerLocation.set = (...args) => {
+         const {
+             hash,
+             href,
+             pathname,
+             search
+         } = args[0];
+         appLocation.href = href;
+         appLocation.hash = hash;
+         appLocation.pathname = pathname;
+         appLocation.search = search;
+         return origSet.bind(workerLocation, ...args)();
+     }
+})();</script>
+
+<script type="text/partytown-x" ptscope="worker">
+    (function() {
+         if (dataLayer?.push) {
+             const _origPush = dataLayer.push;
+             dataLayer.push = (...args) => {
+                 const result = _origPush.apply(dataLayer, args);
+
+                 try {
+                     const savedEventsItem = localStorage.getItem('_ptEventsQueue');
+                     const eventsQueue = savedEventsItem ? JSON.parse(savedEventsItem) : [];
+                     const stringifiedArgs = JSON.stringify(args);
+                     const indexToRemove = eventsQueue.findIndex(item => item === stringifiedArgs);
+                     if (indexToRemove > -1) {
+                         eventsQueue.splice(indexToRemove, 1);
+                         localStorage.setItem('_ptEventsQueue', JSON.stringify(eventsQueue));
+                     }
+                 } catch (e) {
+                     console.error('Failed to remove event from queue: ', e);
+                 }
+
+                 return result;
+             }
+         }
+    })();
+</script>
+
+<script type="text/javascript">
+     if('serviceWorker' in navigator) {
+         const script = document.createElement('script');
+         script.src = `/ClientDist/browser/~partytown/partytown.js`;
+         const fallbackTimeout = 30000;
+         window._ptReady = new Promise((resolve, reject) => {
+             let started = false;
+             function startTimer() {
+               if (!started) {
+                 started = true;
+                 const rejectTimer = setTimeout(() => {
+                     reject();
+                 }, fallbackTimeout + 1000);
+                 document.addEventListener('pt0', () => {
+                     clearTimeout(rejectTimer);
+                     resolve();
+                 });
+               }
+             }
+             if (document.readyState == 'complete') {
+                 startTimer();
+             } else {
+                 window.addEventListener('DOMContentLoaded', startTimer);
+                 window.addEventListener('load', startTimer);
+             }
+         });
+         document.head.appendChild(script);
+     }
+</script><script src="/ClientDist/browser/~partytown/partytown.js"></script>
+<script src="https://abtest-ld-v2.s3.eu-north-1.amazonaws.com/LD-Prod/LaunchDarkly_setup.js"></script><style type="text/css"></style><link rel="stylesheet" type="text/css" href="/ClientDist/browser/bwin/themes-bwin-belowthefold.d1f40c6b9ec1.css"><script id="generationCampaignList" src="https://abtest-ld-v2.s3.eu-north-1.amazonaws.com/experiments/abtest-generation_prod.js"></script><link rel="stylesheet" type="text/css" href="/ClientDist/browser/bwin/themes-bwin-tooltip-v2.a33db2089949.css"><link rel="stylesheet" type="text/css" href="/ClientDist/browser/bwin/themes-bwin-click-interaction.d70148d60e7b.css"><link rel="stylesheet" type="text/css" href="/ClientDist/browser/bwin/themes-bwin-skeleton-v2.a6ad0a200452.css"><link rel="stylesheet" type="text/css" href="/ClientDist/browser/bwin/themes-bwin-system-colors-v2.b8456154faa2.css"><link rel="stylesheet" type="text/css" href="/ClientDist/browser/bwin/themes-bwin-legacy-search-button.8701e0539a65.css"><link rel="stylesheet" type="text/css" href="/ClientDist/browser/bwin/themes-bwin-legacy-portal-wrapper.205952d8e1aa.css"><link rel="stylesheet" type="text/css" href="/ClientDist/browser/bwin/themes-bwin-portal-progress-bar.a7093c47e1fb.css"><link rel="stylesheet" type="text/css" href="/ClientDist/browser/bwin/themes-bwin-portal-tab-tiles.453a4e42c79e.css"><link rel="stylesheet" type="text/css" href="/ClientDist/browser/bwin/themes-bwin-lh-tooltip-legacy.e17e188a85fc.css"><link rel="stylesheet" type="text/css" href="/ClientDist/browser/bwin/themes-bwin-skeleton-cashier-v2.54a86b3b9414.css"><link rel="stylesheet" type="text/css" href="/ClientDist/browser/bwin/themes-bwin-offer-button.abb3a0be8dee.css"><link rel="stylesheet" type="text/css" href="/ClientDist/browser/themes-bwin-sports.6d3b7abc3095.css"><style>@keyframes pulse{0%{background-color:#a5a5a51a}50%{background-color:#a5a5a54d}to{background-color:#a5a5a51a}}@keyframes vertical-shimmer{to{transform:translate(100%)}}.header .header-btn{font-size:var(--header-navbar-btn-font-size);height:var(--header-navbar-btn-height);line-height:var(--header-navbar-btn-line-height);margin-left:var(--header-navbar-btn-margin-left);max-width:var(--header-navbar-btn-max-width);min-width:var(--header-navbar-btn-min-width);padding:var(--header-navbar-btn-padding-top-and-bottom) var(--header-navbar-btn-padding)}@media (width <= 375px){.header{--header-navbar-btn-max-width: 116px}}.header .menu-item-link.header-btn-icon{border:0;display:flex;flex-direction:column;font-weight:inherit;justify-content:var(--header-btn-icon-justify);margin:0;padding:0;text-transform:inherit;--btn-txt: inherit;--btn-txt-hover: inherit;--btn-txt-active: inherit;--btn-border-radius: 0}.header .menu-item-link.header-btn-icon:before{margin:0;padding:0}.header .menu-item-link.header-btn-icon vn-menu-item-text-content{display:contents}.header .menu-item-link.header-btn-icon .menu-item-txt{font-size:8px;line-height:1.1}.header vn-h-icon .menu-item-link{align-items:center;display:flex;height:100%;justify-content:center}.header vn-h-icon .h-burger{align-items:center;display:flex;font-size:16px;justify-content:center;margin-left:calc(var(--site-spacer-s) * -1);padding:0 var(--site-spacer-m) 0 var(--site-spacer-m);width:auto}.header vn-h-icon .h-burger .ui-icon{color:var(--header-burger-icon-color);display:flex;font-size:inherit;height:auto;padding-left:0;padding-right:0;width:auto}.header vn-h-icon .h-burger.h-burger-w-txt{align-items:flex-start;flex-direction:column;height:56px}.header vn-h-icon .h-burger.h-burger-w-txt .ui-icon{color:var(--header-burger-w-txt-icon-color);font-size:20px;padding-top:0}.header vn-h-icon .h-burger.h-burger-w-txt .menu-item-txt{font-size:8px;line-height:1.1}.header vn-h-product-navigation{display:flex}.header vn-h-logo{align-self:center}.header .product-nav-wrapper{display:flex}.header .header-menu-icon.text-hide{display:none!important}.header .header-menu-icon.text-hide~span{background:transparent;border:0;color:transparent;font-size:0}.header .header-menu-icon.text-hide~img{box-sizing:content-box;color:transparent;font:0/0 a;height:auto;padding:0 0 0 var(--site-spacer-s);width:36px}.header .header-menu-rg-icon .image-icon{padding-left:var(--site-spacer-s)}.header .header-menu-rg-icon .image-icon img{height:auto;width:var(--header-rg-logo-width)}.header .btn-outline-secondary{border-color:var(--header-btn-login);color:var(--header-btn-login)}.header .dropdown{line-height:1}.header .product-switcher{display:flex;flex-direction:column;justify-content:center}.slot-header_top_items{display:flex;flex-wrap:wrap;padding-left:var(--site-spacer-m);padding-right:var(--site-spacer-m)}@media (max-width: 599.98px){.slot-header_top_items{padding-left:var(--site-spacer-s);padding-right:var(--site-spacer-s)}}@media (max-width: 959.98px){.slot-header_top_items vn-h-product-navigation{width:100%}}.slot-header_top_items vn-player-break-timer{width:100%}.slot-header_top_items vn-player-break-timer:empty{display:none}.slot-header_top_items vn-h-login-start-time{color:var(--header-logged-in-since-text-color);margin:auto;padding-bottom:var(--site-spacer-xs);padding-top:var(--site-spacer-xs)}.slot-header_top_items vn-h-login-start-time .login-start-time-text{display:flex;flex-direction:column;font-size:10px}.slot-header_top_items vn-h-login-start-time .login-start-time-text .start-time{color:#acacac;font-size:12px}.slot-header_top_items .login-duration-container{margin:auto}.slot-header_top_items .login-duration-text{align-items:flex-end;display:flex}.slot-header_top_items .login-duration-text .login-duration-time{margin-left:var(--site-spacer-s)}@media (max-width: 599.98px){.offer-filters-dialog-opened .header{position:relative;z-index:2}}@media (width <= 375px){.header .header-btn{max-width:116px}}.chat-open{overflow-y:scroll;position:fixed;width:100%}vn-h-button,vn-h-deposit-button{align-items:center;display:flex}.menu-item-link.menu-icon-safer-gambling.header-btn{align-items:center;border:0;color:var(--color-white);display:flex;flex-direction:column;justify-content:center;margin:0;max-width:60px;overflow:unset;padding-left:0;padding-right:0}.menu-item-link.menu-icon-safer-gambling.header-btn .menu-item-txt{font-size:8px;padding-top:4px;white-space:pre-wrap;width:80%}.menu-item-link.menu-icon-safer-gambling.btn[class*=theme]:before{font-size:var(--theme-txt-2xl-font-size);margin-top:0;padding-right:var(--site-spacer-tiny)}.navbar-wrapper-right .user-state-nav.h-inbox:before{height:auto!important}.register-button__tooltip{color:var(--header-color);font-family:var(--theme-font-family-secondary, var(--theme-font-family-base));font-size:var(--theme-txt-xs-font-size);line-height:var(--header-txt-v2-xs-line-height)}.navbar>.container,.navbar>.container-fluid{align-items:center;display:flex;flex-wrap:wrap;justify-content:space-between}.navbar-nav .nav-link{padding-left:0;padding-right:0}@media (max-width: 599.98px){.navbar-expand-sm>.container,.navbar-expand-sm>.container-fluid{padding-left:0;padding-right:0}}@media (min-width: 600px){.navbar-expand-sm{flex-flow:row nowrap;justify-content:flex-start}.navbar-expand-sm .navbar-nav{flex-direction:row}.navbar-expand-sm .navbar-nav .nav-link{padding-left:var(--site-spacer-s);padding-right:var(--site-spacer-s)}.navbar-expand-sm>.container,.navbar-expand-sm>.container-fluid{flex-wrap:nowrap}.navbar-expand-sm .navbar-collapse{display:flex!important;flex-basis:auto}.navbar-expand-sm .navbar-toggler{display:none}}@media (max-width: 959.98px){.navbar-expand-md>.container,.navbar-expand-md>.container-fluid{padding-left:0;padding-right:0}}@media (min-width: 960px){.navbar-expand-md{flex-flow:row nowrap;justify-content:flex-start}.navbar-expand-md .navbar-nav{flex-direction:row}.navbar-expand-md .navbar-nav .nav-link{padding-left:var(--site-spacer-s);padding-right:var(--site-spacer-s)}.navbar-expand-md>.container,.navbar-expand-md>.container-fluid{flex-wrap:nowrap}.navbar-expand-md .navbar-collapse{display:flex!important;flex-basis:auto}.navbar-expand-md .navbar-toggler{display:none}}@media (max-width: 1279.98px){.navbar-expand-lg>.container,.navbar-expand-lg>.container-fluid{padding-left:0;padding-right:0}}@media (min-width: 1280px){.navbar-expand-lg{flex-flow:row nowrap;justify-content:flex-start}.navbar-expand-lg .navbar-nav{flex-direction:row}.navbar-expand-lg .navbar-nav .nav-link{padding-left:var(--site-spacer-s);padding-right:var(--site-spacer-s)}.navbar-expand-lg>.container,.navbar-expand-lg>.container-fluid{flex-wrap:nowrap}.navbar-expand-lg .navbar-collapse{display:flex!important;flex-basis:auto}.navbar-expand-lg .navbar-toggler{display:none}}@media (max-width: 1599.98px){.navbar-expand-wd>.container,.navbar-expand-wd>.container-fluid{padding-left:0;padding-right:0}}@media (min-width: 1600px){.navbar-expand-wd{flex-flow:row nowrap;justify-content:flex-start}.navbar-expand-wd .navbar-nav{flex-direction:row}.navbar-expand-wd .navbar-nav .nav-link{padding-left:var(--site-spacer-s);padding-right:var(--site-spacer-s)}.navbar-expand-wd>.container,.navbar-expand-wd>.container-fluid{flex-wrap:nowrap}.navbar-expand-wd .navbar-collapse{display:flex!important;flex-basis:auto}.navbar-expand-wd .navbar-toggler{display:none}}@media (max-width: 1919.98px){.navbar-expand-xl>.container,.navbar-expand-xl>.container-fluid{padding-left:0;padding-right:0}}@media (min-width: 1920px){.navbar-expand-xl{flex-flow:row nowrap;justify-content:flex-start}.navbar-expand-xl .navbar-nav{flex-direction:row}.navbar-expand-xl .navbar-nav .nav-link{padding-left:var(--site-spacer-s);padding-right:var(--site-spacer-s)}.navbar-expand-xl>.container,.navbar-expand-xl>.container-fluid{flex-wrap:nowrap}.navbar-expand-xl .navbar-collapse{display:flex!important;flex-basis:auto}.navbar-expand-xl .navbar-toggler{display:none}}.navbar-expand{flex-flow:row nowrap;justify-content:flex-start}.navbar-expand>.container,.navbar-expand>.container-fluid{padding-left:0;padding-right:0}.navbar-expand .navbar-nav{flex-direction:row}.navbar-expand .navbar-nav .nav-link{padding-left:var(--site-spacer-s);padding-right:var(--site-spacer-s)}.navbar-expand>.container,.navbar-expand>.container-fluid{flex-wrap:nowrap}.navbar-expand .navbar-collapse{display:flex!important;flex-basis:auto}.navbar-expand .navbar-toggler{display:none}
+/*# sourceMappingURL=/ClientDist/browser/styles-6B34EEVY.css.map */
+</style><style>@keyframes pulse{0%{background-color:#a5a5a51a}50%{background-color:#a5a5a54d}to{background-color:#a5a5a51a}}@keyframes vertical-shimmer{to{transform:translate(100%)}}.cdk-overlay-pane.vn-rtms-overlay-panel{max-width:375px}.cdk-overlay-pane.vn-rtms-overlay-panel .generic-modal-wrapper .rtms-content{display:flex;flex-direction:column;height:100%;max-height:inherit}.cdk-overlay-pane.vn-rtms-overlay-panel .generic-modal-wrapper img{width:100%}.cdk-overlay-pane.vn-rtms-overlay-panel .generic-modal-actions p{margin:0}.generic-modal-actions vn-rtms-cta-action,.generic-modal-actions .rtms-cta-action-container{display:flex;flex-grow:1;gap:var(--site-spacer);justify-content:center}.generic-modal-actions vn-rtms-cta-action .btn,.generic-modal-actions .rtms-cta-action-container .btn{flex-basis:50%}.generic-modal-actions vn-rtms-cta-action.clearfix:after,.generic-modal-actions .rtms-cta-action-container.clearfix:after{display:none}.generic-modal-content .bcms-games-container{transform:translate(0)}.generic-modal-content .bcms-games-container .bcms-games-img-container.no-slider{margin:0}.rtms-background{background:var(--rtms-modal-backdrop-bg);height:100%;inset:0 0 -1px;opacity:var(--rtms-modal-backdrop-opacity);position:fixed;width:100%;z-index:1051}#rtmsNotify .real-time-toast{background-color:var(--rtms-bg-light);border-radius:var(--rtms-toast-border-radius);box-shadow:var(--rtms-box-shadow);color:var(--rtms-font-color-light);font-family:var(--theme-font-family-base);font-size:13px;height:80px;left:unset;margin:.5% auto 6px;max-width:294px;padding:0;position:fixed;right:5px;top:.5%;width:97%;z-index:1060}@media (max-width: 599.98px){#rtmsNotify .real-time-toast{max-width:100%;min-width:265px}}#rtmsNotify .real-time-toast img{border-radius:5px;display:inline-block;height:58px;margin:calc(var(--site-spacer) * .7);object-fit:cover;object-position:top left;vertical-align:top;width:58px}#rtmsNotify .real-time-toast>div{display:inline-block;padding-top:calc(var(--site-spacer) * .7)}#rtmsNotify .real-time-toast div,#rtmsNotify .real-time-toast p,#rtmsNotify .real-time-toast span:not(.theme-ex){color:var(--rtms-font-color-light);font-family:var(--theme-font-family-base);font-size:13px;height:45px!important;line-height:17px;overflow:hidden;width:173px}#rtmsNotify .real-time-toast h1,#rtmsNotify .real-time-toast h2,#rtmsNotify .real-time-toast h3,#rtmsNotify .real-time-toast h4,#rtmsNotify .real-time-toast h5,#rtmsNotify .real-time-toast h6{--vn-menu-item-text-transform: uppercase;text-transform:var(--vn-menu-item-text-transform);font-family:var(--theme-font-family-base);font-size:13px;font-weight:700;left:80px;margin-bottom:0;position:absolute;top:20px}#rtmsNotify .real-time-toast.rtm-toast-top fast-svg.close-btn{display:block}#rtmsNotify .real-time-toast.rtm-toast-top fast-svg.close-btn svg{height:14px;width:14px}#rtmsNotify .real-time-toast [class*=ui-icon]{position:absolute;right:0;top:0}lh-rtms-layer-overlay,lh-rtms-layer-bonus-teaser{align-items:center;display:flex;height:100%;justify-content:center;left:0;position:absolute;top:0;width:100%}.rtms-bonus-teaser-container{max-height:550px;overflow:hidden auto;-ms-overflow-style:none;scrollbar-width:none}.rtms-bonus-teaser-container::-webkit-scrollbar{display:none}.rtms-bonus-teaser-image{align-items:center;display:flex;justify-content:center;margin-bottom:var(--site-spacer-xl);overflow:hidden}.rtms-bonus-teaser-image .bonus-image{flex-shrink:0;min-height:100%;min-width:100%}.rtms-bonus-teaser-content .bonus-teaser-text{padding:0 var(--site-spacer)}.real-time-popup{border-radius:var(--rtms-popup-border-radius);box-shadow:var(--rtms-modal-box-shadow);color:var(--rtms-color);font-family:var(--theme-font-family-base);margin:auto;max-width:420px;overflow:hidden;position:static;z-index:1060}@media (max-width: 599.98px){.real-time-popup{height:100%;inset:0;max-width:none;position:fixed;width:100%}}.real-time-popup .close-btn-container{align-items:center;display:flex}.real-time-popup .close-btn-container .close-btn{margin-right:calc(var(--site-spacer-s) * -1)}.real-time-popup .player-inbox-item-title{font-family:var(--theme-font-family-base);font-size:var(--rtms-inbox-item-font-size);font-weight:var(--rtms-inbox-item-font-weight);line-height:var(--rtms-inbox-item-line-height);margin-bottom:var(--site-spacer)}.real-time-popup .text{padding:var(--site-spacer)}.real-time-popup .wrapper{-webkit-overflow-scrolling:touch;-ms-overflow-style:-ms-autohiding-scrollbar;background-color:var(--rtms-bg-light);color:var(--rtms-font-color-light);height:420px;overflow:hidden;overflow-y:auto;padding:0}.real-time-popup .wrapper.bg-light{background-color:var(--rtms-bg-light)!important}@media (max-width: 599.98px){.real-time-popup .wrapper{height:100%}}.real-time-popup .wrapper h1,.real-time-popup .wrapper h2,.real-time-popup .wrapper h3,.real-time-popup .wrapper h4,.real-time-popup .wrapper h5,.real-time-popup .wrapper h6{color:var(--rtms-font-color-light);font-size:1.25rem;font-weight:700;line-height:1.5rem;margin:0 0 var(--site-spacer-l) 0}.real-time-popup .wrapper ul li{color:var(--rtms-font-color-light);list-style:disc;margin-left:var(--site-spacer);padding-bottom:var(--site-spacer-s)}.real-time-popup img{width:100%}.real-time-popup p{color:var(--rtms-font-color-light);overflow:hidden}.real-time-popup .rtms-cta-block .btn+.btn{margin-left:var(--site-spacer)}.device-mobile-phone .real-time-popup{max-width:100%;top:0}.device-mobile-phone .real-time-popup .header-ctrl{padding-right:var(--site-spacer)}.device-mobile-phone .real-time-popup .wrapper{height:100vh;padding-bottom:var(--site-spacer-8xl)}.device-desktop .real-time-popup{box-shadow:none;position:fixed}.device-desktop .real-time-popup .header-ctrl{background-color:var(--rtms-popup-header-ctrl-bg)}.device-desktop .real-time-popup .wrapper{box-shadow:var(--rtms-modal-box-shadow)}lh-rtms-layer-custom-overlay{align-items:center;display:flex;height:100%;justify-content:center;left:0;position:absolute;top:0;width:100%}.bcms{background:var(--bcms-bg);border-radius:var(--bcms-border-radius);box-shadow:var(--rtms-modal-box-shadow);color:var(--bcms-color);font-family:var(--theme-font-family-base);margin:auto;max-width:375px;overflow:hidden;position:fixed;z-index:1060}@media (max-width: 599.98px){.bcms{height:100%;inset:0;max-width:none;position:fixed;width:100%}}.device-mobile-phone .bcms{height:100%;overflow:auto;-webkit-overflow-scrolling:touch;-ms-overflow-style:-ms-autohiding-scrollbar}.device-mobile-phone .bcms .bcms-header{position:sticky;top:0}.bcms-header{flex:0 0 auto}.bcms-container{background-color:var(--bcms-bg);flex:1 0 auto;margin-bottom:var(--site-spacer);max-height:550px;overflow:hidden auto}.bcms-container .rtms-cta-action-container p+ul,.bcms-container .rtms-cta-action-container p+ol{margin-top:var(--site-spacer-s)}.bcms-container .rtms-cta-action-container ul,.bcms-container .rtms-cta-action-container ol{text-align:left}@media (max-width: 599.98px){.bcms-container{height:calc(100% - var(--site-spacer) - 56px - 58px);max-height:none;overflow-y:scroll;-webkit-overflow-scrolling:touch;-ms-overflow-style:-ms-autohiding-scrollbar}}.bcms-banner{text-align:center}.bcms-banner-img{display:block;height:auto;margin-bottom:var(--site-spacer-xl);max-width:100%;width:auto}.bcms-item-title{font-size:var(--theme-h2-font-size);padding-bottom:var(--site-spacer-m)}.bcms-txt{font-size:14px;padding-bottom:var(--site-spacer-m)}.bcms-txt p{margin:0}.bcms-txt-tnc{font-size:9px}.bcms-txt-tnc p{font-size:inherit;line-height:inherit;margin:inherit}.bcms-toggle-tnc{color:var(--bcms-toggle-tnc-color);margin:var(--site-spacer-3xl) var(--site-spacer) 0 var(--site-spacer);position:relative;text-align:left}.bcms-toggle-tnc-caption{align-items:center;border-bottom:1px solid;border-top:1px solid;display:flex;font-size:12px;justify-content:space-between;padding:var(--site-spacer) var(--site-spacer-s);text-transform:uppercase}.bcms-toggle-tnc-caption:hover{cursor:pointer}.bcms-toggle-tnc-caption .toggle-tnc-icon{font-size:8px;height:8px;margin-left:auto;width:8px}.bcms-toggle-tnc-details{font-size:12px;padding:var(--site-spacer) var(--site-spacer-s) 50px var(--site-spacer);position:relative}.bcms-toggle-tnc-fade{background:linear-gradient(to bottom,color-mix(in srgb,var(--color-black) 0%,transparent),var(--bcms-bg));bottom:0;display:block;height:100px;margin:-100px 0 0;pointer-events:none;position:sticky;width:100%}.bcms-games .vn-carousel .carousel-previous,.bcms-games .vn-carousel .carousel-next{background-color:var(--color-white);color:var(--color-black);font-size:8px;height:32px;padding:11px;width:32px}.bcms-games .vn-carousel .carousel-previous{transform:translateY(-25%) translate(-25%)}.bcms-games .vn-carousel .carousel-next{transform:translateY(-25%) translate(-75%)}.bcms-games-container{padding-top:var(--site-spacer);transform:translate(var(--site-spacer))}.bcms-games-img-container{display:flex;flex-flow:row nowrap}.bcms-games-img-container.no-slider{align-items:center;justify-content:center;margin:0 var(--site-spacer);transform:translate(-var(--site-spacer))}.bcms-games-img-container.no-slider .bcms-single-game-container:last-child{margin-right:0}.bcms-single-game-container{margin-right:var(--site-spacer-s)}.bcms-game-img-link{border-radius:var(--bcms-border-radius);display:block;height:100%;max-height:140px;max-width:140px;overflow:hidden;width:100%}.bcms-game-img-link:hover{cursor:pointer}.bcms-game-locked{position:relative}.bcms-game-locked .theme-locked{background:color-mix(in srgb,var(--color-white) 60%,transparent);color:var(--bcms-game-locked-overlay-icon-color);height:100%;inset:0;margin:auto;pointer-events:none;position:absolute;width:100%}.bcms-game-img{height:auto;max-width:140px;width:100%}.bcms-cta-container{background-color:var(--bcms-bg);flex:0 0 auto;padding-bottom:var(--site-spacer);position:relative;text-align:center}.bcms-cta-item .btn{margin:0 var(--site-spacer-s);max-width:50%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rtms-bonus-button-section{margin:var(--site-spacer) 0;text-align:center}.rtms-bonus-button-section .btn-decline,.rtms-bonus-button-section .btn-accept{display:inline-block;margin:0 var(--site-spacer-s);max-width:50%;overflow:hidden}.bcms-banner-img-small .bcms-banner-img{display:block;height:86px;margin:var(--site-spacer-xl) auto var(--site-spacer-s)}
+/*# sourceMappingURL=/ClientDist/browser/styles-JJUDVEJB.css.map */
+</style><style>@keyframes pulse{0%{background-color:#a5a5a51a}50%{background-color:#a5a5a54d}to{background-color:#a5a5a51a}}@keyframes vertical-shimmer{to{transform:translate(100%)}}.sub-nav-wrapper{flex-flow:row nowrap;overflow:auto hidden;white-space:nowrap;-webkit-overflow-scrolling:touch;-ms-overflow-style:-ms-autohiding-scrollbar}.sub-nav-wrapper .tab-nav{align-items:stretch;display:flex;flex-direction:row}.sub-nav-wrapper .tab-nav-link{color:var(--vn-menu-item-color);font-weight:var(--vn-menu-item-font-weight);text-transform:var(--sub-nav-link-text-transform)}.sub-nav-wrapper .tab-nav-link:hover{color:var(--sub-nav-link-hover-color)}.sub-nav-wrapper .tab-nav-link:hover:after{background:var(--sub-nav-link-hover-active-bd-color)}.sub-nav-wrapper .tab-nav-item.active .tab-nav-link{color:var(--vn-menu-item-color);font-weight:var(--vn-menu-item-font-weight)}.sub-nav-wrapper .tab-nav-item.active .tab-nav-link:after{background:var(--sub-nav-link-hover-active-bd-color)}.sub-nav-wrapper.sub-nav-v2 .tab-nav-item{margin-right:var(--site-spacer-xl)}.sub-nav-wrapper.sub-nav-v2 .tab-nav-item:last-child{margin-right:0}.sub-nav-wrapper.sub-nav-v2 .tab-nav-item .tab-nav-link{color:var(--vn-menu-item-color)}.sub-nav-wrapper.sub-nav-v2 .tab-nav-item .tab-nav-link:after{height:2px;width:100%}.sub-nav-wrapper.sub-nav-v2 .tab-nav-item.active .tab-nav-link{font-weight:var(--vn-menu-item-font-weight)}.sub-nav-wrapper.sub-nav-v2 .tab-nav-item.active .tab-nav-link:after{background:var(--sub-nav-link-hover-active-bd-color)}.sub-nav-wrapper .h-product-nav.tab-nav{align-items:stretch;display:flex;flex-direction:row}@media (max-width: 959.98px){.sub-nav-wrapper .h-product-nav.tab-nav{background:var(--sub-nav-product-navigation-bg);justify-content:space-between;overflow-x:hidden;width:100%}}.sub-nav-wrapper .tab-nav-list.show-nav-sub .theme-arrow-down:before{transform:rotate(180deg)}.sub-nav-wrapper .tab-nav-list .theme-arrow-down:before{font-size:14px;margin-left:5px;transform:rotate(0);transition:all .3s ease-in-out}.sub-nav-wrapper .tab-nav-list .menu-item{align-items:center;display:flex;flex-direction:row;height:100%;justify-content:center}.sub-nav-wrapper .tab-nav-sub{padding:0;position:absolute;top:100%;width:100%}.sub-nav-wrapper .tab-nav-sub-item{background-color:var(--sub-nav-header-bg);font-family:var(--sub-nav-product-nav-link-font-family);font-size:var(--sub-nav-product-nav-link-font-size);font-weight:var(--sub-nav-product-nav-link-font-weight);list-style-type:none;padding:0;text-align:center;text-transform:uppercase}.sub-nav-wrapper .tab-nav-sub-item:not(:last-child){border-bottom:1px solid var(--sub-nav-tab-nav-sub-item-border-color)}.sub-nav-wrapper .tab-nav-sub-item .active{background-color:var(--theme-accent-02)}.device-touch .sub-nav-wrapper .tab-nav-item:not(.active) .tab-nav-link:hover{color:var(--sub-nav-link-color)}.device-touch .sub-nav-wrapper .tab-nav-item:not(.active) .tab-nav-link:hover:after{background:transparent}
+/*# sourceMappingURL=/ClientDist/browser/styles-LE3SQQJ4.css.map */
+</style><style>@keyframes pulse{0%{background-color:#a5a5a51a}50%{background-color:#a5a5a54d}to{background-color:#a5a5a51a}}@keyframes vertical-shimmer{to{transform:translate(100%)}}.global-search-placeholder{display:block;height:100%;vertical-align:middle;padding:0}.global-search-placeholder li{height:inherit;padding:0 .3125rem}.global-search-placeholder .theme-search:hover:after{background:none}vn-h-global-search{display:block}
+/*# sourceMappingURL=/ClientDist/browser/header-leftmenu-entry.component-YEY4E47K.css.map */
+</style><style>.ds-notification-bubble{--ds-notification-bubble-radius-border: var(--semantic-radius-max);--ds-notification-bubble-width-local: fit-content;--ds-notification-bubble-padding-zero: 0;--ds-notification-bubble-padding: 0 var(--ds-notification-bubble-space-padding-right, 0) 0 var(--ds-notification-bubble-space-padding-left, 0);--ds-notification-bubble-font-family: var(--semantic-typography-label-font-family, sans-serif);--ds-notification-bubble-font-size: var(--semantic-typography-label-sm-strong-font-size);--ds-notification-bubble-font-weight: var(--semantic-typography-label-sm-strong-font-weight);--ds-notification-bubble-line-height: var(--semantic-typography-label-sm-strong-line-height);font-family:var(--ds-notification-bubble-font-family);font-size:var(--ds-notification-bubble-font-size);font-weight:var(--ds-notification-bubble-font-weight);line-height:var(--ds-notification-bubble-line-height);align-items:center;background:var(--ds-notification-bubble-color-bg);border-radius:var(--ds-notification-bubble-radius-border);box-sizing:border-box;color:var(--ds-notification-bubble-color-text);display:inline-flex;height:var(--ds-notification-bubble-size-height);justify-content:center;min-width:var(--ds-notification-bubble-size-min-width);padding:var(--ds-notification-bubble-padding);width:var(--ds-notification-bubble-width-local)}.ds-notification-bubble.ds-notification-bubble-primary{--ds-notification-bubble-color-bg: var(--semantic-color-primary-base);--ds-notification-bubble-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-notification-bubble-color-text: var(--semantic-color-on-primary-base)}.ds-notification-bubble.ds-notification-bubble-live-dot,.ds-notification-bubble.ds-notification-bubble-utility-dot{--ds-notification-bubble-padding: var(--ds-notification-bubble-padding-zero)}.ds-notification-bubble.ds-notification-bubble-live-dot{--ds-notification-bubble-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-notification-bubble-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-notification-bubble-color-dot: var(--semantic-color-negative-base)}.ds-notification-bubble.ds-notification-bubble-utility-dot{--ds-notification-bubble-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-notification-bubble-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-notification-bubble-color-dot: var(--semantic-color-utility-base)}.ds-notification-bubble.ds-notification-bubble-live{--ds-notification-bubble-color-bg: var(--semantic-color-opacity-subtle-base);--ds-notification-bubble-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-notification-bubble-color-text: var(--semantic-color-negative-base)}.ds-notification-bubble.ds-notification-bubble-neutral{--ds-notification-bubble-color-bg: var(--semantic-color-opacity-subtle-base);--ds-notification-bubble-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-notification-bubble-color-text: var(--semantic-color-on-surface-base)}.ds-notification-bubble.ds-notification-bubble-utility{--ds-notification-bubble-color-bg: var(--semantic-color-opacity-subtle-base);--ds-notification-bubble-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-notification-bubble-color-text: var(--semantic-color-utility-base)}.ds-notification-bubble.ds-notification-bubble-disabled:not(.ds-notification-bubble-live-dot):not(.ds-notification-bubble-utility-dot){--ds-notification-bubble-color-bg: var(--semantic-color-disabled-base);--ds-notification-bubble-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-notification-bubble-color-text: var(--semantic-color-on-disabled-base)}.ds-notification-bubble.ds-notification-bubble-inverse.ds-notification-bubble-primary{--ds-notification-bubble-color-bg: var(--semantic-color-primary-base-inverse);--ds-notification-bubble-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-notification-bubble-color-text: var(--semantic-color-on-primary-base-inverse)}.ds-notification-bubble.ds-notification-bubble-inverse.ds-notification-bubble-live-dot{--ds-notification-bubble-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-notification-bubble-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-notification-bubble-color-dot: var(--semantic-color-negative-base-inverse)}.ds-notification-bubble.ds-notification-bubble-inverse.ds-notification-bubble-utility-dot{--ds-notification-bubble-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-notification-bubble-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-notification-bubble-color-dot: var(--semantic-color-utility-base-inverse)}.ds-notification-bubble.ds-notification-bubble-inverse.ds-notification-bubble-live{--ds-notification-bubble-color-bg: var(--semantic-color-opacity-subtle-base-inverse);--ds-notification-bubble-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-notification-bubble-color-text: var(--semantic-color-negative-base-inverse)}.ds-notification-bubble.ds-notification-bubble-inverse.ds-notification-bubble-neutral{--ds-notification-bubble-color-bg: var(--semantic-color-opacity-subtle-base-inverse);--ds-notification-bubble-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-notification-bubble-color-text: var(--semantic-color-on-surface-base-inverse)}.ds-notification-bubble.ds-notification-bubble-inverse.ds-notification-bubble-utility{--ds-notification-bubble-color-bg: var(--semantic-color-opacity-subtle-base-inverse);--ds-notification-bubble-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-notification-bubble-color-text: var(--semantic-color-utility-base-inverse)}.ds-notification-bubble.ds-notification-bubble-inverse.ds-notification-bubble-disabled:not(.ds-notification-bubble-live-dot):not(.ds-notification-bubble-utility-dot){--ds-notification-bubble-color-bg: var(--semantic-color-disabled-base-inverse);--ds-notification-bubble-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-notification-bubble-color-text: var(--semantic-color-on-disabled-base-inverse)}.ds-notification-bubble.ds-notification-bubble-large{--ds-notification-bubble-size-dot-height: var(--semantic-size-icon-medium);--ds-notification-bubble-size-dot-width: var(--semantic-size-icon-medium);--ds-notification-bubble-size-height: var(--semantic-size-x6);--ds-notification-bubble-size-min-width: var(--semantic-size-x6);--ds-notification-bubble-space-padding-left: var(--semantic-spacing-container-padding-sm);--ds-notification-bubble-space-padding-right: var(--semantic-spacing-container-padding-sm);--ds-notification-bubble-font-family: var(--semantic-typography-label-font-family, sans-serif);--ds-notification-bubble-font-size: var(--semantic-typography-label-lg-strong-font-size);--ds-notification-bubble-font-weight: var(--semantic-typography-label-lg-strong-font-weight);--ds-notification-bubble-line-height: var(--semantic-typography-label-lg-strong-line-height)}.ds-notification-bubble.ds-notification-bubble-medium{--ds-notification-bubble-size-dot-height: var(--semantic-size-icon-small);--ds-notification-bubble-size-dot-width: var(--semantic-size-icon-small);--ds-notification-bubble-size-height: var(--semantic-size-x4);--ds-notification-bubble-size-min-width: var(--semantic-size-x4);--ds-notification-bubble-space-padding-left: var(--semantic-spacing-container-padding-sm);--ds-notification-bubble-space-padding-right: var(--semantic-spacing-container-padding-sm);--ds-notification-bubble-font-family: var(--semantic-typography-label-font-family, sans-serif);--ds-notification-bubble-font-size: var(--semantic-typography-label-sm-strong-font-size);--ds-notification-bubble-font-weight: var(--semantic-typography-label-sm-strong-font-weight);--ds-notification-bubble-line-height: var(--semantic-typography-label-sm-strong-line-height)}.ds-notification-bubble.ds-notification-bubble-small{--ds-notification-bubble-size-dot-height: var(--semantic-size-icon-xsmall);--ds-notification-bubble-size-dot-width: var(--semantic-size-icon-xsmall);--ds-notification-bubble-size-height: var(--semantic-size-x3);--ds-notification-bubble-size-min-width: var(--semantic-size-x3);--ds-notification-bubble-space-padding-left: var(--semantic-spacing-container-padding-xs);--ds-notification-bubble-space-padding-right: var(--semantic-spacing-container-padding-xs);--ds-notification-bubble-font-family: sans-serif;--ds-notification-bubble-font-size: var(--semantic-typography-label-xs-strong-font-size);--ds-notification-bubble-font-weight: var(--semantic-typography-label-xs-strong-font-weight);--ds-notification-bubble-line-height: var(--semantic-typography-label-xs-strong-line-height)}.ds-notification-bubble .ds-notification-bubble-inside-dot{background:var(--ds-notification-bubble-color-dot);border-radius:var(--ds-notification-bubble-radius-border);height:var(--ds-notification-bubble-size-dot-height);width:var(--ds-notification-bubble-size-dot-width)}
+/*# sourceMappingURL=/ClientDist/browser/notification-bubble.component-KHK3ULRQ.css.map */
+</style><style>.sub-navigation-icon img{padding-bottom:4px}.epcot-enabled[_nghost-ng-c2525706789]   .sub-nav-tab-alignment[_ngcontent-ng-c2525706789], .epcot-enabled   [_nghost-ng-c2525706789]   .sub-nav-tab-alignment[_ngcontent-ng-c2525706789]{padding-left:24px}.button-alignment[_ngcontent-ng-c2525706789]{vertical-align:middle}.mybets-container[_ngcontent-ng-c2525706789]{padding:var(--site-spacer-s);height:var(--site-spacer-6xl);background-color:var(--theme-body-bg);border-bottom:0}.tab-separator[_ngcontent-ng-c2525706789]{display:inline-block;height:25px;top:23%;position:relative;margin-left:6px;padding-right:16px}.sub-nav-tab-alignment[_ngcontent-ng-c2525706789]{display:block;padding-left:6px;background:var(--sub-nav-background);--ds-carousel-arrow-position-left: 8px;--ds-carousel-arrow-position-right: 8px}.sub-nav-tab-alignment[_ngcontent-ng-c2525706789]   a[_ngcontent-ng-c2525706789]{display:contents}.tab-with-button-alignment[_ngcontent-ng-c2525706789]{display:flex}.resulted-icon[_ngcontent-ng-c2525706789]{display:inline-flex;color:var(--theme-danger)}
+/*# sourceMappingURL=/ClientDist/browser/sub-navigation.component-RKFSRML4.css.map */</style><style>popper-content{position:relative;display:block}.ngxp__container{display:none;position:absolute;border-radius:3px;border:1px solid grey;box-shadow:0 0 2px #00000080;padding:10px}.ngxp__container.ngxp__animation{animation:ngxp-fadeIn .15s ease-out}.ngxp__container>.ngxp__arrow{position:absolute;width:10px;height:10px;z-index:-1;transform:rotate(45deg);background-color:red}.ngxp__container[data-popper-placement^=top]>.ngxp__arrow{bottom:-5px}.ngxp__container[data-popper-placement^=bottom]>.ngxp__arrow{top:-5px}.ngxp__container[data-popper-placement^=left]>.ngxp__arrow{right:-5px}.ngxp__container[data-popper-placement^=right]>.ngxp__arrow{left:-5px}@keyframes ngxp-fadeIn{0%{display:none;opacity:0}1%{display:block;opacity:0}to{display:block;opacity:1}}
+</style><meta name="robots" content="noindex, nofollow"><style>.ng-scrollbar-measure{scrollbar-width:none;-ms-overflow-style:none}  .ng-scrollbar-measure::-webkit-scrollbar{display:none}[_nghost-ng-c3182812167]{--scrollbar-border-radius: 7px;--scrollbar-padding: 4px;--scrollbar-track-color: transparent;--scrollbar-thumb-color: rgba(0, 0, 0, .2);--scrollbar-thumb-hover-color: var(--scrollbar-thumb-color);--scrollbar-size: 5px;--scrollbar-hover-size: var(--scrollbar-size);--scrollbar-overscroll-behavior: initial;--scrollbar-transition-duration: .4s;--scrollbar-transition-delay: .8s;--scrollbar-thumb-transition: height ease-out .15s, width ease-out .15s;--scrollbar-track-transition: height ease-out .15s, width ease-out .15s;display:block;position:relative;height:100%;max-height:100%;max-width:100%;box-sizing:content-box!important}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[_ngcontent-ng-c3182812167]{--scrollbar-total-size: calc(var(--scrollbar-size) + var(--scrollbar-padding) * 2);--vertical-scrollbar-size: var(--scrollbar-size);--horizontal-scrollbar-size: var(--scrollbar-size);--vertical-scrollbar-total-size: calc(var(--vertical-scrollbar-size) + var(--scrollbar-padding) * 2);--horizontal-scrollbar-total-size: calc(var(--horizontal-scrollbar-size) + var(--scrollbar-padding) * 2)}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[verticalHovered=true][_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[verticalDragging=true][_ngcontent-ng-c3182812167]{--vertical-scrollbar-size: var(--scrollbar-hover-size);--vertical-scrollbar-total-size: calc(var(--vertical-scrollbar-size) + var(--scrollbar-padding) * 2);cursor:default}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[horizontalHovered=true][_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[horizontalDragging=true][_ngcontent-ng-c3182812167]{--horizontal-scrollbar-size: var(--scrollbar-hover-size);--horizontal-scrollbar-total-size: calc(var(--horizontal-scrollbar-size) + var(--scrollbar-padding) * 2);cursor:default}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][dir=ltr][pointerEventsMethod=scrollbar][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167]{left:0;right:var(--scrollbar-total-size)}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][dir=ltr][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-scroll-viewport[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][dir=ltr][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-scroll-viewport{padding-right:var(--scrollbar-total-size)}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][dir=ltr][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-scroll-viewport[_ngcontent-ng-c3182812167] > .ng-scroll-content[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][dir=ltr][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-scroll-viewport>.ng-scroll-content{padding-right:var(--scrollbar-total-size)}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][dir=rtl][pointerEventsMethod=scrollbar][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167]{left:var(--scrollbar-total-size);right:0}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][dir=rtl][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-scroll-viewport[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][dir=rtl][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-scroll-viewport{padding-left:var(--scrollbar-total-size)}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][dir=rtl][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-scroll-viewport[_ngcontent-ng-c3182812167] > .ng-scroll-content[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][dir=rtl][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-scroll-viewport>.ng-scroll-content{padding-left:var(--scrollbar-total-size)}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][position=invertY][dir=ltr][pointerEventsMethod=scrollbar][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][position=invertAll][dir=ltr][pointerEventsMethod=scrollbar][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167]{left:var(--scrollbar-total-size);right:0}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][position=invertY][dir=ltr][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-scroll-viewport[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][position=invertY][dir=ltr][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-scroll-viewport, [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][position=invertAll][dir=ltr][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-scroll-viewport[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][position=invertAll][dir=ltr][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-scroll-viewport{padding-left:var(--scrollbar-total-size)}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][position=invertY][dir=ltr][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-scroll-viewport[_ngcontent-ng-c3182812167] > .ng-scroll-content[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][position=invertY][dir=ltr][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-scroll-viewport>.ng-scroll-content, [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][position=invertAll][dir=ltr][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-scroll-viewport[_ngcontent-ng-c3182812167] > .ng-scroll-content[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][position=invertAll][dir=ltr][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-scroll-viewport>.ng-scroll-content{padding-left:var(--scrollbar-total-size)}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][position=invertY][dir=rtl][pointerEventsMethod=scrollbar][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][position=invertAll][dir=rtl][pointerEventsMethod=scrollbar][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167]{left:0;right:var(--scrollbar-total-size)}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][position=invertY][dir=rtl][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-scroll-viewport[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][position=invertY][dir=rtl][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-scroll-viewport, [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][position=invertAll][dir=rtl][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-scroll-viewport[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][position=invertAll][dir=rtl][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-scroll-viewport{padding-right:var(--scrollbar-total-size)}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][position=invertY][dir=rtl][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-scroll-viewport[_ngcontent-ng-c3182812167] > .ng-scroll-content[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][position=invertY][dir=rtl][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-scroll-viewport>.ng-scroll-content, [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][position=invertAll][dir=rtl][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-scroll-viewport[_ngcontent-ng-c3182812167] > .ng-scroll-content[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][verticalUsed=true][position=invertAll][dir=rtl][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-scroll-viewport>.ng-scroll-content{padding-right:var(--scrollbar-total-size)}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][horizontalUsed=true][pointerEventsMethod=scrollbar][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167]{top:0;bottom:var(--scrollbar-total-size)}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][horizontalUsed=true][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-scroll-viewport[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][horizontalUsed=true][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-scroll-viewport{padding-bottom:var(--scrollbar-total-size)}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][horizontalUsed=true][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-scroll-viewport[_ngcontent-ng-c3182812167] > .ng-scroll-content[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][horizontalUsed=true][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-scroll-viewport>.ng-scroll-content{padding-bottom:var(--scrollbar-total-size)}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][horizontalUsed=true][position=invertX][pointerEventsMethod=scrollbar][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][horizontalUsed=true][position=invertAll][pointerEventsMethod=scrollbar][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167]{top:var(--scrollbar-total-size);bottom:0}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][horizontalUsed=true][position=invertX][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-scroll-viewport[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][horizontalUsed=true][position=invertX][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-scroll-viewport, [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][horizontalUsed=true][position=invertAll][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-scroll-viewport[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][horizontalUsed=true][position=invertAll][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-scroll-viewport{padding-top:var(--scrollbar-total-size)}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][horizontalUsed=true][position=invertX][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-scroll-viewport[_ngcontent-ng-c3182812167] > .ng-scroll-content[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][horizontalUsed=true][position=invertX][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-scroll-viewport>.ng-scroll-content, [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][horizontalUsed=true][position=invertAll][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-scroll-viewport[_ngcontent-ng-c3182812167] > .ng-scroll-content[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][appearance=standard][horizontalUsed=true][position=invertAll][pointerEventsMethod=viewport][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-scroll-viewport>.ng-scroll-content{padding-top:var(--scrollbar-total-size)}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-scroll-viewport[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-scroll-viewport{scrollbar-width:none;-ms-overflow-style:none}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-scroll-viewport[_ngcontent-ng-c3182812167]::-webkit-scrollbar, [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-scroll-viewport::-webkit-scrollbar{display:none}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][horizontalUsed=true][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-native-scrollbar-hider[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][horizontalUsed=true][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-native-scrollbar-hider{bottom:var(--native-scrollbar-size)}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][verticalUsed=true][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-native-scrollbar-hider[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][verticalUsed=true][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-native-scrollbar-hider{left:0;right:var(--native-scrollbar-size)}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][verticalUsed=true][dir=rtl][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-native-scrollbar-hider[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][verticalUsed=true][dir=rtl][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-native-scrollbar-hider{right:0;left:var(--native-scrollbar-size)}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][visibility=hover][_ngcontent-ng-c3182812167] > .scrollbar-control[_ngcontent-ng-c3182812167]{opacity:0;transition-property:opacity;transition-duration:var(--scrollbar-transition-duration);transition-delay:var(--scrollbar-transition-delay)}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][visibility=hover][_ngcontent-ng-c3182812167]:hover > .scrollbar-control[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][visibility=hover][_ngcontent-ng-c3182812167]:active > .scrollbar-control[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[deactivated=false][visibility=hover][_ngcontent-ng-c3182812167]:focus > .scrollbar-control[_ngcontent-ng-c3182812167]{opacity:1;transition-duration:var(--scrollbar-transition-duration);transition-delay:0ms}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[horizontalUsed=true][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-scroll-viewport[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[horizontalUsed=true][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-scroll-viewport{overflow-x:auto;overflow-y:hidden}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[verticalUsed=true][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-scroll-viewport[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[verticalUsed=true][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-scroll-viewport{overflow-y:auto;overflow-x:hidden}[_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[verticalUsed=true][horizontalUsed=true][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > .ng-scroll-viewport[_ngcontent-ng-c3182812167], [_nghost-ng-c3182812167] > .ng-scrollbar-wrapper[verticalUsed=true][horizontalUsed=true][_ngcontent-ng-c3182812167] > .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] > *[_ngcontent-ng-c3182812167] >   .ng-scroll-viewport{overflow:auto}.ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167]{overflow:hidden}.ng-scroll-viewport[_ngcontent-ng-c3182812167]{-webkit-overflow-scrolling:touch;contain:strict;will-change:scroll-position;overscroll-behavior:var(--scrollbar-overscroll-behavior)}  .ng-scroll-content{display:inline-block;min-width:100%}.ng-scrollbar-wrapper[_ngcontent-ng-c3182812167], .ng-scroll-viewport-wrapper[_ngcontent-ng-c3182812167], .ng-scroll-layer[_ngcontent-ng-c3182812167],   .ng-scroll-viewport{position:absolute;inset:0}</style><style>.ng-scrollbar-wrapper[pointerEventsMethod=viewport]>.scrollbar-control{pointer-events:none}  .ng-scrollbar-wrapper[horizontalDragging=true]>.ng-scroll-viewport-wrapper>.ng-scroll-viewport,   .ng-scrollbar-wrapper[horizontalDragging=true]>.ng-scroll-viewport-wrapper>*>*>  .ng-scroll-viewport,   .ng-scrollbar-wrapper[verticalDragging=true]>.ng-scroll-viewport-wrapper>.ng-scroll-viewport,   .ng-scrollbar-wrapper[verticalDragging=true]>.ng-scroll-viewport-wrapper>*>*>  .ng-scroll-viewport,   .ng-scrollbar-wrapper[scrollbarClicked=true]>.ng-scroll-viewport-wrapper>.ng-scroll-viewport,   .ng-scrollbar-wrapper[scrollbarClicked=true]>.ng-scroll-viewport-wrapper>*>*>  .ng-scroll-viewport{-webkit-user-select:none;-moz-user-select:none;user-select:none}  .ng-scrollbar-wrapper>.scrollbar-control{position:absolute;display:flex;justify-content:center;align-items:center;transition:var(--scrollbar-track-transition)}  .ng-scrollbar-wrapper>.scrollbar-control[scrollable=false] .ng-scrollbar-thumb{display:none}  .ng-scrollbar-track{height:100%;width:100%;z-index:1;border-radius:var(--scrollbar-border-radius);background-color:var(--scrollbar-track-color);overflow:hidden;transition:var(--scrollbar-track-transition);cursor:default}  .ng-scrollbar-thumb{box-sizing:border-box;position:relative;border-radius:inherit;background-color:var(--scrollbar-thumb-color);transform:translateZ(0);transition:var(--scrollbar-thumb-transition)}</style><style>@keyframes pulse{0%{background-color:#a5a5a51a}50%{background-color:#a5a5a54d}to{background-color:#a5a5a51a}}@keyframes vertical-shimmer{to{transform:translate(100%)}}footer{background-color:var(--footer-bg-color);font-family:var(--theme-font-family-base);font-size:var(--footer-font-size);padding:0;position:relative}footer img{height:35px;width:auto}footer .content-message-container{background-color:var(--footer-content-message-bg-color);font-family:var(--theme-font-family-base);padding-bottom:var(--footer-content-message-padding-bottom);padding-top:var(--footer-content-message-padding-top)}footer .content-message-container .content-message{background:transparent;color:var(--footer-disclaimer-text-color);font-size:10px;line-height:15px;padding:0;text-align:center}@media (max-width: 599.98px){footer .content-message-container .content-message{text-align:left}}footer .content-message-container .content-message p{color:inherit;font-size:inherit;text-align:inherit}footer .content-message-container .footer-content-message-text{font-size:var(--footer-content-message-font-size);line-height:1.5;text-align:left}footer .content-message-container .footer-content-message-text p{margin-bottom:var(--site-spacer-s)}footer .content-message-container .footer-content-message-text .de-gambling-regulatory{border:solid 3px var(--footer-de-gambling-regulatory-border-color);border-radius:2px;color:var(--footer-de-gambling-regulatory-txt-color);display:inline-block;padding:var(--site-spacer-m) var(--site-spacer-s)}footer .logo-block{margin-bottom:var(--site-spacer);margin-top:calc(var(--site-spacer) * -1);padding-bottom:var(--site-spacer);padding-top:var(--site-spacer);text-align:left}@media (min-width: 600px){footer .logo-block{margin-top:calc(var(--site-spacer-xl) * -1);padding-top:var(--site-spacer-xl)}}footer .logo-block .logo-block-header{margin-bottom:var(--site-spacer)}footer .logo-block .logo-block-content{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr))}footer .logo-block .logo-block-content img{height:48px;margin-bottom:var(--site-spacer-s);width:auto}footer .logo-block.awards{margin-top:calc(var(--site-spacer-xl) * -1);padding-top:var(--site-spacer-xl)}footer .logo-block.awards .logo-block-content{display:block}footer .logo-block.awards .logo-block-content img{height:auto;margin-bottom:var(--site-spacer);margin-right:var(--site-spacer-3xl)}@media (max-width: 599.98px){footer .logo-block.awards .logo-block-content{display:grid;grid-template-columns:1fr 1fr 1fr;justify-items:center}footer .logo-block.awards .logo-block-content img{margin-bottom:var(--site-spacer-xl);margin-right:0}}.rpfav-widget-enabled footer{padding-bottom:47px}footer .footer-top-links{border-bottom:0;margin-bottom:2px;position:relative}footer .footer-top-links:after{background:var(--footer-top-border-color);bottom:-2px;box-shadow:-900px 0 0 var(--footer-top-border-color),900px 0 0 var(--footer-top-border-color);content:"";height:2px;left:0;position:absolute;right:0;width:100%;z-index:0}footer .footer-top-links .slot-footer_items_inline span{font-weight:var(--theme-font-normal)}footer .footer-top-links .footer-nav-link:not(.btn){--vn-menu-item-mb: 0}footer .footer-nav-seo-container{background-color:var(--footer-nav-seo-bg-color);box-shadow:-900px 0 0 var(--footer-nav-seo-bg-color),900px 0 0 var(--footer-nav-seo-bg-color)}footer .content-message .logo-block{margin-left:-8px;margin-right:-8px;background-color:var(--footer-logo-block-bg-color);box-shadow:-900px 0 0 var(--footer-logo-block-bg-color),900px 0 0 var(--footer-logo-block-bg-color)}@media (min-width: 600px){footer .content-message .logo-block{margin-left:-16px;margin-right:-16px}}@media (min-width: 960px){footer .content-message .logo-block{margin-left:-24px;margin-right:-24px}}footer .content-message .footer-logos-wrapper{display:flex;flex-direction:column;padding-bottom:var(--site-spacer)}@media (min-width: 600px){footer .content-message .footer-logos-wrapper{flex-direction:row}}footer .content-message .payment-methods,footer .content-message .social{text-align:left}footer .content-message .partners{padding-bottom:var(--site-spacer-s)}@media (min-width: 600px){footer .content-message .payment-methods-wrapper{margin-right:var(--site-spacer-3xl)}}footer .content-message .payment-methods-wrapper+.social-wrapper{margin-top:var(--site-spacer-s)}@media (min-width: 600px){footer .content-message .payment-methods-wrapper+.social-wrapper{margin-top:0}}footer .content-message .footer-cm-title,footer .content-message .payment-methods-title,footer .content-message .social-title{--vn-menu-item-text-transform: var(--footer-menu-section-title-text-transform);text-transform:var(--vn-menu-item-text-transform);color:var(--footer-menu-section-title-color);font-size:var(--footer-menu-section-title-font-size);font-weight:var(--theme-font-bold);letter-spacing:normal;line-height:var(--footer-menu-section-title-line-height);margin-bottom:var(--site-spacer-m);white-space:nowrap}footer .content-message .payment-methods-content img,footer .content-message .social-content img,footer .content-message .partners img{height:40px;margin-bottom:var(--site-spacer-s);margin-right:var(--site-spacer-s);width:auto}@media (max-width: 599.98px){footer .content-message .payment-methods-content img{height:32px}}footer .content-message .social-content{white-space:nowrap}footer .footer-nav-link:not(.btn){color:var(--footer-bottom-menu-items-color);display:inline-block;font-size:var(--footer-bottom-menu-items-font-size);font-weight:var(--footer-bottom-menu-items-font-weight);line-height:var(--footer-bottom-menu-items-line-height);margin-bottom:var(--site-spacer-s);margin-right:var(--site-spacer)}.footer-top-links{align-items:center;border-bottom:2px solid var(--footer-top-border-color);color:var(--footer-top-links-color);display:flex;font-size:14px;justify-content:space-between}.footer-top-links:empty{display:none}.footer-top-links .footer-nav-link:not(.btn){color:var(--footer-top-menu-items-color);font-size:var(--footer-top-links-font-size);padding:var(--site-spacer) var(--site-spacer-s)}@media (min-width: 600px) and (max-width: 959.98px){.footer-top-links .footer-nav-link:not(.btn){padding-left:0}}@media (max-width: 599.98px){.footer-top-links .footer-nav-link:not(.btn){font-weight:var(--footer-top-links-font-weight);padding-left:0}}@media (min-width: 600px) and (max-width: 959.98px){.footer-top-links{align-items:center;display:grid;grid-auto-rows:minmax(20px,auto);grid-column-gap:var(--site-spacer-m);grid-template-columns:repeat(4,1fr);margin:0 auto;width:100%}.footer-top-links vn-footer-menu-item .menu-item-link span{white-space:nowrap}}@media (max-width: 599.98px){.footer-top-links{align-items:flex-start;flex-direction:column;padding-bottom:var(--site-spacer-s);padding-left:var(--site-spacer-3xl);padding-top:var(--site-spacer-s)}.footer-top-links vn-footer-menu-item{border-bottom:1px solid var(--footer-top-links-border-color);width:100%}.footer-top-links vn-footer-menu-item:last-of-type{border-bottom:0}.footer-top-links .language-switcher{padding-bottom:var(--site-spacer);padding-top:var(--site-spacer)}.footer-top-links vn-responsive-language-switcher+vn-footer-menu-item{margin-top:var(--site-spacer-s)}}@media (min-width: 600px){.footer-top-links{display:flex;flex-wrap:wrap;justify-content:flex-end;padding-bottom:0;padding-top:0}.footer-top-links vn-responsive-language-switcher{margin-right:auto;padding:var(--site-spacer) 0}.footer-top-links .footer-nav-link:not(.btn){font-size:12px;margin-left:var(--site-spacer-xl);padding:var(--site-spacer) 0}.footer-top-links .footer-nav-link:not(.btn):not(.footer-app-link){text-decoration:underline}}.footer-top-links .footer-nav-link-img{color:transparent;font:0/0 a;margin-right:10px}.footer-top-links .footer-nav-link .vn-img{display:inline;padding-left:var(--site-spacer-s)}.footer-nav-seo-container{contain:content;contain-intrinsic-size:224px;content-visibility:auto;display:block;padding-bottom:var(--footer-nav-seo-padding-bottom);padding-top:var(--footer-nav-seo-padding-top)}@media (max-width: 599.98px){.footer-nav-seo-container{align-items:flex-start;flex-direction:column}}@media (min-width: 600px){.footer-nav-seo-container{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr))}}.footer-nav-seo-container .footer-nav{display:block;margin-bottom:var(--site-spacer-l)}.footer-nav-seo-container .footer-nav.footer-nav-expanded{padding-left:40px}.footer-nav-seo-container .footer-nav.footer-nav-expanded .expandable{margin-left:-40px}.footer-nav-seo-container .footer-nav .expandable{font-size:var(--footer-nav-seo-expandable-font-size)}.footer-nav-seo-container :last-child.footer-nav{margin-bottom:0}.footer-nav-seo-container .footer-menu-section-title{--vn-menu-item-text-transform: var(--footer-menu-section-title-text-transform);text-transform:var(--vn-menu-item-text-transform);color:var(--footer-menu-section-title-color);font-size:var(--footer-menu-section-title-font-size);font-weight:var(--theme-font-bold);letter-spacing:1px;line-height:var(--footer-menu-section-title-line-height);margin-bottom:var(--site-spacer-m);width:100%}.footer-nav-logos{display:flex;flex-direction:column;justify-content:flex-start;padding-bottom:var(--site-spacer-xl);padding-top:var(--site-spacer-xl)}@media (max-width: 599.98px){.footer-nav-logos{flex-direction:column}}.footer-nav-logos .footer-nav-link:not(.btn){display:inline-block;margin-bottom:var(--site-spacer-s);margin-left:0;margin-right:var(--site-spacer-m)}@media (min-width: 600px){.footer-nav-logos .footer-nav-link:not(.btn){margin-right:var(--site-spacer-s)}}.footer-nav-logos .footer-nav-link:not(.btn) img{height:40px;max-width:100%;width:auto}.footer-nav-logos-l{text-align:left}.footer-nav-logos-r{margin-top:var(--site-spacer-s);text-align:left}@media (max-width: 599.98px){.footer-nav-logos-r{text-align:left}}.footer-bottom{color:var(--footer-bottom-color);display:flex;font-size:var(--footer-bottom-font-size);font-weight:var(--theme-font-medium);justify-content:space-between;padding-bottom:var(--site-spacer-xl);padding-top:var(--footer-bottom-padding-top);text-align:left}.slot-footer_items{color:var(--footer-bottom-color);display:flex;font-size:var(--footer-bottom-font-size);font-weight:var(--theme-font-normal);justify-content:space-between;line-height:var(--footer-bottom-line-height);padding-bottom:var(--site-spacer-xl);padding-top:var(--footer-bottom-padding-top);padding-left:8px;padding-right:8px}@media (min-width: 600px){.slot-footer_items{padding-left:16px;padding-right:16px}}@media (min-width: 960px){.slot-footer_items{padding-left:24px;padding-right:24px}}.slot-footer_items vn-copyright{margin-left:auto}.slot-footer_items_inline{align-items:center;display:flex;padding-bottom:var(--site-spacer-s);padding-top:var(--site-spacer-s)}.slot-footer_items_inline:empty{height:0;padding:0}.slot-footer_items_inline vn-clock{margin-left:var(--site-spacer-xl)}.footer-top-links,footer .content-message-container,footer .content-message .logo-block,.footer-nav-seo-container,.footer-nav-logos,.footer-bottom{padding-left:8px;padding-right:8px}@media (min-width: 600px){.footer-top-links,footer .content-message-container,footer .content-message .logo-block,.footer-nav-seo-container,.footer-nav-logos,.footer-bottom{padding-left:16px;padding-right:16px}}@media (min-width: 960px){.footer-top-links,footer .content-message-container,footer .content-message .logo-block,.footer-nav-seo-container,.footer-nav-logos,.footer-bottom{padding-left:24px;padding-right:24px}}.footer_items_inline-clock-shown .footer-help-btn{padding-left:10px}@media (max-width: 959.98px){.footer_items_inline-clock-shown .footer-top-links{align-items:center;flex-flow:row wrap}.footer_items_inline-clock-shown .footer-top-links .responsive-language-switcher,.footer_items_inline-clock-shown .footer-top-links .label-switcher{order:1}.footer_items_inline-clock-shown .footer-top-links .footer-menu-items{order:3}.footer_items_inline-clock-shown .footer-top-links .slot-footer_items_inline{order:1}.footer_items_inline-clock-shown .footer-top-links .slot-footer_items_inline vn-clock{text-align:end}.footer_items_inline-clock-shown .footer-top-links .slot-footer_items_inline vn-clock .clock-text{display:block}.footer_items_inline-clock-shown .footer-top-links .footer-help-btn{border-top:solid 1px;flex-grow:1;order:2;padding-left:0;padding-top:20px;text-align:center;width:100%}.footer_items-clock-shown .footer-top-links,.footer_items-help-contact-shown .footer-top-links{align-items:center;flex-flow:row wrap}.footer_items-clock-shown .footer-top-links .footer-menu-items,.footer_items-help-contact-shown .footer-top-links .footer-menu-items{order:2}}.pc-txt .footer-title{contain:content;contain-intrinsic-size:42px;content-visibility:auto}
+/*# sourceMappingURL=/ClientDist/browser/styles-RW5OU5M5.css.map */
+</style><style>.ng-scrollbar-wrapper>scrollbar-y.scrollbar-control{width:var(--vertical-scrollbar-total-size)}  .ng-scrollbar-wrapper>scrollbar-y.scrollbar-control>.ng-scrollbar-track{width:var(--vertical-scrollbar-size);height:calc(100% - var(--scrollbar-padding) * 2)}  .ng-scrollbar-wrapper>scrollbar-y.scrollbar-control>.ng-scrollbar-track>.ng-scrollbar-thumb{height:0;width:100%}  .ng-scrollbar-wrapper[verticalHovered=true]>scrollbar-y.scrollbar-control .ng-scrollbar-thumb,   .ng-scrollbar-wrapper[verticalDragging=true]>scrollbar-y.scrollbar-control .ng-scrollbar-thumb{background-color:var(--scrollbar-thumb-hover-color)}  .ng-scrollbar-wrapper[deactivated=false]>scrollbar-y.scrollbar-control{top:0;bottom:0}  .ng-scrollbar-wrapper[deactivated=false][dir=ltr]>scrollbar-y.scrollbar-control{right:0;left:unset}  .ng-scrollbar-wrapper[deactivated=false][dir=ltr][position=invertY]>scrollbar-y.scrollbar-control,   .ng-scrollbar-wrapper[deactivated=false][dir=ltr][position=invertAll]>scrollbar-y.scrollbar-control{left:0;right:unset}  .ng-scrollbar-wrapper[deactivated=false][dir=rtl]>scrollbar-y.scrollbar-control{left:0;right:unset}  .ng-scrollbar-wrapper[deactivated=false][dir=rtl][position=invertY]>scrollbar-y.scrollbar-control,   .ng-scrollbar-wrapper[deactivated=false][dir=rtl][position=invertAll]>scrollbar-y.scrollbar-control{left:unset;right:0}  .ng-scrollbar-wrapper[deactivated=false][track=all]>scrollbar-y.scrollbar-control[fit=true]{bottom:var(--scrollbar-total-size);top:0}  .ng-scrollbar-wrapper[deactivated=false][track=all][position=invertX]>scrollbar-y.scrollbar-control[fit=true],   .ng-scrollbar-wrapper[deactivated=false][track=all][position=invertAll]>scrollbar-y.scrollbar-control[fit=true]{top:var(--scrollbar-total-size);bottom:0}</style><style>vn-icon{display:contents}.fast-svg{margin:0!important;height:auto;width:auto}
+/*# sourceMappingURL=/ClientDist/browser/icon-fast.component-TWKMH4E5.css.map */
+</style><style>[_nghost-ng-c3204849328]{display:contents}.fast-svg[_ngcontent-ng-c3204849328]{margin:3px;contain:content;content-visibility:auto}</style><style>.arrow-alignment[_ngcontent-ng-c2190604344]{--ds-carousel-arrow-position-right: 8px;--ds-carousel-arrow-position-left: 8px}
+/*# sourceMappingURL=/ClientDist/browser/event-header-tabs.component-7BK4GMMV.css.map */</style><style>[_nghost-ng-c2190604344]{display:block}
+/*# sourceMappingURL=/ClientDist/browser/event-header-tabs.component-3YZ73MPF.css.map */</style><style>.ds-tabs-group{--ds-carousel-arrow-position-right: 0;--ds-carousel-arrow-position-left: 0}.ds-tabs-group .ds-tab-header{position:relative}.ds-tabs-group .ds-tab-header .ds-divider{--ds-tabs-group-ds-divider-width: 100%;bottom:0;position:absolute;width:var(--ds-tabs-group-ds-divider-width)}.ds-tabs-group .ds-tab-header-container{display:flex;position:relative}.ds-tabs-group .ds-tab-header-container.ds-tab-nav-enabled{cursor:move;overflow:hidden;position:relative}.ds-tabs-group .ds-tab-header-container.ds-tab-nav-enabled.ds-tab-nav-mobile-scrolling{-webkit-overflow-scrolling:touch;-ms-overflow-style:none;overflow-x:scroll;scrollbar-width:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}.ds-tabs-group .ds-tab-header-container.ds-tab-nav-enabled.ds-tab-nav-mobile-scrolling::-webkit-scrollbar{display:none}.ds-tabs-group .ds-tab-header-items{--tab-list-padding: 0;--tab-list-margin: 0;align-items:center;cursor:pointer;display:inline-flex;flex-shrink:0;list-style:none;margin:var(--tab-list-margin);padding:var(--tab-list-padding)}.ds-tabs-group .ds-tab-header-items.ds-tab-items-scroll-speed-faster{transition:all .2s ease-in-out}.ds-tabs-group .ds-tab-header-items.ds-tab-items-scroll-speed-fast{transition:all .4s ease-in-out}.ds-tabs-group .ds-tab-header-items.ds-tab-items-scroll-speed-medium{transition:all .5s ease-in-out}.ds-tabs-group .ds-tab-header-items.ds-tab-items-scroll-speed-moderate{transition:all .6s ease-in-out}.ds-tabs-group .ds-tab-header-items.ds-tab-items-scroll-speed-slow{transition:all .8s ease-in-out}.ds-tabs-group .ds-tab-header-items.ds-tab-items-scroll-speed-slower{transition:all 1s ease-in-out}.ds-tabs-group .ds-tab-header-items .ds-tab-item{--ds-tab-button-bg-color: transparent;--ds-tab-button-padding: 0;--ds-tab-button-width: 100%;align-items:center;background-color:var(--ds-tab-button-bg-color);border:none;cursor:pointer;display:flex;height:100%;justify-content:center;padding:var(--ds-tab-button-padding);text-wrap:nowrap;width:var(--ds-tab-button-width)}.ds-tabs-group .ds-tab-header-items .ds-tab-content{--tab-content-padding: 1rem;background:var(--tab-content-background);padding:var(--tab-content-padding)}.ds-tabs-group .ds-tab-header-items .ds-tab-header-item{--ds-tab-font-family: var(--semantic-typography-title-font-family, sans-serif);--ds-tab-font-size: var(--semantic-typography-title-md-font-size);--ds-tab-font-weight: var(--semantic-typography-title-md-font-weight);--ds-tab-line-height: var(--semantic-typography-title-md-line-height);font-family:var(--ds-tab-font-family);font-size:var(--ds-tab-font-size);font-weight:var(--ds-tab-font-weight);line-height:var(--ds-tab-line-height);align-self:stretch;border-bottom:var(--ds-tabs-underline-size-indictor-height) solid transparent;position:relative}.ds-tabs-group.ds-tabs-small{--ds-carousel-arrow-size-height: var(--semantic-size-x6);--ds-carousel-arrow-size-icon: var(--semantic-size-icon-small);--ds-carousel-arrow-size-width: var(--semantic-size-x6)}.ds-tabs-group.ds-tabs-small .ds-tab-header-item{--ds-tabs-underline-number: 0;--ds-tabs-underline-size-icon: var(--semantic-size-icon-medium);--ds-tabs-underline-size-max-height: var(--semantic-size-x25);--ds-tabs-underline-space-inline: var(--semantic-spacing-inline-sm);--ds-tabs-underline-space-padding-left: var(--semantic-spacing-container-padding-lg);--ds-tabs-underline-space-padding-right: var(--semantic-spacing-container-padding-lg);--ds-tabs-underline-space-stack: var(--semantic-spacing-stack-sm);--ds-tabs-fill-size-border-height: var(--semantic-size-xhalf);--ds-tabs-fill-size-icon: var(--semantic-size-icon-large);--ds-tabs-fill-size-max-height: var(--semantic-size-x25);--ds-tabs-fill-space-inline: var(--semantic-spacing-inline-sm);--ds-tabs-fill-space-padding-bottom: var(--semantic-spacing-container-padding-lg);--ds-tabs-fill-space-padding-left: var(--semantic-spacing-container-padding-lg);--ds-tabs-fill-space-padding-right: var(--semantic-spacing-container-padding-lg);--ds-tabs-fill-space-padding-top: var(--semantic-spacing-container-padding-lg);--ds-tabs-fill-space-stack: var(--semantic-spacing-inline-sm);--ds-tab-font-family: var(--semantic-typography-label-font-family, sans-serif);--ds-tab-font-size: var(--semantic-typography-label-lg-font-size);--ds-tab-font-weight: var(--semantic-typography-label-lg-font-weight);--ds-tab-line-height: var(--semantic-typography-label-lg-line-height);font-family:var(--ds-tab-font-family);font-size:var(--ds-tab-font-size);font-weight:var(--ds-tab-font-weight);line-height:var(--ds-tab-line-height)}.ds-tabs-group.ds-tabs-small .ds-tab-header-item:not(.ds-tab-disabled).ds-tab-selected{--ds-tab-font-family: var(--semantic-typography-label-font-family, sans-serif);--ds-tab-font-size: var(--semantic-typography-label-lg-strong-font-size);--ds-tab-font-weight: var(--semantic-typography-label-lg-strong-font-weight);--ds-tab-line-height: var(--semantic-typography-label-lg-strong-line-height);font-family:var(--ds-tab-font-family);font-size:var(--ds-tab-font-size);font-weight:var(--ds-tab-font-weight);line-height:var(--ds-tab-line-height)}.ds-tabs-group.ds-tabs-large{--ds-carousel-arrow-size-height: var(--semantic-size-x6);--ds-carousel-arrow-size-icon: var(--semantic-size-icon-small);--ds-carousel-arrow-size-width: var(--semantic-size-x6)}.ds-tabs-group .ds-tab-content-hidden{display:none}.ds-tab-start-arrow,.ds-tab-end-arrow{--ds-carousel-arrow-radius-border: var(--semantic-radius-max);--ds-carousel-arrow-active-color-bg: var(--semantic-color-surface-container-highest-active);--ds-carousel-arrow-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-carousel-arrow-active-color-icon: var(--semantic-color-on-surface-base);--ds-carousel-arrow-enabled-color-bg: var(--semantic-color-surface-container-highest-base);--ds-carousel-arrow-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-carousel-arrow-enabled-color-icon: var(--semantic-color-on-surface-base);--ds-carousel-arrow-hover-color-bg: var(--semantic-color-surface-container-highest-hover);--ds-carousel-arrow-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-carousel-arrow-hover-color-icon: var(--semantic-color-on-surface-base);--ds-carousel-arrow-border-width: 1px;--ds-carousel-arrow-border-radius: 50%;--ds-carousel-arrow-bg-color: var(--ds-carousel-arrow-enabled-color-bg);--ds-carousel-arrow-icon-color: var(--ds-carousel-arrow-enabled-color-icon);--ds-carousel-arrow-border-color: var(--ds-carousel-arrow-enabled-color-border);align-items:center;background-color:var(--ds-carousel-arrow-bg-color);border:var(--ds-carousel-arrow-border-width) solid var(--ds-carousel-arrow-border-color);border-radius:var(--ds-carousel-arrow-border-radius);cursor:pointer;display:flex;height:var(--ds-carousel-arrow-size-height);justify-content:center;top:50%;transform:translateY(-50%);width:var(--ds-carousel-arrow-size-width);--ds-tab-arrow-padding: 0;border:none;padding:var(--ds-tab-arrow-padding);position:absolute}.ds-tab-start-arrow svg,.ds-tab-end-arrow svg{height:var(--ds-carousel-arrow-size-icon);width:var(--ds-carousel-arrow-size-icon)}.ds-tab-start-arrow svg path,.ds-tab-end-arrow svg path{fill:var(--ds-carousel-arrow-icon-color)}.ds-tab-start-arrow.ds-arrow-inverse,.ds-tab-end-arrow.ds-arrow-inverse{--ds-carousel-arrow-active-color-bg: var(--semantic-color-surface-container-highest-active-inverse);--ds-carousel-arrow-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-carousel-arrow-active-color-icon: var(--semantic-color-on-surface-base-inverse);--ds-carousel-arrow-enabled-color-bg: var(--semantic-color-surface-container-highest-base-inverse);--ds-carousel-arrow-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-carousel-arrow-enabled-color-icon: var(--semantic-color-on-surface-base-inverse);--ds-carousel-arrow-hover-color-bg: var(--semantic-color-surface-container-highest-hover-inverse);--ds-carousel-arrow-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-carousel-arrow-hover-color-icon: var(--semantic-color-on-surface-base-inverse)}@media (hover: hover){.ds-tab-start-arrow:hover,.ds-tab-end-arrow:hover{--ds-carousel-arrow-bg-color: var(--ds-carousel-arrow-hover-color-bg);--ds-carousel-arrow-icon-color: var(--ds-carousel-arrow-hover-color-icon);--ds-carousel-arrow-border-color: var(--ds-carousel-arrow-hover-color-border)}}.ds-tab-start-arrow:active,.ds-tab-end-arrow:active{--ds-carousel-arrow-bg-color: var(--ds-carousel-arrow-active-color-bg);--ds-carousel-arrow-icon-color: var(--ds-carousel-arrow-active-color-icon);--ds-carousel-arrow-border-color: var(--ds-carousel-arrow-active-color-border)}.ds-tab-start-arrow{left:var(--ds-carousel-arrow-position-left)}.ds-tab-end-arrow{right:var(--ds-carousel-arrow-position-right)}.ds-tab-hidden-arrow{display:none}.ds-tab-horizontal .ds-tab-item{flex-direction:row}.ds-tab-vertical .ds-tab-item{flex-direction:column}.ds-tab-full-width{--ds-tab-full-width: 100%;width:var(--ds-tab-full-width)}.ds-tab-full-width .ds-tab-header-item{flex:1}.ds-tab-fill{--ds-tabs-fill-active-color-bg: var(--semantic-color-l2-tabs-background-active);--ds-tabs-fill-active-color-icon: var(--semantic-color-l2-tabs-filled-on-background-active);--ds-tabs-fill-active-color-text: var(--semantic-color-l2-tabs-filled-on-background-active);--ds-tabs-fill-disabled-color-bg: var(--semantic-color-l2-tabs-background-base);--ds-tabs-fill-disabled-color-icon: var(--semantic-color-on-disabled-base);--ds-tabs-fill-disabled-color-text: var(--semantic-color-on-disabled-base);--ds-tabs-fill-enabled-color-bg: var(--semantic-color-l2-tabs-background-base);--ds-tabs-fill-enabled-color-icon: var(--semantic-color-l2-tabs-filled-on-background-base);--ds-tabs-fill-enabled-color-text: var(--semantic-color-l2-tabs-filled-on-background-base);--ds-tabs-fill-hover-color-bg: var(--semantic-color-l2-tabs-background-hover);--ds-tabs-fill-hover-color-icon: var(--semantic-color-l2-tabs-filled-on-background-hover);--ds-tabs-fill-hover-color-text: var(--semantic-color-l2-tabs-filled-on-background-hover);--ds-tabs-fill-selected-color-bg: var(--semantic-color-l2-tabs-background-selected);--ds-tabs-fill-selected-color-icon: var(--semantic-color-l2-tabs-filled-on-background-selected);--ds-tabs-fill-selected-color-text: var(--semantic-color-l2-tabs-filled-on-background-selected);--ds-tabs-fill-radius-border: var(--semantic-radius-semi-rounded-md);--ds-tabs-fill-size-border-height: var(--semantic-size-xhalf);--ds-tabs-fill-size-icon: var(--semantic-size-icon-xlarge);--ds-tabs-fill-size-max-height: var(--semantic-size-x35);--ds-tabs-fill-space-inline: var(--semantic-spacing-inline-md);--ds-tabs-fill-space-padding-bottom: var(--semantic-spacing-container-padding-xl);--ds-tabs-fill-space-padding-left: var(--semantic-spacing-container-padding-2xl);--ds-tabs-fill-space-padding-right: var(--semantic-spacing-container-padding-2xl);--ds-tabs-fill-space-padding-top: var(--semantic-spacing-container-padding-xl);--ds-tabs-fill-space-stack: var(--semantic-spacing-inline-md)}.ds-tab-fill.ds-tabs-inverse{--ds-tabs-fill-active-color-bg: var(--semantic-color-l2-tabs-background-active-inverse);--ds-tabs-fill-active-color-icon: var(--semantic-color-l2-tabs-filled-on-background-active-inverse);--ds-tabs-fill-active-color-text: var(--semantic-color-l2-tabs-filled-on-background-active-inverse);--ds-tabs-fill-disabled-color-bg: var(--semantic-color-l2-tabs-background-base-inverse);--ds-tabs-fill-disabled-color-icon: var(--semantic-color-on-disabled-base-inverse);--ds-tabs-fill-disabled-color-text: var(--semantic-color-on-disabled-base-inverse);--ds-tabs-fill-enabled-color-bg: var(--semantic-color-l2-tabs-background-base-inverse);--ds-tabs-fill-enabled-color-icon: var(--semantic-color-l2-tabs-filled-on-background-base-inverse);--ds-tabs-fill-enabled-color-text: var(--semantic-color-l2-tabs-filled-on-background-base-inverse);--ds-tabs-fill-hover-color-bg: var(--semantic-color-l2-tabs-background-hover-inverse);--ds-tabs-fill-hover-color-icon: var(--semantic-color-l2-tabs-filled-on-background-hover-inverse);--ds-tabs-fill-hover-color-text: var(--semantic-color-l2-tabs-filled-on-background-hover-inverse);--ds-tabs-fill-selected-color-bg: var(--semantic-color-l2-tabs-background-selected-inverse);--ds-tabs-fill-selected-color-icon: var(--semantic-color-l2-tabs-filled-on-background-selected-inverse);--ds-tabs-fill-selected-color-text: var(--semantic-color-l2-tabs-filled-on-background-selected-inverse)}.ds-tab-fill .ds-header-full-width{--ds-tabs-fill-space-margin-left: var(--semantic-spacing-container-padding-xl);--ds-tabs-fill-space-margin-right: var(--semantic-spacing-container-padding-xl);--ds-tabs-fill-space-top-bottom: 0;margin:var(--ds-tabs-fill-space-top-bottom) var(--ds-tabs-fill-space-margin-right) var(--ds-tabs-fill-space-top-bottom) var(--ds-tabs-fill-space-margin-left)}.ds-tab-fill .ds-header-non-full-width{--ds-tabs-fill-space-margin-left: var(--semantic-spacing-container-padding-xl);--ds-tabs-fill-space-margin-right: var(--semantic-spacing-container-padding-none);--ds-tabs-fill-space-top-bottom: 0;margin:var(--ds-tabs-fill-space-top-bottom) var(--ds-tabs-fill-space-margin-right) var(--ds-tabs-fill-space-top-bottom) var(--ds-tabs-fill-space-margin-left)}.ds-tab-fill .ds-tab-header-item{--ds-tabs-fill-bg: var(--ds-tabs-fill-enabled-color-bg);--ds-tabs-fill-color: var(--ds-tabs-fill-enabled-color-text);background:var(--ds-tabs-fill-bg);border-radius:var(--ds-tabs-fill-radius-border) var(--ds-tabs-fill-radius-border) 0 0;color:var(--ds-tabs-fill-color);max-height:var(--ds-tabs-fill-size-max-height);padding:var(--ds-tabs-fill-space-padding-top, 0) var(--ds-tabs-fill-space-padding-right, 0) var(--ds-tabs-fill-space-padding-bottom, 0) var(--ds-tabs-fill-space-padding-left, 0)}.ds-tab-fill .ds-tab-header-item .ds-tab-item{gap:var(--ds-tabs-fill-space-inline)}.ds-tab-fill .ds-tab-header-item.ds-tab-disabled{--ds-tabs-fill-bg: var(--ds-tabs-fill-disabled-color-bg);--ds-tabs-fill-color: var(--ds-tabs-fill-disabled-color-text);border-bottom:none;cursor:not-allowed}.ds-tab-fill .ds-tab-header-item.ds-tab-disabled svg path{--ds-tabs-disabled-fill-color: none;fill:var(--ds-tabs-disabled-fill-color);stroke:var(--ds-tabs-fill-disabled-color-icon)}.ds-tab-fill .ds-tab-header-item.ds-tab-disabled .ds-tab-item{cursor:not-allowed}.ds-tab-fill .ds-tab-header-item svg{height:var(--ds-tabs-fill-size-icon);width:var(--ds-tabs-fill-size-icon)}.ds-tab-fill .ds-tab-header-item svg path{--tab-icon-bg-color: none;fill:var(--tab-icon-bg-color);stroke:var(--ds-tabs-fill-enabled-color-icon)}@media (hover: hover){.ds-tab-fill .ds-tab-header-item:not(.ds-tab-disabled):hover{--ds-tabs-fill-bg: var(--ds-tabs-fill-hover-color-bg);--ds-tabs-fill-color: var(--ds-tabs-fill-hover-color-text);cursor:pointer}.ds-tab-fill .ds-tab-header-item:not(.ds-tab-disabled):hover svg path{--ds-tabs-hover-fill-color: none;fill:var(--ds-tabs-hover-fill-color);stroke:var(--ds-tabs-fill-hover-color-icon)}}.ds-tab-fill .ds-tab-header-item:not(.ds-tab-disabled).ds-tab-selected{--ds-tab-font-family: var(--semantic-typography-title-font-family, sans-serif);--ds-tab-font-size: var(--semantic-typography-title-md-strong-font-size);--ds-tab-font-weight: var(--semantic-typography-title-md-strong-font-weight);--ds-tab-line-height: var(--semantic-typography-title-md-strong-line-height);font-family:var(--ds-tab-font-family);font-size:var(--ds-tab-font-size);font-weight:var(--ds-tab-font-weight);line-height:var(--ds-tab-line-height);--ds-tabs-fill-bg: var(--ds-tabs-fill-selected-color-bg);--ds-tabs-fill-color: var(--ds-tabs-fill-selected-color-text)}.ds-tab-fill .ds-tab-header-item:not(.ds-tab-disabled).ds-tab-selected svg path{--ds-tabs-selected-fill-color: none;fill:var(--ds-tabs-fill-selected-color-icon);stroke:var(--ds-tabs-selected-fill-color)}.ds-tab-fill .ds-tab-header-item:not(.ds-tab-disabled):active{--ds-tabs-fill-bg: var(--ds-tabs-fill-active-color-bg);--ds-tabs-fill-color: var(--ds-tabs-fill-active-color-text)}.ds-tab-fill .ds-tab-header-item:not(.ds-tab-disabled):active svg path{--ds-tabs-active-fill-color: none;fill:var(--ds-tabs-fill-active-color-icon);stroke:var(--ds-tabs-active-fill-color)}.ds-tab-underline{--ds-tabs-underline-active-color-bg: var(--semantic-color-l2-tabs-background-active);--ds-tabs-underline-active-color-icon: var(--semantic-color-l2-tabs-underlined-on-background-active);--ds-tabs-underline-active-color-text: var(--semantic-color-l2-tabs-underlined-on-background-active);--ds-tabs-underline-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-tabs-underline-disabled-color-icon: var(--semantic-color-on-disabled-base);--ds-tabs-underline-disabled-color-text: var(--semantic-color-on-disabled-base);--ds-tabs-underline-enabled-color-icon: var(--semantic-color-l2-tabs-underlined-on-background-base);--ds-tabs-underline-enabled-color-text: var(--semantic-color-l2-tabs-underlined-on-background-base);--ds-tabs-underline-hover-color-bg: var(--semantic-color-l2-tabs-background-hover);--ds-tabs-underline-hover-color-icon: var(--semantic-color-l2-tabs-underlined-on-background-hover);--ds-tabs-underline-hover-color-text: var(--semantic-color-l2-tabs-underlined-on-background-hover);--ds-tabs-underline-selected-color-icon: var(--semantic-color-l2-tabs-underlined-on-background-selected);--ds-tabs-underline-selected-color-indicator: var(--semantic-color-l2-tabs-underlined-indicator-selected);--ds-tabs-underline-selected-color-text: var(--semantic-color-l2-tabs-underlined-on-background-selected);--ds-tabs-underline-size-icon: var(--semantic-size-icon-xlarge);--ds-tabs-underline-size-max-height: var(--semantic-size-x35);--ds-tabs-underline-space-inline: var(--semantic-spacing-inline-md);--ds-tabs-underline-space-padding-left: var(--semantic-spacing-container-padding-xl);--ds-tabs-underline-space-padding-right: var(--semantic-spacing-container-padding-xl);--ds-tabs-underline-space-stack: var(--semantic-spacing-stack-md);--ds-tabs-underline-radius-border: var(--semantic-radius-squared);--ds-tabs-underline-radius-incidator-border-bottom: var(--semantic-radius-squared);--ds-tabs-underline-radius-incidator-border-top: var(--semantic-radius-max);--ds-tabs-underline-size-indictor-height: var(--semantic-size-xhalf);--ds-tabs-underline-space-padding-bottom: var(--semantic-spacing-container-padding-lg);--ds-tabs-underline-space-padding-top: var(--semantic-spacing-container-padding-xl);--ds-tabs-underline-space-selected-padding-bottom: var(--semantic-spacing-container-padding-lg)}.ds-tab-underline.ds-tabs-inverse{--ds-tabs-underline-active-color-bg: var(--semantic-color-l2-tabs-background-active-inverse);--ds-tabs-underline-active-color-icon: var(--semantic-color-l2-tabs-underlined-on-background-active-inverse);--ds-tabs-underline-active-color-text: var(--semantic-color-l2-tabs-underlined-on-background-active-inverse);--ds-tabs-underline-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-tabs-underline-disabled-color-icon: var(--semantic-color-on-disabled-base-inverse);--ds-tabs-underline-disabled-color-text: var(--semantic-color-on-disabled-base-inverse);--ds-tabs-underline-enabled-color-icon: var(--semantic-color-l2-tabs-underlined-on-background-base-inverse);--ds-tabs-underline-enabled-color-text: var(--semantic-color-l2-tabs-underlined-on-background-base-inverse);--ds-tabs-underline-hover-color-bg: var(--semantic-color-l2-tabs-background-hover-inverse);--ds-tabs-underline-hover-color-icon: var(--semantic-color-l2-tabs-underlined-on-background-hover-inverse);--ds-tabs-underline-hover-color-text: var(--semantic-color-l2-tabs-underlined-on-background-hover-inverse);--ds-tabs-underline-selected-color-icon: var(--semantic-color-l2-tabs-underlined-on-background-selected-inverse);--ds-tabs-underline-selected-color-indicator: var(--semantic-color-l2-tabs-underlined-indicator-selected-inverse);--ds-tabs-underline-selected-color-text: var(--semantic-color-l2-tabs-underlined-on-background-selected-inverse)}.ds-tab-underline .ds-header-full-width{--ds-tabs-underline-space-margin-left: var(--semantic-spacing-container-padding-xl);--ds-tabs-underline-space-margin-right: var(--semantic-spacing-container-padding-xl);--ds-tabs-underline-space-top-bottom: 0;margin:var(--ds-tabs-underline-space-top-bottom) var(--ds-tabs-underline-space-margin-right) var(--ds-tabs-underline-space-top-bottom) var(--ds-tabs-underline-space-margin-left)}.ds-tab-underline .ds-header-non-full-width{--ds-tabs-underline-space-margin-left: var(--semantic-spacing-container-padding-xl);--ds-tabs-underline-space-margin-right: var(--semantic-spacing-container-padding-none);--ds-tabs-underline-space-top-bottom: 0;margin:var(--ds-tabs-underline-space-top-bottom) var(--ds-tabs-underline-space-margin-right) var(--ds-tabs-underline-space-top-bottom) var(--ds-tabs-underline-space-margin-left)}.ds-tab-underline .ds-tab-header-item{--ds-tabs-underline-color: var(--ds-tabs-underline-enabled-color-text);--ds-tabs-underline-bg: transparent;--ds-tabs-underline-border-color: transparent;background:var(--ds-tabs-underline-bg);border-radius:var(--ds-tabs-underline-radius-border);color:var(--ds-tabs-underline-color);max-height:var(--ds-tabs-underline-size-max-height);padding:var(--ds-tabs-underline-space-padding-top, 0) var(--ds-tabs-underline-space-padding-right, 0) var(--ds-tabs-underline-space-padding-bottom, 0) var(--ds-tabs-underline-space-padding-left, 0)}.ds-tab-underline .ds-tab-header-item .ds-tab-item{gap:var(--ds-tabs-underline-space-inline)}.ds-tab-underline .ds-tab-header-item .ds-tab-item .ds-tab-two-title-container{gap:0}.ds-tab-underline .ds-tab-header-item.ds-tab-disabled{--ds-tabs-underline-color: var(--ds-tabs-underline-disabled-color-text);--ds-tabs-underline-bg: var(--ds-tabs-underline-disabled-color-bg);--ds-tabs-underline-border-color: var(--ds-tab-underline-border-bottom-color);cursor:not-allowed}.ds-tab-underline .ds-tab-header-item.ds-tab-disabled svg path{--tab-group-disabled-bg-color: transparent;fill:var(--tab-group-disabled-bg-color);stroke:var(--ds-tabs-underline-disabled-color-icon)}.ds-tab-underline .ds-tab-header-item.ds-tab-disabled .ds-tab-item{cursor:not-allowed}.ds-tab-underline .ds-tab-header-item svg path{--tab-icon-bg-color: transparent;--tab-icon-outline-color: currentColor;fill:var(--tab-icon-bg-color);stroke:var(--tab-icon-outline-color)}@media (hover: hover){.ds-tab-underline .ds-tab-header-item:not(.ds-tab-disabled):hover{--ds-tabs-underline-bg: var(--ds-tabs-underline-hover-color-bg);--ds-tabs-underline-color: var(--ds-tabs-underline-hover-color-text);cursor:pointer}}.ds-tab-underline .ds-tab-header-item:not(.ds-tab-disabled).ds-tab-selected{--ds-tabs-underline-radius-border: var(--semantic-radius-squared);--ds-tabs-underline-radius-incidator-border-bottom: var(--semantic-radius-squared);--ds-tabs-underline-radius-incidator-border-top: var(--semantic-radius-max);--ds-tabs-underline-size-indictor-height: var(--semantic-size-xhalf);--ds-tabs-underline-space-padding-bottom: var(--semantic-spacing-container-padding-lg);--ds-tabs-underline-space-padding-top: var(--semantic-spacing-container-padding-xl);--ds-tabs-underline-space-selected-padding-bottom: var(--semantic-spacing-container-padding-lg);--ds-tab-font-family: var(--semantic-typography-title-font-family, sans-serif);--ds-tab-font-size: var(--semantic-typography-title-md-strong-font-size);--ds-tab-font-weight: var(--semantic-typography-title-md-strong-font-weight);--ds-tab-line-height: var(--semantic-typography-title-md-strong-line-height);font-family:var(--ds-tab-font-family);font-size:var(--ds-tab-font-size);font-weight:var(--ds-tab-font-weight);line-height:var(--ds-tab-line-height);--ds-tabs-underline-color: var(--ds-tabs-underline-selected-color-text);--ds-tabs-underline-border-color: var(--ds-tabs-underline-selected-color-indicator);border-bottom:var(--ds-tabs-underline-size-indictor-height) solid var(--ds-tabs-underline-border-color);padding-bottom:var(--ds-tabs-underline-space-selected-padding-bottom, 0);z-index:1}.ds-tab-underline .ds-tab-header-item:not(.ds-tab-disabled).ds-tab-selected svg path{stroke:var(--ds-tabs-underline-selected-color-icon)}.ds-tab-underline .ds-tab-header-item:not(.ds-tab-disabled):active{--ds-tabs-underline-bg: var(--ds-tabs-underline-active-color-bg);--ds-tabs-underline-color: var(--ds-tabs-underline-active-color-text)}.ds-tab-underline .ds-tab-header-item:not(.ds-tab-disabled):active svg path{stroke:var(--ds-tabs-underline-active-color-icon)}
+/*# sourceMappingURL=/ClientDist/browser/tabsgroup.component-PDXA5ORR.css.map */
+</style><style>.ds-divider{--ds-divider-on-surface-color-border: var(--semantic-color-on-surface-divider);--ds-divider-on-surface-high-color-border: var(--semantic-color-on-surface-container-high-divider);--ds-divider-on-surface-highest-color-border: var(--semantic-color-on-surface-container-highest-divider);--ds-divider-on-surface-low-color-border: var(--semantic-color-on-surface-container-low-divider);--ds-divider-on-surface-lowest-color-border: var(--semantic-color-on-surface-container-lowest-divider);--ds-divider-size-border: var(--semantic-size-xquarter);--divider-height: 0;--divider-width: 100%;box-sizing:border-box;display:flex;height:var(--divider-height);width:var(--divider-width)}.ds-divider.ds-divider-on-surface{border-top:var(--ds-divider-size-border) solid var(--ds-divider-on-surface-color-border)}.ds-divider.ds-divider-on-surface-lowest{border-top:var(--ds-divider-size-border) solid var(--ds-divider-on-surface-lowest-color-border)}.ds-divider.ds-divider-on-surface-high{border-top:var(--ds-divider-size-border) solid var(--ds-divider-on-surface-high-color-border)}.ds-divider.ds-divider-on-surface-low{border-top:var(--ds-divider-size-border) solid var(--ds-divider-on-surface-low-color-border)}.ds-divider.ds-divider-on-surface-highest{border-top:var(--ds-divider-size-border) solid var(--ds-divider-on-surface-highest-color-border)}.ds-divider.ds-divider-vertical{--divider-height: 100%;--divider-width: 0;border-top:none}.ds-divider.ds-divider-vertical.ds-divider-on-surface{border-left:var(--ds-divider-size-border) solid var(--ds-divider-on-surface-color-border)}.ds-divider.ds-divider-vertical.ds-divider-on-surface-lowest{border-left:var(--ds-divider-size-border) solid var(--ds-divider-on-surface-lowest-color-border)}.ds-divider.ds-divider-vertical.ds-divider-on-surface-high{border-left:var(--ds-divider-size-border) solid var(--ds-divider-on-surface-high-color-border)}.ds-divider.ds-divider-vertical.ds-divider-on-surface-low{border-left:var(--ds-divider-size-border) solid var(--ds-divider-on-surface-low-color-border)}.ds-divider.ds-divider-vertical.ds-divider-on-surface-highest{border-left:var(--ds-divider-size-border) solid var(--ds-divider-on-surface-highest-color-border)}.ds-divider.ds-divider-inverse{--ds-divider-on-surface-color-border: var(--semantic-color-on-surface-divider-inverse);--ds-divider-on-surface-high-color-border: var(--semantic-color-on-surface-container-high-divider-inverse);--ds-divider-on-surface-highest-color-border: var(--semantic-color-on-surface-container-highest-divider-inverse);--ds-divider-on-surface-low-color-border: var(--semantic-color-on-surface-container-low-divider-inverse);--ds-divider-on-surface-lowest-color-border: var(--semantic-color-on-surface-container-lowest-divider-inverse)}
+/*# sourceMappingURL=/ClientDist/browser/divider.component-VF3HZ42X.css.map */
+</style><style>.scrolling-pills[_ngcontent-ng-c1127254675]{height:50px;display:flex}.header-sub-navigation-pills[_ngcontent-ng-c1127254675]{display:flex;gap:8px;margin-left:8px;padding:12px 0}
+/*# sourceMappingURL=/ClientDist/browser/header-sub-navigation.component-YYN6OJKY.css.map */</style><style>.popular-bets-participant-image[_nghost-ng-c20142069], .popular-bets-bet-builder-participant-image[_nghost-ng-c20142069]{width:var(--image-size)}.popular-bets-participant-image[_nghost-ng-c20142069]   .image-profile[_ngcontent-ng-c20142069], .popular-bets-bet-builder-participant-image[_nghost-ng-c20142069]   .image-profile[_ngcontent-ng-c20142069]{position:relative;height:var(--image-size);width:var(--image-size);text-align:center}.popular-bets-participant-image[_nghost-ng-c20142069]   .image-profile[_ngcontent-ng-c20142069]   img[_ngcontent-ng-c20142069], .popular-bets-bet-builder-participant-image[_nghost-ng-c20142069]   .image-profile[_ngcontent-ng-c20142069]   img[_ngcontent-ng-c20142069]{height:var(--icon-size);width:var(--icon-size)}.popular-bets-participant-image[_nghost-ng-c20142069]   .player-shirt[_ngcontent-ng-c20142069], .popular-bets-bet-builder-participant-image[_nghost-ng-c20142069]   .player-shirt[_ngcontent-ng-c20142069]{position:relative;display:flex;justify-content:center;align-items:center;text-align:center}.popular-bets-participant-image[_nghost-ng-c20142069]   .player-shirt[_ngcontent-ng-c20142069]   img[_ngcontent-ng-c20142069], .popular-bets-bet-builder-participant-image[_nghost-ng-c20142069]   .player-shirt[_ngcontent-ng-c20142069]   img[_ngcontent-ng-c20142069]{height:var(--image-size);width:var(--image-size)}
+/*# sourceMappingURL=/ClientDist/browser/participant-image-FYQQV77N.css.map */</style><style>.ds-button-icon{--ds-button-bonus-border-width-local: 1px;--ds-button-icon-bg-color: var(--ds-button-icon-enabled-color-bg);--ds-button-icon-border-color: var(--ds-button-icon-enabled-color-border);--ds-button-icon-color: var(--ds-button-icon-enabled-color-icon);align-items:center;background:var(--ds-button-icon-bg-color);border:none;border-color:var(--ds-button-icon-border-color);border-radius:var(--ds-button-icon-radius-border);box-sizing:border-box;color:var(--ds-button-icon-color);content-visibility:auto;cursor:pointer;display:inline-flex;height:var(--ds-button-icon-size-height, var(--ds-button-icon-width));justify-content:center;width:var(--ds-button-icon-size-width, var(--ds-button-icon-height))}.ds-button-icon.ds-btn-icon-small{--ds-button-icon-radius-border: var(--semantic-radius-l2-button-small);--ds-button-icon-size-height: var(--semantic-size-x6);--ds-button-icon-size-icon: var(--semantic-size-icon-small);--ds-button-icon-size-width: var(--semantic-size-x6)}.ds-button-icon.ds-btn-icon-medium{--ds-button-icon-radius-border: var(--semantic-radius-l2-button-medium);--ds-button-icon-size-height: var(--semantic-size-x8);--ds-button-icon-size-icon: var(--semantic-size-icon-medium);--ds-button-icon-size-width: var(--semantic-size-x8)}.ds-button-icon.ds-btn-icon-large{--ds-button-icon-radius-border: var(--semantic-radius-l2-button-large);--ds-button-icon-size-height: var(--semantic-size-x11);--ds-button-icon-size-icon: var(--semantic-size-icon-medium);--ds-button-icon-size-width: var(--semantic-size-x11)}.ds-button-icon.ds-btn-icon-filled-primary{--ds-button-icon-active-color-bg: var(--semantic-color-primary-active);--ds-button-icon-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-active-color-icon: var(--semantic-color-on-primary-base);--ds-button-icon-disabled-color-bg: var(--semantic-color-disabled-base);--ds-button-icon-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-icon: var(--semantic-color-on-disabled-base);--ds-button-icon-enabled-color-bg: var(--semantic-color-primary-base);--ds-button-icon-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-icon: var(--semantic-color-on-primary-base);--ds-button-icon-hover-color-bg: var(--semantic-color-primary-hover);--ds-button-icon-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-hover-color-icon: var(--semantic-color-on-primary-base)}.ds-button-icon.ds-btn-icon-filled-secondary{--ds-button-icon-active-color-bg: var(--semantic-color-secondary-active);--ds-button-icon-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-active-color-icon: var(--semantic-color-on-secondary-base);--ds-button-icon-disabled-color-bg: var(--semantic-color-disabled-base);--ds-button-icon-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-icon: var(--semantic-color-on-disabled-base);--ds-button-icon-enabled-color-bg: var(--semantic-color-secondary-base);--ds-button-icon-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-icon: var(--semantic-color-on-secondary-base);--ds-button-icon-hover-color-bg: var(--semantic-color-secondary-hover);--ds-button-icon-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-hover-color-icon: var(--semantic-color-on-secondary-base)}.ds-button-icon.ds-btn-icon-filled-tertiary{--ds-button-icon-active-color-bg: var(--semantic-color-tertiary-active);--ds-button-icon-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-active-color-icon: var(--semantic-color-on-tertiary-base);--ds-button-icon-disabled-color-bg: var(--semantic-color-disabled-base);--ds-button-icon-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-icon: var(--semantic-color-on-disabled-base);--ds-button-icon-enabled-color-bg: var(--semantic-color-tertiary-base);--ds-button-icon-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-icon: var(--semantic-color-on-tertiary-base);--ds-button-icon-hover-color-bg: var(--semantic-color-tertiary-hover);--ds-button-icon-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-hover-color-icon: var(--semantic-color-on-tertiary-base)}.ds-button-icon.ds-btn-icon-flat-tertiary,.ds-button-icon.ds-btn-icon-flat-reduced-tertiary{--ds-button-icon-active-color-bg: var(--semantic-color-tertiary-container-active);--ds-button-icon-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-active-color-icon: var(--semantic-color-tertiary-active);--ds-button-icon-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-icon: var(--semantic-color-on-disabled-base);--ds-button-icon-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-icon: var(--semantic-color-tertiary-base);--ds-button-icon-hover-color-bg: var(--semantic-color-tertiary-container-hover);--ds-button-icon-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-hover-color-icon: var(--semantic-color-tertiary-hover)}.ds-button-icon.ds-btn-icon-flat-reduced-tertiary.ds-btn-icon-large-reduced{--ds-button-icon-radius-border: var(--semantic-radius-l2-button-large);--ds-button-icon-size-height: var(--semantic-size-x6);--ds-button-icon-size-icon: var(--semantic-size-icon-medium);--ds-button-icon-size-width: var(--semantic-size-x6)}.ds-button-icon.ds-btn-icon-flat-reduced-tertiary.ds-btn-icon-medium-reduced{--ds-button-icon-radius-border: var(--semantic-radius-l2-button-medium);--ds-button-icon-size-height: var(--semantic-size-x5);--ds-button-icon-size-icon: var(--semantic-size-icon-medium);--ds-button-icon-size-width: var(--semantic-size-x5)}.ds-button-icon.ds-btn-icon-flat-reduced-utility{--ds-button-icon-active-color-bg: var(--semantic-color-utility-container-active);--ds-button-icon-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-active-color-icon: var(--semantic-color-utility-active);--ds-button-icon-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-icon: var(--semantic-color-on-disabled-base);--ds-button-icon-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-icon: var(--semantic-color-utility-base);--ds-button-icon-hover-color-bg: var(--semantic-color-utility-container-base);--ds-button-icon-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-hover-color-icon: var(--semantic-color-utility-hover)}.ds-button-icon.ds-btn-icon-flat-reduced-utility.ds-btn-icon-large-reduced{--ds-button-icon-radius-border: var(--semantic-radius-l2-button-large);--ds-button-icon-size-height: var(--semantic-size-x6);--ds-button-icon-size-icon: var(--semantic-size-icon-medium);--ds-button-icon-size-width: var(--semantic-size-x6)}.ds-button-icon.ds-btn-icon-flat-reduced-utility.ds-btn-icon-medium-reduced{--ds-button-icon-radius-border: var(--semantic-radius-l2-button-medium);--ds-button-icon-size-height: var(--semantic-size-x5);--ds-button-icon-size-icon: var(--semantic-size-icon-medium);--ds-button-icon-size-width: var(--semantic-size-x5)}.ds-button-icon.ds-btn-icon-flat-utility{--ds-button-icon-active-color-bg: var(--semantic-color-utility-container-active);--ds-button-icon-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-active-color-icon: var(--semantic-color-utility-active);--ds-button-icon-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-icon: var(--semantic-color-on-disabled-base);--ds-button-icon-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-icon: var(--semantic-color-utility-base);--ds-button-icon-hover-color-bg: var(--semantic-color-utility-container-base);--ds-button-icon-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-hover-color-icon: var(--semantic-color-utility-hover)}.ds-button-icon.ds-btn-icon-outline-primary,.ds-button-icon.ds-btn-icon-outline-secondary,.ds-button-icon.ds-btn-icon-outline-tertiary{border:var(--ds-button-bonus-border-width-local) solid var(--ds-button-icon-enabled-color-border)}.ds-button-icon.ds-btn-icon-outline-primary.ds-btn-icon-disabled,.ds-button-icon.ds-btn-icon-outline-secondary.ds-btn-icon-disabled,.ds-button-icon.ds-btn-icon-outline-tertiary.ds-btn-icon-disabled{--ds-button-icon-enabled-color-border: var(--ds-button-icon-disabled-color-border)}.ds-button-icon.ds-btn-icon-outline-primary{--ds-button-icon-active-color-bg: var(--semantic-color-primary-container-active);--ds-button-icon-active-color-border: var(--semantic-color-primary-outline-active);--ds-button-icon-active-color-icon: var(--semantic-color-on-primary-outline);--ds-button-icon-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-border: var(--semantic-color-disabled-outline);--ds-button-icon-disabled-color-icon: var(--semantic-color-on-disabled-outline);--ds-button-icon-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-border: var(--semantic-color-primary-outline-base);--ds-button-icon-enabled-color-icon: var(--semantic-color-on-primary-outline);--ds-button-icon-hover-color-bg: var(--semantic-color-primary-container-hover);--ds-button-icon-hover-color-border: var(--semantic-color-primary-outline-hover);--ds-button-icon-hover-color-icon: var(--semantic-color-on-primary-outline)}.ds-button-icon.ds-btn-icon-outline-secondary{--ds-button-icon-active-color-bg: var(--semantic-color-secondary-container-active);--ds-button-icon-active-color-border: var(--semantic-color-secondary-outline-active);--ds-button-icon-active-color-icon: var(--semantic-color-on-secondary-outline);--ds-button-icon-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-border: var(--semantic-color-disabled-outline);--ds-button-icon-disabled-color-icon: var(--semantic-color-on-disabled-outline);--ds-button-icon-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-border: var(--semantic-color-secondary-outline-base);--ds-button-icon-enabled-color-icon: var(--semantic-color-on-secondary-outline);--ds-button-icon-hover-color-bg: var(--semantic-color-secondary-container-hover);--ds-button-icon-hover-color-border: var(--semantic-color-secondary-outline-hover);--ds-button-icon-hover-color-icon: var(--semantic-color-on-secondary-outline)}.ds-button-icon.ds-btn-icon-outline-tertiary{--ds-button-icon-active-color-bg: var(--semantic-color-tertiary-container-active);--ds-button-icon-active-color-border: var(--semantic-color-tertiary-outline-active);--ds-button-icon-active-color-icon: var(--semantic-color-on-tertiary-outline);--ds-button-icon-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-border: var(--semantic-color-disabled-outline);--ds-button-icon-disabled-color-icon: var(--semantic-color-on-disabled-outline);--ds-button-icon-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-border: var(--semantic-color-tertiary-outline-base);--ds-button-icon-enabled-color-icon: var(--semantic-color-on-tertiary-outline);--ds-button-icon-hover-color-bg: var(--semantic-color-tertiary-container-hover);--ds-button-icon-hover-color-border: var(--semantic-color-tertiary-outline-hover);--ds-button-icon-hover-color-icon: var(--semantic-color-on-tertiary-outline)}.ds-button-icon.ds-btn-inverse.ds-btn-icon-flat-tertiary{--ds-button-icon-active-color-bg: var(--semantic-color-tertiary-container-active-inverse);--ds-button-icon-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-active-color-icon: var(--semantic-color-tertiary-active-inverse);--ds-button-icon-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-icon: var(--semantic-color-on-disabled-base-inverse);--ds-button-icon-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-icon: var(--semantic-color-tertiary-base-inverse);--ds-button-icon-hover-color-bg: var(--semantic-color-tertiary-container-hover-inverse);--ds-button-icon-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-hover-color-icon: var(--semantic-color-tertiary-hover-inverse)}.ds-button-icon.ds-btn-inverse.ds-btn-icon-flat-utility{--ds-button-icon-active-color-bg: var(--semantic-color-utility-container-active-inverse);--ds-button-icon-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-active-color-icon: var(--semantic-color-utility-active-inverse);--ds-button-icon-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-icon: var(--semantic-color-on-disabled-base-inverse);--ds-button-icon-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-icon: var(--semantic-color-utility-base-inverse);--ds-button-icon-hover-color-bg: var(--semantic-color-utility-container-base-inverse);--ds-button-icon-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-hover-color-icon: var(--semantic-color-utility-hover-inverse)}.ds-button-icon.ds-btn-inverse.ds-btn-icon-outline-primary{--ds-button-icon-active-color-bg: var(--semantic-color-primary-container-active-inverse);--ds-button-icon-active-color-border: var(--semantic-color-primary-outline-active-inverse);--ds-button-icon-active-color-icon: var(--semantic-color-on-primary-outline-inverse);--ds-button-icon-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-border: var(--semantic-color-disabled-outline-inverse);--ds-button-icon-disabled-color-icon: var(--semantic-color-on-disabled-outline-inverse);--ds-button-icon-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-border: var(--semantic-color-primary-outline-base-inverse);--ds-button-icon-enabled-color-icon: var(--semantic-color-on-primary-outline-inverse);--ds-button-icon-hover-color-bg: var(--semantic-color-primary-container-hover-inverse);--ds-button-icon-hover-color-border: var(--semantic-color-primary-outline-hover-inverse);--ds-button-icon-hover-color-icon: var(--semantic-color-on-primary-outline-inverse)}.ds-button-icon.ds-btn-inverse.ds-btn-icon-outline-secondary{--ds-button-icon-active-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-active-color-border: var(--semantic-color-secondary-outline-active-inverse);--ds-button-icon-active-color-icon: var(--semantic-color-on-secondary-outline-inverse);--ds-button-icon-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-border: var(--semantic-color-disabled-base-inverse);--ds-button-icon-disabled-color-icon: var(--semantic-color-on-disabled-base-inverse);--ds-button-icon-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-border: var(--semantic-color-secondary-outline-base-inverse);--ds-button-icon-enabled-color-icon: var(--semantic-color-on-secondary-outline-inverse);--ds-button-icon-hover-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-hover-color-border: var(--semantic-color-secondary-outline-hover-inverse);--ds-button-icon-hover-color-icon: var(--semantic-color-on-secondary-outline-inverse)}.ds-button-icon.ds-btn-inverse.ds-btn-icon-outline-tertiary{--ds-button-icon-active-color-bg: var(--semantic-color-tertiary-container-active-inverse);--ds-button-icon-active-color-border: var(--semantic-color-tertiary-outline-active-inverse);--ds-button-icon-active-color-icon: var(--semantic-color-on-tertiary-outline-inverse);--ds-button-icon-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-border: var(--semantic-color-disabled-outline-inverse);--ds-button-icon-disabled-color-icon: var(--semantic-color-on-disabled-outline-inverse);--ds-button-icon-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-border: var(--semantic-color-tertiary-outline-base-inverse);--ds-button-icon-enabled-color-icon: var(--semantic-color-on-tertiary-outline-inverse);--ds-button-icon-hover-color-bg: var(--semantic-color-tertiary-container-hover-inverse);--ds-button-icon-hover-color-border: var(--semantic-color-tertiary-outline-hover-inverse);--ds-button-icon-hover-color-icon: var(--semantic-color-on-tertiary-outline-inverse)}.ds-button-icon.ds-btn-inverse.ds-btn-icon-filled-primary{--ds-button-icon-active-color-bg: var(--semantic-color-primary-active-inverse);--ds-button-icon-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-active-color-icon: var(--semantic-color-on-primary-base-inverse);--ds-button-icon-disabled-color-bg: var(--semantic-color-disabled-base-inverse);--ds-button-icon-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-icon: var(--semantic-color-on-disabled-base-inverse);--ds-button-icon-enabled-color-bg: var(--semantic-color-primary-base-inverse);--ds-button-icon-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-icon: var(--semantic-color-on-primary-base-inverse);--ds-button-icon-hover-color-bg: var(--semantic-color-primary-hover-inverse);--ds-button-icon-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-hover-color-icon: var(--semantic-color-on-primary-base-inverse)}.ds-button-icon.ds-btn-inverse.ds-btn-icon-filled-secondary{--ds-button-icon-active-color-bg: var(--semantic-color-secondary-active-inverse);--ds-button-icon-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-active-color-icon: var(--semantic-color-on-secondary-base-inverse);--ds-button-icon-disabled-color-bg: var(--semantic-color-disabled-base-inverse);--ds-button-icon-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-icon: var(--semantic-color-on-disabled-base-inverse);--ds-button-icon-enabled-color-bg: var(--semantic-color-secondary-base-inverse);--ds-button-icon-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-icon: var(--semantic-color-on-secondary-base-inverse);--ds-button-icon-hover-color-bg: var(--semantic-color-secondary-hover-inverse);--ds-button-icon-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-hover-color-icon: var(--semantic-color-on-secondary-base-inverse)}.ds-button-icon.ds-btn-inverse.ds-btn-icon-filled-teritiary{--ds-button-icon-active-color-bg: var(--semantic-color-tertiary-active-inverse);--ds-button-icon-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-active-color-icon: var(--semantic-color-on-tertiary-base-inverse);--ds-button-icon-disabled-color-bg: var(--semantic-color-disabled-base-inverse);--ds-button-icon-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-icon: var(--semantic-color-on-disabled-base-inverse);--ds-button-icon-enabled-color-bg: var(--semantic-color-tertiary-base-inverse);--ds-button-icon-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-icon: var(--semantic-color-on-tertiary-base-inverse);--ds-button-icon-hover-color-bg: var(--semantic-color-tertiary-hover-inverse);--ds-button-icon-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-hover-color-icon: var(--semantic-color-on-tertiary-base-inverse)}.ds-button-icon.ds-btn-inverse.ds-btn-icon-flat-reduced-utility{--ds-button-icon-active-color-bg: var(--semantic-color-utility-container-active-inverse);--ds-button-icon-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-active-color-icon: var(--semantic-color-utility-active-inverse);--ds-button-icon-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-icon: var(--semantic-color-on-disabled-base-inverse);--ds-button-icon-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-icon: var(--semantic-color-utility-base-inverse);--ds-button-icon-hover-color-bg: var(--semantic-color-utility-container-base-inverse);--ds-button-icon-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-hover-color-icon: var(--semantic-color-utility-hover-inverse)}.ds-button-icon.ds-btn-inverse.ds-btn-icon-flat-reduced-tertiary{--ds-button-icon-active-color-bg: var(--semantic-color-tertiary-container-active-inverse);--ds-button-icon-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-active-color-icon: var(--semantic-color-tertiary-active-inverse);--ds-button-icon-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-disabled-color-icon: var(--semantic-color-on-disabled-base-inverse);--ds-button-icon-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-enabled-color-icon: var(--semantic-color-tertiary-base-inverse);--ds-button-icon-hover-color-bg: var(--semantic-color-tertiary-container-hover-inverse);--ds-button-icon-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-icon-hover-color-icon: var(--semantic-color-tertiary-hover-inverse)}@media (hover: hover){.ds-button-icon:hover{--ds-button-icon-bg-color: var(--ds-button-icon-hover-color-bg);--ds-button-icon-color: var(--ds-button-icon-hover-color-icon);--ds-button-icon-border-color: var(--ds-button-icon-hover-color-border)}}.ds-button-icon:active{--ds-button-icon-bg-color: var(--ds-button-icon-active-color-bg);--ds-button-icon-color: var(--ds-button-icon-active-color-icon)}.ds-button-icon.ds-btn-icon-disabled{--ds-button-icon-bg-color: var(--ds-button-icon-disabled-color-bg);--ds-button-icon-border-color: var(--ds-button-icon-disabled-color-border);--ds-button-icon-color: var(--ds-button-icon-disabled-color-icon);pointer-events:none}.ds-icon-btn-icon{align-items:center;display:flex;height:var(--ds-button-icon-size-icon);justify-content:center;width:var(--ds-button-icon-size-icon)}.ds-icon-btn-icon svg{color:var(--ds-button-icon-color);height:var(--ds-button-icon-size-icon);width:var(--ds-button-icon-size-icon)}
+/*# sourceMappingURL=/ClientDist/browser/button-icon.component-XEDNPAN6.css.map */
+</style><style>.marketsubtype-logo-button[_ngcontent-ng-c3247274557]{width:auto;height:24px;z-index:1;border-radius:var(--marketsubtype-logo-border-radius);font-size:var(--marketsubtype-logo-font-size);padding:6px 8px;font-family:var(--theme-font-family-secondary);font-weight:400;line-height:var(--marketsubtype-logo-font-line-height);border-color:var(--marketsubtype-logo-border-color);border:thin solid;color:var(--marketsubtype-logo-text-color);display:flex;text-transform:uppercase;justify-content:center;align-items:center}.marketsubtype-logo-clicked[_ngcontent-ng-c3247274557]{background-color:var(--marketsubtype-logo-active-background-color);color:var(--marketsubtype-logo-active-text-color);border-color:var(--marketsubtype-logo-active-background-color)}.marketsubtype-logo-wrap-title[_ngcontent-ng-c3247274557]{white-space:normal;word-wrap:break-word;text-align:center;height:auto;max-width:147px}
+/*# sourceMappingURL=/ClientDist/browser/marketsubtype-logo.component-DBHK5JCY.css.map */</style><style>float-ui-content{position:relative;display:block}.float-ui-container{display:none;position:absolute;border-radius:3px;border:1px solid grey;box-shadow:0 0 2px #00000080;padding:10px}.float-ui-container.float-ui-fixed{position:fixed}.float-ui-container.float-ui-animation{animation:ngxp-fadeIn .15s ease-out;transition:transform .65s cubic-bezier(.43,.33,.14,1.01) 0s}.float-ui-container>.float-ui-arrow{position:absolute;width:10px;height:10px;z-index:-1;transform:rotate(45deg)}@keyframes ngxp-fadeIn{0%{display:none;opacity:0}1%{display:block;opacity:0}to{display:block;opacity:1}}
+</style><style>.badge-toggle[_ngcontent-ng-c452392653], .badge-toggle[_ngcontent-ng-c452392653]:active, .market-header-bet-builder-tooltip-badge[_ngcontent-ng-c452392653]{height:24px;font-size:12px;font-weight:700;color:var(--semantic-color-on-supporting-orange-base);background-color:var(--semantic-color-supporting-orange-base);border-radius:4px;padding:4px;min-width:24px;text-align:center;display:flex;justify-content:center;align-items:center}.badge-toggle.badge-toggle-pressed[_ngcontent-ng-c452392653]{background-color:var(--market-header-bet-builder-badge-active-background-color);color:var(--market-header-bet-builder-badge-active-text-color)}.market-header-bet-builder-tooltip-header[_ngcontent-ng-c452392653]{display:flex;justify-content:space-between;padding-bottom:8px}.market-header-bet-builder-tooltip-title-container[_ngcontent-ng-c452392653]{display:flex;justify-content:space-between;gap:8px;align-items:center}.market-header-bet-builder-tooltip-content[_ngcontent-ng-c452392653]{font-size:14px}.market-header-bet-builder-tooltip-title[_ngcontent-ng-c452392653]{font-size:18px;font-weight:700}.market-header-bet-builder-tooltip[_ngcontent-ng-c452392653]{font-family:var(--theme-font-family-secondary),sans-serif;font-weight:300}
+/*# sourceMappingURL=/ClientDist/browser/market-header-bet-builder-badge.component-OIJBKWE6.css.map */</style><style>.option-group-container.over-under-container.double[_ngcontent-ng-c868130429]{padding:0 14px 10.5px}.option-group-container.over-under-container.double[_ngcontent-ng-c868130429]   .option-group-header[_ngcontent-ng-c868130429]{height:13px;margin:var(--site-spacer-m) 0 6px 0;padding:0}.option-group-container.over-under-container.double[_ngcontent-ng-c868130429]     .option-pick .option-indicator{display:flex;flex-direction:column;justify-content:center;align-items:center;height:44px;gap:2px}.option-group-container.over-under-container.double[_ngcontent-ng-c868130429]     .option-pick .option-indicator .name{line-height:13px;display:flex;margin:0}.option-group-container.over-under-container.double[_ngcontent-ng-c868130429]     .option-pick .option-indicator .option-value{height:13px}
+/*# sourceMappingURL=/ClientDist/browser/over-under-option-group.component-NVRWTB6O.css.map */</style><style>@keyframes pulse{0%{background-color:#a5a5a51a}50%{background-color:#a5a5a54d}to{background-color:#a5a5a51a}}@keyframes vertical-shimmer{to{transform:translate(100%)}}.language-switcher .dropdown-toggle-group{align-items:center;color:var(--language-switcher-items-color);column-gap:var(--site-spacer-s);display:flex;font-size:var(--language-switcher-dropdown-font-size);font-weight:var(--theme-font-normal)}@media (max-width: 599.98px){.language-switcher .dropdown-toggle-group{font-weight:var(--theme-font-medium)}}.language-switcher .dropdown-toggle-group .dropdown-toggle-icon{color:var(--language-switcher-toggle-icon-color);height:8px;padding-top:0}.language-switcher vn-language-item,.language-switcher-menu vn-language-item{align-items:center;column-gap:var(--site-spacer-s);display:var(--language-switcher-item-display)}.language-switcher .flag,.language-switcher-menu .flag{border-radius:var(--language-switcher-flag-size);display:inline-block;flex-shrink:0;height:var(--language-switcher-flag-size);width:var(--language-switcher-flag-size)}.vn-language-switcher{text-transform:capitalize}.vn-language-switcher vn-language-switcher-menu{background-clip:padding-box;background-color:var(--language-switcher-dropdown-bg-color);border-radius:.25rem;box-shadow:0 10px 30px #0006;padding:var(--site-spacer-s)}@media (max-width: 599.98px){.vn-language-switcher vn-language-switcher-menu{left:50%;max-height:90%;max-width:calc(100% - 2rem);overflow:auto;position:fixed;top:50%;transform:translate(-50%,-50%);width:100%}}@media (orientation: landscape){.device-mobile:not(.device-tablet) .vn-language-switcher vn-language-switcher-menu{left:50%;max-height:90%;max-width:calc(100% - 2rem);overflow:auto;position:fixed;top:50%;transform:translate(-50%,-50%)}}.vn-language-switcher vn-language-switcher-menu .language-switcher-menu{display:grid;grid-auto-flow:column;grid-template-rows:repeat(5,auto)}@media (max-width: 599.98px){.vn-language-switcher vn-language-switcher-menu .language-switcher-menu{display:block}}.vn-language-switcher vn-language-switcher-menu .language-switcher-item{align-items:center;border:1px solid transparent;box-sizing:border-box;column-gap:var(--site-spacer-s);cursor:pointer;display:flex;font-size:14px;line-height:1.1;padding:var(--site-spacer-s) var(--site-spacer-xl)}.vn-language-switcher vn-language-switcher-menu .language-switcher-item .lang-label{margin-left:var(--site-spacer-s);margin-right:calc(var(--site-spacer-xl) * -1);overflow:hidden;text-overflow:ellipsis;width:var(--language-switcher-lang-label-width)}.vn-language-switcher vn-language-switcher-menu .language-switcher-item.active{border-color:var(--language-switcher-active-border-color);font-weight:var(--theme-font-bold)}.vn-language-switcher vn-language-switcher-menu .language-switcher-item:hover{background-color:var(--language-switcher-hover-bg-color)}.vn-language-switcher vn-language-switcher-menu .language-switcher-item:before{content:none}
+/*# sourceMappingURL=/ClientDist/browser/styles-SCOHDTQB.css.map */
+</style><style>@keyframes pulse{0%{background-color:#a5a5a51a}50%{background-color:#a5a5a54d}to{background-color:#a5a5a51a}}@keyframes vertical-shimmer{to{transform:translate(100%)}}vn-label-switcher{margin-right:auto;padding:var(--site-spacer) 0}vn-label-switcher .label-switcher{cursor:pointer;position:relative}vn-label-switcher .label-switcher-current{align-items:center;background-color:transparent;border:1px solid color-mix(in srgb,var(--color-white) 28%,transparent);border-radius:50px;display:flex;font-size:var(--theme-txt-md-font-size);font-weight:var(--theme-font-normal);line-height:1;padding:.4375rem var(--site-spacer)}vn-label-switcher .label-switcher-current .dropdown-toggle-icon{color:var(--label-switcher-current-icon-color)}vn-label-switcher .label-switcher-current.label-switcher-open{background-color:color-mix(in srgb,var(--color-white) 20%,transparent)}vn-label-switcher .label-switcher-current.label-switcher-open .dropdown-toggle-icon:before{transform:scaleY(-1)}vn-label-switcher .dropdown-toggle-icon{display:flex;font-size:8px;line-height:1;margin-left:var(--site-spacer-s);padding-top:0}vn-label-switcher .dropdown-toggle-icon:before{transform:scaleY(1);transition:transform .2s ease-in-out}vn-label-switcher .label-switcher-current-icon{height:16px;margin-right:12px;object-fit:contain;width:16px}vn-label-switcher .label-switcher-item-wrapper{background-color:var(--label-switcher-item-bg);border:none;color:var(--color-white);display:block;height:auto;max-height:35vh;min-width:100%;overflow-y:auto;position:absolute;top:calc(32px + var(--site-spacer-s));z-index:1;--scrollbar-width: 4px}@supports not selector(::-webkit-scrollbar){vn-label-switcher .label-switcher-item-wrapper{scrollbar-color:#707070 transparent;scrollbar-width:thin}}vn-label-switcher .label-switcher-item-wrapper::-webkit-scrollbar{height:var(--scrollbar-width);width:var(--scrollbar-width)}vn-label-switcher .label-switcher-item-wrapper::-webkit-scrollbar-button{height:0;width:0}vn-label-switcher .label-switcher-item-wrapper::-webkit-scrollbar-thumb{background:#707070;border:0 none;border-radius:calc(var(--scrollbar-width) / 2);height:0}vn-label-switcher .label-switcher-item-wrapper::-webkit-scrollbar-thumb:hover{background:#707070}vn-label-switcher .label-switcher-item-wrapper::-webkit-scrollbar-thumb:active{background:#707070}vn-label-switcher .label-switcher-item-wrapper::-webkit-scrollbar-track{background:transparent;border:0 none}vn-label-switcher .label-switcher-item-wrapper::-webkit-scrollbar-track:hover{background:transparent}vn-label-switcher .label-switcher-item-wrapper::-webkit-scrollbar-track:active{background:transparent}vn-label-switcher .label-switcher-item-wrapper::-webkit-scrollbar-corner{background:transparent}@media (max-width: 599.98px){vn-label-switcher .label-switcher-item-wrapper{max-height:50vh;width:60vw}}vn-label-switcher .label-switcher-item-wrapper .label-switcher-item{border:1px solid transparent;display:block;font-size:var(--label-switcher-item-font-size);line-height:21px;padding:var(--site-spacer-m);white-space:nowrap}vn-label-switcher .label-switcher-item-wrapper .label-switcher-item:not(:last-child){margin-bottom:var(--site-spacer-xs)}vn-label-switcher .label-switcher-item-wrapper .label-switcher-item.active,vn-label-switcher .label-switcher-item-wrapper .label-switcher-item:hover{background-color:color-mix(in srgb,var(--color-white) 20%,transparent)}.label-switcher-title{font-size:var(--label-switcher-title);margin-bottom:var(--site-spacer-s)}.label-switcher-btn-container{display:flex;flex-flow:row wrap;margin-top:var(--site-spacer)}.label-switcher-btn-container>.btn{flex-basis:0;flex-grow:1;max-width:100%}.label-switcher-btn-container>.btn:not(:last-child){margin-right:var(--site-spacer)}.device-mobile-phone .cdk-overlay-container .cdk-global-overlay-wrapper .cdk-overlay-pane .label-switcher-container.overlay-content{background-color:#161616;background-repeat:no-repeat;background-size:cover;color:var(--color-white);justify-content:center;overflow:hidden;padding-left:var(--site-spacer-5xl);padding-right:var(--site-spacer-5xl)}@media (width >= 480px) and (orientation: landscape){.device-mobile-phone .cdk-overlay-container .cdk-global-overlay-wrapper .cdk-overlay-pane .label-switcher-container.overlay-content{padding-left:22%;padding-right:22%}}.device-mobile-phone .cdk-overlay-container .cdk-global-overlay-wrapper .cdk-overlay-pane .label-switcher-container.overlay-content:before{align-self:center;background-color:#212121;background-position:center;background-repeat:no-repeat;border-radius:50%;box-shadow:0 0 0 2em #ffffff05,0 0 0 6em #ffffff05,0 0 0 10em #ffffff03;content:"";flex-shrink:0;height:84px;width:84px}.device-mobile-phone .cdk-overlay-container .cdk-global-overlay-wrapper .cdk-overlay-pane .label-switcher-container.overlay-content .label-switcher-title{font-size:var(--label-switcher-mobile-title);margin:var(--site-spacer-xl) 0 var(--site-spacer) 0}@media (width >= 480px) and (orientation: landscape){.device-mobile-phone .cdk-overlay-container .cdk-global-overlay-wrapper .cdk-overlay-pane .label-switcher-container.overlay-content .label-switcher-title{margin-top:0}}.device-mobile-phone .cdk-overlay-container .cdk-global-overlay-wrapper .cdk-overlay-pane .label-switcher-container.overlay-content .label-switcher-text{margin-bottom:var(--site-spacer-3xl)}.device-mobile-phone .cdk-overlay-container .cdk-global-overlay-wrapper .cdk-overlay-pane .label-switcher-container.overlay-content .label-switcher-btn-container{display:flex;flex-wrap:wrap-reverse}.device-mobile-phone .cdk-overlay-container .cdk-global-overlay-wrapper .cdk-overlay-pane .label-switcher-container.overlay-content .label-switcher-btn-container>.btn{flex-basis:100%;margin-bottom:var(--site-spacer-xl);margin-right:0}@media (width >= 480px) and (orientation: landscape){.device-mobile-phone .cdk-overlay-container .cdk-global-overlay-wrapper .cdk-overlay-pane .label-switcher-container.overlay-content .label-switcher-btn-container>.btn{flex-basis:auto}.device-mobile-phone .cdk-overlay-container .cdk-global-overlay-wrapper .cdk-overlay-pane .label-switcher-container.overlay-content .label-switcher-btn-container>.btn:not(:last-child){margin-right:var(--site-spacer)}}.device-mobile-phone .cdk-overlay-container .cdk-global-overlay-wrapper .cdk-overlay-pane .label-switcher-container.overlay-content .label-switcher-btn-container>.btn.btn-light{background-color:transparent;border:none;color:var(--color-white);font-weight:var(--theme-font-normal)}.device-mobile-phone .cdk-overlay-container .cdk-global-overlay-wrapper .cdk-overlay-pane .label-switcher-container.overlay-content .label-switcher-btn-container>.btn.btn-primary{color:var(--color-white)}
+/*# sourceMappingURL=/ClientDist/browser/styles-SQQXLUHK.css.map */
+</style><style>@keyframes pulse{0%{background-color:#a5a5a51a}50%{background-color:#a5a5a54d}to{background-color:#a5a5a51a}}@keyframes vertical-shimmer{to{transform:translate(100%)}}.vn-img{display:grid;grid-template-areas:"a";grid-template-columns:repeat(1,1fr);place-items:center}.real-time-toast .vn-img{display:contents}.vn-img__image-fluid{grid-area:a}.vn-img__text-container{grid-area:a;width:90%}.vn-img__intro{color:var(--vn-img-intro-font-color);font-size:var(--vn-img-intro-font-size);font-weight:var(--vn-img-intro-font-weight);line-height:var(--vn-img-intro-line-height)}.vn-img__title{color:var(--vn-img-title-font-color);font-size:var(--vn-img-title-font-size);font-weight:var(--vn-img-title-font-weight);line-height:var(--vn-img-title-line-height)}.vn-img__subtitle{color:var(--vn-img-subtitle-font-color);font-size:var(--vn-img-subtitle-font-size);font-weight:var(--vn-img-subtitle-font-weight);line-height:var(--vn-img-subtitle-line-height)}
+/*# sourceMappingURL=/ClientDist/browser/styles-VVDFMAAR.css.map */
+</style><style>.precreated-tabs[_ngcontent-ng-c2573826688]{margin:6px 0 0 6px}
+/*# sourceMappingURL=/ClientDist/browser/precreated-bab-option-group.component-JK5YMSN4.css.map */</style><style>.ds-button{--ds-button-radius-border: var(--semantic-radius-l2-button-large);--ds-button-size-border: var(--semantic-size-xquarter);--ds-button-size-tap-target: var(--semantic-size-x11);--ds-button-space-stack: var(--semantic-spacing-stack-xs);--ds-button-font-family: var(--semantic-typography-label-font-family, sans-serif);--ds-button-font-size: var(--semantic-typography-label-lg-strong-font-size);--ds-button-font-weight: var(--semantic-typography-label-lg-strong-font-weight);--ds-button-line-height: var(--semantic-typography-label-lg-strong-line-height);font-family:var(--ds-button-font-family);font-size:var(--ds-button-font-size);font-weight:var(--ds-button-font-weight);line-height:var(--ds-button-line-height);--ds-button-border-width-local: 1px;--ds-button-color-text: var(--ds-button-enabled-color-text);--ds-button-bg: var(--ds-button-enabled-color-bg);--ds-button-color-border: var(--ds-button-enabled-color-border);--ds-button-color-icon: var(--ds-button-enabled-color-icon);align-items:center;background:var(--ds-button-bg);border:var(--ds-button-border-width-local) solid var(--ds-button-color-border);border-radius:var(--ds-button-radius-border);box-sizing:border-box;color:var(--ds-button-color-text);content-visibility:auto;cursor:pointer;display:inline-flex;flex-direction:column;justify-content:center;max-height:var(--ds-button-size-max-height);min-height:var(--ds-button-size-min-height);padding:var(--ds-button-space-padding-top, 0) var(--ds-button-space-padding-right, 0) var(--ds-button-space-padding-bottom, 0) var(--ds-button-space-padding-left, 0)}.ds-button.ds-btn-small{--ds-button-radius-border: var(--semantic-radius-l2-button-small);--ds-button-size-icon: var(--semantic-size-icon-small);--ds-button-size-max-height: var(--semantic-size-x10);--ds-button-size-min-height: var(--semantic-size-x6);--ds-button-space-inline: var(--semantic-spacing-inline-sm);--ds-button-space-padding-bottom: var(--semantic-spacing-container-padding-xs);--ds-button-space-padding-left: var(--semantic-spacing-container-padding-xl);--ds-button-space-padding-right: var(--semantic-spacing-container-padding-xl);--ds-button-space-padding-top: var(--semantic-spacing-container-padding-xs);--ds-button-font-family: var(--semantic-typography-label-font-family, sans-serif);--ds-button-font-size: var(--semantic-typography-label-sm-strong-font-size);--ds-button-font-weight: var(--semantic-typography-label-sm-strong-font-weight);--ds-button-line-height: var(--semantic-typography-label-sm-strong-line-height)}.ds-button.ds-btn-medium{--ds-button-radius-border: var(--semantic-radius-l2-button-medium);--ds-button-size-icon: var(--semantic-size-icon-small);--ds-button-size-max-height: var(--semantic-size-x20);--ds-button-size-min-height: var(--semantic-size-x8);--ds-button-space-inline: var(--semantic-spacing-inline-md);--ds-button-space-padding-bottom: var(--semantic-spacing-container-padding-sm);--ds-button-space-padding-left: var(--semantic-spacing-container-padding-xl);--ds-button-space-padding-right: var(--semantic-spacing-container-padding-xl);--ds-button-space-padding-top: var(--semantic-spacing-container-padding-sm);--ds-button-font-family: var(--semantic-typography-label-font-family, sans-serif);--ds-button-font-size: var(--semantic-typography-label-md-strong-font-size);--ds-button-font-weight: var(--semantic-typography-label-md-strong-font-weight);--ds-button-line-height: var(--semantic-typography-label-md-strong-line-height)}.ds-button.ds-btn-large{--ds-button-radius-border: var(--semantic-radius-l2-button-large);--ds-button-size-icon: var(--semantic-size-icon-medium);--ds-button-size-max-height: var(--semantic-size-x35);--ds-button-size-min-height: var(--semantic-size-x11);--ds-button-space-inline: var(--semantic-spacing-inline-md);--ds-button-space-padding-bottom: var(--semantic-spacing-container-padding-md);--ds-button-space-padding-left: var(--semantic-spacing-container-padding-2xl);--ds-button-space-padding-right: var(--semantic-spacing-container-padding-2xl);--ds-button-space-padding-top: var(--semantic-spacing-container-padding-md)}.ds-button.ds-btn-filled-primary{--ds-button-active-color-bg: var(--semantic-color-primary-active);--ds-button-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-active-color-icon: var(--semantic-color-on-primary-base);--ds-button-active-color-text: var(--semantic-color-on-primary-base);--ds-button-disabled-color-bg: var(--semantic-color-disabled-base);--ds-button-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-icon: var(--semantic-color-on-disabled-base);--ds-button-disabled-color-text: var(--semantic-color-on-disabled-base);--ds-button-enabled-color-bg: var(--semantic-color-primary-base);--ds-button-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-icon: var(--semantic-color-on-primary-base);--ds-button-enabled-color-text: var(--semantic-color-on-primary-base);--ds-button-hover-color-bg: var(--semantic-color-primary-hover);--ds-button-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-hover-color-icon: var(--semantic-color-on-primary-base);--ds-button-hover-color-text: var(--semantic-color-on-primary-base)}.ds-button.ds-btn-filled-secondary{--ds-button-active-color-bg: var(--semantic-color-secondary-active);--ds-button-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-active-color-icon: var(--semantic-color-on-secondary-base);--ds-button-active-color-text: var(--semantic-color-on-secondary-base);--ds-button-disabled-color-bg: var(--semantic-color-disabled-base);--ds-button-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-icon: var(--semantic-color-on-disabled-base);--ds-button-disabled-color-text: var(--semantic-color-on-disabled-base);--ds-button-enabled-color-bg: var(--semantic-color-secondary-base);--ds-button-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-icon: var(--semantic-color-on-secondary-base);--ds-button-enabled-color-text: var(--semantic-color-on-secondary-base);--ds-button-hover-color-bg: var(--semantic-color-secondary-hover);--ds-button-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-hover-color-icon: var(--semantic-color-on-secondary-base);--ds-button-hover-color-text: var(--semantic-color-on-secondary-base)}.ds-button.ds-btn-filled-tertiary{--ds-button-active-color-bg: var(--semantic-color-tertiary-active);--ds-button-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-active-color-icon: var(--semantic-color-on-tertiary-base);--ds-button-active-color-text: var(--semantic-color-on-tertiary-base);--ds-button-disabled-color-bg: var(--semantic-color-disabled-base);--ds-button-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-icon: var(--semantic-color-on-disabled-base);--ds-button-disabled-color-text: var(--semantic-color-on-disabled-base);--ds-button-enabled-color-bg: var(--semantic-color-tertiary-base);--ds-button-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-icon: var(--semantic-color-on-tertiary-base);--ds-button-enabled-color-text: var(--semantic-color-on-tertiary-base);--ds-button-hover-color-bg: var(--semantic-color-tertiary-hover);--ds-button-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-hover-color-icon: var(--semantic-color-on-tertiary-base);--ds-button-hover-color-text: var(--semantic-color-on-tertiary-base)}.ds-button.ds-btn-filled-success{--ds-button-active-color-bg: var(--semantic-color-positive-active);--ds-button-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-active-color-icon: var(--semantic-color-on-positive-base);--ds-button-active-color-text: var(--semantic-color-on-positive-base);--ds-button-disabled-color-bg: var(--semantic-color-disabled-base);--ds-button-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-icon: var(--semantic-color-on-disabled-base);--ds-button-disabled-color-text: var(--semantic-color-on-disabled-base);--ds-button-enabled-color-bg: var(--semantic-color-positive-base);--ds-button-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-icon: var(--semantic-color-on-positive-base);--ds-button-enabled-color-text: var(--semantic-color-on-positive-base);--ds-button-hover-color-bg: var(--semantic-color-positive-hover);--ds-button-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-hover-color-icon: var(--semantic-color-on-positive-base);--ds-button-hover-color-text: var(--semantic-color-on-positive-base)}.ds-button.ds-btn-filled-utility{--ds-button-active-color-bg: var(--semantic-color-utility-active);--ds-button-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-active-color-icon: var(--semantic-color-on-utility-base);--ds-button-active-color-text: var(--semantic-color-on-utility-base);--ds-button-disabled-color-bg: var(--semantic-color-disabled-base);--ds-button-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-icon: var(--semantic-color-on-disabled-base);--ds-button-disabled-color-text: var(--semantic-color-on-disabled-base);--ds-button-enabled-color-bg: var(--semantic-color-utility-base);--ds-button-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-icon: var(--semantic-color-on-utility-base);--ds-button-enabled-color-text: var(--semantic-color-on-utility-base);--ds-button-hover-color-bg: var(--semantic-color-utility-hover);--ds-button-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-hover-color-icon: var(--semantic-color-on-utility-base);--ds-button-hover-color-text: var(--semantic-color-on-utility-base)}.ds-button.ds-btn-outline-primary{--ds-button-active-color-bg: var(--semantic-color-primary-container-active);--ds-button-active-color-border: var(--semantic-color-primary-outline-active);--ds-button-active-color-icon: var(--semantic-color-on-primary-outline);--ds-button-active-color-text: var(--semantic-color-on-primary-outline);--ds-button-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-border: var(--semantic-color-disabled-outline);--ds-button-disabled-color-icon: var(--semantic-color-on-disabled-outline);--ds-button-disabled-color-text: var(--semantic-color-on-disabled-outline);--ds-button-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-border: var(--semantic-color-primary-outline-base);--ds-button-enabled-color-icon: var(--semantic-color-on-primary-outline);--ds-button-enabled-color-text: var(--semantic-color-on-primary-outline);--ds-button-hover-color-bg: var(--semantic-color-primary-container-hover);--ds-button-hover-color-border: var(--semantic-color-primary-outline-hover);--ds-button-hover-color-icon: var(--semantic-color-on-primary-outline);--ds-button-hover-color-text: var(--semantic-color-on-primary-outline)}.ds-button.ds-btn-outline-secondary{--ds-button-active-color-bg: var(--semantic-color-secondary-container-active);--ds-button-active-color-border: var(--semantic-color-secondary-outline-active);--ds-button-active-color-icon: var(--semantic-color-on-secondary-outline);--ds-button-active-color-text: var(--semantic-color-on-secondary-outline);--ds-button-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-border: var(--semantic-color-disabled-outline);--ds-button-disabled-color-icon: var(--semantic-color-on-disabled-outline);--ds-button-disabled-color-text: var(--semantic-color-on-disabled-outline);--ds-button-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-border: var(--semantic-color-secondary-outline-base);--ds-button-enabled-color-icon: var(--semantic-color-on-secondary-outline);--ds-button-enabled-color-text: var(--semantic-color-on-secondary-outline);--ds-button-hover-color-bg: var(--semantic-color-secondary-container-hover);--ds-button-hover-color-border: var(--semantic-color-secondary-outline-hover);--ds-button-hover-color-icon: var(--semantic-color-on-secondary-outline);--ds-button-hover-color-text: var(--semantic-color-on-secondary-outline)}.ds-button.ds-btn-outline-tertiary{--ds-button-active-color-bg: var(--semantic-color-tertiary-container-active);--ds-button-active-color-border: var(--semantic-color-tertiary-outline-active);--ds-button-active-color-icon: var(--semantic-color-on-tertiary-outline);--ds-button-active-color-text: var(--semantic-color-on-tertiary-outline);--ds-button-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-border: var(--semantic-color-disabled-outline);--ds-button-disabled-color-icon: var(--semantic-color-on-disabled-outline);--ds-button-disabled-color-text: var(--semantic-color-on-disabled-outline);--ds-button-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-border: var(--semantic-color-tertiary-outline-base);--ds-button-enabled-color-icon: var(--semantic-color-on-tertiary-outline);--ds-button-enabled-color-text: var(--semantic-color-on-tertiary-outline);--ds-button-hover-color-bg: var(--semantic-color-tertiary-container-hover);--ds-button-hover-color-border: var(--semantic-color-tertiary-outline-hover);--ds-button-hover-color-icon: var(--semantic-color-on-tertiary-outline);--ds-button-hover-color-text: var(--semantic-color-on-tertiary-outline)}.ds-button.ds-btn-flat-tertiary{--ds-button-active-color-bg: var(--semantic-color-tertiary-container-active);--ds-button-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-active-color-icon: var(--semantic-color-tertiary-base);--ds-button-active-color-text: var(--semantic-color-tertiary-base);--ds-button-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-icon: var(--semantic-color-on-disabled-outline);--ds-button-disabled-color-text: var(--semantic-color-on-disabled-outline);--ds-button-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-icon: var(--semantic-color-tertiary-base);--ds-button-enabled-color-text: var(--semantic-color-tertiary-base);--ds-button-hover-color-bg: var(--semantic-color-tertiary-container-hover);--ds-button-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-hover-color-icon: var(--semantic-color-tertiary-base);--ds-button-hover-color-text: var(--semantic-color-tertiary-base)}.ds-button.ds-btn-flat-utility,.ds-button.ds-btn-flat-reduced-utility{--ds-button-active-color-bg: var(--semantic-color-utility-container-active);--ds-button-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-active-color-icon: var(--semantic-color-utility-base);--ds-button-active-color-text: var(--semantic-color-utility-base);--ds-button-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-icon: var(--semantic-color-on-disabled-outline);--ds-button-disabled-color-text: var(--semantic-color-on-disabled-outline);--ds-button-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-icon: var(--semantic-color-utility-base);--ds-button-enabled-color-text: var(--semantic-color-utility-base);--ds-button-hover-color-bg: var(--semantic-color-utility-container-hover);--ds-button-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-hover-color-icon: var(--semantic-color-utility-base);--ds-button-hover-color-text: var(--semantic-color-utility-base)}.ds-button.ds-btn-flat-reduced-utility.ds-btn-large-reduced{--ds-button-radius-border: var(--semantic-radius-semi-rounded-md);--ds-button-size-icon: var(--semantic-size-icon-medium);--ds-button-size-max-height: var(--semantic-size-x35);--ds-button-size-min-height: var(--semantic-size-x6);--ds-button-space-inline: var(--semantic-spacing-inline-md);--ds-button-space-padding-bottom: var(--semantic-spacing-container-padding-sm);--ds-button-space-padding-left: var(--semantic-spacing-container-padding-sm);--ds-button-space-padding-right: var(--semantic-spacing-container-padding-sm);--ds-button-space-padding-top: var(--semantic-spacing-container-padding-sm)}.ds-button.ds-btn-flat-reduced-utility.ds-btn-medium-reduced{--ds-button-radius-border: var(--semantic-radius-semi-rounded-md);--ds-button-size-icon: var(--semantic-size-icon-small);--ds-button-size-max-height: var(--semantic-size-x20);--ds-button-size-min-height: var(--semantic-size-x6);--ds-button-space-inline: var(--semantic-spacing-inline-md);--ds-button-space-padding-bottom: var(--semantic-spacing-container-padding-sm);--ds-button-space-padding-left: var(--semantic-spacing-container-padding-sm);--ds-button-space-padding-right: var(--semantic-spacing-container-padding-sm);--ds-button-space-padding-top: var(--semantic-spacing-container-padding-sm);--ds-button-font-family: var(--semantic-typography-label-font-family, sans-serif);--ds-button-font-size: var(--semantic-typography-label-md-strong-font-size);--ds-button-font-weight: var(--semantic-typography-label-md-strong-font-weight);--ds-button-line-height: var(--semantic-typography-label-md-strong-line-height)}.ds-button.ds-btn-flat-reduced-utility.ds-btn-small-reduced{--ds-button-radius-border: var(--semantic-radius-semi-rounded-md);--ds-button-size-icon: var(--semantic-size-icon-small);--ds-button-size-max-height: var(--semantic-size-x10);--ds-button-size-min-height: var(--semantic-size-x5);--ds-button-space-inline: var(--semantic-spacing-inline-sm);--ds-button-space-padding-bottom: var(--semantic-spacing-container-padding-xs);--ds-button-space-padding-left: var(--semantic-spacing-container-padding-xs);--ds-button-space-padding-right: var(--semantic-spacing-container-padding-xs);--ds-button-space-padding-top: var(--semantic-spacing-container-padding-xs);--ds-button-font-family: var(--semantic-typography-label-font-family, sans-serif);--ds-button-font-size: var(--semantic-typography-label-sm-strong-font-size);--ds-button-font-weight: var(--semantic-typography-label-sm-strong-font-weight);--ds-button-line-height: var(--semantic-typography-label-sm-strong-line-height)}.ds-button.ds-btn-flat-reduced-tertiary{--ds-button-active-color-bg: var(--semantic-color-tertiary-container-active);--ds-button-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-active-color-icon: var(--semantic-color-tertiary-base);--ds-button-active-color-text: var(--semantic-color-tertiary-base);--ds-button-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-icon: var(--semantic-color-on-disabled-outline);--ds-button-disabled-color-text: var(--semantic-color-on-disabled-outline);--ds-button-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-icon: var(--semantic-color-tertiary-base);--ds-button-enabled-color-text: var(--semantic-color-tertiary-base);--ds-button-hover-color-bg: var(--semantic-color-tertiary-container-hover);--ds-button-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-hover-color-icon: var(--semantic-color-tertiary-base);--ds-button-hover-color-text: var(--semantic-color-tertiary-base)}.ds-button.ds-btn-flat-reduced-tertiary.ds-btn-large-reduced{--ds-button-radius-border: var(--semantic-radius-semi-rounded-md);--ds-button-size-icon: var(--semantic-size-icon-medium);--ds-button-size-max-height: var(--semantic-size-x35);--ds-button-size-min-height: var(--semantic-size-x6);--ds-button-space-inline: var(--semantic-spacing-inline-md);--ds-button-space-padding-bottom: var(--semantic-spacing-container-padding-sm);--ds-button-space-padding-left: var(--semantic-spacing-container-padding-sm);--ds-button-space-padding-right: var(--semantic-spacing-container-padding-sm);--ds-button-space-padding-top: var(--semantic-spacing-container-padding-sm)}.ds-button.ds-btn-flat-reduced-tertiary.ds-btn-medium-reduced{--ds-button-radius-border: var(--semantic-radius-semi-rounded-md);--ds-button-size-icon: var(--semantic-size-icon-small);--ds-button-size-max-height: var(--semantic-size-x20);--ds-button-size-min-height: var(--semantic-size-x6);--ds-button-space-inline: var(--semantic-spacing-inline-md);--ds-button-space-padding-bottom: var(--semantic-spacing-container-padding-sm);--ds-button-space-padding-left: var(--semantic-spacing-container-padding-sm);--ds-button-space-padding-right: var(--semantic-spacing-container-padding-sm);--ds-button-space-padding-top: var(--semantic-spacing-container-padding-sm);--ds-button-font-family: var(--semantic-typography-label-font-family, sans-serif);--ds-button-font-size: var(--semantic-typography-label-md-strong-font-size);--ds-button-font-weight: var(--semantic-typography-label-md-strong-font-weight);--ds-button-line-height: var(--semantic-typography-label-md-strong-line-height)}.ds-button.ds-btn-flat-reduced-tertiary.ds-btn-small-reduced{--ds-button-radius-border: var(--semantic-radius-semi-rounded-md);--ds-button-size-icon: var(--semantic-size-icon-small);--ds-button-size-max-height: var(--semantic-size-x10);--ds-button-size-min-height: var(--semantic-size-x5);--ds-button-space-inline: var(--semantic-spacing-inline-sm);--ds-button-space-padding-bottom: var(--semantic-spacing-container-padding-xs);--ds-button-space-padding-left: var(--semantic-spacing-container-padding-xs);--ds-button-space-padding-right: var(--semantic-spacing-container-padding-xs);--ds-button-space-padding-top: var(--semantic-spacing-container-padding-xs);--ds-button-font-family: var(--semantic-typography-label-font-family, sans-serif);--ds-button-font-size: var(--semantic-typography-label-sm-strong-font-size);--ds-button-font-weight: var(--semantic-typography-label-sm-strong-font-weight);--ds-button-line-height: var(--semantic-typography-label-sm-strong-line-height)}.ds-button.ds-btn-inverse.ds-btn-filled-primary{--ds-button-active-color-bg: var(--semantic-color-primary-active-inverse);--ds-button-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-active-color-icon: var(--semantic-color-on-primary-base-inverse);--ds-button-active-color-text: var(--semantic-color-on-primary-base-inverse);--ds-button-disabled-color-bg: var(--semantic-color-disabled-base-inverse);--ds-button-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-icon: var(--semantic-color-on-disabled-base-inverse);--ds-button-disabled-color-text: var(--semantic-color-on-disabled-base-inverse);--ds-button-enabled-color-bg: var(--semantic-color-primary-base-inverse);--ds-button-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-icon: var(--semantic-color-on-primary-base-inverse);--ds-button-enabled-color-text: var(--semantic-color-on-primary-base-inverse);--ds-button-hover-color-bg: var(--semantic-color-primary-hover-inverse);--ds-button-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-hover-color-icon: var(--semantic-color-on-primary-base-inverse);--ds-button-hover-color-text: var(--semantic-color-on-primary-base-inverse)}.ds-button.ds-btn-inverse.ds-btn-filled-secondary{--ds-button-active-color-bg: var(--semantic-color-secondary-active-inverse);--ds-button-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-active-color-icon: var(--semantic-color-on-secondary-base-inverse);--ds-button-active-color-text: var(--semantic-color-on-secondary-base-inverse);--ds-button-disabled-color-bg: var(--semantic-color-disabled-base-inverse);--ds-button-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-icon: var(--semantic-color-on-disabled-base-inverse);--ds-button-disabled-color-text: var(--semantic-color-on-disabled-base-inverse);--ds-button-enabled-color-bg: var(--semantic-color-secondary-base-inverse);--ds-button-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-icon: var(--semantic-color-on-secondary-base-inverse);--ds-button-enabled-color-text: var(--semantic-color-on-secondary-base-inverse);--ds-button-hover-color-bg: var(--semantic-color-secondary-hover-inverse);--ds-button-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-hover-color-icon: var(--semantic-color-on-secondary-base-inverse);--ds-button-hover-color-text: var(--semantic-color-on-secondary-base-inverse)}.ds-button.ds-btn-inverse.ds-btn-filled-tertiary{--ds-button-active-color-bg: var(--semantic-color-tertiary-active-inverse);--ds-button-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-active-color-icon: var(--semantic-color-on-tertiary-base-inverse);--ds-button-active-color-text: var(--semantic-color-on-tertiary-base-inverse);--ds-button-disabled-color-bg: var(--semantic-color-disabled-base-inverse);--ds-button-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-icon: var(--semantic-color-on-disabled-base-inverse);--ds-button-disabled-color-text: var(--semantic-color-on-disabled-base-inverse);--ds-button-enabled-color-bg: var(--semantic-color-tertiary-base-inverse);--ds-button-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-icon: var(--semantic-color-on-tertiary-base-inverse);--ds-button-enabled-color-text: var(--semantic-color-on-tertiary-base-inverse);--ds-button-hover-color-bg: var(--semantic-color-tertiary-hover-inverse);--ds-button-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-hover-color-icon: var(--semantic-color-on-tertiary-base-inverse);--ds-button-hover-color-text: var(--semantic-color-on-tertiary-base-inverse)}.ds-button.ds-btn-inverse.ds-btn-outline-primary{--ds-button-active-color-bg: var(--semantic-color-primary-container-active-inverse);--ds-button-active-color-border: var(--semantic-color-primary-outline-active-inverse);--ds-button-active-color-icon: var(--semantic-color-on-primary-outline-inverse);--ds-button-active-color-text: var(--semantic-color-on-primary-outline-inverse);--ds-button-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-border: var(--semantic-color-disabled-outline-inverse);--ds-button-disabled-color-icon: var(--semantic-color-on-disabled-outline-inverse);--ds-button-disabled-color-text: var(--semantic-color-on-disabled-outline-inverse);--ds-button-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-border: var(--semantic-color-primary-outline-base-inverse);--ds-button-enabled-color-icon: var(--semantic-color-on-primary-outline-inverse);--ds-button-enabled-color-text: var(--semantic-color-on-primary-outline-inverse);--ds-button-hover-color-bg: var(--semantic-color-primary-container-hover-inverse);--ds-button-hover-color-border: var(--semantic-color-primary-outline-hover-inverse);--ds-button-hover-color-icon: var(--semantic-color-on-primary-outline-inverse);--ds-button-hover-color-text: var(--semantic-color-on-primary-outline-inverse)}.ds-button.ds-btn-inverse.ds-btn-outline-secondary{--ds-button-active-color-bg: var(--semantic-color-secondary-container-active-inverse);--ds-button-active-color-border: var(--semantic-color-secondary-outline-active-inverse);--ds-button-active-color-icon: var(--semantic-color-on-secondary-outline-inverse);--ds-button-active-color-text: var(--semantic-color-on-secondary-outline-inverse);--ds-button-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-border: var(--semantic-color-disabled-outline-inverse);--ds-button-disabled-color-icon: var(--semantic-color-on-disabled-outline-inverse);--ds-button-disabled-color-text: var(--semantic-color-on-disabled-outline-inverse);--ds-button-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-border: var(--semantic-color-secondary-outline-base-inverse);--ds-button-enabled-color-icon: var(--semantic-color-on-secondary-outline-inverse);--ds-button-enabled-color-text: var(--semantic-color-on-secondary-outline-inverse);--ds-button-hover-color-bg: var(--semantic-color-secondary-container-hover-inverse);--ds-button-hover-color-border: var(--semantic-color-secondary-outline-hover-inverse);--ds-button-hover-color-icon: var(--semantic-color-on-secondary-outline-inverse);--ds-button-hover-color-text: var(--semantic-color-on-secondary-outline-inverse)}.ds-button.ds-btn-inverse.ds-btn-outline-tertiary{--ds-button-active-color-bg: var(--semantic-color-tertiary-container-active-inverse);--ds-button-active-color-border: var(--semantic-color-tertiary-outline-active-inverse);--ds-button-active-color-icon: var(--semantic-color-on-tertiary-outline-inverse);--ds-button-active-color-text: var(--semantic-color-on-tertiary-outline-inverse);--ds-button-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-border: var(--semantic-color-disabled-outline-inverse);--ds-button-disabled-color-icon: var(--semantic-color-on-disabled-outline-inverse);--ds-button-disabled-color-text: var(--semantic-color-on-disabled-outline-inverse);--ds-button-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-border: var(--semantic-color-tertiary-outline-base-inverse);--ds-button-enabled-color-icon: var(--semantic-color-on-tertiary-outline-inverse);--ds-button-enabled-color-text: var(--semantic-color-on-tertiary-outline-inverse);--ds-button-hover-color-bg: var(--semantic-color-tertiary-container-hover-inverse);--ds-button-hover-color-border: var(--semantic-color-tertiary-outline-hover-inverse);--ds-button-hover-color-icon: var(--semantic-color-on-tertiary-outline-inverse);--ds-button-hover-color-text: var(--semantic-color-on-tertiary-outline-inverse)}.ds-button.ds-btn-inverse.ds-btn-flat-tertiary{--ds-button-active-color-bg: var(--semantic-color-tertiary-container-active-inverse);--ds-button-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-active-color-icon: var(--semantic-color-tertiary-base-inverse);--ds-button-active-color-text: var(--semantic-color-tertiary-base-inverse);--ds-button-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-icon: var(--semantic-color-on-disabled-outline-inverse);--ds-button-disabled-color-text: var(--semantic-color-on-disabled-outline-inverse);--ds-button-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-icon: var(--semantic-color-tertiary-base-inverse);--ds-button-enabled-color-text: var(--semantic-color-tertiary-base-inverse);--ds-button-hover-color-bg: var(--semantic-color-tertiary-container-hover-inverse);--ds-button-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-hover-color-icon: var(--semantic-color-tertiary-base-inverse);--ds-button-hover-color-text: var(--semantic-color-tertiary-base-inverse)}.ds-button.ds-btn-inverse.ds-btn-flat-utility{--ds-button-active-color-bg: var(--semantic-color-utility-container-active-inverse);--ds-button-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-active-color-icon: var(--semantic-color-utility-base-inverse);--ds-button-active-color-text: var(--semantic-color-utility-base-inverse);--ds-button-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-icon: var(--semantic-color-on-disabled-outline-inverse);--ds-button-disabled-color-text: var(--semantic-color-on-disabled-outline-inverse);--ds-button-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-icon: var(--semantic-color-utility-base-inverse);--ds-button-enabled-color-text: var(--semantic-color-utility-base-inverse);--ds-button-hover-color-bg: var(--semantic-color-utility-container-hover-inverse);--ds-button-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-hover-color-icon: var(--semantic-color-utility-base-inverse);--ds-button-hover-color-text: var(--semantic-color-utility-base-inverse)}.ds-button.ds-btn-inverse.ds-btn-filled-utility{--ds-button-active-color-bg: var(--semantic-color-utility-active-inverse);--ds-button-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-active-color-icon: var(--semantic-color-on-utility-base-inverse);--ds-button-active-color-text: var(--semantic-color-on-utility-base-inverse);--ds-button-disabled-color-bg: var(--semantic-color-disabled-base-inverse);--ds-button-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-icon: var(--semantic-color-on-disabled-base-inverse);--ds-button-disabled-color-text: var(--semantic-color-on-disabled-base-inverse);--ds-button-enabled-color-bg: var(--semantic-color-utility-base-inverse);--ds-button-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-icon: var(--semantic-color-on-utility-base-inverse);--ds-button-enabled-color-text: var(--semantic-color-on-utility-base-inverse);--ds-button-hover-color-bg: var(--semantic-color-utility-hover-inverse);--ds-button-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-hover-color-icon: var(--semantic-color-on-utility-base-inverse);--ds-button-hover-color-text: var(--semantic-color-on-utility-base-inverse)}.ds-button.ds-btn-inverse.ds-btn-flat-reduced-utility{--ds-button-active-color-bg: var(--semantic-color-utility-container-active-inverse);--ds-button-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-active-color-icon: var(--semantic-color-utility-base-inverse);--ds-button-active-color-text: var(--semantic-color-utility-base-inverse);--ds-button-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-icon: var(--semantic-color-on-disabled-outline-inverse);--ds-button-disabled-color-text: var(--semantic-color-on-disabled-outline-inverse);--ds-button-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-icon: var(--semantic-color-utility-base-inverse);--ds-button-enabled-color-text: var(--semantic-color-utility-base-inverse);--ds-button-hover-color-bg: var(--semantic-color-utility-container-hover-inverse);--ds-button-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-hover-color-icon: var(--semantic-color-utility-base-inverse);--ds-button-hover-color-text: var(--semantic-color-utility-base-inverse)}.ds-button.ds-btn-inverse.ds-btn-flat-reduced-tertiary{--ds-button-active-color-bg: var(--semantic-color-tertiary-container-active-inverse);--ds-button-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-active-color-icon: var(--semantic-color-tertiary-base-inverse);--ds-button-active-color-text: var(--semantic-color-tertiary-base-inverse);--ds-button-disabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-disabled-color-icon: var(--semantic-color-on-disabled-outline-inverse);--ds-button-disabled-color-text: var(--semantic-color-on-disabled-outline-inverse);--ds-button-enabled-color-bg: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-enabled-color-icon: var(--semantic-color-tertiary-base-inverse);--ds-button-enabled-color-text: var(--semantic-color-tertiary-base-inverse);--ds-button-hover-color-bg: var(--semantic-color-tertiary-container-hover-inverse);--ds-button-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-button-hover-color-icon: var(--semantic-color-tertiary-base-inverse);--ds-button-hover-color-text: var(--semantic-color-tertiary-base-inverse)}@media (hover: hover){.ds-button:hover{--ds-button-bg: var(--ds-button-hover-color-bg);--ds-button-color-border: var(--ds-button-hover-color-border);--ds-button-color-icon: var(--ds-button-hover-color-icon);color:var(--ds-button-hover-color-text)}}@media (hover: none){.ds-button:active{--ds-button-bg: var(--ds-button-hover-color-bg);--ds-button-color-border: var(--ds-button-hover-color-border);--ds-button-color-icon: var(--ds-button-hover-color-icon);color:var(--ds-button-hover-color-text)}}.ds-button:active{--ds-button-color-text: var(--ds-button-active-color-text);--ds-button-bg: var(--ds-button-active-color-bg);--ds-button-color-border: var(--ds-button-active-color-border);--ds-button-color-icon: var(--ds-button-active-color-icon)}.ds-button.ds-btn-disabled{--ds-button-color-text: var(--ds-button-disabled-color-text);--ds-button-bg: var(--ds-button-disabled-color-bg);--ds-button-color-border: var(--ds-button-disabled-color-border);--ds-button-color-icon: var(--ds-button-disabled-color-icon);pointer-events:none}.ds-button .ds-btn-container{align-items:center;display:flex;gap:var(--ds-button-space-inline);justify-content:center}.ds-button .ds-btn-container svg{flex-shrink:0}.ds-button .ds-btn-text,.ds-button .ds-btn-sub-text{white-space:nowrap}.ds-button .ds-btn-txt-wrap{white-space:pre-wrap}.ds-button .ds-btn-sub-text{font-family:var(--ds-button-font-family);font-size:var(--ds-button-font-size);font-weight:var(--ds-button-font-weight);line-height:var(--ds-button-line-height);--ds-button-font-family: var(--semantic-typography-label-font-family, sans-serif);--ds-button-font-size: var(--semantic-typography-label-md-strong-font-size);--ds-button-font-weight: var(--semantic-typography-label-md-strong-font-weight);--ds-button-line-height: var(--semantic-typography-label-md-strong-line-height)}.ds-button .ds-btn-sub-text:empty{display:none}.ds-button [slot=subtext]{display:flex;margin-top:var(--ds-button-space-stack)}.ds-btn-container svg{align-items:center;color:var(--ds-button-color-icon);display:flex;height:var(--ds-button-size-icon);width:var(--ds-button-size-icon)}.ds-button-truncate{--ds-btn-container-width: 100%;width:var(--ds-btn-container-width)}.ds-button-truncate .ds-btn-container,.ds-button-truncate .ds-btn-sub-text{width:var(--ds-btn-container-width)}.ds-button-truncate .ds-btn-text,.ds-button-truncate .ds-btn-sub-text [slot=subtext]{overflow:hidden;text-overflow:ellipsis}.ds-button-truncate .ds-btn-sub-text [slot=subtext]{display:block}.ds-button-loader{--ds-loader-animation-duration: 3s;--ds-loader-border-color: #e4e4ed;--ds-loader-border-radius: 50%;--ds-loader-border-right-color: #f4f4f4;--ds-loader-border-width: 4px;--ds-loader-size: 12px;animation:ds-button-spinner var(--ds-loader-animation-duration) infinite linear;border:var(--ds-loader-border-width) solid var(--ds-loader-border-color);border-radius:var(--ds-loader-border-radius);border-right-color:var(--ds-loader-border-right-color);height:var(--ds-loader-size);width:var(--ds-loader-size)}.ds-button-loading{opacity:.5;pointer-events:none}@keyframes ds-button-spinner{to{transform:rotate(1turn)}}
+/*# sourceMappingURL=/ClientDist/browser/button.component-GDVTAGQW.css.map */
+</style><style>.player-props-container   [_nghost-ng-c3462210953]     .theme-locked{font-size:1rem}
+/*# sourceMappingURL=/ClientDist/browser/option.component-QFIVRTWX.css.map */</style><style>.player-props-container[_nghost-ng-c2166260066]   .offline[_ngcontent-ng-c2166260066], .player-props-container   [_nghost-ng-c2166260066]   .offline[_ngcontent-ng-c2166260066]{background-color:var(--empty-option-pick-placeholder-background-color);border:unset}
+/*# sourceMappingURL=/ClientDist/browser/event-pick.component-CF6I34QX.css.map */</style><style>[_nghost-ng-c683963108]{background:var(--bet-column-bg)}[_nghost-ng-c683963108]   span[_ngcontent-ng-c683963108]{display:flex;justify-content:center}
+/*# sourceMappingURL=/ClientDist/browser/bet-column.component-2GTLS73U.css.map */</style><script src="https://cdn.cookielaw.org/scripttemplates/6.14.0/otBannerSdk.js" async="" type="text/javascript"></script><style>.scroll-left[_ngcontent-ng-c2655226894], .scroll-right[_ngcontent-ng-c2655226894]{top:50%;position:absolute;z-index:1;transform:translateY(-50%)}.scroll-left[_ngcontent-ng-c2655226894]{left:8px}.scroll-right[_ngcontent-ng-c2655226894]{right:8px}
+/*# sourceMappingURL=/ClientDist/browser/scroll-adapter-HVB5ZRCI.css.map */</style><style>.ds-arrow{--ds-carousel-arrow-radius-border: var(--semantic-radius-max);--ds-carousel-arrow-bg: transparent;--ds-carousel-arrow-border-color: transparent;--ds-carousel-arrow-border-radius: var(--ds-carousel-arrow-radius-border);--ds-carousel-arrow-color-icon: transparent;--ds-carousel-arrow-height: var(--ds-carousel-arrow-size-height);--ds-carousel-arrow-width: var(--ds-carousel-arrow-size-width);align-items:center;background-color:var(--ds-carousel-arrow-bg);border-color:var(--ds-carousel-arrow-border-color);border-radius:var(--ds-carousel-arrow-border-radius);box-shadow:var(--semantic-elevation-raised-2-box-shadow);box-sizing:border-box;color:var(--ds-carousel-arrow-color-icon);display:inline-flex;height:var(--ds-carousel-arrow-height);justify-content:center;-webkit-user-select:none;user-select:none;width:var(--ds-carousel-arrow-width)}.ds-arrow svg{--ds-carousel-arrow-icon-size: auto;color:var(--ds-carousel-arrow-color-icon);height:var(--ds-carousel-arrow-icon-size);width:var(--ds-carousel-arrow-icon-size)}.ds-arrow.ds-strong-arrow{--ds-carousel-arrow-active-color-bg: var(--semantic-color-surface-container-highest-active);--ds-carousel-arrow-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-carousel-arrow-active-color-icon: var(--semantic-color-on-surface-base);--ds-carousel-arrow-enabled-color-bg: var(--semantic-color-surface-container-highest-base);--ds-carousel-arrow-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-carousel-arrow-enabled-color-icon: var(--semantic-color-on-surface-base);--ds-carousel-arrow-hover-color-bg: var(--semantic-color-surface-container-highest-hover);--ds-carousel-arrow-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-carousel-arrow-hover-color-icon: var(--semantic-color-on-surface-base);--ds-carousel-arrow-bg: var(--ds-carousel-arrow-enabled-color-bg);--ds-carousel-arrow-border-color: var(--ds-carousel-arrow-enabled-color-border);--ds-carousel-arrow-color-icon: var(--ds-carousel-arrow-enabled-color-icon)}.ds-arrow.ds-strong-arrow.ds-arrow-inverse{--ds-carousel-arrow-active-color-bg: var(--semantic-color-surface-container-highest-active-inverse);--ds-carousel-arrow-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-carousel-arrow-active-color-icon: var(--semantic-color-on-surface-base-inverse);--ds-carousel-arrow-enabled-color-bg: var(--semantic-color-surface-container-highest-base-inverse);--ds-carousel-arrow-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-carousel-arrow-enabled-color-icon: var(--semantic-color-on-surface-base-inverse);--ds-carousel-arrow-hover-color-bg: var(--semantic-color-surface-container-highest-hover-inverse);--ds-carousel-arrow-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-carousel-arrow-hover-color-icon: var(--semantic-color-on-surface-base-inverse)}@media (hover: hover){.ds-arrow.ds-strong-arrow:hover{--ds-carousel-arrow-bg: var(--ds-carousel-arrow-hover-color-bg);--ds-carousel-arrow-border-color: var(--ds-carousel-arrow-hover-color-border)}.ds-arrow.ds-strong-arrow:hover svg{color:var(--ds-carousel-arrow-hover-color-icon)}}.ds-arrow.ds-strong-arrow:active{--ds-carousel-arrow-bg: var(--ds-carousel-arrow-active-color-bg);--ds-carousel-arrow-border-color: var(--ds-carousel-arrow-active-color-border)}.ds-arrow.ds-strong-arrow:active svg{color:var(--ds-carousel-arrow-active-color-icon)}.ds-arrow.ds-subtle-arrow{--ds-carousel-arrow-active-color-bg: var(--semantic-color-opacity-strong-active);--ds-carousel-arrow-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-carousel-arrow-active-color-icon: var(--semantic-color-on-surface-base-inverse);--ds-carousel-arrow-enabled-color-bg: var(--semantic-color-opacity-strong-base);--ds-carousel-arrow-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-carousel-arrow-enabled-color-icon: var(--semantic-color-on-surface-base-inverse);--ds-carousel-arrow-hover-color-bg: var(--semantic-color-opacity-strong-hover);--ds-carousel-arrow-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-carousel-arrow-hover-color-icon: var(--semantic-color-on-surface-base-inverse);--ds-carousel-arrow-bg: var(--ds-carousel-arrow-enabled-color-bg);--ds-carousel-arrow-border-color: var(--ds-carousel-arrow-enabled-color-border);--ds-carousel-arrow-color-icon: var(--ds-carousel-arrow-enabled-color-icon)}.ds-arrow.ds-subtle-arrow.ds-arrow-inverse{--ds-carousel-arrow-active-color-bg: var(--semantic-color-opacity-strong-active-inverse);--ds-carousel-arrow-active-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-carousel-arrow-active-color-icon: var(--semantic-color-on-surface-base);--ds-carousel-arrow-enabled-color-bg: var(--semantic-color-opacity-strong-base-inverse);--ds-carousel-arrow-enabled-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-carousel-arrow-enabled-color-icon: var(--semantic-color-on-surface-base);--ds-carousel-arrow-hover-color-bg: var(--semantic-color-opacity-strong-hover-inverse);--ds-carousel-arrow-hover-color-border: var(--semantic-color-opacity-subtle-transparent);--ds-carousel-arrow-hover-color-icon: var(--semantic-color-on-surface-base)}@media (hover: hover){.ds-arrow.ds-subtle-arrow:hover{--ds-carousel-arrow-bg: var(--ds-carousel-arrow-hover-color-bg);--ds-carousel-arrow-border-color: var(--ds-carousel-arrow-hover-color-border)}.ds-arrow.ds-subtle-arrow:hover svg{color:var(--ds-carousel-arrow-hover-color-icon)}}.ds-arrow.ds-subtle-arrow:active{--ds-carousel-arrow-bg: var(--ds-carousel-arrow-active-color-bg);--ds-carousel-arrow-border-color: var(--ds-carousel-arrow-active-color-border)}.ds-arrow.ds-subtle-arrow:active svg{color:var(--ds-carousel-arrow-active-color-icon)}.ds-arrow.ds-right-arrow svg{transform:rotate(180deg)}.ds-arrow.ds-arrow-large{--ds-carousel-arrow-size-height: var(--semantic-size-x11);--ds-carousel-arrow-size-icon: var(--semantic-size-icon-xlarge);--ds-carousel-arrow-size-width: var(--semantic-size-x11)}.ds-arrow.ds-arrow-medium{--ds-carousel-arrow-size-height: var(--semantic-size-x9);--ds-carousel-arrow-size-icon: var(--semantic-size-icon-large);--ds-carousel-arrow-size-width: var(--semantic-size-x9)}.ds-arrow.ds-arrow-small{--ds-carousel-arrow-size-height: var(--semantic-size-x6);--ds-carousel-arrow-size-icon: var(--semantic-size-icon-small);--ds-carousel-arrow-size-width: var(--semantic-size-x6)}.ds-arrow.ds-arrow-large svg,.ds-arrow.ds-arrow-medium svg,.ds-arrow.ds-arrow-small svg{--ds-carousel-arrow-icon-size: var(--ds-carousel-arrow-size-icon)}
+/*# sourceMappingURL=/ClientDist/browser/arrow.component-ZJXZDFY4.css.map */
+</style><style>.icon-alignment[_ngcontent-ng-c2959277384]{display:inline-flex;margin-right:5px}
+/*# sourceMappingURL=/ClientDist/browser/special-marquee-badge.component-6YI27WWH.css.map */</style></head>
+
+<body>
+    <div class="splash animated-logo" id="splash">
+  <div class="splash-loading-wrapper d-flex flex-column align-items-center h-100 text-center flexbox">
+    <div style="background-repeat: no-repeat; background-position: center; background-image: url('https://scmedia.bwin.es/$-$/54f526a0765f4bd283e2b95da87e0730.svg')" class="splash-loading-logo">
+    </div>
+  </div>
+</div>
+    <link as="font" crossorigin="anonymous" href="ClientDist/browser/assets/fonts/sportsicons.4in.woff2" rel="preload">
+    <script type="text/javascript">var dataLayer = [];</script>
+    <noscript><iframe height='0' width='0' style='display:none;visibility:hidden' src='//www.googletagmanager.com/ns.html?id=GTM-N48RN3R' /></noscript>
+    <vn-app ng-version="19.2.1" class="app-root"><vn-dynamic-layout-slot class="slot slot-single slot-banner"><!----><!----><!----><!----><!----></vn-dynamic-layout-slot><vn-dynamic-layout-slot class="slot slot-multi slot-messages"><!----><vn-header-messages><vn-content-messages closedcookiekey="vn-t" cssclassforhtmlnode="has-header-messages" class="content-messages-top"><!----></vn-content-messages><!----><!----></vn-header-messages><!----><!----><!----><!----><!----></vn-dynamic-layout-slot><vn-dynamic-layout-slot class="slot slot-single slot-header"><vn-header><!----><header class="header"><vn-content-messages closedcookiekey="vn-ts" class="content-messages-header-top"><!----></vn-content-messages><!----><vn-dynamic-layout-slot class="slot slot-multi slot-header_top_items"><!----><!----><!----><!----><!----></vn-dynamic-layout-slot><!----><nav class="navbar navbar-expand-md"><vn-header-section class="navbar-wrapper-left product-nav-wrapper"><vn-h-logo><a class="h-logo navbar-logo-wrapper" href="https://www.bwin.es/es/sports" alt="Inicio" aria-label="Inicio"><!----><div class="navbar-switch-logo brand-logo"></div><!----></a><!----></vn-h-logo><!----><!----><vn-h-product-navigation><div class="h-product-nav tab-nav navbar-nav"><!----><!----><vn-menu-item badgeposition="afterText" linkclass="tab-nav-link" class="tab-nav-item nav-item menu-item"><!----><a class="menu-item-link tab-nav-link" href="https://www.bwin.es/es/sports"><!----><!----><!----><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="sports"><!----><span class="menu-item-txt">Deportes</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><ds-notification-bubble vnmenuitembadge="" class="ds-notification-bubble ds-notification-bubble-medium ds-notification-bubble-primary ds-notification-bubble-inverse" aria-label="" role="status" hidden=""></ds-notification-bubble><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item><!----><!----><!----><!----><!----><vn-menu-item badgeposition="afterText" linkclass="tab-nav-link" class="tab-nav-item nav-item menu-item"><!----><a class="menu-item-link tab-nav-link" href="https://www.bwin.es/es/sports/directo/apuestas" title="Deportes, apuestas, vídeos: 24 horas live"><!----><!----><!----><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="live"><!----><span class="menu-item-txt">Live</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><ds-notification-bubble vnmenuitembadge="" class="ds-notification-bubble ds-notification-bubble-medium ds-notification-bubble-primary ds-notification-bubble-inverse" aria-label="" role="status" hidden=""></ds-notification-bubble><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item><!----><!----><!----><!----><!----><vn-menu-item badgeposition="afterText" linkclass="tab-nav-link" class="tab-nav-item nav-item menu-item"><!----><a class="menu-item-link tab-nav-link" href="https://www.bwin.es/es/games"><!----><!----><!----><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="games"><!----><span class="menu-item-txt">Casino</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><ds-notification-bubble vnmenuitembadge="" class="ds-notification-bubble ds-notification-bubble-medium ds-notification-bubble-primary ds-notification-bubble-inverse" aria-label="" role="status" hidden=""></ds-notification-bubble><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item><!----><!----><!----><!----><!----><vn-menu-item badgeposition="afterText" linkclass="tab-nav-link" class="tab-nav-item nav-item menu-item"><!----><a class="menu-item-link tab-nav-link" href="https://www.bwin.es/es/poker"><!----><!----><!----><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="poker"><!----><span class="menu-item-txt">Poker</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><ds-notification-bubble vnmenuitembadge="" class="ds-notification-bubble ds-notification-bubble-medium ds-notification-bubble-primary ds-notification-bubble-inverse" aria-label="" role="status" hidden=""></ds-notification-bubble><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item><!----><!----><!----><!----><!----><vn-menu-item badgeposition="afterText" linkclass="tab-nav-link" class="tab-nav-item nav-item menu-item"><!----><a class="menu-item-link tab-nav-link" href="https://www.bwin.es/es/sports/news/" target="_blank"><!----><!----><!----><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="blog"><!----><span class="menu-item-txt">BLOG</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><ds-notification-bubble vnmenuitembadge="" class="ds-notification-bubble ds-notification-bubble-medium ds-notification-bubble-primary ds-notification-bubble-inverse" aria-label="" role="status" hidden=""></ds-notification-bubble><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item><!----><!----><!----><!----></div></vn-h-product-navigation><!----><!----><vn-h-global-search><!----></vn-h-global-search><!----><!----><!----></vn-header-section><vn-header-section class="navbar-wrapper-right"><vn-h-icon><!----><vn-menu-item iconclass="ui-icon ui-icon-size-xl" class="menu-item"><!----><a class="menu-item-link" href="https://www.bwin.es/es/mobileportal/contact"><!----><i class="help-icon theme-help-contact ui-icon ui-icon-size-xl"><!----></i><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item><!----></vn-h-icon><!----><!----><vn-h-button><vn-menu-item linkclass="header-btn btn" class="menu-item"><!----><a class="menu-item-link btn-header header-btn btn" href="https://www.bwin.es/es/labelhost/login"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="signin"><!----><span class="menu-item-txt">Acceder</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-h-button><!----><!----><vn-h-button><vn-menu-item linkclass="header-btn btn" class="menu-item"><!----><a class="menu-item-link btn-primary header-btn btn" href="https://www.bwin.es/es/mobileportal/register"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="registerbutton"><!----><span class="menu-item-txt">¡Regístrate ahora!</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-h-button><!----><!----><!----></vn-header-section><!----><!----><!----></nav><!----><vn-dynamic-layout-slot class="slot slot-multi slot-header_bottom_items"><!----><ms-navigation><div class="navigation-wrapper"><nav id="sports-nav" class="default"><ms-main-items><!----><div class="main-items"><vn-menu-item badgeclass="badge-size-sm badge-offset" badgeposition="icon" linkclass="top-nav-link" textclass="text-truncate ui-icon-text" class="menu-item"><!----><a class="menu-item-link top-nav-link" href="/es/sports"><!----><i class="theme-home sports-icon ui-icon ui-icon-size-lg"><ds-notification-bubble vnmenuitembadge="" class="ds-notification-bubble ds-notification-bubble-medium ds-notification-bubble-primary ds-notification-bubble-inverse" aria-label="" role="status" hidden=""></ds-notification-bubble><!----><!----><!----></i><!----><!----><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="Home"><!----><span class="menu-item-txt text-truncate ui-icon-text">Inicio</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item><vn-menu-item badgeclass="badge-size-sm badge-offset" badgeposition="icon" linkclass="top-nav-link" textclass="text-truncate ui-icon-text" class="menu-item"><!----><a class="menu-item-link top-nav-link" href="/es/sports/directo/apuestas"><!----><i class="theme-live sports-icon ui-icon ui-icon-size-lg"><ds-notification-bubble vnmenuitembadge="" class="ds-notification-bubble ds-notification-bubble-medium ds-notification-bubble-primary ds-notification-bubble-inverse" aria-label="Notification 82" role="status">82</ds-notification-bubble><!----><!----><!----></i><!----><!----><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="live"><!----><span class="menu-item-txt text-truncate ui-icon-text">Live</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item><vn-menu-item badgeclass="badge-size-sm badge-offset" badgeposition="icon" linkclass="top-nav-link" textclass="text-truncate ui-icon-text" class="menu-item"><!----><a class="menu-item-link top-nav-link" href=""><!----><i class="theme-search sports-icon ui-icon ui-icon-size-lg"><ds-notification-bubble vnmenuitembadge="" class="ds-notification-bubble ds-notification-bubble-medium ds-notification-bubble-primary ds-notification-bubble-inverse" aria-label="" role="status" hidden=""></ds-notification-bubble><!----><!----><!----></i><!----><!----><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="betfinder"><!----><span class="menu-item-txt text-truncate ui-icon-text">Búsqueda</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item><vn-menu-item badgeclass="badge-size-sm badge-offset" badgeposition="icon" linkclass="top-nav-link" textclass="text-truncate ui-icon-text" class="menu-item"><!----><a class="menu-item-link top-nav-link" href="https://www.bwin.es/es/promo/offers"><!----><i class="theme-badge sports-icon ui-icon ui-icon-size-lg"><ds-notification-bubble vnmenuitembadge="" class="ds-notification-bubble ds-notification-bubble-medium ds-notification-bubble-primary ds-notification-bubble-inverse" aria-label="" role="status" hidden=""></ds-notification-bubble><!----><!----><!----></i><!----><!----><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="promos"><!----><span class="menu-item-txt text-truncate ui-icon-text">Promociones</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item><vn-menu-item badgeclass="badge-size-sm badge-offset" badgeposition="icon" linkclass="top-nav-link" textclass="text-truncate ui-icon-text" class="menu-item active"><!----><a class="menu-item-link top-nav-link active" href="/es/sports/fútbol-4"><!----><i class="sports-4 sports-icon ui-icon ui-icon-size-lg"><ds-notification-bubble vnmenuitembadge="" class="ds-notification-bubble ds-notification-bubble-medium ds-notification-bubble-primary ds-notification-bubble-inverse" aria-label="" role="status" hidden=""></ds-notification-bubble><!----><!----><!----></i><!----><!----><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="4"><!----><span class="menu-item-txt text-truncate ui-icon-text">Fútbol</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item><vn-menu-item badgeclass="badge-size-sm badge-offset" badgeposition="icon" linkclass="top-nav-link" textclass="text-truncate ui-icon-text" class="menu-item"><!----><a class="menu-item-link top-nav-link" href="/es/sports/tenis-5"><!----><i class="sports-5 sports-icon ui-icon ui-icon-size-lg"><ds-notification-bubble vnmenuitembadge="" class="ds-notification-bubble ds-notification-bubble-medium ds-notification-bubble-primary ds-notification-bubble-inverse" aria-label="" role="status" hidden=""></ds-notification-bubble><!----><!----><!----></i><!----><!----><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="5"><!----><span class="menu-item-txt text-truncate ui-icon-text">Tenis</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item><vn-menu-item badgeclass="badge-size-sm badge-offset" badgeposition="icon" linkclass="top-nav-link" textclass="text-truncate ui-icon-text" class="menu-item"><!----><a class="menu-item-link top-nav-link" href="/es/sports/baloncesto-7"><!----><i class="sports-7 sports-icon ui-icon ui-icon-size-lg"><ds-notification-bubble vnmenuitembadge="" class="ds-notification-bubble ds-notification-bubble-medium ds-notification-bubble-primary ds-notification-bubble-inverse" aria-label="" role="status" hidden=""></ds-notification-bubble><!----><!----><!----></i><!----><!----><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="7"><!----><span class="menu-item-txt text-truncate ui-icon-text">Baloncesto</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item><vn-menu-item badgeclass="badge-size-sm badge-offset" badgeposition="icon" linkclass="top-nav-link" textclass="text-truncate ui-icon-text" class="menu-item"><!----><a class="menu-item-link top-nav-link" href=""><!----><i class="theme-menu sports-icon ui-icon ui-icon-size-lg"><ds-notification-bubble vnmenuitembadge="" class="ds-notification-bubble ds-notification-bubble-medium ds-notification-bubble-primary ds-notification-bubble-inverse" aria-label="" role="status" hidden=""></ds-notification-bubble><!----><!----><!----></i><!----><!----><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="all"><!----><span class="menu-item-txt text-truncate ui-icon-text">Deportes A-Z</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item><vn-menu-item badgeclass="badge-size-sm badge-offset" badgeposition="icon" linkclass="top-nav-link" textclass="text-truncate ui-icon-text" class="menu-item"><!----><a class="menu-item-link top-nav-link" href="https://www.bwin.es/es/sports/esports"><!----><i class="theme-e-sports sports-icon ui-icon ui-icon-size-lg"><ds-notification-bubble vnmenuitembadge="" class="ds-notification-bubble ds-notification-bubble-medium ds-notification-bubble-primary ds-notification-bubble-inverse" aria-label="Notification Nuevo" role="status">Nuevo</ds-notification-bubble><!----><!----><!----></i><!----><!----><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="Esportslobby"><!----><span class="menu-item-txt text-truncate ui-icon-text">Esports</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item><vn-menu-item badgeclass="badge-size-sm badge-offset" badgeposition="icon" linkclass="top-nav-link" textclass="text-truncate ui-icon-text" class="menu-item"><!----><a class="menu-item-link top-nav-link" href="/es/sports/hoy"><!----><i class="theme-calendar sports-icon ui-icon ui-icon-size-lg"><ds-notification-bubble vnmenuitembadge="" class="ds-notification-bubble ds-notification-bubble-medium ds-notification-bubble-primary ds-notification-bubble-inverse" aria-label="" role="status" hidden=""></ds-notification-bubble><!----><!----><!----></i><!----><!----><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="today"><!----><span class="menu-item-txt text-truncate ui-icon-text">Hoy</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item><vn-menu-item badgeclass="badge-size-sm badge-offset" badgeposition="icon" linkclass="top-nav-link" textclass="text-truncate ui-icon-text" class="menu-item"><!----><a class="menu-item-link top-nav-link" href="/es/sports/favoritos"><!----><i class="sports-favourites sports-icon ui-icon ui-icon-size-lg"><ds-notification-bubble vnmenuitembadge="" class="ds-notification-bubble ds-notification-bubble-medium ds-notification-bubble-primary ds-notification-bubble-inverse" aria-label="" role="status" hidden=""></ds-notification-bubble><!----><!----><!----></i><!----><!----><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="favourites"><!----><span class="menu-item-txt text-truncate ui-icon-text">Favoritos</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item><vn-menu-item badgeclass="badge-size-sm badge-offset" badgeposition="icon" linkclass="top-nav-link" textclass="text-truncate ui-icon-text" class="menu-item"><!----><a class="menu-item-link top-nav-link" href="/es/sports/mis-apuestas"><!----><i class="theme-mybets sports-icon ui-icon ui-icon-size-lg"><ds-notification-bubble vnmenuitembadge="" class="ds-notification-bubble ds-notification-bubble-medium ds-notification-bubble-primary ds-notification-bubble-inverse" aria-label="" role="status" hidden=""></ds-notification-bubble><!----><!----><!----></i><!----><!----><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="mybets"><!----><span class="menu-item-txt text-truncate ui-icon-text">Mis apuestas</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item><!----></div><!----></ms-main-items><!----></nav><!----></div><!----><div class="az-menu-container"></div></ms-navigation><!----><ms-sub-navigation _nghost-ng-c2525706789=""><!----></ms-sub-navigation><!----><!----><!----><!----><!----></vn-dynamic-layout-slot><!----></header><!----><vn-dynamic-layout-slot class="slot slot-single slot-header_subnav"><lh-navigation-layout-top-menu><!----></lh-navigation-layout-top-menu><!----><!----><!----><!----><!----><!----></vn-dynamic-layout-slot><!----><!----></vn-header><!----><!----><!----><!----><!----><!----></vn-dynamic-layout-slot><vn-dynamic-layout-slot class="slot slot-single slot-menu"><!----><!----><!----><!----><!----></vn-dynamic-layout-slot><vn-dynamic-layout-slot class="slot slot-single slot-main"><vn-main><main><div id="main-content"><vn-dynamic-layout-slot class="slot slot-single slot-main_content_header"><!----></vn-dynamic-layout-slot><router-outlet></router-outlet><ms-main class="ds-scrollbar main-container"><div class="main-container"><ms-ui-manager></ms-ui-manager><ms-print-container><iframe class="print-container" src="about:blank"></iframe></ms-print-container><!----><ng-scrollbar viewclass="column-view" class="column column-left ng-scrollbar" _nghost-ng-c3182812167="" style="height: 154px;"><div _ngcontent-ng-c3182812167="" class="ng-scrollbar-wrapper" position="native" track="vertical" appearance="compact" visibility="hover" deactivated="false" dir="ltr" pointereventsmethod="viewport" verticalused="false" horizontalused="false" isverticallyscrollable="false" ishorizontallyscrollable="false"><div _ngcontent-ng-c3182812167="" class="ng-scroll-viewport-wrapper"><div _ngcontent-ng-c3182812167="" scrollviewport="" hidenativescrollbar="" class="ng-native-scrollbar-hider ng-scroll-viewport column-view" style="--native-scrollbar-size: -0px;"><div _ngcontent-ng-c3182812167="" class="ng-scroll-content"><ms-column class="column-wrapper"><div class="column-container"><ms-loading-indicator><!----></ms-loading-indicator><ms-prematch-events-navigation class="event-details-left-menu prematch-nav"><ms-nav-tree class="nav-tree"><ms-tree-item><div class="markets-visible sport collapsible"><!----><ms-item class="header-item item-expanded list-item" id="item-1-28"><!----><a class="ms-active-highlight"><div class="icon"><span class="base-icon"><span class="c28 country-icon"></span></span><!----></div><div class="title"><!----><ms-inline-tooltip><span>España</span></ms-inline-tooltip><!----><ms-inline-tooltip item-title=""><div class="toggle-markets"><vn-icon size="13" class="tree-toggle-icon"><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="13" height="13" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/bb3d5c8691ae40a2914344177712933e.svg"></fast-svg><!----><!----></vn-icon></div><div class="inline-content-tooltip"> Ocultar apuestas </div></ms-inline-tooltip><!----><!----><!----></div><!----><div class="arrow"><span class="theme-right"></span></div><!----><!----></a><!----><!----></ms-item><!----><!----><div><ms-tree-item><div class="league"><div class="favourites"><ms-favourite-league-toggle><ms-favourite-toggle class="favourite-toggle"><i class="theme-favorite-i favourite disabled"></i></ms-favourite-toggle></ms-favourite-league-toggle></div><!----><ms-item class="header-item us-logo list-item" id="item-2-102829"><!----><a class="ms-active-highlight"><div class="icon"><!----></div><div class="title"><!----><ms-inline-tooltip><span>LaLiga</span></ms-inline-tooltip><!----><!----><ms-competition-logo class="competition-logo-container"><!----><div><img class="competition-logo invisible" src="https://media.itsfogo.com/media/upload/live/leagues/4/spain-flag.svg"></div><!----></ms-competition-logo><!----><!----></div><div class="count">9</div><!----><div class="arrow"><span class="theme-right"></span></div><!----><!----></a><!----><!----></ms-item><!----><!----><!----><div class="tree-events"><!----></div><!----></div></ms-tree-item><!----><!----><ms-tree-item><div class="league"><div class="favourites"><ms-favourite-league-toggle><ms-favourite-toggle class="favourite-toggle"><i class="theme-favorite-i favourite disabled"></i></ms-favourite-toggle></ms-favourite-league-toggle></div><!----><ms-item class="header-item item-expanded item-loading list-item" id="item-2-102830"><!----><a class="ms-active-highlight"><div class="icon"><!----></div><div class="title"><!----><ms-inline-tooltip><span>LaLiga 2</span></ms-inline-tooltip><!----><!----><!----><!----></div><!----><div class="arrow"><span class="theme-right"></span></div><!----><!----></a><!----><!----></ms-item><!----><div><div class="tree-loading-wrapper" style=""><div class="tree-event-loading"></div><div class="tree-event-loading"></div><div class="tree-event-loading"></div><div class="tree-event-loading"></div><!----></div></div><!----><!----><!----></div></ms-tree-item><!----><!----><!----></div><!----><div class="tree-events"><!----></div><!----></div></ms-tree-item><!----><!----></ms-nav-tree><!----></ms-prematch-events-navigation><ms-loading-indicator><!----></ms-loading-indicator><ms-empty-component></ms-empty-component><!----></div></ms-column></div></div></div><!----><!----><!----><!----></div></ng-scrollbar><!----><ng-scrollbar viewclass="column-view" class="column column-center ng-scrollbar" _nghost-ng-c3182812167="" style="height: 3227px;"><div _ngcontent-ng-c3182812167="" class="ng-scrollbar-wrapper" position="native" track="vertical" appearance="compact" visibility="hover" deactivated="false" dir="ltr" pointereventsmethod="viewport" verticalused="true" horizontalused="false" isverticallyscrollable="true" ishorizontallyscrollable="false" verticalhovered="false" scrollbarclicked="false"><div _ngcontent-ng-c3182812167="" class="ng-scroll-viewport-wrapper"><div _ngcontent-ng-c3182812167="" scrollviewport="" hidenativescrollbar="" class="ng-native-scrollbar-hider ng-scroll-viewport column-view" style="--native-scrollbar-size: -0px;"><div _ngcontent-ng-c3182812167="" class="ng-scroll-content"><ms-main-column class="column-wrapper"><vn-dynamic-layout-slot slot="inner-navigation" class="slot slot-multi slot-inner-navigation"><!----><ms-breadcrumbs class="breadcrumb"><div dstouchclick="" class="breadcrumb-back"><span class="breadcrumb-theme-left"><i class="theme-left"></i></span></div><div msscrollioshack="" msscrollto="" class="breadcrumb-items"><div class="breadcrumb-item"><a href="https://www.bwin.es/es/sports/eventos/granada-eibar-2:7609147"><ms-competition-logo class="competition-logo-container"><!----><!----></ms-competition-logo><!----><!----><span class="breadcrumb-title">España | LaLiga 2</span><!----></a><!----><!----></div><!----></div><!----><!----><!----></ms-breadcrumbs><!----><!----><!----><!----><!----></vn-dynamic-layout-slot><div id="main-view"><router-outlet></router-outlet><ms-event-details-main class="event-details"><ms-header class="event-detail-header"><ms-header-content class="grass header-content" style="background-color: rgb(36, 79, 10);"><img fill="" priority="" class="scoreboard-background-image" loading="eager" fetchpriority="high" ng-img="true" src="https://scmedia.bwin.es/$-$/7001a60d0e36482c9a627fc3865be35c.jpg" srcset="https://scmedia.bwin.es/$-$/7001a60d0e36482c9a627fc3865be35c.jpg?w=640 640w, https://scmedia.bwin.es/$-$/7001a60d0e36482c9a627fc3865be35c.jpg?w=750 750w, https://scmedia.bwin.es/$-$/7001a60d0e36482c9a627fc3865be35c.jpg?w=828 828w, https://scmedia.bwin.es/$-$/7001a60d0e36482c9a627fc3865be35c.jpg?w=1080 1080w, https://scmedia.bwin.es/$-$/7001a60d0e36482c9a627fc3865be35c.jpg?w=1200 1200w, https://scmedia.bwin.es/$-$/7001a60d0e36482c9a627fc3865be35c.jpg?w=1920 1920w, https://scmedia.bwin.es/$-$/7001a60d0e36482c9a627fc3865be35c.jpg?w=2048 2048w, https://scmedia.bwin.es/$-$/7001a60d0e36482c9a627fc3865be35c.jpg?w=3840 3840w" sizes="100vw" style="position: absolute; width: 100%; height: 100%; inset: 0px;"><!----><ms-scoreboard class="bespoke-scoreboard-container scoreboard small"><div class="event-description"></div><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><ms-prematch-scoreboard class="prematch"><div class="main-score-container"><div class="header"><div class="event-time"><!----><span class="date">Mañana</span><span class="time">14:30</span><!----><!----><!----><!----></div></div><div class="participant"><ms-participant-image class="participant-logo" _nghost-ng-c20142069=""><div _ngcontent-ng-c20142069="" class="player-shirt"><img _ngcontent-ng-c20142069="" disableoptimizedsrcset="" width="32" height="32" src="https://media.itsfogo.com/media/upload/live/participants/4/2_223777_1.png"><!----></div></ms-participant-image><!----><ms-scoreboard-participant class="participant-info"><ms-favourite-participant-toggle class="participant-favourite"><ms-favourite-toggle class="favourite-toggle"><i class="theme-favorite-i favourite disabled"></i></ms-favourite-toggle></ms-favourite-participant-toggle><!----><!----><div class="participant-name"><div><div class="participant-name-value truncate"><!----> Granada <!----><!----><!----></div><!----><!----><!----><!----><!----></div><!----></div><!----></ms-scoreboard-participant></div><!----><div class="participant"><ms-participant-image class="participant-logo" _nghost-ng-c20142069=""><div _ngcontent-ng-c20142069="" class="player-shirt"><img _ngcontent-ng-c20142069="" disableoptimizedsrcset="" width="32" height="32" src="https://media.itsfogo.com/media/upload/live/participants/4/2_230140_1.png"><!----></div></ms-participant-image><!----><ms-scoreboard-participant class="participant-info"><ms-favourite-participant-toggle class="participant-favourite"><ms-favourite-toggle class="favourite-toggle"><i class="theme-favorite-i favourite disabled"></i></ms-favourite-toggle></ms-favourite-participant-toggle><!----><!----><div class="participant-name"><div><div class="participant-name-value truncate"><!----> Eibar <!----><!----><!----></div><!----><!----><!----><!----><!----></div><!----></div><!----></ms-scoreboard-participant></div><!----><!----></div><!----></ms-prematch-scoreboard><!----><!----><!----><ms-statistics-button class="statistics-button"><i class="sports-stats actual"></i><i class="sports-stats-active hover"></i></ms-statistics-button><!----></ms-scoreboard><ms-alert class="alert-icon alert-deselected"></ms-alert><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></ms-header-content><!----><ms-event-header-tabs _nghost-ng-c2190604344=""><ds-tabs-group _ngcontent-ng-c2190604344="" indicator="underline" fullwidthtabs="false" size="small" variant="horizontal" scrollspeed="slow" showborderbottom="true" class="arrow-alignment ds-tab-underline ds-tabs-group ds-tabs-small"><div class="ds-tab-header"><div class="ds-tab-header-container ds-tab-nav-enabled ds-header-non-full-width"><ul role="tablist" class="ds-tab-header-items ds-tab-items-scroll-speed-slow"><li role="tab" class="ds-tab-header-item ds-tab-horizontal" id="ds-tab-id-1--1" tabindex="-1" aria-selected="false" aria-disabled="false" aria-label="-1"><div class="ds-tab-item"><a _ngcontent-ng-c2190604344=""><span _ngcontent-ng-c2190604344="" data-menu-item-id="-1"> Todo <!----></span><!----><!----></a><!----><!----><!----></div></li><li role="tab" class="ds-tab-header-item ds-tab-selected ds-tab-horizontal" id="ds-tab-id-1-0" tabindex="0" aria-selected="true" aria-disabled="false" aria-label="0"><div class="ds-tab-item"><a _ngcontent-ng-c2190604344=""><span _ngcontent-ng-c2190604344="" data-menu-item-id="0"> Principales <!----></span><!----><!----></a><!----><!----><!----></div></li><li role="tab" class="ds-tab-header-item ds-tab-horizontal" id="ds-tab-id-1-1" tabindex="-1" aria-selected="false" aria-disabled="false" aria-label="1"><div class="ds-tab-item"><a _ngcontent-ng-c2190604344=""><span _ngcontent-ng-c2190604344="" data-menu-item-id="1"> Cuotas especiales <!----></span><!----><ms-priceboost-count-signpost _ngcontent-ng-c2190604344="" class="count-signpost-container count-signpost"><span class="theme-sports-priceboost priceboost-signpost-icon"></span><span class="priceboost-signpost-count"><ms-font-resizer style="font-size: 1em;">1<!----><!----></ms-font-resizer></span><!----></ms-priceboost-count-signpost><!----><!----><!----></a><!----><!----><!----></div></li><li role="tab" class="ds-tab-header-item ds-tab-horizontal" id="ds-tab-id-1-2" tabindex="-1" aria-selected="false" aria-disabled="false" aria-label="2"><div class="ds-tab-item"><a _ngcontent-ng-c2190604344=""><span _ngcontent-ng-c2190604344="" data-menu-item-id="2"> Crea tu apuesta <!----></span><!----><!----></a><!----><!----><!----></div></li><li role="tab" class="ds-tab-header-item ds-tab-horizontal" id="ds-tab-id-1-3" tabindex="-1" aria-selected="false" aria-disabled="false" aria-label="3"><div class="ds-tab-item"><a _ngcontent-ng-c2190604344=""><span _ngcontent-ng-c2190604344="" data-menu-item-id="3"> Apuestas Sugeridas <!----></span><!----><!----></a><!----><!----><!----></div></li><li role="tab" class="ds-tab-header-item ds-tab-horizontal" id="ds-tab-id-1-4" tabindex="-1" aria-selected="false" aria-disabled="false" aria-label="4"><div class="ds-tab-item"><a _ngcontent-ng-c2190604344=""><span _ngcontent-ng-c2190604344="" data-menu-item-id="4"> Goles <!----></span><!----><!----></a><!----><!----><!----></div></li><li role="tab" class="ds-tab-header-item ds-tab-horizontal" id="ds-tab-id-1-5" tabindex="-1" aria-selected="false" aria-disabled="false" aria-label="5"><div class="ds-tab-item"><a _ngcontent-ng-c2190604344=""><span _ngcontent-ng-c2190604344="" data-menu-item-id="5"> Jugadores <!----></span><!----><!----></a><!----><!----><!----></div></li><li role="tab" class="ds-tab-header-item ds-tab-horizontal" id="ds-tab-id-1-6" tabindex="-1" aria-selected="false" aria-disabled="false" aria-label="6"><div class="ds-tab-item"><a _ngcontent-ng-c2190604344=""><span _ngcontent-ng-c2190604344="" data-menu-item-id="6"> Córners <!----></span><!----><!----></a><!----><!----><!----></div></li><li role="tab" class="ds-tab-header-item ds-tab-horizontal" id="ds-tab-id-1-7" tabindex="-1" aria-selected="false" aria-disabled="false" aria-label="7"><div class="ds-tab-item"><a _ngcontent-ng-c2190604344=""><span _ngcontent-ng-c2190604344="" data-menu-item-id="7"> Marcador exacto <!----></span><!----><!----></a><!----><!----><!----></div></li><li role="tab" class="ds-tab-header-item ds-tab-horizontal" id="ds-tab-id-1-8" tabindex="-1" aria-selected="false" aria-disabled="false" aria-label="8"><div class="ds-tab-item"><a _ngcontent-ng-c2190604344=""><span _ngcontent-ng-c2190604344="" data-menu-item-id="8"> Minutos <!----></span><!----><!----></a><!----><!----><!----></div></li><li role="tab" class="ds-tab-header-item ds-tab-horizontal" id="ds-tab-id-1-9" tabindex="-1" aria-selected="false" aria-disabled="false" aria-label="9"><div class="ds-tab-item"><a _ngcontent-ng-c2190604344=""><span _ngcontent-ng-c2190604344="" data-menu-item-id="9"> Hándicaps <!----></span><!----><!----></a><!----><!----><!----></div></li><li role="tab" class="ds-tab-header-item ds-tab-horizontal" id="ds-tab-id-1-11" tabindex="-1" aria-selected="false" aria-disabled="false" aria-label="11"><div class="ds-tab-item"><a _ngcontent-ng-c2190604344=""><span _ngcontent-ng-c2190604344="" data-menu-item-id="11"> Equipo <!----></span><!----><!----></a><!----><!----><!----></div></li><li role="tab" class="ds-tab-header-item ds-tab-horizontal" id="ds-tab-id-1-12" tabindex="-1" aria-selected="false" aria-disabled="false" aria-label="12"><div class="ds-tab-item"><a _ngcontent-ng-c2190604344=""><span _ngcontent-ng-c2190604344="" data-menu-item-id="12"> Al descanso <!----></span><!----><!----></a><!----><!----><!----></div></li><li role="tab" class="ds-tab-header-item ds-tab-horizontal" id="ds-tab-id-1-10000" tabindex="-1" aria-selected="false" aria-disabled="false" aria-label="10000"><div class="ds-tab-item"><a _ngcontent-ng-c2190604344=""><span _ngcontent-ng-c2190604344="" data-menu-item-id="10000"> Otro <!----></span><!----><!----></a><!----><!----><!----></div></li><!----></ul></div><ds-divider _ngcontent-ng-c2190604344="" class="ds-divider ds-divider-on-surface-lowest"></ds-divider><!----></div><div class="ds-tab-content"><ds-tab _ngcontent-ng-c2190604344=""><!----><div class="ds-tab-content-hidden"><!----></div></ds-tab><ds-tab _ngcontent-ng-c2190604344=""><!----><div class=""><!----></div></ds-tab><ds-tab _ngcontent-ng-c2190604344=""><!----><div class="ds-tab-content-hidden"><!----></div></ds-tab><ds-tab _ngcontent-ng-c2190604344=""><!----><div class="ds-tab-content-hidden"><!----></div></ds-tab><ds-tab _ngcontent-ng-c2190604344=""><!----><div class="ds-tab-content-hidden"><!----></div></ds-tab><ds-tab _ngcontent-ng-c2190604344=""><!----><div class="ds-tab-content-hidden"><!----></div></ds-tab><ds-tab _ngcontent-ng-c2190604344=""><!----><div class="ds-tab-content-hidden"><!----></div></ds-tab><ds-tab _ngcontent-ng-c2190604344=""><!----><div class="ds-tab-content-hidden"><!----></div></ds-tab><ds-tab _ngcontent-ng-c2190604344=""><!----><div class="ds-tab-content-hidden"><!----></div></ds-tab><ds-tab _ngcontent-ng-c2190604344=""><!----><div class="ds-tab-content-hidden"><!----></div></ds-tab><ds-tab _ngcontent-ng-c2190604344=""><!----><div class="ds-tab-content-hidden"><!----></div></ds-tab><ds-tab _ngcontent-ng-c2190604344=""><!----><div class="ds-tab-content-hidden"><!----></div></ds-tab><ds-tab _ngcontent-ng-c2190604344=""><!----><div class="ds-tab-content-hidden"><!----></div></ds-tab><ds-tab _ngcontent-ng-c2190604344=""><!----><div class="ds-tab-content-hidden"><!----></div></ds-tab><!----></div></ds-tabs-group><!----></ms-event-header-tabs><!----><ms-header-sub-navigation _nghost-ng-c1127254675=""><!----></ms-header-sub-navigation><!----><!----><!----></ms-header><!----><ms-highlights-marquee class="single-card ng-star-inserted"><!----><!----><ms-scroll-adapter size="medium" _nghost-ng-c2655226894="" class="scroll-adapter scroll-adapter--large-arrows ng-star-inserted" style="touch-action: pan-y; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><div _ngcontent-ng-c2655226894="" class="scroll-adapter__container" style="overflow-x: hidden;"><div _ngcontent-ng-c2655226894="" class="scroll-adapter__content"><ul class="center cards"><!----><li class="marquee-card card no-promotion-card marquee-card-with-img with-link ng-star-inserted" data-index="0"><!----><!----><ms-highlights-special-card class="card-bullet-view ng-star-inserted"><!----><!----><img ngsrcset="1x, 2x, 3x" placeholder="" width="280" height="140" class="marquee-background-image ng-star-inserted" loading="eager" fetchpriority="high" ng-img="true" src="https://scmedia.bwin.es/$-$/06a27b818d814c5dbd1582a96f341535.png" srcset="https://scmedia.bwin.es/$-$/06a27b818d814c5dbd1582a96f341535.png?w=280 1x, https://scmedia.bwin.es/$-$/06a27b818d814c5dbd1582a96f341535.png?w=560 2x, https://scmedia.bwin.es/$-$/06a27b818d814c5dbd1582a96f341535.png?w=840 3x" style="background-size: cover; background-position: 50% 50%; background-repeat: no-repeat; background-image: url(&quot;https://scmedia.bwin.es/$-$/06a27b818d814c5dbd1582a96f341535.png?w=30&quot;); filter: blur(15px);"><div class="card-special-image-automated ng-star-inserted"><div class="ng-star-inserted"><div class="marquee-card-header card-promotional ng-star-inserted"><ms-special-marquee-badge _nghost-ng-c2959277384=""><div _ngcontent-ng-c2959277384="" class="card-league ng-star-inserted"><vn-icon _ngcontent-ng-c2959277384="" size="11" class="icon-alignment"><!----><fast-svg _nghost-ng-c3204849328="" class="ng-star-inserted"><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="11" height="11" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/017e6e69b77a4181b02c62b58c98b707.svg"></fast-svg><!----><!----></vn-icon><span _ngcontent-ng-c2959277384="" class="special-card-league-text">Cuotas especiales</span></div><!----><!----><!----><!----></ms-special-marquee-badge><!----></div><div class="card-special ng-star-inserted"><!----><div class="card-market ng-star-inserted">Sí - Granada gana sin recibir goles</div><div class="card-event ng-star-inserted">Granada - Eibar</div><!----></div><div class="card-special-price card-special-price-right ng-star-inserted"><!----><div class="card-special-price-prev ng-star-inserted"><span class="cs-text">Antes</span><span class="cs-price">2.70</span></div><!----><div class="card-special-odds-prev"><ms-option-group class="card-option-group"><!----></ms-option-group></div></div><!----><!----><!----></div><!----></div><!----><!----><!----><!----><!----><!----><!----></ms-highlights-special-card><!----><!----><!----></li><!----></ul></div></div><span _ngcontent-ng-c2655226894="" class="scroll-left scroll-adapter__arrow--hidden"><ds-arrow _ngcontent-ng-c2655226894="" tabindex="0" role="button" direction="left" variant="strong" inverse="false" aria-label="left arrow" class="ds-arrow ds-arrow-medium ds-strong-arrow"><svg viewBox="0 0 11 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="ng-star-inserted"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.281018 10.3847L9.28102 19.695L10.719 18.305L2.41443 9.71403L10.6946 1.71939L9.30541 0.280582L0.305412 8.97024C0.114541 9.15453 0.00472972 9.40712 0.000154933 9.6724C-0.00441985 9.93768 0.0966153 10.1939 0.281018 10.3847Z" fill="currentColor"></path></svg><!----><!----></ds-arrow></span><span _ngcontent-ng-c2655226894="" class="scroll-right scroll-adapter__arrow--hidden"><ds-arrow _ngcontent-ng-c2655226894="" tabindex="0" role="button" direction="right" variant="strong" inverse="false" aria-label="right arrow" class="ds-arrow ds-arrow-medium ds-strong-arrow ds-right-arrow"><svg viewBox="0 0 11 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="ng-star-inserted"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.281018 10.3847L9.28102 19.695L10.719 18.305L2.41443 9.71403L10.6946 1.71939L9.30541 0.280582L0.305412 8.97024C0.114541 9.15453 0.00472972 9.40712 0.000154933 9.6724C-0.00441985 9.93768 0.0966153 10.1939 0.281018 10.3847Z" fill="currentColor"></path></svg><!----><!----></ds-arrow></span></ms-scroll-adapter><!----></ms-highlights-marquee><!----><!----><!----><div class="event-detail-wrapper"><!----><!----><!----><!----><!----><ms-option-group-list class="option-group-list"><div class="option-group-column two-column"><ms-option-panel class="option-panel"><!----><ms-option-panel-header><div class="option-group-name clickable"><div class="option-group-header-title expanded"><!----><div class="header-content"><!----><div class="option-group-name-info-name"><span class="market-name">Resultado del partido</span><!----></div><!----><ms-market-help-toggle><button ds-button-icon="" kind="tertiary" variant="flat-reduced" size="small" class="ds-button-icon info-icon deselected ds-btn-icon-flat-reduced-tertiary ds-btn-icon-small-reduced" data-focus="false" data-focus-visible="false" tabindex="0" aria-label="Icon button"><span class="ds-icon-btn-icon"><vn-icon size="12"><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="12" height="12" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/2330df863ed845bb88cbfd2d26cb565f.svg"></fast-svg><!----><!----></vn-icon></span></button></ms-market-help-toggle><!----><!----></div><div class="option-group-header-right-section"><!----><!----><ms-marketsubtype-logo _nghost-ng-c3247274557="" class="marketsubtype-logo-var-scope"><button _ngcontent-ng-c3247274557="" class="btn marketsubtype-logo-button"> Victoria Anticipada </button><!----><vn-popper-content _ngcontent-ng-c3247274557=""><float-ui-content class="ngxp__tooltip marketsubtype-logo-var-scope"><div class="float-ui-container float-ui-animation market-subtype-tooltip" id="ngx_float_ui_1" aria-hidden="true" role="popper" style="display: none; opacity: 0;"><!----><div class="ngxp__inner"><!----><div><div _ngcontent-ng-c3247274557="" class="tooltip-header"><div _ngcontent-ng-c3247274557="" class="title">Victoria Anticipada</div><div _ngcontent-ng-c3247274557="" class="close-button theme-ex"></div></div><div _ngcontent-ng-c3247274557="" class="message">Tu apuesta será ganadora cuando el equipo por el que has apostado lleve una ventaja de 2 goles durante el partido (90 minutos), independientemente del resultado final del partido. Solo válido para apuestas previas al partido en "Resultado del partido, VA (+2)".</div><div _ngcontent-ng-c3247274557="" class="message link-text"><a target="_blank" href="https://help.bwin.es/es/general-information/legal-matters/general-terms-and-conditions/sports-betting-special-rules/soccer#2up">Sujeto a restricciones de apuesta y condiciones de participación</a></div><!----></div><div class="popper-buttons"><div class="ngxp__close-link"><span class="popper-close-link dh"> ENTENDIDO </span></div><!----></div></div><!----><div class="float-ui-arrow popper-arrow"></div></div></float-ui-content><!----></vn-popper-content><!----></ms-marketsubtype-logo><!----><!----><ms-market-header-bet-builder-badge _nghost-ng-c452392653="" class="market-header-bet-builder-signposting-var-scope"><div _ngcontent-ng-c452392653="" class="badge-toggle"> CA
+</div><!----><vn-popper-content _ngcontent-ng-c452392653="" closetype="none"><float-ui-content class="ngxp__tooltip market-header-bet-builder-signposting-var-scope"><div class="float-ui-container float-ui-animation market-header-bet-builder-signposting" id="ngx_float_ui_2" aria-hidden="true" role="popper" style="display: none; opacity: 0;"><!----><div class="ngxp__inner"><!----><div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-header"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title-container"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-badge">CA</div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title">Crea tu Apuesta</div></div><div _ngcontent-ng-c452392653="" class="close-button theme-ex"></div></div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-content">¡Tu juego, tu apuesta! Selecciona las opciones con el icono "CA" y crea tu apuesta desde cualquier parte del sitio web.</div></div><!----></div><div class="popper-buttons"><!----></div></div><!----><div class="float-ui-arrow popper-arrow"></div></div></float-ui-content><!----></vn-popper-content></ms-market-header-bet-builder-badge><!----><!----><!----><!----><!----><!----><!----><!----></div></div></div></ms-option-panel-header><!----><ms-performance-tracker><img width="1" height="1" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="></ms-performance-tracker><div class="option-panel-body"><!----><!----><!----><!----><!----><ms-period-option-group><ms-split-header><ds-tabs-group size="small" variant="horizontal" scrollable="true" class="ds-tab-underline ds-tabs-group ds-tabs-small"><div class="ds-tab-header"><div class="ds-tab-header-container ds-tab-nav-enabled ds-header-non-full-width"><ul role="tablist" class="ds-tab-header-items ds-tab-items-scroll-speed-faster"><li role="tab" class="ds-tab-header-item ds-tab-selected ds-tab-horizontal" id="ds-tab-id-2-0" tabindex="0" aria-selected="true" aria-disabled="false" aria-label="0"><div class="ds-tab-item"><span>Tiempo reglamentario </span><!----><!----><!----><!----></div></li><li role="tab" class="ds-tab-header-item ds-tab-horizontal" id="ds-tab-id-2-2" tabindex="-1" aria-selected="false" aria-disabled="false" aria-label="2"><div class="ds-tab-item"><span>1ª parte </span><!----><!----><!----><!----></div></li><li role="tab" class="ds-tab-header-item ds-tab-horizontal" id="ds-tab-id-2-3" tabindex="-1" aria-selected="false" aria-disabled="false" aria-label="3"><div class="ds-tab-item"><span>2ª parte </span><!----><!----><!----><!----></div></li><!----></ul></div><ds-divider class="ds-divider ds-divider-on-surface-lowest"></ds-divider><!----></div><div class="ds-tab-content"><ds-tab><!----><div class=""><!----></div></ds-tab><ds-tab><!----><div class="ds-tab-content-hidden"><!----></div></ds-tab><ds-tab><!----><div class="ds-tab-content-hidden"><!----></div></ds-tab><!----></div></ds-tabs-group><!----><!----><!----><ms-regular-option-group><!----><div msoptiongrouprenderer="" class="option-group-container regular-option-container single" style="--option-group-rows: 3;"><ms-option _nghost-ng-c3462210953="" class="option"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640113102"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name"> Granada </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value"><!---->1.78 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><ms-option _nghost-ng-c3462210953="" class="option"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640113103"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name"> X </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value"><!---->3.30 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><ms-option _nghost-ng-c3462210953="" class="option"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640113104"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name"> Eibar </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value"><!---->4.40 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><div class="option option-hidden"><div class="option-pick option-pick-placeholder"><div><div class="name">Granada</div><!----><div class="value option-value"> 1.78 </div><!----></div></div></div><div class="option option-hidden"><div class="option-pick option-pick-placeholder"><div><div class="name">X</div><!----><div class="value option-value"> 3.30 </div><!----></div></div></div><div class="option option-hidden"><div class="option-pick option-pick-placeholder"><div><div class="name">Eibar</div><!----><div class="value option-value"> 4.40 </div><!----></div></div></div><!----></div><!----><!----><ms-option-panel-bottom-action><!----><!----></ms-option-panel-bottom-action><!----><!----><!----></ms-regular-option-group><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></ms-split-header></ms-period-option-group><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></div><!----><!----></ms-option-panel><!----><!----><ms-option-panel class="option-panel"><!----><ms-option-panel-header><div class="option-group-name clickable"><div class="option-group-header-title expanded"><!----><div class="header-content"><!----><div class="option-group-name-info-name"><span class="market-name">Total de goles</span><!----></div><!----><!----><!----></div><div class="option-group-header-right-section"><!----><!----><!----><!----><ms-market-header-bet-builder-badge _nghost-ng-c452392653="" class="market-header-bet-builder-signposting-var-scope"><div _ngcontent-ng-c452392653="" class="badge-toggle"> CA
+</div><!----><vn-popper-content _ngcontent-ng-c452392653="" closetype="none"><float-ui-content class="ngxp__tooltip market-header-bet-builder-signposting-var-scope"><div class="float-ui-container float-ui-animation market-header-bet-builder-signposting" id="ngx_float_ui_4" aria-hidden="true" role="popper" style="display: none; opacity: 0;"><!----><div class="ngxp__inner"><!----><div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-header"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title-container"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-badge">CA</div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title">Crea tu Apuesta</div></div><div _ngcontent-ng-c452392653="" class="close-button theme-ex"></div></div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-content">¡Tu juego, tu apuesta! Selecciona las opciones con el icono "CA" y crea tu apuesta desde cualquier parte del sitio web.</div></div><!----></div><div class="popper-buttons"><!----></div></div><!----><div class="float-ui-arrow popper-arrow"></div></div></float-ui-content><!----></vn-popper-content></ms-market-header-bet-builder-badge><!----><!----><!----><!----><!----><!----><!----><!----></div></div></div></ms-option-panel-header><!----><ms-performance-tracker><img width="1" height="1" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="></ms-performance-tracker><div class="option-panel-body"><!----><!----><!----><!----><!----><ms-period-option-group><ms-split-header><ds-tabs-group size="small" variant="horizontal" scrollable="true" class="ds-tab-underline ds-tabs-group ds-tabs-small"><div class="ds-tab-header"><div class="ds-tab-header-container ds-tab-nav-enabled ds-header-non-full-width"><ul role="tablist" class="ds-tab-header-items ds-tab-items-scroll-speed-faster"><li role="tab" class="ds-tab-header-item ds-tab-selected ds-tab-horizontal" id="ds-tab-id-3-0" tabindex="0" aria-selected="true" aria-disabled="false" aria-label="0"><div class="ds-tab-item"><span>Tiempo reglamentario </span><!----><!----><!----><!----></div></li><li role="tab" class="ds-tab-header-item ds-tab-horizontal" id="ds-tab-id-3-2" tabindex="-1" aria-selected="false" aria-disabled="false" aria-label="2"><div class="ds-tab-item"><span>1ª parte </span><!----><!----><!----><!----></div></li><li role="tab" class="ds-tab-header-item ds-tab-horizontal" id="ds-tab-id-3-3" tabindex="-1" aria-selected="false" aria-disabled="false" aria-label="3"><div class="ds-tab-item"><span>2ª parte </span><!----><!----><!----><!----></div></li><!----></ul></div><ds-divider class="ds-divider ds-divider-on-surface-lowest"></ds-divider><!----></div><div class="ds-tab-content"><ds-tab><!----><div class=""><!----></div></ds-tab><ds-tab><!----><div class="ds-tab-content-hidden"><!----></div></ds-tab><ds-tab><!----><div class="ds-tab-content-hidden"><!----></div></ds-tab><!----></div></ds-tabs-group><!----><!----><!----><!----><!----><!----><!----><ms-over-under-option-group _nghost-ng-c868130429=""><!----><div _ngcontent-ng-c868130429="" class="option-group-container over-under-container triple" style="--option-group-rows: 6;"><div _ngcontent-ng-c868130429="" class="option-group-header"><span _ngcontent-ng-c868130429=""></span><span _ngcontent-ng-c868130429="">Más de</span><span _ngcontent-ng-c868130429="">Menos de</span></div><div _ngcontent-ng-c868130429="" class="attribute-key"> 0,5 <!----></div><ms-option _ngcontent-ng-c868130429="" _nghost-ng-c3462210953="" class="option"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="642426985"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name"> Más de 0.5 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value"><!---->1.08 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><ms-option _ngcontent-ng-c868130429="" _nghost-ng-c3462210953="" class="option"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="642426986"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name"> Menos de 0.5 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value"><!---->7.25 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><div _ngcontent-ng-c868130429="" class="attribute-key"> 1,5 <!----></div><ms-option _ngcontent-ng-c868130429="" _nghost-ng-c3462210953="" class="option"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="642426981"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name"> Más de 1.5 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value"><!---->1.39 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><ms-option _ngcontent-ng-c868130429="" _nghost-ng-c3462210953="" class="option"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="642426982"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name"> Menos de 1.5 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value"><!---->2.75 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><div _ngcontent-ng-c868130429="" class="attribute-key"> 2,5 <!----></div><ms-option _ngcontent-ng-c868130429="" _nghost-ng-c3462210953="" class="option"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="642426979"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name"> Más de 2.5 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value"><!---->2.15 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><ms-option _ngcontent-ng-c868130429="" _nghost-ng-c3462210953="" class="option"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="642426980"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name"> Menos de 2.5 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value"><!---->1.61 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><div _ngcontent-ng-c868130429="" class="attribute-key"> 3,5 <!----></div><ms-option _ngcontent-ng-c868130429="" _nghost-ng-c3462210953="" class="option"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="642426983"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name"> Más de 3.5 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value"><!---->3.90 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><ms-option _ngcontent-ng-c868130429="" _nghost-ng-c3462210953="" class="option"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="642426984"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name"> Menos de 3.5 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value"><!---->1.22 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><div _ngcontent-ng-c868130429="" class="attribute-key"> 4,5 <!----></div><ms-option _ngcontent-ng-c868130429="" _nghost-ng-c3462210953="" class="option"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="642426987"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name"> Más de 4.5 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value"><!---->7.75 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><ms-option _ngcontent-ng-c868130429="" _nghost-ng-c3462210953="" class="option"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="642426988"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name"> Menos de 4.5 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value"><!---->1.07 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><div _ngcontent-ng-c868130429="" class="attribute-key"> 5,5 <!----></div><ms-option _ngcontent-ng-c868130429="" _nghost-ng-c3462210953="" class="option"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="642426989"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name"> Más de 5.5 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value"><!---->16.50 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><ms-option _ngcontent-ng-c868130429="" _nghost-ng-c3462210953="" class="option"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="642426990"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name"> Menos de 5.5 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value"><!---->1.012 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----></div><!----><!----><ms-option-panel-bottom-action _ngcontent-ng-c868130429=""><div class="show-more-less-button"><span>Mostrar más</span><!----><vn-icon name="theme-right" class="right-icon"><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="12" height="12" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/0ed92ab0eacd434fbd9a9fb3d050e067.svg"></fast-svg><!----><!----></vn-icon><!----></div><!----><!----></ms-option-panel-bottom-action><!----><!----></ms-over-under-option-group><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></ms-split-header></ms-period-option-group><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></div><!----><!----></ms-option-panel><!----><!----><ms-option-panel class="option-panel"><!----><ms-option-panel-header><div class="option-group-name clickable"><div class="option-group-header-title"><!----><div class="header-content"><!----><div class="option-group-name-info-name"><span class="market-name">Ambos equipos marcan</span><!----></div><!----><!----><!----></div><div class="option-group-header-right-section"><!----><!----><!----><!----><ms-market-header-bet-builder-badge _nghost-ng-c452392653="" class="market-header-bet-builder-signposting-var-scope"><div _ngcontent-ng-c452392653="" class="badge-toggle"> CA
+</div><!----><vn-popper-content _ngcontent-ng-c452392653="" closetype="none"><float-ui-content class="ngxp__tooltip market-header-bet-builder-signposting-var-scope"><div class="float-ui-container float-ui-animation market-header-bet-builder-signposting" id="ngx_float_ui_6" aria-hidden="true" role="popper" style="display: none; opacity: 0;"><!----><div class="ngxp__inner"><!----><div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-header"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title-container"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-badge">CA</div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title">Crea tu Apuesta</div></div><div _ngcontent-ng-c452392653="" class="close-button theme-ex"></div></div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-content">¡Tu juego, tu apuesta! Selecciona las opciones con el icono "CA" y crea tu apuesta desde cualquier parte del sitio web.</div></div><!----></div><div class="popper-buttons"><!----></div></div><!----><div class="float-ui-arrow popper-arrow"></div></div></float-ui-content><!----></vn-popper-content></ms-market-header-bet-builder-badge><!----><!----><!----><!----><!----><div class="option-group-header-chevron"><vn-icon><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="12" height="12" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/dda64f038f7447ed84a1215f8a43fdbd.svg"></fast-svg><!----><!----></vn-icon></div><!----><!----><!----></div></div></div></ms-option-panel-header><!----><ms-performance-tracker><img width="1" height="1" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="></ms-performance-tracker><!----></ms-option-panel><!----><!----><ms-option-panel class="option-panel"><!----><ms-option-panel-header><div class="option-group-name clickable"><div class="option-group-header-title"><!----><div class="header-content"><!----><div class="option-group-name-info-name"><span class="market-name">Granada - Total de goles</span><!----></div><!----><!----><!----></div><div class="option-group-header-right-section"><!----><!----><!----><!----><ms-market-header-bet-builder-badge _nghost-ng-c452392653="" class="market-header-bet-builder-signposting-var-scope"><div _ngcontent-ng-c452392653="" class="badge-toggle"> CA
+</div><!----><vn-popper-content _ngcontent-ng-c452392653="" closetype="none"><float-ui-content class="ngxp__tooltip market-header-bet-builder-signposting-var-scope"><div class="float-ui-container float-ui-animation market-header-bet-builder-signposting" id="ngx_float_ui_8" aria-hidden="true" role="popper" style="display: none; opacity: 0;"><!----><div class="ngxp__inner"><!----><div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-header"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title-container"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-badge">CA</div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title">Crea tu Apuesta</div></div><div _ngcontent-ng-c452392653="" class="close-button theme-ex"></div></div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-content">¡Tu juego, tu apuesta! Selecciona las opciones con el icono "CA" y crea tu apuesta desde cualquier parte del sitio web.</div></div><!----></div><div class="popper-buttons"><!----></div></div><!----><div class="float-ui-arrow popper-arrow"></div></div></float-ui-content><!----></vn-popper-content></ms-market-header-bet-builder-badge><!----><!----><!----><!----><!----><div class="option-group-header-chevron"><vn-icon><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="12" height="12" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/dda64f038f7447ed84a1215f8a43fdbd.svg"></fast-svg><!----><!----></vn-icon></div><!----><!----><!----></div></div></div></ms-option-panel-header><!----><ms-performance-tracker><img width="1" height="1" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="></ms-performance-tracker><!----></ms-option-panel><!----><!----><ms-option-panel class="option-panel"><!----><ms-option-panel-header><div class="option-group-name clickable"><div class="option-group-header-title"><!----><div class="header-content"><!----><div class="option-group-name-info-name"><span class="market-name">1er equipo en marcar</span><!----></div><!----><!----><!----></div><div class="option-group-header-right-section"><!----><!----><!----><!----><ms-market-header-bet-builder-badge _nghost-ng-c452392653="" class="market-header-bet-builder-signposting-var-scope"><div _ngcontent-ng-c452392653="" class="badge-toggle"> CA
+</div><!----><vn-popper-content _ngcontent-ng-c452392653="" closetype="none"><float-ui-content class="ngxp__tooltip market-header-bet-builder-signposting-var-scope"><div class="float-ui-container float-ui-animation market-header-bet-builder-signposting" id="ngx_float_ui_10" aria-hidden="true" role="popper" style="display: none; opacity: 0;"><!----><div class="ngxp__inner"><!----><div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-header"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title-container"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-badge">CA</div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title">Crea tu Apuesta</div></div><div _ngcontent-ng-c452392653="" class="close-button theme-ex"></div></div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-content">¡Tu juego, tu apuesta! Selecciona las opciones con el icono "CA" y crea tu apuesta desde cualquier parte del sitio web.</div></div><!----></div><div class="popper-buttons"><!----></div></div><!----><div class="float-ui-arrow popper-arrow"></div></div></float-ui-content><!----></vn-popper-content></ms-market-header-bet-builder-badge><!----><!----><!----><!----><!----><div class="option-group-header-chevron"><vn-icon><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="12" height="12" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/dda64f038f7447ed84a1215f8a43fdbd.svg"></fast-svg><!----><!----></vn-icon></div><!----><!----><!----></div></div></div></ms-option-panel-header><!----><ms-performance-tracker><img width="1" height="1" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="></ms-performance-tracker><!----></ms-option-panel><!----><!----><ms-option-panel class="option-panel"><!----><ms-option-panel-header><div class="option-group-name clickable"><div class="option-group-header-title"><!----><div class="header-content"><!----><div class="option-group-name-info-name"><span class="market-name">Descanso/Final del partido</span><!----></div><!----><!----><!----></div><div class="option-group-header-right-section"><!----><!----><!----><!----><ms-market-header-bet-builder-badge _nghost-ng-c452392653="" class="market-header-bet-builder-signposting-var-scope"><div _ngcontent-ng-c452392653="" class="badge-toggle"> CA
+</div><!----><vn-popper-content _ngcontent-ng-c452392653="" closetype="none"><float-ui-content class="ngxp__tooltip market-header-bet-builder-signposting-var-scope"><div class="float-ui-container float-ui-animation market-header-bet-builder-signposting" id="ngx_float_ui_12" aria-hidden="true" role="popper" style="display: none; opacity: 0;"><!----><div class="ngxp__inner"><!----><div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-header"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title-container"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-badge">CA</div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title">Crea tu Apuesta</div></div><div _ngcontent-ng-c452392653="" class="close-button theme-ex"></div></div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-content">¡Tu juego, tu apuesta! Selecciona las opciones con el icono "CA" y crea tu apuesta desde cualquier parte del sitio web.</div></div><!----></div><div class="popper-buttons"><!----></div></div><!----><div class="float-ui-arrow popper-arrow"></div></div></float-ui-content><!----></vn-popper-content></ms-market-header-bet-builder-badge><!----><!----><!----><!----><!----><div class="option-group-header-chevron"><vn-icon><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="12" height="12" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/dda64f038f7447ed84a1215f8a43fdbd.svg"></fast-svg><!----><!----></vn-icon></div><!----><!----><!----></div></div></div></ms-option-panel-header><!----><ms-performance-tracker><img width="1" height="1" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="></ms-performance-tracker><!----></ms-option-panel><!----><!----><ms-option-panel class="option-panel"><!----><ms-option-panel-header><div class="option-group-name clickable"><div class="option-group-header-title"><!----><div class="header-content"><!----><div class="option-group-name-info-name"><span class="market-name">Hándicap 1X2  -2 - Tiempo Reglamentario</span><!----></div><!----><!----><!----></div><div class="option-group-header-right-section"><!----><!----><!----><!----><ms-market-header-bet-builder-badge _nghost-ng-c452392653="" class="market-header-bet-builder-signposting-var-scope"><div _ngcontent-ng-c452392653="" class="badge-toggle"> CA
+</div><!----><vn-popper-content _ngcontent-ng-c452392653="" closetype="none"><float-ui-content class="ngxp__tooltip market-header-bet-builder-signposting-var-scope"><div class="float-ui-container float-ui-animation market-header-bet-builder-signposting" id="ngx_float_ui_13" aria-hidden="true" role="popper" style="display: none; opacity: 0;"><!----><div class="ngxp__inner"><!----><div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-header"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title-container"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-badge">CA</div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title">Crea tu Apuesta</div></div><div _ngcontent-ng-c452392653="" class="close-button theme-ex"></div></div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-content">¡Tu juego, tu apuesta! Selecciona las opciones con el icono "CA" y crea tu apuesta desde cualquier parte del sitio web.</div></div><!----></div><div class="popper-buttons"><!----></div></div><!----><div class="float-ui-arrow popper-arrow"></div></div></float-ui-content><!----></vn-popper-content></ms-market-header-bet-builder-badge><!----><!----><!----><!----><!----><div class="option-group-header-chevron"><vn-icon><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="12" height="12" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/dda64f038f7447ed84a1215f8a43fdbd.svg"></fast-svg><!----><!----></vn-icon></div><!----><!----><!----></div></div></div></ms-option-panel-header><!----><ms-performance-tracker><img width="1" height="1" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="></ms-performance-tracker><!----></ms-option-panel><!----><!----><ms-option-panel class="option-panel"><!----><ms-option-panel-header><div class="option-group-name clickable"><div class="option-group-header-title"><!----><div class="header-content"><!----><div class="option-group-name-info-name"><span class="market-name">Ambos equipos marcan y cualquier equipo gana</span><!----></div><!----><!----><!----></div><div class="option-group-header-right-section"><!----><!----><!----><!----><ms-market-header-bet-builder-badge _nghost-ng-c452392653="" class="market-header-bet-builder-signposting-var-scope"><div _ngcontent-ng-c452392653="" class="badge-toggle"> CA
+</div><!----><vn-popper-content _ngcontent-ng-c452392653="" closetype="none"><float-ui-content class="ngxp__tooltip market-header-bet-builder-signposting-var-scope"><div class="float-ui-container float-ui-animation market-header-bet-builder-signposting" id="ngx_float_ui_14" aria-hidden="true" role="popper" style="display: none; opacity: 0;"><!----><div class="ngxp__inner"><!----><div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-header"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title-container"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-badge">CA</div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title">Crea tu Apuesta</div></div><div _ngcontent-ng-c452392653="" class="close-button theme-ex"></div></div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-content">¡Tu juego, tu apuesta! Selecciona las opciones con el icono "CA" y crea tu apuesta desde cualquier parte del sitio web.</div></div><!----></div><div class="popper-buttons"><!----></div></div><!----><div class="float-ui-arrow popper-arrow"></div></div></float-ui-content><!----></vn-popper-content></ms-market-header-bet-builder-badge><!----><!----><!----><!----><!----><div class="option-group-header-chevron"><vn-icon><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="12" height="12" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/dda64f038f7447ed84a1215f8a43fdbd.svg"></fast-svg><!----><!----></vn-icon></div><!----><!----><!----></div></div></div></ms-option-panel-header><!----><ms-performance-tracker><img width="1" height="1" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="></ms-performance-tracker><!----></ms-option-panel><!----><!----><!----></div><!----><div class="option-group-column two-column"><ms-option-panel class="option-panel"><!----><ms-option-panel-header><div class="option-group-name clickable"><div class="option-group-header-title expanded precreated-bab-group-name"><span class="bet-builder-icon"> CREA TU APUESTA</span><!----><div class="header-content"><!----><div class="option-group-name-info-name"><span class="market-name">Crea tus apuestas recomendadas</span><!----></div><!----><ms-market-help-toggle><button ds-button-icon="" kind="tertiary" variant="flat-reduced" size="small" class="ds-button-icon info-icon deselected ds-btn-icon-flat-reduced-tertiary ds-btn-icon-small-reduced" data-focus="false" data-focus-visible="false" tabindex="0" aria-label="Icon button"><span class="ds-icon-btn-icon"><vn-icon size="12"><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="12" height="12" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/2330df863ed845bb88cbfd2d26cb565f.svg"></fast-svg><!----><!----></vn-icon></span></button></ms-market-help-toggle><!----><!----></div><div class="option-group-header-right-section"><!----><!----><!----><!----><ms-market-header-bet-builder-badge _nghost-ng-c452392653="" class="market-header-bet-builder-signposting-var-scope"><div _ngcontent-ng-c452392653="" class="badge-toggle"> CA
+</div><!----><vn-popper-content _ngcontent-ng-c452392653="" closetype="none"><float-ui-content class="ngxp__tooltip market-header-bet-builder-signposting-var-scope"><div class="float-ui-container float-ui-animation market-header-bet-builder-signposting" id="ngx_float_ui_15" aria-hidden="true" role="popper" style="display: none; opacity: 0;"><!----><div class="ngxp__inner"><!----><div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-header"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title-container"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-badge">CA</div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title">Crea tu Apuesta</div></div><div _ngcontent-ng-c452392653="" class="close-button theme-ex"></div></div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-content">¡Tu juego, tu apuesta! Selecciona las opciones con el icono "CA" y crea tu apuesta desde cualquier parte del sitio web.</div></div><!----></div><div class="popper-buttons"><!----></div></div><!----><div class="float-ui-arrow popper-arrow"></div></div></float-ui-content><!----></vn-popper-content></ms-market-header-bet-builder-badge><!----><!----><!----><!----><!----><!----><!----><!----></div></div></div></ms-option-panel-header><!----><ms-performance-tracker><img width="1" height="1" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="></ms-performance-tracker><div class="option-panel-body"><!----><!----><!----><!----><ms-precreated-bab-option-group _nghost-ng-c2573826688="" class="precreated-build-a-bet"><!----><ms-precreated-bab-option _ngcontent-ng-c2573826688=""><!----><div msoptiongrouprenderer="" class="bab-option-group-renderer"><!----><ms-precreated-group-option class="betbuilder-market-card"><div class="legs"><div class="market-leg"><div class="circle-overlay"><vn-icon name="theme-radio-off"><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="10" height="10" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/e067871694b44d3cbdf6bf6cd43d4f30.svg"></fast-svg><!----><!----></vn-icon></div><span class="leg">Resultado del partido VA (+2) - Granada</span></div><div class="market-leg"><div class="circle-overlay"><vn-icon name="theme-radio-off"><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="10" height="10" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/e067871694b44d3cbdf6bf6cd43d4f30.svg"></fast-svg><!----><!----></vn-icon></div><span class="leg">Ambos equipos marcan - Sí</span></div><div class="market-leg"><div class="circle-overlay"><vn-icon name="theme-radio-off"><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="10" height="10" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/e067871694b44d3cbdf6bf6cd43d4f30.svg"></fast-svg><!----><!----></vn-icon></div><span class="leg">Marca en cualquier momento - Lucas Boye</span></div><!----></div><div class="pre-created-option"><ms-betbuilder-group-pick class="pre-created-option-selectable"><div mscustomactivestate="" class="option-indicator"><!----><ms-font-resizer>6.00<!----><!----></ms-font-resizer><!----></div></ms-betbuilder-group-pick></div><ms-betbuilder-edit-pre-created-group-button><button ds-button="" msthemedbutton="" kind="tertiary" variant="outline" size="small" class="ds-button edit-pre-created-bab-button ds-btn-outline-tertiary ds-btn-small" data-focus="false" data-focus-visible="false" tabindex="0"><span class="ds-btn-container"><!----><span class="ds-btn-text"><!----> Añade o modifica la apuesta <!----></span><vn-icon slot="end" name="theme-edit" size="12"><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" title="theme-edit" width="12" height="12" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/608d6bade3d9427987b102b532b533d3.svg"></fast-svg><!----><!----></vn-icon><!----></span><!----></button><!----></ms-betbuilder-edit-pre-created-group-button></ms-precreated-group-option><ms-precreated-group-option class="betbuilder-market-card"><div class="legs"><div class="market-leg"><div class="circle-overlay"><vn-icon name="theme-radio-off"><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="10" height="10" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/e067871694b44d3cbdf6bf6cd43d4f30.svg"></fast-svg><!----><!----></vn-icon></div><span class="leg">Descanso/Final del partido - Granada / Granada</span></div><div class="market-leg"><div class="circle-overlay"><vn-icon name="theme-radio-off"><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="10" height="10" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/e067871694b44d3cbdf6bf6cd43d4f30.svg"></fast-svg><!----><!----></vn-icon></div><span class="leg">Total de goles - 1ª parte - Más de 1.5</span></div><div class="market-leg"><div class="circle-overlay"><vn-icon name="theme-radio-off"><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="10" height="10" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/e067871694b44d3cbdf6bf6cd43d4f30.svg"></fast-svg><!----><!----></vn-icon></div><span class="leg">Número total de córners - Más de 9.5</span></div><!----></div><div class="pre-created-option"><ms-betbuilder-group-pick class="pre-created-option-selectable"><div mscustomactivestate="" class="option-indicator"><!----><ms-font-resizer>11.00<!----><!----></ms-font-resizer><!----></div></ms-betbuilder-group-pick></div><ms-betbuilder-edit-pre-created-group-button><button ds-button="" msthemedbutton="" kind="tertiary" variant="outline" size="small" class="ds-button edit-pre-created-bab-button ds-btn-outline-tertiary ds-btn-small" data-focus="false" data-focus-visible="false" tabindex="0"><span class="ds-btn-container"><!----><span class="ds-btn-text"><!----> Añade o modifica la apuesta <!----></span><vn-icon slot="end" name="theme-edit" size="12"><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" title="theme-edit" width="12" height="12" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/608d6bade3d9427987b102b532b533d3.svg"></fast-svg><!----><!----></vn-icon><!----></span><!----></button><!----></ms-betbuilder-edit-pre-created-group-button></ms-precreated-group-option><!----><div class="btn-build-your-bet"><ms-bet-builder-button><div class="betbuilder-button"><button ds-button="" msthemedbutton="" kind="primary" variant="filled" size="medium" class="ds-button ds-btn-filled-primary ds-btn-medium" data-focus="false" data-focus-visible="false" tabindex="0"><span class="ds-btn-container"><!----><span class="ds-btn-text"><!----> Crea tu apuesta ahora <!----></span></span><!----></button></div><!----></ms-bet-builder-button></div><!----><ms-option-panel-bottom-action><div class="show-more-less-button"><span>Mostrar más</span><!----><vn-icon name="theme-right" class="right-icon"><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="12" height="12" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/0ed92ab0eacd434fbd9a9fb3d050e067.svg"></fast-svg><!----><!----></vn-icon><!----></div><!----><!----></ms-option-panel-bottom-action><!----></div></ms-precreated-bab-option></ms-precreated-bab-option-group><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></div><!----><!----></ms-option-panel><!----><!----><ms-option-panel class="option-panel"><!----><ms-option-panel-header><div class="option-group-name clickable"><div class="option-group-header-title"><!----><div class="header-content"><!----><div class="option-group-name-info-name"><span class="market-name">Doble oportunidad</span><!----></div><!----><!----><!----></div><div class="option-group-header-right-section"><!----><!----><!----><!----><ms-market-header-bet-builder-badge _nghost-ng-c452392653="" class="market-header-bet-builder-signposting-var-scope"><div _ngcontent-ng-c452392653="" class="badge-toggle"> CA
+</div><!----><vn-popper-content _ngcontent-ng-c452392653="" closetype="none"><float-ui-content class="ngxp__tooltip market-header-bet-builder-signposting-var-scope"><div class="float-ui-container float-ui-animation market-header-bet-builder-signposting" id="ngx_float_ui_16" aria-hidden="true" role="popper" style="display: none; opacity: 0;"><!----><div class="ngxp__inner"><!----><div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-header"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title-container"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-badge">CA</div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title">Crea tu Apuesta</div></div><div _ngcontent-ng-c452392653="" class="close-button theme-ex"></div></div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-content">¡Tu juego, tu apuesta! Selecciona las opciones con el icono "CA" y crea tu apuesta desde cualquier parte del sitio web.</div></div><!----></div><div class="popper-buttons"><!----></div></div><!----><div class="float-ui-arrow popper-arrow"></div></div></float-ui-content><!----></vn-popper-content></ms-market-header-bet-builder-badge><!----><!----><!----><!----><!----><div class="option-group-header-chevron"><vn-icon><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="12" height="12" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/dda64f038f7447ed84a1215f8a43fdbd.svg"></fast-svg><!----><!----></vn-icon></div><!----><!----><!----></div></div></div></ms-option-panel-header><!----><ms-performance-tracker><img width="1" height="1" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="></ms-performance-tracker><!----></ms-option-panel><!----><!----><ms-option-panel class="option-panel"><!----><ms-option-panel-header><div class="option-group-name clickable"><div class="option-group-header-title"><!----><div class="header-content"><!----><div class="option-group-name-info-name"><span class="market-name">Número total de córners</span><!----></div><!----><!----><!----></div><div class="option-group-header-right-section"><!----><!----><!----><!----><ms-market-header-bet-builder-badge _nghost-ng-c452392653="" class="market-header-bet-builder-signposting-var-scope"><div _ngcontent-ng-c452392653="" class="badge-toggle"> CA
+</div><!----><vn-popper-content _ngcontent-ng-c452392653="" closetype="none"><float-ui-content class="ngxp__tooltip market-header-bet-builder-signposting-var-scope"><div class="float-ui-container float-ui-animation market-header-bet-builder-signposting" id="ngx_float_ui_17" aria-hidden="true" role="popper" style="display: none; opacity: 0;"><!----><div class="ngxp__inner"><!----><div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-header"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title-container"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-badge">CA</div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title">Crea tu Apuesta</div></div><div _ngcontent-ng-c452392653="" class="close-button theme-ex"></div></div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-content">¡Tu juego, tu apuesta! Selecciona las opciones con el icono "CA" y crea tu apuesta desde cualquier parte del sitio web.</div></div><!----></div><div class="popper-buttons"><!----></div></div><!----><div class="float-ui-arrow popper-arrow"></div></div></float-ui-content><!----></vn-popper-content></ms-market-header-bet-builder-badge><!----><!----><!----><!----><!----><div class="option-group-header-chevron"><vn-icon><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="12" height="12" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/dda64f038f7447ed84a1215f8a43fdbd.svg"></fast-svg><!----><!----></vn-icon></div><!----><!----><!----></div></div></div></ms-option-panel-header><!----><ms-performance-tracker><img width="1" height="1" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="></ms-performance-tracker><!----></ms-option-panel><!----><!----><ms-option-panel class="option-panel"><!----><ms-option-panel-header><div class="option-group-name clickable"><div class="option-group-header-title"><!----><div class="header-content"><!----><div class="option-group-name-info-name"><span class="market-name">Eibar - Total de goles</span><!----></div><!----><!----><!----></div><div class="option-group-header-right-section"><!----><!----><!----><!----><ms-market-header-bet-builder-badge _nghost-ng-c452392653="" class="market-header-bet-builder-signposting-var-scope"><div _ngcontent-ng-c452392653="" class="badge-toggle"> CA
+</div><!----><vn-popper-content _ngcontent-ng-c452392653="" closetype="none"><float-ui-content class="ngxp__tooltip market-header-bet-builder-signposting-var-scope"><div class="float-ui-container float-ui-animation market-header-bet-builder-signposting" id="ngx_float_ui_18" aria-hidden="true" role="popper" style="display: none; opacity: 0;"><!----><div class="ngxp__inner"><!----><div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-header"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title-container"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-badge">CA</div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title">Crea tu Apuesta</div></div><div _ngcontent-ng-c452392653="" class="close-button theme-ex"></div></div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-content">¡Tu juego, tu apuesta! Selecciona las opciones con el icono "CA" y crea tu apuesta desde cualquier parte del sitio web.</div></div><!----></div><div class="popper-buttons"><!----></div></div><!----><div class="float-ui-arrow popper-arrow"></div></div></float-ui-content><!----></vn-popper-content></ms-market-header-bet-builder-badge><!----><!----><!----><!----><!----><div class="option-group-header-chevron"><vn-icon><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="12" height="12" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/dda64f038f7447ed84a1215f8a43fdbd.svg"></fast-svg><!----><!----></vn-icon></div><!----><!----><!----></div></div></div></ms-option-panel-header><!----><ms-performance-tracker><img width="1" height="1" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="></ms-performance-tracker><!----></ms-option-panel><!----><!----><ms-option-panel class="option-panel"><!----><ms-option-panel-header><div class="option-group-name clickable"><div class="option-group-header-title expanded"><!----><div class="header-content"><!----><div class="option-group-name-info-name"><span class="market-name">Marcador exacto</span><!----></div><!----><ms-market-help-toggle class="ng-star-inserted"><button ds-button-icon="" kind="tertiary" variant="flat-reduced" size="small" class="ds-button-icon info-icon deselected ds-btn-icon-flat-reduced-tertiary ds-btn-icon-small-reduced" data-focus="false" data-focus-visible="false" tabindex="0" aria-label="Icon button"><span class="ds-icon-btn-icon"><vn-icon size="12"><!----><fast-svg _nghost-ng-c3204849328="" class="ng-star-inserted"><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="12" height="12" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg></fast-svg><!----><!----></vn-icon></span></button></ms-market-help-toggle><!----><!----></div><div class="option-group-header-right-section"><!----><!----><!----><!----><ms-market-header-bet-builder-badge _nghost-ng-c452392653="" class="market-header-bet-builder-signposting-var-scope"><div _ngcontent-ng-c452392653="" class="badge-toggle"> CA
+</div><!----><vn-popper-content _ngcontent-ng-c452392653="" closetype="none"><float-ui-content class="ngxp__tooltip market-header-bet-builder-signposting-var-scope"><div class="float-ui-container float-ui-animation market-header-bet-builder-signposting" id="ngx_float_ui_19" aria-hidden="true" role="popper" style="display: none; opacity: 0;"><!----><div class="ngxp__inner"><!----><div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-header"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title-container"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-badge">CA</div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title">Crea tu Apuesta</div></div><div _ngcontent-ng-c452392653="" class="close-button theme-ex"></div></div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-content">¡Tu juego, tu apuesta! Selecciona las opciones con el icono "CA" y crea tu apuesta desde cualquier parte del sitio web.</div></div><!----></div><div class="popper-buttons"><!----></div></div><!----><div class="float-ui-arrow popper-arrow"></div></div></float-ui-content><!----></vn-popper-content></ms-market-header-bet-builder-badge><!----><!----><!----><!----><!----><!----><!----><!----></div></div></div></ms-option-panel-header><!----><ms-performance-tracker><img width="1" height="1" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="></ms-performance-tracker><div class="option-panel-body ng-star-inserted"><!----><!----><!----><!----><!----><ms-period-option-group class="ng-star-inserted"><ms-split-header><ds-tabs-group size="small" variant="horizontal" scrollable="true" class="ds-tab-underline ds-tabs-group ds-tabs-small ng-star-inserted"><div class="ds-tab-header"><div class="ds-tab-header-container ds-tab-nav-enabled ds-header-non-full-width"><ul role="tablist" class="ds-tab-header-items ds-tab-items-scroll-speed-faster"><li role="tab" class="ds-tab-header-item ds-tab-selected ds-tab-horizontal ng-star-inserted" id="ds-tab-id-4-0" tabindex="0" aria-selected="true" aria-disabled="false" aria-label="0"><div class="ds-tab-item"><span class="ng-star-inserted">Tiempo reglamentario </span><!----><!----><!----><!----></div></li><li role="tab" class="ds-tab-header-item ds-tab-horizontal ng-star-inserted" id="ds-tab-id-4-2" tabindex="-1" aria-selected="false" aria-disabled="false" aria-label="2"><div class="ds-tab-item"><span class="ng-star-inserted">1ª parte </span><!----><!----><!----><!----></div></li><li role="tab" class="ds-tab-header-item ds-tab-horizontal ng-star-inserted" id="ds-tab-id-4-3" tabindex="-1" aria-selected="false" aria-disabled="false" aria-label="3"><div class="ds-tab-item"><span class="ng-star-inserted">2ª parte </span><!----><!----><!----><!----></div></li><!----></ul></div><ds-divider class="ds-divider ds-divider-on-surface-lowest"></ds-divider><!----></div><div class="ds-tab-content"><ds-tab class="ng-star-inserted"><!----><div class=""><!----></div></ds-tab><ds-tab class="ng-star-inserted"><!----><div class="ds-tab-content-hidden"><!----></div></ds-tab><ds-tab class="ng-star-inserted"><!----><div class="ds-tab-content-hidden"><!----></div></ds-tab><!----></div></ds-tabs-group><!----><!----><!----><!----><ms-correct-score-option-group-wrapper class="ng-star-inserted"><ms-correct-score-option-group class="ng-star-inserted"><!----><div class="option-group-container correct-score-container score-options triple" style="--option-group-groups: 23;"><div class="option-group-header"><span class="ng-star-inserted">1</span><span class="ng-star-inserted">X</span><span class="ng-star-inserted">2</span><!----></div><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112865"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 1-0 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->6.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112864"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 0-0 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->7.75 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112875"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 0-1 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->10.50 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112866"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 2-0 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->8.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112876"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 1-1 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->6.75 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112886"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 0-2 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->21.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112877"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 2-1 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->8.75 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112888"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 2-2 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->17.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112887"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 1-2 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->15.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112867"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 3-0 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->13.50 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112900"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 3-3 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->61.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112897"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 0-3 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->46.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112878"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 3-1 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->15.50 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112912"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 4-4 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->176.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112898"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 1-3 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->36.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112889"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 3-2 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->29.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><!----><div class="option option-placeholder ng-star-inserted"></div><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112899"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 2-3 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->46.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112868"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 4-0 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->26.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><!----><div class="option option-placeholder ng-star-inserted"></div><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112908"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 0-4 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->101.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112879"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 4-1 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->31.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><!----><div class="option option-placeholder ng-star-inserted"></div><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112909"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 1-4 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->81.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112890"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 4-2 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->51.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><!----><div class="option option-placeholder ng-star-inserted"></div><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112910"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 2-4 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->101.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112901"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 4-3 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->101.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><!----><div class="option option-placeholder ng-star-inserted"></div><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112911"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 3-4 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->126.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112869"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 5-0 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->56.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><!----><div class="option option-placeholder ng-star-inserted"></div><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112919"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 0-5 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->201.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112880"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 5-1 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->61.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><!----><div class="option option-placeholder ng-star-inserted"></div><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112920"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 1-5 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->176.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112891"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 5-2 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->91.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><!----><div class="option option-placeholder ng-star-inserted"></div><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112921"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 2-5 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->201.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112902"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 5-3 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->151.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><!----><div class="option option-placeholder ng-star-inserted"></div><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112922"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 3-5 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->251.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><ms-option _nghost-ng-c3462210953="" class="option ng-star-inserted"><!----><ms-event-pick _ngcontent-ng-c3462210953="" class="option-pick" _nghost-ng-c2166260066="" data-test-option-id="640112913"><div _ngcontent-ng-c2166260066="" mscustomactivestate="" class="option-indicator"><!----><div _ngcontent-ng-c3462210953="" class="name ng-star-inserted"> 5-4 </div><!----><!----><!----><div _ngcontent-ng-c3462210953="" class="value option-value ng-star-inserted"><!---->276.00 <!----><!----><!----><!----><!----><!----></div><!----><!----><!----></div></ms-event-pick></ms-option><!----><!----><!----><!----><!----></div><div class="option-group-container correct-score-container single"><!----><!----><!----><!----></div><!----><!----></ms-correct-score-option-group><!----><!----></ms-correct-score-option-group-wrapper><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></ms-split-header></ms-period-option-group><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----></div><!----><!----></ms-option-panel><!----><!----><ms-option-panel class="option-panel"><!----><ms-option-panel-header><div class="option-group-name clickable"><div class="option-group-header-title"><!----><div class="header-content"><!----><div class="option-group-name-info-name"><span class="market-name">Hándicap 1X2  -1 - Tiempo Reglamentario</span><!----></div><!----><!----><!----></div><div class="option-group-header-right-section"><!----><!----><!----><!----><ms-market-header-bet-builder-badge _nghost-ng-c452392653="" class="market-header-bet-builder-signposting-var-scope"><div _ngcontent-ng-c452392653="" class="badge-toggle"> CA
+</div><!----><vn-popper-content _ngcontent-ng-c452392653="" closetype="none"><float-ui-content class="ngxp__tooltip market-header-bet-builder-signposting-var-scope"><div class="float-ui-container float-ui-animation market-header-bet-builder-signposting" id="ngx_float_ui_20" aria-hidden="true" role="popper" style="display: none; opacity: 0;"><!----><div class="ngxp__inner"><!----><div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-header"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title-container"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-badge">CA</div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title">Crea tu Apuesta</div></div><div _ngcontent-ng-c452392653="" class="close-button theme-ex"></div></div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-content">¡Tu juego, tu apuesta! Selecciona las opciones con el icono "CA" y crea tu apuesta desde cualquier parte del sitio web.</div></div><!----></div><div class="popper-buttons"><!----></div></div><!----><div class="float-ui-arrow popper-arrow"></div></div></float-ui-content><!----></vn-popper-content></ms-market-header-bet-builder-badge><!----><!----><!----><!----><!----><div class="option-group-header-chevron"><vn-icon><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="12" height="12" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/dda64f038f7447ed84a1215f8a43fdbd.svg"></fast-svg><!----><!----></vn-icon></div><!----><!----><!----></div></div></div></ms-option-panel-header><!----><ms-performance-tracker><img width="1" height="1" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="></ms-performance-tracker><!----></ms-option-panel><!----><!----><ms-option-panel class="option-panel"><!----><ms-option-panel-header><div class="option-group-name clickable"><div class="option-group-header-title"><!----><div class="header-content"><!----><div class="option-group-name-info-name"><span class="market-name">Hándicap 1X2  1 - Tiempo Reglamentario</span><!----></div><!----><!----><!----></div><div class="option-group-header-right-section"><!----><!----><!----><!----><ms-market-header-bet-builder-badge _nghost-ng-c452392653="" class="market-header-bet-builder-signposting-var-scope"><div _ngcontent-ng-c452392653="" class="badge-toggle"> CA
+</div><!----><vn-popper-content _ngcontent-ng-c452392653="" closetype="none"><float-ui-content class="ngxp__tooltip market-header-bet-builder-signposting-var-scope"><div class="float-ui-container float-ui-animation market-header-bet-builder-signposting" id="ngx_float_ui_21" aria-hidden="true" role="popper" style="display: none; opacity: 0;"><!----><div class="ngxp__inner"><!----><div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-header"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title-container"><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-badge">CA</div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-title">Crea tu Apuesta</div></div><div _ngcontent-ng-c452392653="" class="close-button theme-ex"></div></div><div _ngcontent-ng-c452392653="" class="market-header-bet-builder-tooltip-content">¡Tu juego, tu apuesta! Selecciona las opciones con el icono "CA" y crea tu apuesta desde cualquier parte del sitio web.</div></div><!----></div><div class="popper-buttons"><!----></div></div><!----><div class="float-ui-arrow popper-arrow"></div></div></float-ui-content><!----></vn-popper-content></ms-market-header-bet-builder-badge><!----><!----><!----><!----><!----><div class="option-group-header-chevron"><vn-icon><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="12" height="12" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/dda64f038f7447ed84a1215f8a43fdbd.svg"></fast-svg><!----><!----></vn-icon></div><!----><!----><!----></div></div></div></ms-option-panel-header><!----><ms-performance-tracker><img width="1" height="1" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="></ms-performance-tracker><!----></ms-option-panel><!----><!----><ms-option-panel class="option-panel"><!----><ms-option-panel-header><div class="option-group-name clickable"><div class="option-group-header-title"><!----><div class="header-content"><!----><div class="option-group-name-info-name"><span class="market-name">Descanso o final del partido</span><!----></div><!----><!----><!----></div><div class="option-group-header-right-section"><!----><!----><!----><!----><!----><!----><!----><div class="option-group-header-chevron"><vn-icon><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="12" height="12" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/dda64f038f7447ed84a1215f8a43fdbd.svg"></fast-svg><!----><!----></vn-icon></div><!----><!----><!----></div></div></div></ms-option-panel-header><!----><ms-performance-tracker><img width="1" height="1" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="></ms-performance-tracker><!----></ms-option-panel><!----><!----><!----></div><!----><!----><!----><!----><!----></ms-option-group-list><!----><!----><!----><!----><ms-item class="list-item-all ms-active-highlight list-item"><!----><a class="ms-active-highlight"><div class="icon"><!----></div><div class="title"><span>Todas las apuestas</span><!----></div><div class="count">151</div><!----><div class="arrow"><span class="theme-right"></span></div><!----><!----></a><!----><!----></ms-item><!----><!----><!----><!----><!----><!----></div><!----><!----><!----></ms-event-details-main><!----></div><ms-content-box><!----></ms-content-box><vn-dynamic-layout-slot slot="inner-footer" class="slot slot-single slot-inner-footer"><vn-footer><footer><div class="footer-wrapper"><div class="footer-top-links"><vn-responsive-language-switcher class="responsive-language-switcher"><div class="dropdown dh language-switcher"><div menu-toggle="closed" class="current"><!----><div class="dropdown-toggle-group"><vn-language-item><!----><vn-image><div class="vn-img"><!----><img class="flag flag-es vn-img__image-fluid" src="https://scmedia.bwin.es/$-$/3ce57c6428b24891832d1b1b1ae23df8.svg"><!----><!----></div><!----></vn-image><!----><!----><span class="lang-label">Español</span><!----><!----></vn-language-item><!----><vn-icon name="theme-down" size="8" extraclass="dropdown-toggle-icon"><!----><fast-svg _nghost-ng-c3204849328="" class="dropdown-toggle-icon"><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="8" height="8" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/dda64f038f7447ed84a1215f8a43fdbd.svg"></fast-svg><!----><!----></vn-icon></div><!----><!----></div></div><!----><!----></vn-responsive-language-switcher><!----><vn-label-switcher class="label-switcher"><!----></vn-label-switcher><!----><vn-footer-menu-item class="footer-menu-items"><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/mobileportal/contact" rel="nofollow"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="contact"><!----><span class="menu-item-txt">Contacto</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item class="footer-menu-items"><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://help.bwin.es/es/general-information" target="_blank"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="help"><!----><span class="menu-item-txt">Ayuda</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item class="footer-menu-items"><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/p/safer-gambling" rel="nofollow"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="safergambling"><!----><span class="menu-item-txt">Juego más Seguro</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item class="footer-menu-items"><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.ordenacionjuego.es/operadores-juego/operadores-licencia/operadores/electraworks-ceuta-sa" rel="nofollow"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="authorisedgambling"><!----><span class="menu-item-txt">Juego autorizado</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item class="footer-menu-items"><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/p/sitemap"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="sitemap"><!----><span class="menu-item-txt">Mapa de la página web</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item class="footer-menu-items"><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/p/imprint"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="imprint"><!----><span class="menu-item-txt">Pie de imprenta</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item class="footer-menu-items"><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link ot-sdk-show-settings dh footer-nav-link" target="_blank" rel="nofollow"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="cookiesettings"><!----><span class="menu-item-txt">Configuración de cookies</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item class="footer-menu-items"><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://help.bwin.es/es/general-information/security/privacy-policy" target="help" rel="nofollow"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="privacynotice"><!----><span class="menu-item-txt">Política de Privacidad</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><!----><vn-dynamic-layout-slot class="slot slot-multi slot-footer_items_inline"><!----><!----><!----><!----><!----></vn-dynamic-layout-slot><!----></div><!----><div class="footer-nav-seo-container"><vn-footer-menu-section class="footer-nav"><div class="footer-menu-section-title"><!----> APUESTAS DEPORTIVAS </div><!----><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/sports/directo/apuestas" title="Live"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="live"><!----><span class="menu-item-txt">Apuestas en Directo</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/sports/fútbol-4"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="football"><!----><span class="menu-item-txt">Apuestas Fútbol</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/sports/f%C3%BAtbol-4/apuestas/espa%C3%B1a-28/laliga-102829"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="la%20liga"><!----><span class="menu-item-txt">Apuestas La Liga</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/sports/f%C3%BAtbol-4/apuestas/europa-7/uefa-champions-league-0:3"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="champions%20league"><!----><span class="menu-item-txt">Apuestas Champions League</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/sports/tenis-5"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="tennis"><!----><span class="menu-item-txt">Apuestas Tenis</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/sports/baloncesto-7"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="basket"><!----><span class="menu-item-txt">Apuestas Baloncesto</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/sports"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="apuestas%20deportivas"><!----><span class="menu-item-txt">Apuestas Deportivas</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><!----><!----></vn-footer-menu-section><vn-footer-menu-section class="footer-nav"><div class="footer-menu-section-title"><!----> CASINO  </div><!----><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/games"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="jugar%20al%20casino"><!----><span class="menu-item-txt">Casino Online</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/games/c/ruletaenvivo"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="liveruleta"><!----><span class="menu-item-txt">Ruleta en Vivo</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/games/c/ruleta"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="ruleta"><!----><span class="menu-item-txt">Ruleta</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/games/c/blackjack"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="blackjack"><!----><span class="menu-item-txt">Blackjack </span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/games/c/slots"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="slots"><!----><span class="menu-item-txt">Tragaperras</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/games/c/videotragaperras"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="slots%20de%20bar"><!----><span class="menu-item-txt">Slots de Bar</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/games/c/jackpots"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="slots%20con%20jackpot"><!----><span class="menu-item-txt">Jackpots</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/poker/poker"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="poker"><!----><span class="menu-item-txt">Poker</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><!----><!----></vn-footer-menu-section><vn-footer-menu-section class="footer-nav"><div class="footer-menu-section-title"><!----> ENLACES UTILES </div><!----><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/sports/news" target="_blank" rel="nofollow"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="blogsports"><!----><span class="menu-item-txt">Blog de Deportes</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/games/blog" target="_self"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="blogcasino"><!----><span class="menu-item-txt">Blog de Casino</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/mobileportal/contact" target=""><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="contactar"><!----><span class="menu-item-txt">Contactar con bwin España</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><!----><!----></vn-footer-menu-section><vn-footer-menu-section class="footer-nav"><div class="footer-menu-section-title"><!----> ENLACES CORPORATIVOS </div><!----><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/p/about-us/about-us" rel="nofollow"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="about%20us"><!----><span class="menu-item-txt">Sobre Nosotros</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://help.bwin.es/es/general-information/legal-matters/general-terms-and-conditions" target="_blank"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="tcs"><!----><span class="menu-item-txt">Disposiciones Generales</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.entainpartners.com/" target="_blank" rel="nofollow"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="affiliates"><!----><span class="menu-item-txt">Entain Partners</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.entaingroup.com/" target="_blank" rel="nofollow"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="plc"><!----><span class="menu-item-txt">Entain Group</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.entaingroup.com/investor-relations/" target="_blank" rel="nofollow"><!----><!----><!----><!----><vn-menu-item-text-content cssclass="menu-item-txt" data-testid="investors"><!----><span class="menu-item-txt">Relaciones con Inversores</span><!----></vn-menu-item-text-content><!----><!----><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><!----><!----></vn-footer-menu-section><!----></div><vn-content-messages closedcookiekey="vn-f"><div class="content-message-container"><vn-content-message><div class="content-message" data-id="v6-social-media"><!----><!----><vn-page-matrix class="page-matrix"><vn-pc-text class="footer-content-message-text partners pc-component pc-text"><!----><div class="pc-txt"><div class="footer-cm-title">Síguenos</div>
+<a href="https://www.instagram.com/bwin_es?igsh=czdsY2Vvamlxa3Nt&amp;utm_source=qr" rel="nofollow" target="_blank" ng-version="19.2.1"><img alt="instagram" src="https://scmedia.bwin.es/$-$/4410166f5570426c913425cd4fe8cfc5.png"></a>
+<a href="https://www.facebook.com/share/14XKKtZw2q/?mibextid=wwXIfr" rel="nofollow" target="_blank" ng-version="19.2.1"><img alt="facebook" src="https://scmedia.bwin.es/$-$/6d953ead140947c7a80a4dfe69f05561.png"></a>
+<a href="https://x.com/bwin_es?s=21" rel="nofollow" target="_blank" ng-version="19.2.1"><img alt="X" src="https://scmedia.bwin.es/$-$/74df11f8dda4427694eab435a0e89e58.png"></a>
+<a href="https://youtube.com/@bwinespana5331?si=iCJxZusVQecEj3Zw" rel="nofollow" target="_blank" ng-version="19.2.1"><img alt="youtube" src="https://scmedia.bwin.es/$-$/0b23ed0934e54708ae95144ed04a609d.png"></a>
+<style>
+    .footer-nav-seo-container .menu-item{display:block; width:170px;}
+    .product-sports ul, .product-sports ol{margin: 0 0 0 10px!important;}
+</style></div></vn-pc-text><!----></vn-page-matrix></div></vn-content-message><vn-content-message><div class="content-message" data-id="licence"><!----><!----><vn-page-matrix class="page-matrix"><vn-pc-text class="footer-content-message-text pc-component pc-text"><!----><div class="pc-txt"><p>bwin.es está administrada por ElectraWorks (Ceuta) SA (anteriormente denominada ElectraWorks (Malta) Plc). La Dirección General de Ordenación del Juego ha concedido a ElectraWorks (Malta) las siguientes licencias generales: OTROS JUEGOS No/Ref: 5-11/GO/N0461246A/SGR y APUESTAS No/Ref: 6-11/GA/N0461246A/SGR, y las siguientes licencias singulares: MÁQUINAS DE AZAR No/Ref: MAZ/2014/014, RULETA No/Ref: 8-11/RLT/N0461246A/SGR, BLACKJACK No/Ref: 9-11/BLJ/N0461246A/SGR, APUESTAS DEPORTIVAS DE CONTRAPARTIDA No/Ref: 10-11/ADC/N0461246A/SGR, OTRAS APUESTAS DE CONTRAPARTIDA No/Ref, AOC/2021/026 y PÓQUER No/Ref: 11-11/POQ/N0461246A/SGR.</p></div></vn-pc-text><!----></vn-page-matrix></div></vn-content-message><!----></div><!----></vn-content-messages><!----><!----><div class="footer-nav-logos"><vn-footer-menu-section class="footer-nav footer-nav-logos-l"><!----><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.egba.eu/" target="_blank" rel="nofollow"><!----><!----><!----><!----><!----><!----><!----><vn-image><div class="vn-img"><img disableoptimizedsrcset="" alt="European Gaming and Betting Association" class="vn-img__image-fluid menu-item-img footer-nav-link-img" width="204" height="40" loading="lazy" fetchpriority="auto" ng-img="true" src="https://scmedia.bwin.es/$-$/45f8620ac06f40adb86bf55b5254951b.png"><!----><!----><!----></div><!----></vn-image><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://fejar.org/" target="_blank" rel="nofollow"><!----><!----><!----><!----><!----><!----><!----><vn-image><div class="vn-img"><img disableoptimizedsrcset="" class="vn-img__image-fluid menu-item-img footer-nav-link-img" width="520" height="170" loading="lazy" fetchpriority="auto" ng-img="true" src="https://scmedia.bwin.es/$-$/87b815ea33c345ddbc25f9ffeec506a1.png"><!----><!----><!----></div><!----></vn-image><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://ecogra.org/alternative-dispute-resolution/" target="_blank" rel="nofollow"><!----><!----><!----><!----><!----><!----><!----><vn-image><div class="vn-img"><img disableoptimizedsrcset="" class="vn-img__image-fluid menu-item-img footer-nav-link-img" width="112" height="40" loading="lazy" fetchpriority="auto" ng-img="true" src="https://scmedia.bwin.es/$-$/4a4690ee0842416eb2654809d993febb.png"><!----><!----><!----></div><!----></vn-image><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.ordenacionjuego.es/participantes-juego/juego-seguro" target="_blank" rel="nofollow"><!----><!----><!----><!----><!----><!----><!----><vn-image><div class="vn-img"><img disableoptimizedsrcset="" class="vn-img__image-fluid menu-item-img footer-nav-link-img" width="210" height="40" loading="lazy" fetchpriority="auto" ng-img="true" src="https://scmedia.bwin.es/$-$/a98c6ee49684432683da044bd003e5f8.png"><!----><!----><!----></div><!----></vn-image><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.ordenacionjuego.es/participantes-juego/juego-autorizado" target="_blank" rel="nofollow"><!----><!----><!----><!----><!----><!----><!----><vn-image><div class="vn-img"><img disableoptimizedsrcset="" class="vn-img__image-fluid menu-item-img footer-nav-link-img" width="210" height="40" loading="lazy" fetchpriority="auto" ng-img="true" src="https://scmedia.bwin.es/$-$/96d13c53366347debee7af8b96f5c3ce.png"><!----><!----><!----></div><!----></vn-image><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/p/safer-gambling" rel="nofollow"><!----><!----><!----><!----><!----><!----><!----><vn-image><div class="vn-img"><img disableoptimizedsrcset="" class="vn-img__image-fluid menu-item-img footer-nav-link-img" width="235" height="44" loading="lazy" fetchpriority="auto" ng-img="true" src="https://scmedia.bwin.es/$-$/5131e6988979401aa88c36d02fd5857a.png"><!----><!----><!----></div><!----></vn-image><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.bwin.es/es/p/18plus" rel="nofollow"><!----><!----><!----><!----><!----><!----><!----><vn-image><div class="vn-img"><img disableoptimizedsrcset="" class="vn-img__image-fluid menu-item-img footer-nav-link-img" width="40" height="40" loading="lazy" fetchpriority="auto" ng-img="true" src="https://scmedia.bwin.es/$-$/eb1db3396e6e49f2993a6dcacd90cd68.png"><!----><!----><!----></div><!----></vn-image><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link footer-nav-link" href="https://www.ordenacionjuego.es/participantes-juego/juego-seguro/rgiaj" target="_blank"><!----><!----><!----><!----><!----><!----><!----><vn-image><div class="vn-img"><img disableoptimizedsrcset="" alt="auto-prohibition-red-2" class="vn-img__image-fluid menu-item-img footer-nav-link-img" width="53" height="40" loading="lazy" fetchpriority="auto" ng-img="true" src="https://scmedia.bwin.es/$-$/ba8e7cc4cc3a480392c3d07b23b46de8.png"><!----><!----><!----></div><!----></vn-image><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><!----><!----></vn-footer-menu-section><vn-footer-menu-section class="footer-nav footer-nav-logos-r"><!----><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link visa-payment footer-nav-link" href="https://help.bwin.es/es/general-information/payments/payment-methods/visa" target="_blank"><!----><!----><!----><!----><!----><!----><!----><vn-image><div class="vn-img"><img disableoptimizedsrcset="" alt="Logo de la tarjeta Visa" class="vn-img__image-fluid menu-item-img footer-nav-link-img" width="86" height="40" loading="lazy" fetchpriority="auto" ng-img="true" src="https://scmedia.bwin.es/$-$/ec1aa03fcd864a19af2cb4ecf27b9cf4.png"><!----><!----><!----></div><!----></vn-image><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link mastercard-payment footer-nav-link" href="https://help.bwin.es/es/general-information/payments/payment-methods/mastercard" target="_blank"><!----><!----><!----><!----><!----><!----><!----><vn-image><div class="vn-img"><img disableoptimizedsrcset="" class="vn-img__image-fluid menu-item-img footer-nav-link-img" width="166" height="40" loading="lazy" fetchpriority="auto" ng-img="true" src="https://scmedia.bwin.es/$-$/224d6095bda7404bb4114d65233cd25f.png"><!----><!----><!----></div><!----></vn-image><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link bizum-payment footer-nav-link" href="https://help.bwin.es/es/general-information/payments/payment-methods/bizum" target="_blank"><!----><!----><!----><!----><!----><!----><!----><vn-image><div class="vn-img"><img disableoptimizedsrcset="" class="vn-img__image-fluid menu-item-img footer-nav-link-img" width="131" height="40" loading="lazy" fetchpriority="auto" ng-img="true" src="https://scmedia.bwin.es/$-$/bc025a2bd2d14056824bed63552a3783.png"><!----><!----><!----></div><!----></vn-image><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link mastercard-payment footer-nav-link" href="https://help.bwin.es/es/general-information/payments/payment-methods/paypal" target="_blank"><!----><!----><!----><!----><!----><!----><!----><vn-image><div class="vn-img"><img disableoptimizedsrcset="" class="vn-img__image-fluid menu-item-img footer-nav-link-img" width="163" height="40" loading="lazy" fetchpriority="auto" ng-img="true" src="https://scmedia.bwin.es/$-$/d0ce6102901f49e1825a2ba19dadc73c.png"><!----><!----><!----></div><!----></vn-image><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link mastercard-payment footer-nav-link" href="https://help.bwin.es/es/general-information/payments/payment-methods/applepay" target="_blank"><!----><!----><!----><!----><!----><!----><!----><vn-image><div class="vn-img"><img disableoptimizedsrcset="" class="vn-img__image-fluid menu-item-img footer-nav-link-img" width="61" height="25" loading="lazy" fetchpriority="auto" ng-img="true" src="https://scmedia.bwin.es/$-$/6135c0d157df4ee8a302b189039cdfa8.png"><!----><!----><!----></div><!----></vn-image><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link mastercard-payment footer-nav-link" href="https://help.bwin.es/es/general-information/payments/payment-methods/paysafecard" target="_blank"><!----><!----><!----><!----><!----><!----><!----><vn-image><div class="vn-img"><img disableoptimizedsrcset="" class="vn-img__image-fluid menu-item-img footer-nav-link-img" width="234" height="40" loading="lazy" fetchpriority="auto" ng-img="true" src="https://scmedia.bwin.es/$-$/4939b217b9244de99e0334cf9e587f3b.png"><!----><!----><!----></div><!----></vn-image><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link mastercard-payment footer-nav-link" href="https://help.bwin.es/es/general-information/payments/payment-methods/promocode" target="_blank"><!----><!----><!----><!----><!----><!----><!----><vn-image><div class="vn-img"><img disableoptimizedsrcset="" class="vn-img__image-fluid menu-item-img footer-nav-link-img" width="176" height="40" loading="lazy" fetchpriority="auto" ng-img="true" src="https://scmedia.bwin.es/$-$/317f43148e074a33bb78b072170d8ae7.png"><!----><!----><!----></div><!----></vn-image><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><vn-footer-menu-item><vn-menu-item linkclass="footer-nav-link" imageclass="footer-nav-link-img" class="menu-item"><!----><a class="menu-item-link mastercard-payment footer-nav-link" href="https://help.bwin.es/es/general-information/payments/payment-methods/aircashpay" target="_blank"><!----><!----><!----><!----><!----><!----><!----><vn-image><div class="vn-img"><img disableoptimizedsrcset="" class="vn-img__image-fluid menu-item-img footer-nav-link-img" width="257" height="40" loading="lazy" fetchpriority="auto" ng-img="true" src="https://scmedia.bwin.es/$-$/c6be5c95c6384724994e9d6fc1b28749.png"><!----><!----><!----></div><!----></vn-image><!----><!----><!----><!----><!----><!----></a><!----><!----><!----><!----><!----><!----><!----><!----><!----></vn-menu-item></vn-footer-menu-item><!----><!----></vn-footer-menu-section><!----></div><!----><vn-dynamic-layout-slot class="slot slot-multi slot-footer_items"><!----><vn-copyright><div>Copyright © 2025 ElectraWorks (Ceuta) SA (anteriormente denominada ElectraWorks (Malta) Plc)</div><!----></vn-copyright><!----><!----><!----><!----><!----></vn-dynamic-layout-slot></div></footer><!----></vn-footer><!----><!----><!----><!----><!----><!----></vn-dynamic-layout-slot></ms-main-column></div></div></div><!----><scrollbar-y _ngcontent-ng-c3182812167="" _nghost-ng-c1959957197="" scrollable="true" fit="false" class="scrollbar-control"><div _ngcontent-ng-c1959957197="" scrollbartracky="" class="ng-scrollbar-track"><div _ngcontent-ng-c1959957197="" scrollbarthumby="" class="ng-scrollbar-thumb" style="height: 102px; transform: translate3d(0px, 109.37px, 0px);"></div></div></scrollbar-y><!----><!----><!----></div></ng-scrollbar><!----><!----><ng-scrollbar viewclass="column-view" class="column column-right ng-scrollbar" _nghost-ng-c3182812167="" style="height: 590px;"><div _ngcontent-ng-c3182812167="" class="ng-scrollbar-wrapper" position="native" track="vertical" appearance="compact" visibility="hover" deactivated="false" dir="ltr" pointereventsmethod="viewport" verticalused="false" horizontalused="false" isverticallyscrollable="false" ishorizontallyscrollable="false"><div _ngcontent-ng-c3182812167="" class="ng-scroll-viewport-wrapper"><div _ngcontent-ng-c3182812167="" scrollviewport="" hidenativescrollbar="" class="ng-native-scrollbar-hider ng-scroll-viewport column-view" style="--native-scrollbar-size: -0px;"><div _ngcontent-ng-c3182812167="" class="ng-scroll-content"><ms-widget-column class="column-wrapper"><ms-widget-slot msmodaldialogcontainer="" class="widget-slot"><ms-reward-tokens-container class="reward-tokens-banner widget--proxied"><!----></ms-reward-tokens-container><ms-media class="ng-tns-c1046991132-0"><div class="event-details-column"><div class="options-panel"><div class="media-header">Medios</div><ms-tab-bar class="tab-bar"><ul class="tab-bar-container"><li data-menu-item-id="0" class="tab-bar-item"><a class="link-without-count"><!----><vn-icon size="18"><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="18" height="18" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/f7864f4e10dd415aa57b9dbb38f3a72c.svg"></fast-svg><!----><!----></vn-icon><!----><!----><!----><span class="title title-without-count"></span><!----><!----><!----><!----></a><!----><!----></li><li data-menu-item-id="1" class="tab-bar-item disabled"><a class="link-without-count"><!----><vn-icon size="18"><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="18" height="18" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/859c6b29ce66457a9d71db148973903a.svg"></fast-svg><!----><!----></vn-icon><!----><!----><!----><span class="title title-without-count"></span><!----><!----><!----><!----></a><!----><!----></li><li data-menu-item-id="2" class="tab-bar-item active"><a class="link-without-count"><!----><vn-icon size="18"><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="18" height="18" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/dde83bd7e423455c907095e8f2fde542.svg"></fast-svg><!----><!----></vn-icon><!----><!----><!----><span class="title title-without-count"></span><!----><!----><!----><!----></a><!----><!----></li><!----></ul><!----><!----><!----><!----></ms-tab-bar><ms-expansion-panel class="expansion-panel"><div class="expansion-panel"><span class="expansion-panel-divider"></span><div class="toggle-arrow"><span class="theme-up"></span></div></div></ms-expansion-panel></div><div id="mediaContainer" aria-haspopup="true" class="content-container media-container ng-trigger ng-trigger-toggleAnimation ng-animating"><div class="media-expander"><span class="media-fullscreen"><vn-icon size="15"><!----><fast-svg _nghost-ng-c3204849328=""><svg _ngcontent-ng-c3204849328="" class="fast-svg" role="img" fill="currentColor" width="15" height="15" viewBox="0 0 31 31"><use _ngcontent-ng-c3204849328="" href="#suspense"></use></svg><img _ngcontent-ng-c3204849328="" style="display: block; contain: content; content-visibility: auto;" loading="lazy" alt="loading helper" width="0" height="0" src="https://scmedia.bwin.es/$-$/c7566ceb072c464685d6580ed24232dd.svg"></fast-svg><!----><!----></vn-icon></span></div><!----><!----><!----><div class="stats-column prematch-collapsed grass" style="background-image: radial-gradient(115px at center top, rgb(36, 79, 10), rgb(36, 79, 10));"><ndc-dynamic></ndc-dynamic><!----><!----></div><!----></div><!----></div><!----></ms-media><ms-bet-column _nghost-ng-c683963108="" class="bet-column"><!----></ms-bet-column><ms-minigames-column><div class="mini-games-column"><div class="options-panel single-tab"><div class="mini-games-header">Minijuegos</div><ms-expansion-panel class="expansion-panel"><div class="expansion-panel"><span class="expansion-panel-divider"></span><div class="toggle-arrow"><span class="theme-up"></span></div></div></ms-expansion-panel></div><ms-minigames><div class="content-container"><ms-loading-indicator><!----></ms-loading-indicator><!----><iframe class="mini-games-iframe" src="https://playcasinoclient.bwin.es/htmllobby/minilobby/index.html?lang=es_ES&amp;brand=BWINES&amp;channelName=WC&amp;lobbyType=instantMini&amp;invokerProduct=BETTING&amp;frontend=be&amp;userIp=185.107.152.14&amp;pLang=es&amp;currency=EUR&amp;sessionKey=null&amp;HOSTURL=https://www.bwin.es/es&amp;accountName="></iframe></div></ms-minigames></div><!----></ms-minigames-column><!----></ms-widget-slot><!----></ms-widget-column></div></div></div><!----><!----><!----><!----></div></ng-scrollbar><!----><!----><!----><!----><!----><ms-component-loader class="component-loader"><div></div></ms-component-loader><!----><!----><ms-general-tooltip><div></div><!----><popper-content><div class="ngxp__container ngxp__animation" id="ngx_poppperjs_1" aria-hidden="true" role="popper" style="display: none; opacity: 0;"><!----><div class="ngxp__inner"><span></span></div><!----><div class="ngxp__arrow"></div></div></popper-content><!----></ms-general-tooltip></div><div class="main-container" hidden=""><!----></div></ms-main><!----><vn-dynamic-layout-slot class="slot slot-single slot-main_content_footer"><!----></vn-dynamic-layout-slot><vn-dynamic-layout-slot class="slot slot-single slot-background"><!----><!----><!----><!----><!----></vn-dynamic-layout-slot><router-outlet name="overlay"></router-outlet><!----></div></main></vn-main><!----><!----><!----><!----><!----><!----></vn-dynamic-layout-slot><vn-dynamic-layout-slot class="slot slot-multi slot-app"><!----><lh-rtms-layer><!----></lh-rtms-layer><!----><ms-critical-error><!----></ms-critical-error><!----><ms-betslip-bar-container><!----></ms-betslip-bar-container><!----><!----><!----><!----><!----></vn-dynamic-layout-slot><vn-dynamic-layout-slot class="slot slot-single slot-footer"><!----><!----><!----><!----><!----></vn-dynamic-layout-slot><vn-loading-indicator><div class="loading" hidden=""><!----><div><div class="loading-v2"><div class="dot-flashing"></div></div></div><!----><!----><span>Por favor, espera...</span><!----></div></vn-loading-indicator><vn-dynamic-layout-slot class="slot slot-multi slot-bottom"><!----><!----><!----><!----><!----></vn-dynamic-layout-slot><vn-dynamic-layout-slot class="slot slot-single slot-login_spinner"><!----><!----><!----><!----><!----></vn-dynamic-layout-slot></vn-app>
+    <noscript>&lt;p&gt;Para usar esta aplicaci&amp;oacute;n con la mejor funcionalidad y experiencia de usuario es necesario disponer de Javascript. Es posible que su navegador o dispositivo no acepten Javascript o que est&amp;eacute; desactivado.&lt;/p&gt;&#xA;&lt;br /&gt;</noscript>
+    <script src="/ClientDist/browser/preloader.e100075417e0.js"></script>
+    <script type="module" src="/ClientDist/browser/polyfills-I7QVPETD.js"></script><script type="module" src="/ClientDist/browser/main-6MLPBNLH.js"></script><script type="module" src="/ClientDist/browser/locales/es.js"></script>
+
+    <script src="https://scmedia.itsfogo.com/$-$/a015704488ae43a5832c1fc082c49b33.js" id="zendes" defer=""></script>
+    <script>window.__rendered = new Date(1746997408000);</script>
+
+
+
+<iframe aria-hidden="true" src="/ClientDist/browser/~partytown/partytown-sandbox-sw.html?1746997412043" style="display: block; width: 0px; height: 0px; border: 0px; visibility: hidden;"></iframe><style id="ds-arrow-fix">vn-swiper .ds-arrow {
+    background: var(--ds-carousel-arrow-active-color-bg) !important;
+    border-color: var(--ds-carousel-arrow-active-color-border) !important;
+    padding: 0 !important;
+    opacity: 1 !important;
+    width: var(--ds-carousel-arrow-width) !important;
+    height: var(--ds-carousel-arrow-height) !important;
+    display: flex !important;
+}
+
+vn-swiper .ds-arrow svg {
+    height: var(--ds-carousel-arrow-icon-size) !important;
+    width: var(--ds-carousel-arrow-icon-size) !important;
+}
+
+.vn-25.product-casino vn-swiper .swiper .ds-arrow {
+    box-shadow: none !important;
+    background-color: var(--ds-carousel-arrow-active-color-bg) !important;
+}
+
+.vn-25.product-casino .casino-opt-mini-whole-bg vn-swiper .swiper .ds-arrow {
+    height: 100% !important;
+    width: 28px !important;
+    opacity: .8 !important;
+}
+vn-swiper .swiper-button-disabled,
+vn-swiper .ds-arrow.swiper-button-lock{
+    display: none !important;
+}</style><style id="ds-notification-bubble-fix">.menu-item-link.tab-nav-link .ds-notification-bubble,
+.navbar-wrapper-right lh-inbox-icon .ds-notification-bubble,
+.am-wrapper .am-inbox .ds-notification-bubble,
+.navigation-wrapper .menu-item-link.top-nav-link .ds-notification-bubble,
+.bottom-nav .menu-item-link.bottom-nav-link .ds-notification-bubble,
+.bottom-sheet-menu .ds-notification-bubble,
+.am-v2 .am-menu-items .ds-notification-bubble,
+.am-v3 .am-menu-items .ds-notification-bubble,
+.am-v4 .am-menu-item .ds-notification-bubble,
+.menu-wrapper .menu-item-link .ds-notification-bubble {
+    font-style: normal;
+    position: absolute;
+}
+.menu-item-link.tab-nav-link .ds-notification-bubble,
+.navbar-wrapper-right lh-inbox-icon .ds-notification-bubble {
+    top: 0.05rem;
+    right: -0.05rem;
+}
+.navbar-wrapper-right lh-inbox-icon .has-text:not(.user-state-no-text) .ds-notification-bubble {
+    top: -8px;
+    right: calc(50% - 16px);
+}
+.navbar-wrapper-right vn-h-avatar-balance .user-state-nav .ds-notification-bubble {
+    position: absolute;
+    top: -6px;
+    right: calc(50% - 20px);
+}
+.am-wrapper .am-inbox .ds-notification-bubble {
+    top: -0.25rem;
+    right: -0.05rem;
+}
+
+.menu-wrapper .menu-item-link .ds-notification-bubble{
+   top: 2px;
+   right: 2px;
+}
+.am-v2 .am-menu-items .ds-notification-bubble, .am-v3 .am-menu-items .ds-notification-bubble{
+    top: -3px;
+    left: 10px;
+}
+
+.am-v4 .am-menu-item .image-icon{
+    position: relative;
+}
+
+.am-v4 .am-menu-item .ds-notification-bubble{
+    top: 0;
+    right: 3px;
+}
+
+.navigation-wrapper .menu-item-link.top-nav-link .ds-notification-bubble {
+    top: -6px;
+    left: 9px;
+}
+@media (max-width: 1279.98px) {
+    .navigation-wrapper .menu-item-link.top-nav-link .ds-notification-bubble {
+        top: 0;
+        left: 50%;
     }
 }
-function asmReferrerGetter() { return ""; }
-getterHook(Document, "referrer", asmReferrerGetter);
-} catch(e) {}
-})();
-
-</script>
-
-<script type="text/javascript">
-(function(){
-window.gACM=!!window.gACM;try{(function(){(function(){var l={decrypt:function(l){try{return JSON.parse(function(l){l=l.split("l");var O="";for(var Z=0;Z<l.length;++Z)O+=String.fromCharCode(l[Z]);return O}(l))}catch(Z){}}};return l={configuration:l.decrypt("123l34l97l99l116l105l118l101l34l58l34l110l111l34l44l34l100l101l98l117l103l103l105l110l103l34l58l34l110l111l34l44l34l109l111l100l117l108l101l49l34l58l34l101l110l97l98l108l101l100l34l44l34l109l111l100l117l108l101l50l34l58l34l101l110l97l98l108l101l100l34l44l34l109l111l100l117l108l101l51l34l58l34l101l110l97l98l108l101l100l34l44l34l109l111l100l117l108l101l52l34l58l34l101l110l97l98l108l101l100l34l125")}})();
-var ol=77;try{var zl,sl,_l=L(491)?0:1,Il=L(566)?0:1,lL=L(444)?0:1,OL=L(836)?0:1,zL=L(409)?0:1,iL=L(65)?1:0,IL=L(431)?0:1;for(var jL=(L(808),0);jL<sl;++jL)_l+=L(983)?1:2,Il+=(L(912),2),lL+=(L(65),2),OL+=(L(999),2),zL+=L(384)?2:1,iL+=L(36)?2:1,IL+=(L(905),3);zl=_l+Il+lL+OL+zL+iL+IL;window.Zz===zl&&(window.Zz=++zl)}catch(lo){window.Zz=zl}var Lo=!0;function z(l,O){l+=O;return l.toString(36)}
-function Oo(l){var O=91;!l||document[s(O,209,196,206,196,189,196,199,196,207,212,174,207,188,207,192)]&&document[S(O,209,196,206,196,189,196,199,196,207,212,174,207,188,207,192)]!==S(O,209,196,206,196,189,199,192)||(Lo=!1);return Lo}function S(l){var O=arguments.length,Z=[];for(var _=1;_<O;++_)Z.push(arguments[_]-l);return String.fromCharCode.apply(String,Z)}function Zo(){}Oo(window[Zo[z(1086777,ol)]]===Zo);Oo(typeof ie9rgb4!==S(ol,179,194,187,176,193,182,188,187));
-Oo(RegExp("\x3c")[s(ol,193,178,192,193)](function(){return"\x3c"})&!RegExp(z(42812,ol))[z(1372128,ol)](function(){return"'x3'+'d';"}));
-var so=window[S(ol,174,193,193,174,176,181,146,195,178,187,193)]||RegExp(s(ol,186,188,175,182,201,174,187,177,191,188,182,177),S(ol,182))[z(1372128,ol)](window["\x6e\x61vi\x67a\x74\x6f\x72"]["\x75\x73e\x72A\x67\x65\x6et"]),_o=+new Date+(L(360)?6E5:746209),io,Jo,lO,LO=window[s(ol,192,178,193,161,182,186,178,188,194,193)],zO=so?L(233)?3E4:19714:L(669)?7606:6E3;
-document[S(ol,174,177,177,146,195,178,187,193,153,182,192,193,178,187,178,191)]&&document[S(ol,174,177,177,146,195,178,187,193,153,182,192,193,178,187,178,191)](s(ol,195,182,192,182,175,182,185,182,193,198,176,181,174,187,180,178),function(l){var O=11;document[S(O,129,116,126,116,109,116,119,116,127,132,94,127,108,127,112)]&&(document[S(O,129,116,126,116,109,116,119,116,127,132,94,127,108,127,112)]===s(O,115,116,111,111,112,121)&&l[S(O,116,126,95,125,128,126,127,112,111)]?lO=!0:document[S(O,129,116,
-126,116,109,116,119,116,127,132,94,127,108,127,112)]===z(68616527655,O)&&(io=+new Date,lO=!1,ZO()))});function ZO(){if(!document[s(91,204,208,192,205,212,174,192,199,192,190,207,202,205)])return!0;var l=+new Date;if(l>_o&&(L(106)?6E5:370616)>l-io)return Oo(!1);var O=Oo(Jo&&!lO&&io+zO<l);io=l;Jo||(Jo=!0,LO(function(){Jo=!1},L(483)?0:1));return O}ZO();var sO=[L(856)?26477630:17795081,L(914)?2147483647:27611931586,L(851)?951379742:1558153217];
-function SO(l){var O=59;l=typeof l===z(1743045617,O)?l:l[s(O,175,170,142,175,173,164,169,162)](L(254)?36:49);var Z=window[l];if(!Z||!Z[S(O,175,170,142,175,173,164,169,162)])return;var _=""+Z;window[l]=function(l,O){Jo=!1;return Z(l,O)};window[l][S(O,175,170,142,175,173,164,169,162)]=function(){return _}}for(var iO=(L(534),0);iO<sO[z(1294399128,ol)];++iO)SO(sO[iO]);Oo(!1!==window[S(ol,180,142,144,154)]);window._O=window._O||{};window._O.Li="08254aa74d194000cd6f18c4b95d1560b8a5bc6e5183b80473d29ac746a77c0b5e80d0c1b6f2d7abd43a86736117af43a18c5f67295769c2a7c923ed22fab60a134bd6134d026c0b";
-function jO(l){var O=+new Date,Z;!document[S(43,156,160,144,157,164,126,144,151,144,142,159,154,157,108,151,151)]||O>_o&&(L(979)?639190:6E5)>O-io?Z=Oo(!1):(Z=Oo(Jo&&!lO&&io+zO<O),io=O,Jo||(Jo=!0,LO(function(){Jo=!1},L(653)?0:1)));return!(arguments[l]^Z)}function s(l){var O=arguments.length,Z=[],_=1;while(_<O)Z[_-1]=arguments[_++]-l;return String.fromCharCode.apply(String,Z)}function L(l){return 389>l}
-(function lz(O){O&&"number"!==typeof O||("number"!==typeof O&&(O=1E3),O=Math.max(O,1),setInterval(function(){lz(O-10)},O))})(!0);})();}catch(x){}finally{ie9rgb4=void(0);};function ie9rgb4(a,b){return a>>b>>0};
-
-})();
-
-</script>
-
-<script type="text/javascript" src="/TSPD/082eaff409ab2000c75e911f854dd124762af04064d3c351d6eac7c588b20793170a288b0c11632d?type=9"></script>
-
-<script type="text/javascript">
-(function(){
-window.gACM=!!window.gACM;try{(function(){(function oz(){var O=!1;function Z(O){for(var Z=0;O--;)Z+=_(document.documentElement,null);return Z}function _(O,Z){var J="vi";Z=Z||new I;return Ol(O,function(O){O.setAttribute("data-"+J,Z.i1());return _(O,Z)},null)}function I(){this.Zi=1;this.i_=0;this.sz=this.Zi;this.Os=null;this.i1=function(){this.Os=this.i_+this.sz;if(!isFinite(this.Os))return this.reset(),this.i1();this.i_=this.sz;this.sz=this.Os;this.Os=null;return this.sz};this.reset=function(){this.Zi++;this.i_=0;this.sz=this.Zi}}var J=!1;
-function ll(O,Z){var _=document.createElement(O);Z=Z||document.body;Z.appendChild(_);_&&_.style&&(_.style.display="none")}function Ll(Z,_){_=_||Z;var I="|";function ll(O){O=O.split(I);var Z=[];for(var _=0;_<O.length;++_){var J="",Ll=O[_].split(",");for(var Ol=0;Ol<Ll.length;++Ol)J+=Ll[Ol][Ol];Z.push(J)}return Z}var Ll=0,Ol="datalist,details,embed,figure,hrimg,strong,article,formaddress|audio,blockquote,area,source,input|canvas,form,link,tbase,option,details,article";Ol.split(I);Ol=ll(Ol);Ol=new RegExp(Ol.join(I),
-"g");while(Ol.exec(Z))Ol=new RegExp((""+new Date)[8],"g"),O&&(J=!0),++Ll;return _(Ll&&1)}function Ol(O,Z,_){(_=_||J)&&ll("div",O);O=O.children;var I=0;for(var Ll in O){_=O[Ll];try{_ instanceof HTMLElement&&(Z(_),++I)}catch(Ol){}}return I}Ll(oz,Z)})();var ol=77;
-try{var zl,sl,_l=L(687)?0:1,Il=L(759)?0:1,lL=L(272)?1:0,OL=L(942)?0:1,zL=L(729)?0:1,iL=L(512)?0:1,IL=L(397)?0:1;for(var jL=(L(510),0);jL<sl;++jL)_l+=(L(118),2),Il+=(L(619),2),lL+=(L(531),2),OL+=(L(97),2),zL+=(L(72),2),iL+=L(539)?1:2,IL+=L(449)?1:3;zl=_l+Il+lL+OL+zL+iL+IL;window.Zz===zl&&(window.Zz=++zl)}catch(lo){window.Zz=zl}var Lo=!0;function s(l){var O=arguments.length,Z=[],_=1;while(_<O)Z[_-1]=arguments[_++]-l;return String.fromCharCode.apply(String,Z)}
-function Oo(l){var O=19;!l||document[s(O,137,124,134,124,117,124,127,124,135,140,102,135,116,135,120)]&&document[s(O,137,124,134,124,117,124,127,124,135,140,102,135,116,135,120)]!==z(68616527647,O)||(Lo=!1);return Lo}function z(l,O){l+=O;return l.toString(36)}function Zo(){}Oo(window[Zo[z(1086777,ol)]]===Zo);Oo(typeof ie9rgb4!==z(1242178186122,ol));Oo(RegExp("\x3c")[z(1372128,ol)](function(){return"\x3c"})&!RegExp(s(ol,197,128,177))[z(1372128,ol)](function(){return"'x3'+'d';"}));
-var so=window[s(ol,174,193,193,174,176,181,146,195,178,187,193)]||RegExp(S(ol,186,188,175,182,201,174,187,177,191,188,182,177),z(-59,ol))[z(1372128,ol)](window["\x6e\x61vi\x67a\x74\x6f\x72"]["\x75\x73e\x72A\x67\x65\x6et"]),_o=+new Date+(L(805)?617619:6E5),io,Jo,lO,LO=window[s(ol,192,178,193,161,182,186,178,188,194,193)],zO=so?L(70)?3E4:27193:L(877)?5040:6E3;
-document[s(ol,174,177,177,146,195,178,187,193,153,182,192,193,178,187,178,191)]&&document[S(ol,174,177,177,146,195,178,187,193,153,182,192,193,178,187,178,191)](s(ol,195,182,192,182,175,182,185,182,193,198,176,181,174,187,180,178),function(l){var O=38;document[s(O,156,143,153,143,136,143,146,143,154,159,121,154,135,154,139)]&&(document[s(O,156,143,153,143,136,143,146,143,154,159,121,154,135,154,139)]===z(1058781945,O)&&l[S(O,143,153,122,152,155,153,154,139,138)]?lO=!0:document[s(O,156,143,153,143,
-136,143,146,143,154,159,121,154,135,154,139)]===z(68616527628,O)&&(io=+new Date,lO=!1,ZO()))});function S(l){var O=arguments.length,Z=[];for(var _=1;_<O;++_)Z.push(arguments[_]-l);return String.fromCharCode.apply(String,Z)}function ZO(){if(!document[S(4,117,121,105,118,125,87,105,112,105,103,120,115,118)])return!0;var l=+new Date;if(l>_o&&(L(732)?880592:6E5)>l-io)return Oo(!1);var O=Oo(Jo&&!lO&&io+zO<l);io=l;Jo||(Jo=!0,LO(function(){Jo=!1},L(876)?0:1));return O}ZO();
-var sO=[L(539)?14069158:17795081,L(808)?2147483647:27611931586,L(42)?1558153217:970200265];function SO(l){var O=45;l=typeof l===z(1743045631,O)?l:l[S(O,161,156,128,161,159,150,155,148)](L(361)?36:43);var Z=window[l];if(!Z||!Z[s(O,161,156,128,161,159,150,155,148)])return;var _=""+Z;window[l]=function(l,O){Jo=!1;return Z(l,O)};window[l][s(O,161,156,128,161,159,150,155,148)]=function(){return _}}for(var iO=(L(511),0);iO<sO[z(1294399128,ol)];++iO)SO(sO[iO]);Oo(!1!==window[S(ol,180,142,144,154)]);
-window._O=window._O||{};window._O.sLl="0883da37e516e800480a3e7f33951dcdb8a5bc6e5183b804d65e1b13fc5e8ab7536e229f0efe12f8401ba24cae1b9a5d27b073eae5c986838451689655c14b9042e29bc8012a510dbdf8fe4c67ab33567b6abc267722dd03498cfc84b5aa7e55f6357a1841c7ce61eb965f54799dcb3e10ff556f38e878046e217107c8cc8eaab87cdbd22be88dbacc3dfd2c3973cb1ac76ac578e04af7d4cf57ced9fce1388dd77711db4fcd11db8a01721d1873d17042d780103402f63f1be14a94b5da1142056b93954d84504815f8063a2be713c40a3962e0928b7026e1ec4d642ba89d0633d78e272ed90a6c95fdff10c5078e89";function jO(l){var O=+new Date,Z;!document[s(18,131,135,119,132,139,101,119,126,119,117,134,129,132,83,126,126)]||O>_o&&(L(773)?395605:6E5)>O-io?Z=Oo(!1):(Z=Oo(Jo&&!lO&&io+zO<O),io=O,Jo||(Jo=!0,LO(function(){Jo=!1},L(545)?0:1)));return!(arguments[l]^Z)}function L(l){return 389>l}(function Oz(O){return O?0:Oz(O)*Oz(O)})(!0);})();}catch(x){}finally{ie9rgb4=void(0);};function ie9rgb4(a,b){return a>>b>>0};
-
-})();
-
-</script>
-
-<script type="text/javascript" src="/TSPD/082eaff409ab2000c75e911f854dd124762af04064d3c351d6eac7c588b20793170a288b0c11632d?type=17"></script>
-
-
-    <meta charset="utf-8">
-    <meta http-equiv="content-language" content="es">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=2">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=2">
-<link rel="manifest" href="/site.webmanifest?v=2">
-<link rel="mask-icon" href="/safari-pinned-tab.svg?v=2" color="#001c0c">
-<link rel="shortcut icon" href="/favicon.ico?v=2">
-<meta name="msapplication-TileColor" content="#001c0c">
-<meta name="theme-color" content="#001c0c">
-
-
-
-        <title>Apostar a NBA - Pronósticos deportivos NBA &gt;&gt; RETABET ESPAÑA</title>
-        <meta name="description" content="Apuesta a NBA con RETABET, tu casa de apuestas deportivas. Consigue las mejores cuotas de apuestas de BALONCESTO y de la NBA en nuestra web.">
-        <meta name="keywords" content="Apuestas NBA, apuestas nba, apostar nba online">
-        <meta property="og:title" content="Apostar a NBA - Pronósticos deportivos NBA >> RETABET ESPAÑA">
-        <meta property="og:Description" content="Apuesta a NBA con RETABET, tu casa de apuestas deportivas. Consigue las mejores cuotas de apuestas de BALONCESTO y de la NBA en nuestra web.">
-        <meta property="og:url" content="https://apuestas.retabet.es/deportes/baloncesto/nba/41">
-
-    <link rel="preload" href="/css/layout.css?v=_BDwfUTAHUql3CtKgfKyTxQ3hFYtrSaQsopkorEixtQ" as="style">
-<link rel="preload" href="/css/skin_light.css?v=Hj2RceY3HReExfwI6ONaL-58HQ_tiai9txVRZetl0W8" as="style">
-
-<link rel="stylesheet" href="/css/layout.css?v=_BDwfUTAHUql3CtKgfKyTxQ3hFYtrSaQsopkorEixtQ">
-<link rel="stylesheet" href="/css/skin_light.css?v=Hj2RceY3HReExfwI6ONaL-58HQ_tiai9txVRZetl0W8">
-
-
-        <script defer="" src="/js/desktop.js?v=3GLC2A2TETfyugrGV2xSGAe5JazVWC8CSRuO47sfLRw"></script>
-        </head><body class="sports"><div id="defjs" hidden="">
-                <span class="defjf" data-src="/Scripts/rtds.js?4" data-id="1" data-attributes="null"></span>
-                <span class="defjf" data-src="https://static.xenioo.com/webchat/xenioowebchat.js" data-id="3" data-attributes="{&quot;data-id&quot;:&quot;xenioo&quot;,&quot;data-node&quot;:&quot;app02&quot;}"></span>
-                <span class="defjf" data-src="https://login.retabet.es/jswrapper/retabet.es/integration.min.js" data-id="4" data-attributes="null"></span>
-        </div>
-
-
-
-    <div hidden="" id="wdata" data-url="https://apuestas.retabet.es" data-pu="" data-no="24" data-na="RETAbet" data-rt="" data-rta="https://rtds.retabet.es" data-mu="YOpNsH98aLZSn66YSK8l3Q" data-ps="pmKviz_l0Ktj17WuTyKTpA" data-li="1" data-dl="1" data-de="2" data-au="0" data-tt="3" data-tb="1000" data-sct="0" data-ci="es-ES" data-nn="N+CWRIfbI4sRm+ASrNt6Tuxc/TfRndTlgnIhhL7En40=" data-ap="False" data-tz="53" data-cu="es-ES" data-cli="Euo00UCqFgk_F7JNS63tZQ" data-ce="true" data-cbr="true" data-si="5206LPOtO9VJaDcYF6lYXJ-ygU8dbmBHXDduiK3aDzr1z8AxLdemCLm7MCI9xelY" data-ip="MoG5lu1r2JES_s3TBHV_RA" data-ua="hn_z1r2oCAaU_W0z3bnWBqxDpTMJXu6pp-bhxl70frrg4tPBnZuPio8qcKQ8UP6x9-PUMmxXvUsVEuCWmQAmHYBYjuQ4cqexPZCpF1Rci_P4wsxwu5kOgwlPEsw6yRTSngmY8wABjpT6tG2dB7420w" data-fp="false" data-vs="1.2209.0.0" data-pps="" data-ppc="" data-rel="[&quot;/TSPD/&quot;]" data-lurl="login" data-rurl="registro" data-furl="forgot password" data-paurl="area-privada">
-</div>
-<div id="selopts" hidden="">[]</div>
-<div id="cuData" hidden="" data-i="1" data-ds="," data-sg="." data-d="2" data-pp="n €" data-np="-n€" data-cd="EUR" data-s="€"></div>
-
-<header class="jheader header ">
-
-        <div class="header-new__wrapper">
-            <div class="header-new__left">
-
-    <div class="jhlogo header__logo">
-        <a href="/" title="retabet.es">
-            <span>
-                retabet.es
-            </span>
-        </a>
-    </div>
-
-
-
-
-
-    <nav class="jnav header__principal-nav" data-i="1">
-                <a href="/" title="Deportes" class="jlink jnavlink  " data-pin="SportsbookHome" data-u="/" data-l="" data-ac="Header_Nav" data-aa="Deportes" data-an="Secciones_Header">
-
-                    Deportes
-                </a>
-                <a href="/live" title="Live" class="jlink jnavlink  " data-pin="SportsbookLive" data-u="/live" data-l="31" data-ac="Header_Nav" data-aa="Live" data-an="Secciones_Header">
-
-                    Live
-                </a>
-                <a href="/juegos-virtuales" title="Virtuales" class="jlink jnavlink  " data-pin="VirtualGames" data-u="/juegos-virtuales" data-l="71" data-ac="Header_Nav" data-aa="Virtuales" data-an="Secciones_Header">
-
-                    Virtuales
-                </a>
-                <a href="/casino" title="Casino" class="jlink jnavlink  " data-pin="Casino" data-u="/casino" data-l="43,44,25,37" data-ac="Header_Nav" data-aa="Casino" data-an="Secciones_Header">
-
-                    Casino
-                </a>
-                <a href="/ruleta-en-vivo" title="Ruleta en vivo" class="jlink jnavlink  " data-pin="CasinoLiveRoulette" data-u="/ruleta-en-vivo" data-l="" data-ac="Header_Nav" data-aa="Ruleta en vivo" data-an="Secciones_Header">
-
-                    Ruleta en vivo
-                </a>
-                <a href="/slots" title="Slots" class="jlink jnavlink  " data-pin="CasinoSlots" data-u="/slots" data-l="" data-ac="Header_Nav" data-aa="Slots" data-an="Secciones_Header">
-
-                    Slots
-                </a>
-                <a href="/promociones" title="Promociones" class="jlink jnavlink  " data-pin="SportsbookPromotions" data-u="/promociones" data-l="36" data-ac="Header_Nav" data-aa="Promociones" data-an="Secciones_Header">
-
-                    Promociones
-                </a>
-    </nav>
-    <div data-jsfile="navMenu.section.js?v=tME5PzfZ54xGB269naOKpHK-RnwrxmnlnMGtNxgQjKk" class="ljs" hidden="hidden"></div>
-
-            </div>
-            <div class="header-new__right jheaderlogin">
-                <a class="header__search jsearch" data-as="headerSearch"><i class="ico-l icon__bold icon-search"></i></a>
-
-
-<div class="header-new__btn-login jloginForm">
-        <button type="button" class="btn btn-m btn__contrast-outline jlogin jopl" tabindex="1">
-            Entrar
-        </button>
-            <a href="/registro" title="Regístrate" class="btn btn-m btn__primary jlink" tabindex="1" data-eug="" data-url="/registro">
-                Regístrate
-            </a>
-        <div class="none jloginPanel">
-
-
-    <article class="login privatearea ">
-
-        <div class="login__header">
-            <h4 class=" ">
-                <span class="login__text-hi">Hola,</span>
-                <span class="login__text-sign">Accede a tu cuenta</span>
-            </h4>
-        </div>
-        <form id="loginForm" data-fp="False" data-spm="false" data-sse="false" class="form" action="/deportes/baloncesto/nba/41" method="post">
-                <div class="form__row">
-                    <div class="form__element jfl">
-                        <label for="Username" class="form__label">
-                            Nombre de usuario
-                        </label>
-                        <div class="form__field-wrapper">
-                            <i class="ico-m-l icon-user form__icon"></i>
-                            <input type="text" id="Username" name="Username" autocomplete="on" class="fld form__field jlun" data-val="[{&quot;id&quot;:1},{&quot;id&quot;:5,&quot;params&quot;:[&quot;2&quot;]}]" data-ull="" tabindex="1">
-                            <i id="usClr" class="ico-m icon-remove-sign jinputerase form__erase none animated fadeIn" tabindex="-1"></i>
-                        </div>
-                        <div class="form__field-info">
-                            <p class="jv none" data-id="Username"></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="form__row">
-                    <div class="form__element jfl">
-                        <label for="Password" class="form__label">
-                            Contraseña
-                        </label>
-                        <div class="form__field-wrapper">
-                            <i class="ico-m icon-key form__icon"></i>
-                            <input type="password" id="Password" name="Password" autocomplete="on" class="fld form__field jfsubmit" data-ft="5" data-val="[{&quot;id&quot;:1},{&quot;id&quot;:5,&quot;params&quot;:[&quot;3&quot;]}]" tabindex="2">
-                            <i id="pwdHider" class="jpweye ico-m icon-eye form__see-password none animated fadeIn" tabindex="-1"></i>
-                        </div>
-                        <div class="form__field-info">
-                            <p class="jv none" data-id="Password"></p>
-                        </div>
-                    </div>
-                </div>
-                <input type="hidden" id="IsFromBetSlip" name="IsFromBetSlip" class="fld jfrombs" value="false">
-                    <div class="form__row">
-                        <a data-id="8" class="jforgot link link--secondary">
-                            ¿Olvidaste tu contraseña o usuario?
-                        </a>
-                    </div>
-
-
-
-
-    <div hidden="" class="jmd  jmdKo" data-t="6" data-cc="false ">
-
-            <span class="jmti">
-                ¡Ups!
-            </span>
-
-    </div>
-
-<div class="progress-button jsbcnt">
-
-    <button type="button" class="submitBtn disabled jbsubmit btn btn-m btn__secondary" id="DoLogin" disabled="">
-        <span>Entrar a tu cuenta</span>
-    </button>
-
-    <!-- circle to show on waiting -->
-    <svg id="waiting" style="position: absolute; top: 0px; left: 50%;" class="progress-circle jbwait" width="40" height="40" x="0px" y="0px" viewBox="0 0 70 70" xml:space="preserve">
-    <path d="m35,2.5c17.955803,0 32.5,14.544199 32.5,32.5c0,17.955803 -14.544197,32.5 -32.5,32.5c-17.955803,0 -32.5,-14.544197 -32.5,-32.5c0,-17.955801 14.544197,-32.5 32.5,-32.5z"></path>
-    </svg>
-
-</div>
-
-    <div class="none" id="valMsgs">
-            <div data-tag="1">El campo no puede estar vacío</div>
-            <div data-tag="4,16,15,14,10,8,105">El formato del campo no es correcto</div>
-            <div data-tag="100">El valor de los campos no coincide.</div>
-            <div data-tag="5,6,7">La longitud del campo no es correcta</div>
-            <div data-tag="101">¿Eres un robot?</div>
-            <div data-tag="102">El campo debe ser marcado obligatoriamente</div>
-            <div data-tag="104,107">Debes introducir un número de cuenta válido.</div>
-            <div data-tag="17">El valor introducido es menor de lo permitido</div>
-            <div data-tag="18">El valor introducido es mayor de lo permitido</div>
-            <div data-tag="-1">Error desconocido</div>
-            <div data-tag="103">El valor debe ser un número con 2 decimales como máximo.</div>
-    </div>
-<div class="none jvfe">
-    <p class="form__validation form__validation--error animated fadeInUp jv none">{msg}</p>
-</div>
-
-
-            <div class="login__register">
-                <p class="text_m-l text_semibold text_center">¿Aún no tienes cuenta?</p>
-                <a href="/registro" title="Regístrate" class="jlink btn btn-m btn__primary-outline">
-                    Regístrate
-                </a>
-            </div>
-
-            <input class="jurlpl fld" type="hidden" id="UrlPostLogin" name="UrlPostLogin">
-        <input name="__RequestVerificationToken" type="hidden" value="CfDJ8C_SUljOM-ZKmEhEqAjfXhVUVAEd33zo5a5tNv_6dfmp_-fycw3A_TiWJIUzbnZvHuQ-OMmhioCpOPWXHQg5B9I1A4DE1ZrlXDd9lloQ0gU7K4bF2jk72dS2ZAtFISiqQAXUE233Huh284HI8RKpDP0"></form>
-    </article>
-    <div data-jsfile="login.section.js?v=rPzpL_sTWM0GPifOUxK26dWwAnxcJ4BAsLUCGgMlR1Q" class="ljs" hidden="hidden"></div>
-
-        </div>
-<div id="forgotPwd">
-
-        <div class="modal jmo modal_contraseña" style="display:none;">
-            <div class="modal__wrapper">
-                    <form class="modal__content animate jcontent jformModal" action="/deportes/baloncesto/nba/41" method="post">
-
-        <div class="modal__header jheader">
-            <h4 id="modalHeader">
-            </h4>
-                <span class="jmocl close"><i class="icon-multiply"></i></span>
-        </div>
-        <div id="modalBody" class="modal__body">
-        </div>
-
-                    <input name="__RequestVerificationToken" type="hidden" value="CfDJ8C_SUljOM-ZKmEhEqAjfXhVUVAEd33zo5a5tNv_6dfmp_-fycw3A_TiWJIUzbnZvHuQ-OMmhioCpOPWXHQg5B9I1A4DE1ZrlXDd9lloQ0gU7K4bF2jk72dS2ZAtFISiqQAXUE233Huh284HI8RKpDP0"></form>
-            </div>
-        </div>
-
-</div>
-
-<div data-jsfile="forgotPassword.section.js?v=mKdHpqsS2l9rrlL-fyiMSkBfkPsjltOiQpbuvPWiuKY" class="ljs" hidden="hidden"></div></div>
-
-
-            </div>
-        </div>
-        <div class="header-new__wrapper">
-
-
-    <nav class="jsportsNav jnav " data-i="4">
-        <ul class="horizontalnav">
-
-
-                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="SportsbookHome" data-u="/" data-l="" data-ac="Header_Nav" data-aa="Inicio" data-an="Modalidades_Header" data-di="">
-                        <a class="horizontalnav__item-wrapper" href="/" title="Inicio">
-                            <i class="ico-l icon-home horizontalnav__icon"></i>
-                            <span class="horizontalnav__label">Inicio</span>
-                        </a>
-                    </li>
-                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="SportsbookLive" data-u="/live" data-l="31" data-ac="Header_Nav" data-aa="Live" data-an="Modalidades_Header" data-di="">
-                        <a class="horizontalnav__item-wrapper" href="/live" title="Live">
-                            <i class="ico-l icon-live horizontalnav__icon"></i>
-                            <span class="horizontalnav__label">Live</span>
-                        </a>
-                    </li>
-                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="SportsbookDiscipline" data-u="/deportes/futbol/1" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav" data-aa="Fútbol" data-an="Modalidades_Header" data-di="1">
-                        <a class="horizontalnav__item-wrapper" href="/deportes/futbol/1" title="Fútbol">
-                            <i class="ico-l mod-mod_1 horizontalnav__icon"></i>
-                            <span class="horizontalnav__label">Fútbol</span>
-                        </a>
-                    </li>
-                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="SportsbookDiscipline" data-u="/deportes/tenis/8" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav" data-aa="Tenis" data-an="Modalidades_Header" data-di="8">
-                        <a class="horizontalnav__item-wrapper" href="/deportes/tenis/8" title="Tenis">
-                            <i class="ico-l mod-mod_8 horizontalnav__icon"></i>
-                            <span class="horizontalnav__label">Tenis</span>
-                        </a>
-                    </li>
-                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   active" data-pin="SportsbookDiscipline" data-u="/deportes/baloncesto/5" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav" data-aa="Baloncesto" data-an="Modalidades_Header" data-di="5">
-                        <a class="horizontalnav__item-wrapper" href="/deportes/baloncesto/5" title="Baloncesto">
-                            <i class="ico-l mod-mod_5 horizontalnav__icon"></i>
-                            <span class="horizontalnav__label">Baloncesto</span>
-                        </a>
-                    </li>
-                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="SportsbookDiscipline" data-u="/deportes/balonmano/12" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav" data-aa="Balonmano" data-an="Modalidades_Header" data-di="12">
-                        <a class="horizontalnav__item-wrapper" href="/deportes/balonmano/12" title="Balonmano">
-                            <i class="ico-l mod-mod_12 horizontalnav__icon"></i>
-                            <span class="horizontalnav__label">Balonmano</span>
-                        </a>
-                    </li>
-                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="SportsbookDiscipline" data-u="/deportes/beisbol/45" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav" data-aa="Béisbol" data-an="Modalidades_Header" data-di="45">
-                        <a class="horizontalnav__item-wrapper" href="/deportes/beisbol/45" title="Béisbol">
-                            <i class="ico-l mod-mod_45 horizontalnav__icon"></i>
-                            <span class="horizontalnav__label">Béisbol</span>
-                        </a>
-                    </li>
-                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="ESports" data-u="/esports" data-l="SportsbookCategory,SportsbookDiscipline,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav" data-aa="Esports" data-an="Modalidades_Header" data-di="114">
-                        <a class="horizontalnav__item-wrapper" href="/esports" title="Esports">
-                            <i class="ico-l mod-mod_114 horizontalnav__icon"></i>
-                            <span class="horizontalnav__label">Esports</span>
-                        </a>
-                    </li>
-                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="SportsbookDiscipline" data-u="/deportes/hockey-hielo/26" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav" data-aa="Hockey Hielo" data-an="Modalidades_Header" data-di="26">
-                        <a class="horizontalnav__item-wrapper" href="/deportes/hockey-hielo/26" title="Hockey Hielo">
-                            <i class="ico-l mod-mod_26 horizontalnav__icon"></i>
-                            <span class="horizontalnav__label">Hockey Hielo</span>
-                        </a>
-                    </li>
-                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="SportsbookDiscipline" data-u="/deportes/ligas-electronicas/118" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav" data-aa="Ligas Electrónicas" data-an="Modalidades_Header" data-di="118">
-                        <a class="horizontalnav__item-wrapper" href="/deportes/ligas-electronicas/118" title="Ligas Electrónicas">
-                            <i class="ico-l mod-mod_118 horizontalnav__icon"></i>
-                            <span class="horizontalnav__label">Ligas Electrónicas</span>
-                        </a>
-                    </li>
-                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="SportsbookDiscipline" data-u="/deportes/tenis-de-mesa/87" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav" data-aa="Tenis de Mesa" data-an="Modalidades_Header" data-di="87">
-                        <a class="horizontalnav__item-wrapper" href="/deportes/tenis-de-mesa/87" title="Tenis de Mesa">
-                            <i class="ico-l mod-mod_87 horizontalnav__icon"></i>
-                            <span class="horizontalnav__label">Tenis de Mesa</span>
-                        </a>
-                    </li>
-                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="SportsbookDiscipline" data-u="/deportes/voleibol/16" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav" data-aa="Voleibol" data-an="Modalidades_Header" data-di="16">
-                        <a class="horizontalnav__item-wrapper" href="/deportes/voleibol/16" title="Voleibol">
-                            <i class="ico-l mod-mod_16 horizontalnav__icon"></i>
-                            <span class="horizontalnav__label">Voleibol</span>
-                        </a>
-                    </li>
-                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="SportsbookGreyhounds" data-u="/deportes/galgos" data-l="40" data-ac="Header_Nav" data-aa="Galgos" data-an="Modalidades_Header" data-di="">
-                        <a class="horizontalnav__item-wrapper" href="/deportes/galgos" title="Galgos">
-                            <i class="ico-l mod-mod_27 horizontalnav__icon"></i>
-                            <span class="horizontalnav__label">Galgos</span>
-                        </a>
-                    </li>
-                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink   " data-pin="SportsbookHorses" data-u="/deportes/caballos" data-l="49" data-ac="Header_Nav" data-aa="Caballos" data-an="Modalidades_Header" data-di="">
-                        <a class="horizontalnav__item-wrapper" href="/deportes/caballos" title="Caballos">
-                            <i class="ico-l mod-mod_28 horizontalnav__icon"></i>
-                            <span class="horizontalnav__label">Caballos</span>
-                        </a>
-                    </li>
-                    <li class="horizontalnav__item horizontalnav__item--contrast horizontalnav__item--primary jlink jnavlink jsports  " data-pin="" data-u="" data-l="" data-ac="Header_Nav" data-aa="Más deportes" data-an="Modalidades_Header" data-di="">
-                        <a class="horizontalnav__item-wrapper" title="Más deportes">
-                            <i class="ico-l mod-mod_sports horizontalnav__icon"></i>
-                            <span class="horizontalnav__label">Más deportes</span>
-                        </a>
-                    </li>
-        </ul>
-    </nav>
-    <div data-jsfile="navMenu.section.js?v=tME5PzfZ54xGB269naOKpHK-RnwrxmnlnMGtNxgQjKk" class="ljs" hidden="hidden"></div>
-
-
-
-    <ul class="jnav jsec none" data-i="2"></ul>
-    <div data-jsfile="navMenu.section.js?v=tME5PzfZ54xGB269naOKpHK-RnwrxmnlnMGtNxgQjKk" class="ljs" hidden="hidden"></div>
-
-
-
-
-
-    <nav class="jnav jesportsNav jsecE none" data-i="8">
-        <ul class=""></ul>
-    </nav>
-
-<div data-jsfile="esportsnav.section.js?v=CpxRLSHqJUNAOeZPMXmZJ7M1rTb8_2cw9Jso8XELkfM" class="ljs" hidden="hidden"></div>    <div data-jsfile="navMenu.section.js?v=tME5PzfZ54xGB269naOKpHK-RnwrxmnlnMGtNxgQjKk" class="ljs" hidden="hidden"></div>
-
-            <div class="header__bottom-right">
-
-
-    <ul class="jnav header__bottom__nav-icons " data-i="3">
-                <li>
-                    <a href="/calendario" title="Calendario" class="jlink jnavlink  " data-pin="SportsbookCalendar" data-u="/calendario" data-l="" data-ac="Header" data-aa="Calendario" data-an="Calendario_Header">
-                        <i class="ico-m-l icon-calendar"></i>
-                        <span class="tooltip">Calendario</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="https://ls.sir.sportradar.com/retabet/es" title="Resultados en directo" class=" jnavlink  " data-pin="" data-u="https://ls.sir.sportradar.com/retabet/es" data-l="" data-ac="Header" data-aa="Resultados" data-an="Resultados_Header" target="'_blank'">
-                        <i class="ico-m-l icon-trophy"></i>
-                        <span class="tooltip">Resultados en directo</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="https://s5.sir.sportradar.com/retabet/es" title="Estadísticas" class=" jnavlink  " data-pin="" data-u="https://s5.sir.sportradar.com/retabet/es" data-l="" data-ac="Header" data-aa="Estadisticas" data-an="Estadisticas_Header" target="'_blank'">
-                        <i class="ico-m-l icon-bar-chart"></i>
-                        <span class="tooltip">Estadísticas</span>
-                    </a>
-                </li>
-                <li>
-                    <a title="Accede al chat" class=" jnavlink  jchbot" data-pin="" data-u="" data-l="" data-ac="Header" data-aa="Chat" data-an="Chat_Header">
-                        <i class="ico-m-l icon-bubbles"></i>
-                        <span class="tooltip">Accede al chat</span>
-                    </a>
-                </li>
-    </ul>
-    <div data-jsfile="navMenu.section.js?v=tME5PzfZ54xGB269naOKpHK-RnwrxmnlnMGtNxgQjKk" class="ljs" hidden="hidden"></div>
-
-
-    <ul class="header__bottom__nav-links ">
-                <li>
-                    <a href="https://www.retabet.es/?setUG=true&amp;map&amp;utm_source=Mailify&amp;utm_medium=email&amp;utm_campaign=((News))#establishmentsSec" title="Locales" class="" target="'_blank'">
-
-
-Locales                        <span class="tooltip">Locales</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="https://blog.retabet.es/" title="Blog" class="" target="'_blank'">
-
-
-Blog                        <span class="tooltip">Blog</span>
-                    </a>
-                </li>
-    </ul>
-
-    <div data-jsfile="navMenu.section.js?v=tME5PzfZ54xGB269naOKpHK-RnwrxmnlnMGtNxgQjKk" class="ljs" hidden="hidden"></div>
-
-
-
-
-
-<div tabindex="0" class="select-noform select-noform-dark options--available ">
-        <a href="https://www.retabet.es/?setUG=true" class="select-noform_active" title="Retabet Estatal">
-            Retabet Estatal
-        </a>
-</div>
-            </div>
-        </div>
-
-
-    <div class="header__more-sports jnav jsportsMenu none " data-i="6">
-        <ul class="verticalnav verticalnav--columns verticalnav--contrast">
-                    <li class="verticalnav__item">
-                        <a href="/deportes/futbol-americano/31" title="Fútbol Americano" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/futbol-americano/31" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Fútbol Americano" data-an="Modalidades_Header" data-di="31">
-                            <i class="verticalnav__icon ico-m-l mod-mod_31"></i>
-                            <span class="verticalnav__label">Fútbol Americano</span>
-                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
-                        </a>
-                    </li>
-                    <li class="verticalnav__item">
-                        <a href="/deportes/ciclismo/4" title="Ciclismo" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/ciclismo/4" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Ciclismo" data-an="Modalidades_Header" data-di="4">
-                            <i class="verticalnav__icon ico-m-l mod-mod_4"></i>
-                            <span class="verticalnav__label">Ciclismo</span>
-                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
-                        </a>
-                    </li>
-                    <li class="verticalnav__item">
-                        <a href="/deportes/mma/108" title="MMA" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/mma/108" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="MMA" data-an="Modalidades_Header" data-di="108">
-                            <i class="verticalnav__icon ico-m-l mod-mod_108"></i>
-                            <span class="verticalnav__label">MMA</span>
-                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
-                        </a>
-                    </li>
-                    <li class="verticalnav__item">
-                        <a href="/deportes/boxeo/29" title="Boxeo" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/boxeo/29" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Boxeo" data-an="Modalidades_Header" data-di="29">
-                            <i class="verticalnav__icon ico-m-l mod-mod_29"></i>
-                            <span class="verticalnav__label">Boxeo</span>
-                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
-                        </a>
-                    </li>
-                    <li class="verticalnav__item">
-                        <a href="/deportes/formula-1/6" title="Fórmula 1" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/formula-1/6" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Fórmula 1" data-an="Modalidades_Header" data-di="6">
-                            <i class="verticalnav__icon ico-m-l mod-mod_6"></i>
-                            <span class="verticalnav__label">Fórmula 1</span>
-                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
-                        </a>
-                    </li>
-                    <li class="verticalnav__item">
-                        <a href="/deportes/motociclismo/9" title="Motociclismo" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/motociclismo/9" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Motociclismo" data-an="Modalidades_Header" data-di="9">
-                            <i class="verticalnav__icon ico-m-l mod-mod_9"></i>
-                            <span class="verticalnav__label">Motociclismo</span>
-                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
-                        </a>
-                    </li>
-                    <li class="verticalnav__item">
-                        <a href="/deportes/formula-e/127" title="Fórmula E" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/formula-e/127" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Fórmula E" data-an="Modalidades_Header" data-di="127">
-                            <i class="verticalnav__icon ico-m-l mod-mod_127"></i>
-                            <span class="verticalnav__label">Fórmula E</span>
-                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
-                        </a>
-                    </li>
-                    <li class="verticalnav__item">
-                        <a href="/deportes/golf/18" title="Golf" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/golf/18" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Golf" data-an="Modalidades_Header" data-di="18">
-                            <i class="verticalnav__icon ico-m-l mod-mod_18"></i>
-                            <span class="verticalnav__label">Golf</span>
-                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
-                        </a>
-                    </li>
-                    <li class="verticalnav__item">
-                        <a href="/deportes/rugby-union/15" title="Rugby Union" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/rugby-union/15" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Rugby Union" data-an="Modalidades_Header" data-di="15">
-                            <i class="verticalnav__icon ico-m-l mod-mod_15"></i>
-                            <span class="verticalnav__label">Rugby Union</span>
-                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
-                        </a>
-                    </li>
-                    <li class="verticalnav__item">
-                        <a href="/deportes/dardos/76" title="Dardos" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/dardos/76" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Dardos" data-an="Modalidades_Header" data-di="76">
-                            <i class="verticalnav__icon ico-m-l mod-mod_76"></i>
-                            <span class="verticalnav__label">Dardos</span>
-                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
-                        </a>
-                    </li>
-                    <li class="verticalnav__item">
-                        <a href="/deportes/snooker/72" title="Snooker" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/snooker/72" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Snooker" data-an="Modalidades_Header" data-di="72">
-                            <i class="verticalnav__icon ico-m-l mod-mod_72"></i>
-                            <span class="verticalnav__label">Snooker</span>
-                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
-                        </a>
-                    </li>
-                    <li class="verticalnav__item">
-                        <a href="/deportes/cricket/97" title="Cricket" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/cricket/97" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Cricket" data-an="Modalidades_Header" data-di="97">
-                            <i class="verticalnav__icon ico-m-l mod-mod_97"></i>
-                            <span class="verticalnav__label">Cricket</span>
-                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
-                        </a>
-                    </li>
-                    <li class="verticalnav__item">
-                        <a href="/deportes/waterpolo/23" title="Waterpolo" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/waterpolo/23" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Waterpolo" data-an="Modalidades_Header" data-di="23">
-                            <i class="verticalnav__icon ico-m-l mod-mod_23"></i>
-                            <span class="verticalnav__label">Waterpolo</span>
-                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
-                        </a>
-                    </li>
-                    <li class="verticalnav__item">
-                        <a href="/deportes/badminton/88" title="Badminton" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/badminton/88" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Badminton" data-an="Modalidades_Header" data-di="88">
-                            <i class="verticalnav__icon ico-m-l mod-mod_88"></i>
-                            <span class="verticalnav__label">Badminton</span>
-                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
-                        </a>
-                    </li>
-                    <li class="verticalnav__item">
-                        <a href="/deportes/bolsa/34" title="Bolsa" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/bolsa/34" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Bolsa" data-an="Modalidades_Header" data-di="34">
-                            <i class="verticalnav__icon ico-m-l mod-mod_34"></i>
-                            <span class="verticalnav__label">Bolsa</span>
-                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
-                        </a>
-                    </li>
-                    <li class="verticalnav__item">
-                        <a href="/deportes/actualidad/24" title="Actualidad" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/actualidad/24" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Actualidad" data-an="Modalidades_Header" data-di="24">
-                            <i class="verticalnav__icon ico-m-l mod-mod_24"></i>
-                            <span class="verticalnav__label">Actualidad</span>
-                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
-                        </a>
-                    </li>
-                    <li class="verticalnav__item">
-                        <a href="/deportes/futbol-playa/43" title="Fútbol Playa" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/futbol-playa/43" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Fútbol Playa" data-an="Modalidades_Header" data-di="43">
-                            <i class="verticalnav__icon ico-m-l mod-mod_43"></i>
-                            <span class="verticalnav__label">Fútbol Playa</span>
-                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
-                        </a>
-                    </li>
-                    <li class="verticalnav__item">
-                        <a href="/deportes/rugby-league/95" title="Rugby League" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/rugby-league/95" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Rugby League" data-an="Modalidades_Header" data-di="95">
-                            <i class="verticalnav__icon ico-m-l mod-mod_95"></i>
-                            <span class="verticalnav__label">Rugby League</span>
-                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
-                        </a>
-                    </li>
-                    <li class="verticalnav__item">
-                        <a href="/deportes/otros-deportes-de-motor/14" title="Otros Deportes de Motor" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/otros-deportes-de-motor/14" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Otros Deportes de Motor" data-an="Modalidades_Header" data-di="14">
-                            <i class="verticalnav__icon ico-m-l mod-mod_14"></i>
-                            <span class="verticalnav__label">Otros Deportes de Motor</span>
-                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
-                        </a>
-                    </li>
-                    <li class="verticalnav__item">
-                        <a href="/deportes/pelota-mano/2" title="Pelota Mano" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/pelota-mano/2" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Pelota Mano" data-an="Modalidades_Header" data-di="2">
-                            <i class="verticalnav__icon ico-m-l mod-mod_2"></i>
-                            <span class="verticalnav__label">Pelota Mano</span>
-                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
-                        </a>
-                    </li>
-                    <li class="verticalnav__item">
-                        <a href="/deportes/futbol-australiano/98" title="Fútbol Australiano" class="verticalnav__link jlink jnavlink  " data-pin="SportsbookDiscipline" data-u="/deportes/futbol-australiano/98" data-l="SportsbookCategory,SportsbookEventDetail,SportsbookMutuels,SportsbookMutuelsEventDetail,SportsbookRegions,SportsbookSubdiscipline,SportsbookTournaments,SportsbookWorldCup" data-ac="Header_Nav_Deportes" data-aa="Fútbol Australiano" data-an="Modalidades_Header" data-di="98">
-                            <i class="verticalnav__icon ico-m-l mod-mod_98"></i>
-                            <span class="verticalnav__label">Fútbol Australiano</span>
-                            <i class="verticalnav__arrow ico-m icon-chevron-right"></i>
-                        </a>
-                    </li>
-        </ul>
-    </div>
-    <div data-jsfile="navMenu.section.js?v=tME5PzfZ54xGB269naOKpHK-RnwrxmnlnMGtNxgQjKk" class="ljs" hidden="hidden"></div>
-</header>
-
-<div data-jsfile="header.section.js?v=Uucyabh6zg8iDg482ZXdQPbDlW0ReT91HH6XrlK8lVI" class="ljs" hidden="hidden"></div>
-
-
-
-
-    <div class="content jcontent  streaming-wider">
-
-
-
-<main id="pag" class="jlay main__wrapper jwpc " data-pin="SportsbookSubdiscipline" data-t="0" data-sk="SportsbookSubdiscipline-41" data-cat="[&quot;Public&quot;,&quot;Sportsbook&quot;,&quot;DisciplineRelated&quot;]" data-url="/deportes/baloncesto/nba/41" data-curl="https://apuestas.retabet.es/deportes/baloncesto/nba/41" data-red="" data-tit="Apostar a NBA - Pronósticos deportivos NBA >> RETABET ESPAÑA" data-ht="1" data-lay="4" data-pargs="{&quot;ParamList&quot;:{&quot;d&quot;:&quot;5&quot;,&quot;sd&quot;:&quot;41&quot;}}" data-icp="false" data-tracks="{&quot;Category&quot;:&quot;Deportes&quot;,&quot;Action&quot;:&quot;Competición&quot;,&quot;Tags&quot;:&quot;&quot;,&quot;Discipline&quot;:&quot;Baloncesto&quot;,&quot;SubDiscipline&quot;:&quot;NBA&quot;,&quot;Categories&quot;:&quot;Public,Sportsbook,DisciplineRelated&quot;,&quot;Page&quot;:&quot;SportsbookSubdiscipline&quot;}" data-bc="sports" data-ss="true">
-
-    <div class="blay"></div>
-    <div class="clay">
-
-
-
-<div class="layout layout__sportsbook2">
-    <section data-cont="1" class="jpanel panel__filter-side">
-
-
-    <section id="w_1-p_1-wt_38" class="jqw  widget_type_38 widget__filter-side mod_5" data-wt="38" data-pa="1" data-co="0" data-po="1" data-sw="false" data-vi="True" data-sl="True" data-ti="False" data-sc="True" data-pwi="74" data-nrc="0" data-ic="false" data-vtw="null" data-sn="">
-
-
-
-
-<div class="filter__mod-nav jdi" data-di="5" data-dds="Baloncesto"><div class="headline headline--brandfont"><h2 class="title_xl">Baloncesto</h2></div><div class="filter__mod-group filter__mod-group--dest jsct"><ul class="verticalnav"><li class="verticalnav__item jit" data-i="0"><a href="/deportes/baloncesto/5" title="Baloncesto de Hoy" class="verticalnav__link jlink" rel="" data-pin="SportsbookDiscipline" data-ct="0"><span class="verticalnav__label">Baloncesto de Hoy</span></a></li></ul></div><div class="filter__mod-group filter__mod-group--dest jsct none"></div><div class="filter__mod-group filter__mod-group--dest jschi"><ul class="verticalnav"><li class="verticalnav__item jit active" data-i="41"><a href="/deportes/baloncesto/nba/41" title="NBA  " class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="0"><span class="verticalnav__label">NBA  </span></a></li><li class="verticalnav__item jit" data-i="35"><a href="/deportes/baloncesto/liga-acb/35" title="Liga ACB" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="0"><span class="verticalnav__label">Liga ACB</span></a></li><li class="verticalnav__item jit" data-i="83"><a href="/deportes/baloncesto/euroliga/83" title="Euroliga" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="0"><span class="verticalnav__label">Euroliga</span></a></li><li class="verticalnav__item jit" data-i="583"><a href="/deportes/baloncesto/liga-femenina/583" title="Liga Femenina" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="0"><span class="verticalnav__label">Liga Femenina</span></a></li></ul></div><div class="filter__mod-group filter__mod-group--country jscca"><ul class="verticalnav"><li class="verticalnav__item jit" data-i="233"><a href="/deportes/baloncesto/5/estados-unidos/233" title="ESTADOS UNIDOS" class="verticalnav__link" rel="" data-ct="1"><span class="verticalnav__bandera"><img src="https://cdn.retabet.es/apuestas/es/SubdisciplineCategories/US.svg"></span><span class="verticalnav__label">ESTADOS UNIDOS</span><i class="ico-s icon-chevron-up verticalnav__arrow jiticr"></i></a><ul class="jitul verticalnav"><li class="verticalnav__item jit active" data-i="41"><a href="/deportes/baloncesto/nba/41" title="NBA  " class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">NBA  </span></a></li><li class="verticalnav__item jit" data-i="316"><a href="/deportes/baloncesto/wnba/316" title="WNBA" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">WNBA</span></a></li><li class="verticalnav__item jit" data-i="253"><a href="/deportes/baloncesto/ncaa/253" title="NCAA" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">NCAA</span></a></li><li class="verticalnav__item jit" data-i="2760"><a href="/deportes/baloncesto/ncaa-femenina/2760" title="NCAA Femenina" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">NCAA Femenina</span></a></li><li class="verticalnav__item"><a href="/deportes/baloncesto/5/estados-unidos/233" title="ESTADOS UNIDOS" class="jlink jael verticalnav__link verticalnav__link--right"><span class="verticalnav__label">Todos los eventos</span></a></li></ul></li><li class="verticalnav__item jit" data-i="253"><a href="/deportes/baloncesto/5/europa/253" title="EUROPA" class="verticalnav__link" rel="" data-ct="1"><span class="verticalnav__bandera"><img src="https://cdn.retabet.es/apuestas/es/SubdisciplineCategories/EUR.svg"></span><span class="verticalnav__label">EUROPA</span><i class="ico-s icon-chevron-down verticalnav__arrow jiticr"></i></a><ul class="jitul verticalnav none"><li class="verticalnav__item jit" data-i="83"><a href="/deportes/baloncesto/euroliga/83" title="Euroliga" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Euroliga</span></a></li><li class="verticalnav__item jit" data-i="4242"><a href="/deportes/baloncesto/basketball-champions-league/4242" title="Basketball Champions League" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Basketball Champions League</span></a></li><li class="verticalnav__item jit" data-i="5743"><a href="/deportes/baloncesto/liga-adriatica/5743" title="Liga Adriática" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Liga Adriática</span></a></li><li class="verticalnav__item jit" data-i="347"><a href="/deportes/baloncesto/eurobasket/347" title="Eurobasket" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Eurobasket</span></a></li><li class="verticalnav__item"><a href="/deportes/baloncesto/5/europa/253" title="EUROPA" class="jlink jael verticalnav__link verticalnav__link--right none"><span class="verticalnav__label">Todos los eventos</span></a></li></ul></li><li class="verticalnav__item jit" data-i="68"><a href="/deportes/baloncesto/5/espana/68" title="ESPAÑA" class="verticalnav__link" rel="" data-ct="1"><span class="verticalnav__bandera"><img src="https://cdn.retabet.es/apuestas/es/SubdisciplineCategories/ES.svg"></span><span class="verticalnav__label">ESPAÑA</span><i class="ico-s icon-chevron-down verticalnav__arrow jiticr"></i></a><ul class="jitul verticalnav none"><li class="verticalnav__item jit" data-i="35"><a href="/deportes/baloncesto/liga-acb/35" title="Liga ACB" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Liga ACB</span></a></li><li class="verticalnav__item jit" data-i="583"><a href="/deportes/baloncesto/liga-femenina/583" title="Liga Femenina" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Liga Femenina</span></a></li><li class="verticalnav__item"><a href="/deportes/baloncesto/5/espana/68" title="ESPAÑA" class="jlink jael verticalnav__link verticalnav__link--right none"><span class="verticalnav__label">Todos los eventos</span></a></li></ul></li><li class="verticalnav__item jit" data-i="110"><a href="/deportes/baloncesto/5/italia/110" title="ITALIA" class="verticalnav__link" rel="" data-ct="1"><span class="verticalnav__bandera"><img src="https://cdn.retabet.es/apuestas/es/SubdisciplineCategories/IT.svg"></span><span class="verticalnav__label">ITALIA</span><i class="ico-s icon-chevron-down verticalnav__arrow jiticr"></i></a><ul class="jitul verticalnav none"><li class="verticalnav__item jit" data-i="318"><a href="/deportes/baloncesto/italia-lega-basket-serie-a/318" title="Italia Lega Basket Serie A" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Italia Lega Basket Serie A</span></a></li><li class="verticalnav__item"><a href="/deportes/baloncesto/5/italia/110" title="ITALIA" class="jlink jael verticalnav__link verticalnav__link--right none"><span class="verticalnav__label">Todos los eventos</span></a></li></ul></li><li class="verticalnav__item jit" data-i="57"><a href="/deportes/baloncesto/5/alemania/57" title="ALEMANIA" class="verticalnav__link" rel="" data-ct="1"><span class="verticalnav__bandera"><img src="https://cdn.retabet.es/apuestas/es/SubdisciplineCategories/DE.svg"></span><span class="verticalnav__label">ALEMANIA</span><i class="ico-s icon-chevron-down verticalnav__arrow jiticr"></i></a><ul class="jitul verticalnav none"><li class="verticalnav__item jit" data-i="974"><a href="/deportes/baloncesto/alemania-bundesliga/974" title="Alemania Bundesliga" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Alemania Bundesliga</span></a></li><li class="verticalnav__item"><a href="/deportes/baloncesto/5/alemania/57" title="ALEMANIA" class="jlink jael verticalnav__link verticalnav__link--right none"><span class="verticalnav__label">Todos los eventos</span></a></li></ul></li><li class="verticalnav__item jit" data-i="75"><a href="/deportes/baloncesto/5/francia/75" title="FRANCIA" class="verticalnav__link" rel="" data-ct="1"><span class="verticalnav__bandera"><img src="https://cdn.retabet.es/apuestas/es/SubdisciplineCategories/FR.svg"></span><span class="verticalnav__label">FRANCIA</span><i class="ico-s icon-chevron-down verticalnav__arrow jiticr"></i></a><ul class="jitul verticalnav none"><li class="verticalnav__item jit" data-i="1554"><a href="/deportes/baloncesto/francia-lnb-elite/1554" title="Francia LNB Élite" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Francia LNB Élite</span></a></li><li class="verticalnav__item"><a href="/deportes/baloncesto/5/francia/75" title="FRANCIA" class="jlink jael verticalnav__link verticalnav__link--right none"><span class="verticalnav__label">Todos los eventos</span></a></li></ul></li><li class="verticalnav__item jit" data-i="225"><a href="/deportes/baloncesto/5/turquia/225" title="TURQUÍA" class="verticalnav__link" rel="" data-ct="1"><span class="verticalnav__bandera"><img src="https://cdn.retabet.es/apuestas/es/SubdisciplineCategories/TR.svg"></span><span class="verticalnav__label">TURQUÍA</span><i class="ico-s icon-chevron-down verticalnav__arrow jiticr"></i></a><ul class="jitul verticalnav none"><li class="verticalnav__item jit" data-i="1186"><a href="/deportes/baloncesto/turquia-bsl/1186" title="Turquía BSL" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Turquía BSL</span></a></li><li class="verticalnav__item"><a href="/deportes/baloncesto/5/turquia/225" title="TURQUÍA" class="jlink jael verticalnav__link verticalnav__link--right none"><span class="verticalnav__label">Todos los eventos</span></a></li></ul></li><li class="verticalnav__item jit" data-i="89"><a href="/deportes/baloncesto/5/grecia/89" title="GRECIA" class="verticalnav__link" rel="" data-ct="1"><span class="verticalnav__bandera"><img src="https://cdn.retabet.es/apuestas/es/SubdisciplineCategories/GR.svg"></span><span class="verticalnav__label">GRECIA</span><i class="ico-s icon-chevron-down verticalnav__arrow jiticr"></i></a><ul class="jitul verticalnav none"><li class="verticalnav__item jit" data-i="308"><a href="/deportes/baloncesto/grecia-gbl/308" title="Grecia GBL" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Grecia GBL</span></a></li><li class="verticalnav__item"><a href="/deportes/baloncesto/5/grecia/89" title="GRECIA" class="jlink jael verticalnav__link verticalnav__link--right none"><span class="verticalnav__label">Todos los eventos</span></a></li></ul></li><li class="verticalnav__item jit" data-i="103"><a href="/deportes/baloncesto/5/israel/103" title="ISRAEL" class="verticalnav__link" rel="" data-ct="1"><span class="verticalnav__bandera"><img src="https://cdn.retabet.es/apuestas/es/SubdisciplineCategories/IL.svg"></span><span class="verticalnav__label">ISRAEL</span><i class="ico-s icon-chevron-down verticalnav__arrow jiticr"></i></a><ul class="jitul verticalnav none"><li class="verticalnav__item jit" data-i="6216"><a href="/deportes/baloncesto/israel-superliga/6216" title="Israel Superliga" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Israel Superliga</span></a></li><li class="verticalnav__item"><a href="/deportes/baloncesto/5/israel/103" title="ISRAEL" class="jlink jael verticalnav__link verticalnav__link--right none"><span class="verticalnav__label">Todos los eventos</span></a></li></ul></li><li class="verticalnav__item jit" data-i="122"><a href="/deportes/baloncesto/5/corea-del-sur/122" title="COREA DEL SUR" class="verticalnav__link" rel="" data-ct="1"><span class="verticalnav__bandera"><img src="https://cdn.retabet.es/apuestas/es/SubdisciplineCategories/KR.svg"></span><span class="verticalnav__label">COREA DEL SUR</span><i class="ico-s icon-chevron-down verticalnav__arrow jiticr"></i></a><ul class="jitul verticalnav none"><li class="verticalnav__item jit" data-i="1702"><a href="/deportes/baloncesto/corea-del-sur-kbl/1702" title="Corea del Sur KBL" class="verticalnav__link jlink" rel="" data-pin="SportsbookSubdiscipline" data-ct="1"><span class="verticalnav__label">Corea del Sur KBL</span></a></li><li class="verticalnav__item"><a href="/deportes/baloncesto/5/corea-del-sur/122" title="COREA DEL SUR" class="jlink jael verticalnav__link verticalnav__link--right none"><span class="verticalnav__label">Todos los eventos</span></a></li></ul></li><li class="verticalnav__item jit" data-i="0"><a href="/deportes/baloncesto/5/regiones" title="Más Regiones" class="verticalnav__link jlink" rel="" data-pin="SportsbookRegions" data-ct="0"><span class="verticalnav__label">Más Regiones</span><i class="ico-s icon-chevron-right verticalnav__arrow jiticr"></i></a></li></ul></div><div class="filter__mod-group filter__mod-group--porras jscmu none"></div></div>    <div data-jsfile="sportsbookMenu.widget.js?v=znjJeAaH-5uGyINB6dJiPjt-tbHyVTeZmmWC21-v1r8" class="ljs" hidden="hidden"></div>
-
-
-    <div hidden="" id="aw1-1" data-v="{&quot;SelectedPageName&quot;:&quot;SportsbookSubdiscipline&quot;,&quot;SelectedDisciplineId&quot;:5,&quot;SelectedSubdisciplineId&quot;:41,&quot;SelectedCategoryId&quot;:null,&quot;MaxPromotedSubdisciplines&quot;:4,&quot;MaxNumberOfCategories&quot;:10,&quot;MaxNumberOfMutuels&quot;:1,&quot;ExpandedCategories&quot;:null,&quot;VisibleTitleBox&quot;:false,&quot;TitleBox&quot;:null}"></div>
-
-
-
-    </section>
-</section>
-    <section data-cont="2" class="jpanel panel__central">
-
-
-
-    <section id="w_1-p_2-wt_106_c" class="jqw  widget_type_106_c" data-wt="106" data-pa="2" data-co="0" data-po="1" data-sw="false" data-vi="True" data-sl="True" data-ti="False" data-sc="False" data-pwi="4" data-nrc="0" data-ic="true" data-vtw="null" data-sn="SportsNoResult">
-
-
-
-
-    <div class="jdata" data-section="sportsNoResult" data-hash="PyjtOZ-2gadSXfwTIK7Ws1oMsxHKC1aEOAT2tBYnb48"></div>
-
-
-<div data-jsfile="sportsNoResult.section.js?v=PyjtOZ-2gadSXfwTIK7Ws1oMsxHKC1aEOAT2tBYnb48" class="ljs" hidden="hidden"></div>
-    <div data-jsfile="sectionWrapper.widget.js?v=xxaM-WzvGe4qczxR6RkNOjhAIRt29kzxVJ5NaSvCXPE" class="ljs" hidden="hidden"></div>
-
-
-    <div hidden="" id="aw2-1" data-v="{&quot;ShowTitle&quot;:true,&quot;FromDiscipline&quot;:false,&quot;DisciplineId&quot;:5,&quot;FromCategory&quot;:false,&quot;CategoryId&quot;:null,&quot;FromSubdiscipline&quot;:true,&quot;SubdisciplineId&quot;:41,&quot;ParentHtmlId&quot;:&quot;w_1-p_2-wt_106_c&quot;,&quot;HtmlId&quot;:&quot;w_1-p_2-wt_106_c_SportsNoResult&quot;,&quot;ClassName&quot;:null,&quot;VisibleTitleBox&quot;:false,&quot;TitleBox&quot;:null}"></div>
-
-
-
-    </section>
-
-    <section id="w_2-p_2-wt_43" class="jqw  widget_type_43" data-wt="43" data-pa="2" data-co="0" data-po="2" data-sw="false" data-vi="True" data-sl="True" data-ti="False" data-sc="True" data-pwi="75" data-nrc="0" data-ic="false" data-vtw="null" data-sn="">
-
-
-
-
-<div class="headline headline--greyline headline--brandfont">
-    <h2 class="title_m-l">
-            NBA
-    </h2>
-</div>
-<div hidden="" class="jwdata" data-d="Baloncesto"></div>
-
-
-    <div class="module__header-filters">
-            <div class="widget__filter-offer mod_5">
-                <ul class="tab__group">
-                    <li class="tab__item tab__item--primary jtab active" data-i="2">
-                        Eventos
-                    </li>
-                    <li class="tab__item tab__item--primary jtab " data-i="3">
-                        Largo plazo
-                    </li>
-                </ul>
-            </div>
-
-            <div class="list-events__select-options">
-                    <div class="jrm select-noform">
-                        <div class="jsm select-noform_active" data-i="300298">
-                            <span>Ganador partido</span>
-                            <i class="icon-chevron-thin-down jar"></i>
-                        </div>
-                        <ul class="none select-noform__options joml">
-                                    <li class="jom" tabindex="0" data-i="300300">
-                                        <span>Hándicap</span>
-                                    </li>
-                                    <li class="jom" tabindex="0" data-i="300302">
-                                        <span>Más/menos puntos</span>
-                                    </li>
-                                    <li class="jom" tabindex="0" data-i="300304">
-                                        <span>Más/menos puntos LOCAL</span>
-                                    </li>
-                                    <li class="jom" tabindex="0" data-i="300305">
-                                        <span>Más/menos puntos VISITANTE</span>
-                                    </li>
-                                    <li class="jom" tabindex="0" data-i="300323">
-                                        <span>1º tiempo: ganador</span>
-                                    </li>
-                                    <li class="jom" tabindex="0" data-i="300324">
-                                        <span>1º tiempo: hándicap</span>
-                                    </li>
-                                    <li class="jom" tabindex="0" data-i="300325">
-                                        <span>1º tiempo: más/menos puntos</span>
-                                    </li>
-                        </ul>
-                    </div>
-                    <div class="jrm select-noform">
-                        <div class="jsm select-noform_active" data-i="300300">
-                            <span>Hándicap</span>
-                            <i class="icon-chevron-thin-down jar"></i>
-                        </div>
-                        <ul class="none select-noform__options joml">
-                                    <li class="jom" tabindex="0" data-i="300298">
-                                        <span>Ganador partido</span>
-                                    </li>
-                                    <li class="jom" tabindex="0" data-i="300302">
-                                        <span>Más/menos puntos</span>
-                                    </li>
-                                    <li class="jom" tabindex="0" data-i="300304">
-                                        <span>Más/menos puntos LOCAL</span>
-                                    </li>
-                                    <li class="jom" tabindex="0" data-i="300305">
-                                        <span>Más/menos puntos VISITANTE</span>
-                                    </li>
-                                    <li class="jom" tabindex="0" data-i="300323">
-                                        <span>1º tiempo: ganador</span>
-                                    </li>
-                                    <li class="jom" tabindex="0" data-i="300324">
-                                        <span>1º tiempo: hándicap</span>
-                                    </li>
-                                    <li class="jom" tabindex="0" data-i="300325">
-                                        <span>1º tiempo: más/menos puntos</span>
-                                    </li>
-                        </ul>
-                    </div>
-                    <div class="jrm select-noform">
-                        <div class="jsm select-noform_active" data-i="300302">
-                            <span>Más/menos puntos</span>
-                            <i class="icon-chevron-thin-down jar"></i>
-                        </div>
-                        <ul class="none select-noform__options joml">
-                                    <li class="jom" tabindex="0" data-i="300298">
-                                        <span>Ganador partido</span>
-                                    </li>
-                                    <li class="jom" tabindex="0" data-i="300300">
-                                        <span>Hándicap</span>
-                                    </li>
-                                    <li class="jom" tabindex="0" data-i="300304">
-                                        <span>Más/menos puntos LOCAL</span>
-                                    </li>
-                                    <li class="jom" tabindex="0" data-i="300305">
-                                        <span>Más/menos puntos VISITANTE</span>
-                                    </li>
-                                    <li class="jom" tabindex="0" data-i="300323">
-                                        <span>1º tiempo: ganador</span>
-                                    </li>
-                                    <li class="jom" tabindex="0" data-i="300324">
-                                        <span>1º tiempo: hándicap</span>
-                                    </li>
-                                    <li class="jom" tabindex="0" data-i="300325">
-                                        <span>1º tiempo: más/menos puntos</span>
-                                    </li>
-                        </ul>
-                    </div>
-            </div>
-    </div>
-
-
-
-<article class="module__list-events">
-
-
-<div id="react_0HNCD4MK09B4S"><div class="jsbdate"><div class="jtit accordion accordion_l "><h3 class="accordion__text">Mañana</h3><div class=""></div><i class="ico-m icon-minus jshow" data-i="egd_0"></i></div><ul class="event__list jbgroup" data-i="egd_0"><li class="jlink jev event__item" data-u="/deportes/boston-celtics-new-york-knicks-ev30017727" data-d="5" data-sdi="41" data-hv="0" data-il="0" data-i="30017727"><div class="event__tournament"></div><a href="/deportes/boston-celtics-new-york-knicks-ev30017727" title="Boston Celtics - New York Knicks" class="event__players"><ul class="event__players-name"><li>Boston Celtics</li><li>New York Knicks</li></ul></a><div class="event__bets"><div class="bets__column"><ul class="bets__option-list jbet"><li class="jo betbox" data-i="3832480287"><span class="jqt betbox__option">1</span><span class="jpr betbox__odd">1,19</span></li><li class="jo betbox" data-i="3832480286"><span class="jqt betbox__option">2</span><span class="jpr betbox__odd">4,94</span></li></ul></div><div class="bets__column"><ul class="bets__option-list jbet"><li class="jo betbox" data-i="3832480323"><span class="jqt betbox__option">Boston Celtics (-10,5)</span><span class="jpr betbox__odd">1,96</span></li><li class="jo betbox" data-i="3832480322"><span class="jqt betbox__option">New York Knicks (+10,5)</span><span class="jpr betbox__odd">1,89</span></li></ul></div><div class="bets__column"><ul class="bets__option-list jbet"><li class="jo betbox" data-i="3832480316"><span class="jqt betbox__option">+ de 211</span><span class="jpr betbox__odd">1,90</span></li><li class="jo betbox" data-i="3832480317"><span class="jqt betbox__option">- de 211</span><span class="jpr betbox__odd">1,93</span></li></ul></div></div><div class="event__more-info"><span class="event__day">Mañana</span><span class="event__time">01:10</span></div><div class="jt_homemorebets event__more-bets jmr"><span>+414</span></div></li><li class="jlink jev event__item" data-u="/deportes/oklahoma-city-thunder-denver-nuggets-ev30054757" data-d="5" data-sdi="41" data-hv="0" data-il="0" data-i="30054757"><div class="event__tournament"></div><a href="/deportes/oklahoma-city-thunder-denver-nuggets-ev30054757" title="Oklahoma City Thunder - Denver Nuggets" class="event__players"><ul class="event__players-name"><li>Oklahoma City Thunder</li><li>Denver Nuggets</li></ul></a><div class="event__bets"><div class="bets__column"><ul class="bets__option-list jbet"><li class="jo betbox" data-i="3833340251"><span class="jqt betbox__option">1</span><span class="jpr betbox__odd">1,19</span></li><li class="jo betbox" data-i="3833340250"><span class="jqt betbox__option">2</span><span class="jpr betbox__odd">4,90</span></li></ul></div><div class="bets__column"><ul class="bets__option-list jbet"><li class="jo betbox" data-i="3833340269"><span class="jqt betbox__option">Oklahoma City Thunder (-10,5)</span><span class="jpr betbox__odd">1,95</span></li><li class="jo betbox" data-i="3833340268"><span class="jqt betbox__option">Denver Nuggets (+10,5)</span><span class="jpr betbox__odd">1,89</span></li></ul></div><div class="bets__column"><ul class="bets__option-list jbet"><li class="jo betbox" data-i="3833340244"><span class="jqt betbox__option">+ de 230,5</span><span class="jpr betbox__odd">1,89</span></li><li class="jo betbox" data-i="3833340245"><span class="jqt betbox__option">- de 230,5</span><span class="jpr betbox__odd">1,93</span></li></ul></div></div><div class="event__more-info"><span class="event__day">Mañana</span><span class="event__time">03:40</span></div><div class="jt_homemorebets event__more-bets jmr"><span>+415</span></div></li></ul><div class="jtit accordion accordion_l "><h3 class="accordion__text">viernes, 9 de mayo de 2025</h3><div class=""></div><i class="ico-m icon-minus jshow" data-i="egd_1"></i></div><ul class="event__list jbgroup" data-i="egd_1"><li class="jlink jev event__item" data-u="/deportes/minnesota-timberwolves-golden-state-warriors-ev30069644" data-d="5" data-sdi="41" data-hv="0" data-il="0" data-i="30069644"><div class="event__tournament"></div><a href="/deportes/minnesota-timberwolves-golden-state-warriors-ev30069644" title="Minnesota Timberwolves - Golden State Warriors" class="event__players"><ul class="event__players-name"><li>Minnesota Timberwolves</li><li>Golden State Warriors</li></ul></a><div class="event__bets"><div class="bets__column"><ul class="bets__option-list jbet"><li class="jo betbox" data-i="3835333243"><span class="jqt betbox__option">1</span><span class="jpr betbox__odd">1,18</span></li><li class="jo betbox" data-i="3835333242"><span class="jqt betbox__option">2</span><span class="jpr betbox__odd">5,15</span></li></ul></div><div class="bets__column"><ul class="bets__option-list jbet"><li class="jo betbox" data-i="3835333313"><span class="jqt betbox__option">Minnesota Timberwolves (-10,5)</span><span class="jpr betbox__odd">1,90</span></li><li class="jo betbox" data-i="3835333312"><span class="jqt betbox__option">Golden State Warriors (+10,5)</span><span class="jpr betbox__odd">1,95</span></li></ul></div><div class="bets__column"><ul class="bets__option-list jbet"><li class="jo betbox" data-i="3835333306"><span class="jqt betbox__option">+ de 201</span><span class="jpr betbox__odd">1,93</span></li><li class="jo betbox" data-i="3835333307"><span class="jqt betbox__option">- de 201</span><span class="jpr betbox__odd">1,89</span></li></ul></div></div><div class="event__more-info"><span class="event__day">09/05</span><span class="event__time">02:30</span></div><div class="jt_homemorebets event__more-bets jmr"><span>+83</span></div></li></ul><div class="jtit accordion accordion_l "><h3 class="accordion__text">sábado, 10 de mayo de 2025</h3><div class=""></div><i class="ico-m icon-minus jshow" data-i="egd_2"></i></div><ul class="event__list jbgroup" data-i="egd_2"><li class="jlink jev event__item" data-u="/deportes/indiana-pacers-cleveland-cavaliers-ev30028455" data-d="5" data-sdi="41" data-hv="0" data-il="0" data-i="30028455"><div class="event__tournament"></div><a href="/deportes/indiana-pacers-cleveland-cavaliers-ev30028455" title="Indiana Pacers - Cleveland Cavaliers" class="event__players"><ul class="event__players-name"><li>Indiana Pacers</li><li>Cleveland Cavaliers</li></ul></a><div class="event__bets"><div class="bets__column"><ul class="bets__option-list jbet"><li class="jo betbox" data-i="3834391826"><span class="jqt betbox__option">1</span><span class="jpr betbox__odd">2,22</span></li><li class="jo betbox" data-i="3834391825"><span class="jqt betbox__option">2</span><span class="jpr betbox__odd">1,71</span></li></ul></div><div class="bets__column"><ul class="bets__option-list jbet"><li class="jo betbox" data-i="3834391842"><span class="jqt betbox__option">Indiana Pacers (+2,5)</span><span class="jpr betbox__odd">1,93</span></li><li class="jo betbox" data-i="3834391841"><span class="jqt betbox__option">Cleveland Cavaliers (-2,5)</span><span class="jpr betbox__odd">1,92</span></li></ul></div><div class="bets__column"><ul class="bets__option-list jbet"><li class="jo betbox" data-i="3834391819"><span class="jqt betbox__option">+ de 229,5</span><span class="jpr betbox__odd">1,93</span></li><li class="jo betbox" data-i="3834391820"><span class="jqt betbox__option">- de 229,5</span><span class="jpr betbox__odd">1,90</span></li></ul></div></div><div class="event__more-info"><span class="event__day">10/05</span><span class="event__time">01:30</span></div><div class="jt_homemorebets event__more-bets jmr"><span>+24</span></div></li></ul></div></div><div hidden="" class="jcr" data-cid="react_0HNCD4MK09B4S" data-cn="$R.Jsx.s.sportsbookDate.SportsbookDateIndex" data-cp="{&quot;wid&quot;:&quot;w_2-p_2-wt_43&quot;,&quot;initialData&quot;:{&quot;e&quot;:[{&quot;i&quot;:30017727,&quot;d&quot;:&quot;Boston Celtics - New York Knicks&quot;,&quot;di&quot;:5,&quot;sdi&quot;:41,&quot;dd&quot;:&quot;Baloncesto&quot;,&quot;scd&quot;:null,&quot;sdd&quot;:&quot;NBA&quot;,&quot;ei&quot;:null,&quot;ed&quot;:null,&quot;du&quot;:&quot;2025-05-07T23:10:00Z&quot;,&quot;ds&quot;:&quot;08/05&quot;,&quot;lds&quot;:&quot;jueves, 8 de mayo de 2025&quot;,&quot;rd&quot;:2,&quot;ts&quot;:&quot;01:10&quot;,&quot;il&quot;:false,&quot;ns&quot;:true,&quot;pp&quot;:true,&quot;mp&quot;:false,&quot;bbb&quot;:false,&quot;hv&quot;:0,&quot;ci&quot;:null,&quot;cd&quot;:null,&quot;s&quot;:null,&quot;p&quot;:[{&quot;i&quot;:8378445,&quot;n&quot;:&quot;Boston Celtics&quot;,&quot;sn&quot;:&quot;BOS&quot;,&quot;t&quot;:2,&quot;h&quot;:true,&quot;p&quot;:[{&quot;i&quot;:903674,&quot;d&quot;:&quot;Jayson Tatum&quot;},{&quot;i&quot;:903559,&quot;d&quot;:&quot;Kristaps Porzingis&quot;},{&quot;i&quot;:903700,&quot;d&quot;:&quot;Derrick White&quot;},{&quot;i&quot;:903673,&quot;d&quot;:&quot;Jaylen Brown&quot;},{&quot;i&quot;:903546,&quot;d&quot;:&quot;Jrue Holiday&quot;},{&quot;i&quot;:1296725,&quot;d&quot;:&quot;Payton Pritchard&quot;},{&quot;i&quot;:903655,&quot;d&quot;:&quot;Al Horford&quot;},{&quot;i&quot;:1399233,&quot;d&quot;:&quot;Luke Kornet&quot;}]},{&quot;i&quot;:8378443,&quot;n&quot;:&quot;New York Knicks&quot;,&quot;sn&quot;:&quot;NEW&quot;,&quot;t&quot;:3,&quot;h&quot;:false,&quot;p&quot;:[{&quot;i&quot;:1296282,&quot;d&quot;:&quot;Karl-Anthony Towns&quot;},{&quot;i&quot;:1296740,&quot;d&quot;:&quot;J. Brunson&quot;},{&quot;i&quot;:903600,&quot;d&quot;:&quot;Mikal Bridges&quot;},{&quot;i&quot;:1296263,&quot;d&quot;:&quot;Mitchell Robinson&quot;},{&quot;i&quot;:954958,&quot;d&quot;:&quot;Cameron Payne&quot;},{&quot;i&quot;:903536,&quot;d&quot;:&quot;Josh Hart&quot;},{&quot;i&quot;:903695,&quot;d&quot;:&quot;Og Anunoby&quot;},{&quot;i&quot;:1379603,&quot;d&quot;:&quot;Miles Mcbride&quot;}]}],&quot;nb&quot;:415,&quot;ih&quot;:false,&quot;b&quot;:[{&quot;i&quot;:1171886908,&quot;mi&quot;:300298,&quot;md&quot;:&quot;Ganador partido&quot;,&quot;rmd&quot;:&quot;Ganador partido&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3832480287,&quot;t&quot;:&quot;1&quot;,&quot;p&quot;:&quot;1,19&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3832480286,&quot;t&quot;:&quot;2&quot;,&quot;p&quot;:&quot;4,94&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1171886923,&quot;mi&quot;:300300,&quot;md&quot;:&quot;Hándicap&quot;,&quot;rmd&quot;:&quot;Hándicap&quot;,&quot;l&quot;:false,&quot;p&quot;:false,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3832480323,&quot;t&quot;:&quot;Boston Celtics (-10,5)&quot;,&quot;p&quot;:&quot;1,96&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3832480322,&quot;t&quot;:&quot;New York Knicks (+10,5)&quot;,&quot;p&quot;:&quot;1,89&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1171886920,&quot;mi&quot;:300302,&quot;md&quot;:&quot;Más/menos puntos&quot;,&quot;rmd&quot;:&quot;Más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3832480316,&quot;t&quot;:&quot;+ de 211&quot;,&quot;p&quot;:&quot;1,90&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3832480317,&quot;t&quot;:&quot;- de 211&quot;,&quot;p&quot;:&quot;1,93&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172381277,&quot;mi&quot;:300304,&quot;md&quot;:&quot;Boston Celtics: más/menos puntos&quot;,&quot;rmd&quot;:&quot;Boston Celtics: más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3833942322,&quot;t&quot;:&quot;+ de 111,5&quot;,&quot;p&quot;:&quot;1,87&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3833942323,&quot;t&quot;:&quot;- de 111,5&quot;,&quot;p&quot;:&quot;1,95&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1171886904,&quot;mi&quot;:300305,&quot;md&quot;:&quot;New York Knicks: más/menos puntos&quot;,&quot;rmd&quot;:&quot;New York Knicks: más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3832480280,&quot;t&quot;:&quot;+ de 100,5&quot;,&quot;p&quot;:&quot;1,94&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3832480281,&quot;t&quot;:&quot;- de 100,5&quot;,&quot;p&quot;:&quot;1,87&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1171889399,&quot;mi&quot;:300323,&quot;md&quot;:&quot;1º tiempo: ganador&quot;,&quot;rmd&quot;:&quot;1º tiempo: ganador&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3832487392,&quot;t&quot;:&quot;Boston Celtics&quot;,&quot;p&quot;:&quot;1,27&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3832487391,&quot;t&quot;:&quot;New York Knicks&quot;,&quot;p&quot;:&quot;3,84&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1171889410,&quot;mi&quot;:300324,&quot;md&quot;:&quot;1º tiempo: hándicap&quot;,&quot;rmd&quot;:&quot;1º tiempo: hándicap&quot;,&quot;l&quot;:false,&quot;p&quot;:false,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3832487414,&quot;t&quot;:&quot;Boston Celtics (-7)&quot;,&quot;p&quot;:&quot;1,89&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3832487413,&quot;t&quot;:&quot;New York Knicks (+7)&quot;,&quot;p&quot;:&quot;1,94&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1171889396,&quot;mi&quot;:300325,&quot;md&quot;:&quot;1º tiempo: más/menos puntos&quot;,&quot;rmd&quot;:&quot;1º tiempo: más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3832487385,&quot;t&quot;:&quot;+ de 108,5&quot;,&quot;p&quot;:&quot;1,93&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3832487386,&quot;t&quot;:&quot;- de 108,5&quot;,&quot;p&quot;:&quot;1,91&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null}],&quot;mt&quot;:null,&quot;pt&quot;:null,&quot;pb&quot;:null,&quot;hcp&quot;:false,&quot;ctbg&quot;:null,&quot;bbtbg&quot;:null,&quot;si&quot;:0,&quot;sti&quot;:0,&quot;sb&quot;:null,&quot;cbl&quot;:true,&quot;ip&quot;:false},{&quot;i&quot;:30054757,&quot;d&quot;:&quot;Oklahoma City Thunder - Denver Nuggets&quot;,&quot;di&quot;:5,&quot;sdi&quot;:41,&quot;dd&quot;:&quot;Baloncesto&quot;,&quot;scd&quot;:null,&quot;sdd&quot;:&quot;NBA&quot;,&quot;ei&quot;:null,&quot;ed&quot;:null,&quot;du&quot;:&quot;2025-05-08T01:40:00Z&quot;,&quot;ds&quot;:&quot;08/05&quot;,&quot;lds&quot;:&quot;jueves, 8 de mayo de 2025&quot;,&quot;rd&quot;:2,&quot;ts&quot;:&quot;03:40&quot;,&quot;il&quot;:false,&quot;ns&quot;:true,&quot;pp&quot;:true,&quot;mp&quot;:false,&quot;bbb&quot;:false,&quot;hv&quot;:0,&quot;ci&quot;:null,&quot;cd&quot;:null,&quot;s&quot;:null,&quot;p&quot;:[{&quot;i&quot;:8392348,&quot;n&quot;:&quot;Oklahoma City Thunder&quot;,&quot;sn&quot;:&quot;OKL&quot;,&quot;t&quot;:2,&quot;h&quot;:true,&quot;p&quot;:[{&quot;i&quot;:1298835,&quot;d&quot;:&quot;Isaiah Hartenstein&quot;},{&quot;i&quot;:903644,&quot;d&quot;:&quot;Luguentz Dort&quot;},{&quot;i&quot;:1379887,&quot;d&quot;:&quot;Aaron Wiggins&quot;},{&quot;i&quot;:1314985,&quot;d&quot;:&quot;Isaiah Joe&quot;},{&quot;i&quot;:2741610,&quot;d&quot;:&quot;Cason Wallace&quot;},{&quot;i&quot;:1710136,&quot;d&quot;:&quot;Chet Holmgren&quot;},{&quot;i&quot;:903643,&quot;d&quot;:&quot;Shai Gilgeous-Alexander&quot;},{&quot;i&quot;:1721085,&quot;d&quot;:&quot;Jalen Williams&quot;},{&quot;i&quot;:903620,&quot;d&quot;:&quot;Alex Caruso&quot;}]},{&quot;i&quot;:8392347,&quot;n&quot;:&quot;Denver Nuggets&quot;,&quot;sn&quot;:&quot;DEN&quot;,&quot;t&quot;:3,&quot;h&quot;:false,&quot;p&quot;:[{&quot;i&quot;:1379732,&quot;d&quot;:&quot;Christian Braun&quot;},{&quot;i&quot;:948981,&quot;d&quot;:&quot;Michael Porter Jr.&quot;},{&quot;i&quot;:903686,&quot;d&quot;:&quot;Nikola Jokic&quot;},{&quot;i&quot;:903606,&quot;d&quot;:&quot;Aaron Gordon&quot;},{&quot;i&quot;:903583,&quot;d&quot;:&quot;Russell Westbrook&quot;},{&quot;i&quot;:903688,&quot;d&quot;:&quot;Jamal Murray&quot;},{&quot;i&quot;:1712679,&quot;d&quot;:&quot;Peyton Watson&quot;}]}],&quot;nb&quot;:416,&quot;ih&quot;:false,&quot;b&quot;:[{&quot;i&quot;:1172172470,&quot;mi&quot;:300298,&quot;md&quot;:&quot;Ganador partido&quot;,&quot;rmd&quot;:&quot;Ganador partido&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3833340251,&quot;t&quot;:&quot;1&quot;,&quot;p&quot;:&quot;1,19&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3833340250,&quot;t&quot;:&quot;2&quot;,&quot;p&quot;:&quot;4,90&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172172479,&quot;mi&quot;:300300,&quot;md&quot;:&quot;Hándicap&quot;,&quot;rmd&quot;:&quot;Hándicap&quot;,&quot;l&quot;:false,&quot;p&quot;:false,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3833340269,&quot;t&quot;:&quot;Oklahoma City Thunder (-10,5)&quot;,&quot;p&quot;:&quot;1,95&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3833340268,&quot;t&quot;:&quot;Denver Nuggets (+10,5)&quot;,&quot;p&quot;:&quot;1,89&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172172467,&quot;mi&quot;:300302,&quot;md&quot;:&quot;Más/menos puntos&quot;,&quot;rmd&quot;:&quot;Más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3833340244,&quot;t&quot;:&quot;+ de 230,5&quot;,&quot;p&quot;:&quot;1,89&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3833340245,&quot;t&quot;:&quot;- de 230,5&quot;,&quot;p&quot;:&quot;1,93&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172172469,&quot;mi&quot;:300304,&quot;md&quot;:&quot;Oklahoma City Thunder: más/menos puntos&quot;,&quot;rmd&quot;:&quot;Oklahoma City Thunder: más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3833340248,&quot;t&quot;:&quot;+ de 120,5&quot;,&quot;p&quot;:&quot;1,91&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3833340249,&quot;t&quot;:&quot;- de 120,5&quot;,&quot;p&quot;:&quot;1,91&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172172468,&quot;mi&quot;:300305,&quot;md&quot;:&quot;Denver Nuggets: más/menos puntos&quot;,&quot;rmd&quot;:&quot;Denver Nuggets: más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3833340246,&quot;t&quot;:&quot;+ de 109,5&quot;,&quot;p&quot;:&quot;1,87&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3833340247,&quot;t&quot;:&quot;- de 109,5&quot;,&quot;p&quot;:&quot;1,94&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172174261,&quot;mi&quot;:300323,&quot;md&quot;:&quot;1º tiempo: ganador&quot;,&quot;rmd&quot;:&quot;1º tiempo: ganador&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3833344488,&quot;t&quot;:&quot;Oklahoma City Thunder&quot;,&quot;p&quot;:&quot;1,28&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3833344487,&quot;t&quot;:&quot;Denver Nuggets&quot;,&quot;p&quot;:&quot;3,77&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172174257,&quot;mi&quot;:300324,&quot;md&quot;:&quot;1º tiempo: hándicap&quot;,&quot;rmd&quot;:&quot;1º tiempo: hándicap&quot;,&quot;l&quot;:false,&quot;p&quot;:false,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3833344480,&quot;t&quot;:&quot;Oklahoma City Thunder (-7)&quot;,&quot;p&quot;:&quot;1,91&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3833344479,&quot;t&quot;:&quot;Denver Nuggets (+7)&quot;,&quot;p&quot;:&quot;1,93&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172174275,&quot;mi&quot;:300325,&quot;md&quot;:&quot;1º tiempo: más/menos puntos&quot;,&quot;rmd&quot;:&quot;1º tiempo: más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3833344525,&quot;t&quot;:&quot;+ de 118,5&quot;,&quot;p&quot;:&quot;1,93&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3833344526,&quot;t&quot;:&quot;- de 118,5&quot;,&quot;p&quot;:&quot;1,90&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null}],&quot;mt&quot;:null,&quot;pt&quot;:null,&quot;pb&quot;:null,&quot;hcp&quot;:false,&quot;ctbg&quot;:null,&quot;bbtbg&quot;:null,&quot;si&quot;:0,&quot;sti&quot;:0,&quot;sb&quot;:null,&quot;cbl&quot;:true,&quot;ip&quot;:false},{&quot;i&quot;:30069644,&quot;d&quot;:&quot;Minnesota Timberwolves - Golden State Warriors&quot;,&quot;di&quot;:5,&quot;sdi&quot;:41,&quot;dd&quot;:&quot;Baloncesto&quot;,&quot;scd&quot;:null,&quot;sdd&quot;:&quot;NBA&quot;,&quot;ei&quot;:null,&quot;ed&quot;:null,&quot;du&quot;:&quot;2025-05-09T00:30:00Z&quot;,&quot;ds&quot;:&quot;09/05&quot;,&quot;lds&quot;:&quot;viernes, 9 de mayo de 2025&quot;,&quot;rd&quot;:0,&quot;ts&quot;:&quot;02:30&quot;,&quot;il&quot;:false,&quot;ns&quot;:true,&quot;pp&quot;:false,&quot;mp&quot;:false,&quot;bbb&quot;:false,&quot;hv&quot;:0,&quot;ci&quot;:null,&quot;cd&quot;:null,&quot;s&quot;:null,&quot;p&quot;:[{&quot;i&quot;:8397629,&quot;n&quot;:&quot;Minnesota Timberwolves&quot;,&quot;sn&quot;:&quot;MIN&quot;,&quot;t&quot;:2,&quot;h&quot;:true,&quot;p&quot;:null},{&quot;i&quot;:8397627,&quot;n&quot;:&quot;Golden State Warriors&quot;,&quot;sn&quot;:&quot;GOL&quot;,&quot;t&quot;:3,&quot;h&quot;:false,&quot;p&quot;:null}],&quot;nb&quot;:84,&quot;ih&quot;:false,&quot;b&quot;:[{&quot;i&quot;:1172842344,&quot;mi&quot;:300298,&quot;md&quot;:&quot;Ganador partido&quot;,&quot;rmd&quot;:&quot;Ganador partido&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3835333243,&quot;t&quot;:&quot;1&quot;,&quot;p&quot;:&quot;1,18&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3835333242,&quot;t&quot;:&quot;2&quot;,&quot;p&quot;:&quot;5,15&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172842369,&quot;mi&quot;:300300,&quot;md&quot;:&quot;Hándicap&quot;,&quot;rmd&quot;:&quot;Hándicap&quot;,&quot;l&quot;:false,&quot;p&quot;:false,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3835333313,&quot;t&quot;:&quot;Minnesota Timberwolves (-10,5)&quot;,&quot;p&quot;:&quot;1,90&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3835333312,&quot;t&quot;:&quot;Golden State Warriors (+10,5)&quot;,&quot;p&quot;:&quot;1,95&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172842366,&quot;mi&quot;:300302,&quot;md&quot;:&quot;Más/menos puntos&quot;,&quot;rmd&quot;:&quot;Más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3835333306,&quot;t&quot;:&quot;+ de 201&quot;,&quot;p&quot;:&quot;1,93&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3835333307,&quot;t&quot;:&quot;- de 201&quot;,&quot;p&quot;:&quot;1,89&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172842343,&quot;mi&quot;:300304,&quot;md&quot;:&quot;Minnesota Timberwolves: más/menos puntos&quot;,&quot;rmd&quot;:&quot;Minnesota Timberwolves: más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3835333240,&quot;t&quot;:&quot;+ de 105,5&quot;,&quot;p&quot;:&quot;1,87&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3835333241,&quot;t&quot;:&quot;- de 105,5&quot;,&quot;p&quot;:&quot;1,95&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172842342,&quot;mi&quot;:300305,&quot;md&quot;:&quot;Golden State Warriors: más/menos puntos&quot;,&quot;rmd&quot;:&quot;Golden State Warriors: más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3835333238,&quot;t&quot;:&quot;+ de 95,5&quot;,&quot;p&quot;:&quot;2,02&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3835333239,&quot;t&quot;:&quot;- de 95,5&quot;,&quot;p&quot;:&quot;1,82&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172944992,&quot;mi&quot;:300323,&quot;md&quot;:&quot;1º tiempo: ganador&quot;,&quot;rmd&quot;:&quot;1º tiempo: ganador&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3835614880,&quot;t&quot;:&quot;Minnesota Timberwolves&quot;,&quot;p&quot;:&quot;1,30&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3835614879,&quot;t&quot;:&quot;Golden State Warriors&quot;,&quot;p&quot;:&quot;3,62&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172944988,&quot;mi&quot;:300324,&quot;md&quot;:&quot;1º tiempo: hándicap&quot;,&quot;rmd&quot;:&quot;1º tiempo: hándicap&quot;,&quot;l&quot;:false,&quot;p&quot;:false,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3835614872,&quot;t&quot;:&quot;Minnesota Timberwolves (-6,5)&quot;,&quot;p&quot;:&quot;1,93&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3835614871,&quot;t&quot;:&quot;Golden State Warriors (+6,5)&quot;,&quot;p&quot;:&quot;1,91&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172944989,&quot;mi&quot;:300325,&quot;md&quot;:&quot;1º tiempo: más/menos puntos&quot;,&quot;rmd&quot;:&quot;1º tiempo: más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3835614873,&quot;t&quot;:&quot;+ de 98&quot;,&quot;p&quot;:&quot;1,92&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3835614874,&quot;t&quot;:&quot;- de 98&quot;,&quot;p&quot;:&quot;1,92&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null}],&quot;mt&quot;:null,&quot;pt&quot;:null,&quot;pb&quot;:null,&quot;hcp&quot;:false,&quot;ctbg&quot;:null,&quot;bbtbg&quot;:null,&quot;si&quot;:0,&quot;sti&quot;:0,&quot;sb&quot;:null,&quot;cbl&quot;:true,&quot;ip&quot;:false},{&quot;i&quot;:30028455,&quot;d&quot;:&quot;Indiana Pacers - Cleveland Cavaliers&quot;,&quot;di&quot;:5,&quot;sdi&quot;:41,&quot;dd&quot;:&quot;Baloncesto&quot;,&quot;scd&quot;:null,&quot;sdd&quot;:&quot;NBA&quot;,&quot;ei&quot;:null,&quot;ed&quot;:null,&quot;du&quot;:&quot;2025-05-09T23:30:00Z&quot;,&quot;ds&quot;:&quot;10/05&quot;,&quot;lds&quot;:&quot;sábado, 10 de mayo de 2025&quot;,&quot;rd&quot;:0,&quot;ts&quot;:&quot;01:30&quot;,&quot;il&quot;:false,&quot;ns&quot;:true,&quot;pp&quot;:false,&quot;mp&quot;:false,&quot;bbb&quot;:false,&quot;hv&quot;:0,&quot;ci&quot;:null,&quot;cd&quot;:null,&quot;s&quot;:null,&quot;p&quot;:[{&quot;i&quot;:8383860,&quot;n&quot;:&quot;Indiana Pacers&quot;,&quot;sn&quot;:&quot;IND&quot;,&quot;t&quot;:2,&quot;h&quot;:true,&quot;p&quot;:null},{&quot;i&quot;:8383858,&quot;n&quot;:&quot;Cleveland Cavaliers&quot;,&quot;sn&quot;:&quot;CLE&quot;,&quot;t&quot;:3,&quot;h&quot;:false,&quot;p&quot;:null}],&quot;nb&quot;:25,&quot;ih&quot;:false,&quot;b&quot;:[{&quot;i&quot;:1172544659,&quot;mi&quot;:300298,&quot;md&quot;:&quot;Ganador partido&quot;,&quot;rmd&quot;:&quot;Ganador partido&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3834391826,&quot;t&quot;:&quot;1&quot;,&quot;p&quot;:&quot;2,22&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3834391825,&quot;t&quot;:&quot;2&quot;,&quot;p&quot;:&quot;1,71&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172544666,&quot;mi&quot;:300300,&quot;md&quot;:&quot;Hándicap&quot;,&quot;rmd&quot;:&quot;Hándicap&quot;,&quot;l&quot;:false,&quot;p&quot;:false,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3834391842,&quot;t&quot;:&quot;Indiana Pacers (+2,5)&quot;,&quot;p&quot;:&quot;1,93&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3834391841,&quot;t&quot;:&quot;Cleveland Cavaliers (-2,5)&quot;,&quot;p&quot;:&quot;1,92&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172544656,&quot;mi&quot;:300302,&quot;md&quot;:&quot;Más/menos puntos&quot;,&quot;rmd&quot;:&quot;Más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3834391819,&quot;t&quot;:&quot;+ de 229,5&quot;,&quot;p&quot;:&quot;1,93&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3834391820,&quot;t&quot;:&quot;- de 229,5&quot;,&quot;p&quot;:&quot;1,90&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1172544658,&quot;mi&quot;:300304,&quot;md&quot;:&quot;Indiana Pacers: más/menos puntos&quot;,&quot;rmd&quot;:&quot;Indiana Pacers: más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3834391823,&quot;t&quot;:&quot;+ de 114,5&quot;,&quot;p&quot;:&quot;2,02&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3834391824,&quot;t&quot;:&quot;- de 114,5&quot;,&quot;p&quot;:&quot;1,82&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null},{&quot;i&quot;:1173102768,&quot;mi&quot;:300305,&quot;md&quot;:&quot;Cleveland Cavaliers: más/menos puntos&quot;,&quot;rmd&quot;:&quot;Cleveland Cavaliers: más/menos puntos&quot;,&quot;l&quot;:false,&quot;p&quot;:true,&quot;int&quot;:true,&quot;ipp&quot;:false,&quot;imp&quot;:false,&quot;ibb&quot;:false,&quot;o&quot;:[[{&quot;i&quot;:3836082072,&quot;t&quot;:&quot;+ de 115,5&quot;,&quot;p&quot;:&quot;1,92&quot;,&quot;d&quot;:1,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0},{&quot;i&quot;:3836082073,&quot;t&quot;:&quot;- de 115,5&quot;,&quot;p&quot;:&quot;1,90&quot;,&quot;d&quot;:2,&quot;v&quot;:true,&quot;l&quot;:false,&quot;pc&quot;:0,&quot;bi&quot;:0}]],&quot;t&quot;:null,&quot;pl&quot;:null,&quot;tagsConfigurationByType&quot;:null,&quot;idh&quot;:null,&quot;aso&quot;:null,&quot;bgt&quot;:null,&quot;oht&quot;:null}],&quot;mt&quot;:null,&quot;pt&quot;:null,&quot;pb&quot;:null,&quot;hcp&quot;:false,&quot;ctbg&quot;:null,&quot;bbtbg&quot;:null,&quot;si&quot;:0,&quot;sti&quot;:0,&quot;sb&quot;:null,&quot;cbl&quot;:true,&quot;ip&quot;:false}],&quot;m&quot;:[{&quot;i&quot;:300298,&quot;md&quot;:&quot;Ganador partido&quot;,&quot;o&quot;:1},{&quot;i&quot;:300300,&quot;md&quot;:&quot;Hándicap&quot;,&quot;o&quot;:2},{&quot;i&quot;:300302,&quot;md&quot;:&quot;Más/menos puntos&quot;,&quot;o&quot;:3},{&quot;i&quot;:300304,&quot;md&quot;:&quot;Más/menos puntos LOCAL&quot;,&quot;o&quot;:4},{&quot;i&quot;:300305,&quot;md&quot;:&quot;Más/menos puntos VISITANTE&quot;,&quot;o&quot;:5},{&quot;i&quot;:300323,&quot;md&quot;:&quot;1º tiempo: ganador&quot;,&quot;o&quot;:6},{&quot;i&quot;:300324,&quot;md&quot;:&quot;1º tiempo: hándicap&quot;,&quot;o&quot;:7},{&quot;i&quot;:300325,&quot;md&quot;:&quot;1º tiempo: más/menos puntos&quot;,&quot;o&quot;:8}]},&quot;disciplineId&quot;:5,&quot;resources&quot;:{&quot;mplus&quot;:&quot;Multi +&quot;,&quot;pplus&quot;:&quot;Player +&quot;,&quot;betBuilder&quot;:&quot;Crea tu apuesta&quot;,&quot;primeLabel&quot;:&quot;Prime&quot;,&quot;rd1&quot;:&quot;Hoy&quot;,&quot;rd2&quot;:&quot;Mañana&quot;,&quot;ups&quot;:&quot;Ups&quot;,&quot;noResults&quot;:&quot;No se han encontrado resultados.&quot;,&quot;moreBets&quot;:&quot;Más apuestas&quot;,&quot;moreOptions&quot;:&quot;Ver más opciones&quot;},&quot;selectedOptionIds&quot;:[],&quot;numberOfMarkets&quot;:3,&quot;selectedMarketsIds&quot;:null,&quot;sportsUrl&quot;:&quot;/deportes&quot;,&quot;isEventTitleVisible&quot;:false,&quot;isEventDisciplineIconVisible&quot;:false,&quot;fromEncounter&quot;:false,&quot;betBuilderEnabled&quot;:true,&quot;maxOptionsPerBet&quot;:3,&quot;isPrimeEnabled&quot;:true}" data-co="false"></div>    <div data-jsfile="sportsbookDate.section.js?v=QPr7o7VM8Y_cmKDfxSahqCh60fcI2qzXYlY3Rwc1ybg" class="ljs" hidden="hidden"></div>
-</article>
-
-<div data-jsfile="sportsbookSubdiscipline.widget.js?v=0eN63JXlgxlluqC2ZwYdfY-n1VI8RoYwDRapos9eoEI" class="ljs" hidden="hidden"></div>
-
-    <div hidden="" id="aw2-2" data-v="{&quot;DisciplineId&quot;:5,&quot;SubdisciplineId&quot;:41,&quot;NumberOfBets&quot;:10,&quot;NumberOfEvents&quot;:0,&quot;OutrigthsNumberOfEvents&quot;:20,&quot;NumberOfOptions&quot;:10,&quot;NumberOfMarketsToShow&quot;:3,&quot;SelectedMarketsIds&quot;:null,&quot;SelectedTabId&quot;:null,&quot;VisibleTitleBox&quot;:false,&quot;TitleBox&quot;:null}"></div>
-
-
-
-    </section>
-
-    <section id="w_3-p_2-wt_61" class="jqw  mkt_texts contentbox contentbox--radius-m widget_type_61" data-wt="61" data-pa="2" data-co="0" data-po="3" data-sw="false" data-vi="True" data-sl="True" data-ti="False" data-sc="False" data-pwi="258" data-nrc="0" data-ic="false" data-vtw="null" data-sn="">
-
-
-
-        <div class="jhccollapse accordion accordion_m">
-            <h1 class="accordion__text">Apostar a NBA - Pronósticos deportivos NBA &gt;&gt; RETABET ESPAÑA</h1>
-            <i class="ico-m icon-chevron-small-up jicon"></i>
-        </div>
-    <div class="jhtmlcontent mkt_texts__content contentbox__content text_s-m" data-collapsed="false">
-        <p style="margin-top: 0; margin-bottom: 0; text-align: justify; line-height: normal; font-size: 8.5pt"><span style="font-family: Poppins">¿Eres un fanático del baloncesto y de la NBA? Vive los partidos al máximo a través de nuestras&nbsp;</span><strong><span style="font-family: Poppins">apuestas en la NBA.</span></strong><span style="font-family: Poppins">&nbsp;La NBA es conocida por su intensidad, talento y espectáculo en la cancha, y ahora puedes formar parte de la acción al realizar tus apuestas en cada partido y evento destacado. ¡Disfruta de la mejor liga de baloncesto del mundo!</span></p>
-<p style="margin-top: 0; margin-bottom: 0; line-height: normal; font-size: 8.5pt"><span style="font-family: Poppins">&nbsp;</span></p>
-<h2>
-    <p style="margin-top: 0; margin-bottom: 0; text-align: justify; line-height: normal; font-size: 8.5pt"><strong><span style="font-family: Poppins">Apuesta al Campeón de la NBA</span></strong></p>
-</h2>
-<p style="margin-top: 0; margin-bottom: 0; line-height: normal; font-size: 8.5pt"><span style="font-family: Poppins">&nbsp;</span></p>
-<p style="margin-top: 0; margin-bottom: 0; text-align: justify; line-height: normal; font-size: 8.5pt"><span style="font-family: Poppins">Apostar al campeón de la NBA es una experiencia emocionante que te permite anticipar qué equipo se alzará con el título en la próxima temporada. Evalúa el rendimiento de los equipos, las dinámicas en la liga y utiliza tus conocimientos para realizar cualquier apuesta en&nbsp;</span><strong><span style="font-family: Poppins">RETABET</span></strong><span style="font-family: Poppins">.</span></p>
-<p style="margin-top: 0; margin-bottom: 0; text-align: justify; line-height: normal; font-size: 8.5pt"><span style="font-family: Poppins">&nbsp;</span></p>
-<p style="margin-top: 0; margin-bottom: 0; text-align: justify; line-height: normal; font-size: 8.5pt"><span style="font-family: Poppins">La competición de baloncesto por antonomasia tiene al inicio de cada temporada varios favoritos para hacerse con el anillo. Cada año son varios los aspirantes a levantar el Anillo de la NBA. Históricamente, <strong>Los Angeles Lakers</strong> y los <strong>Boston&nbsp;</strong><strong>Celtics&nbsp;</strong>son los dos equipos más grandes de la liga americana. Uno de la <strong>Conferencia </strong><strong>Este </strong>y el otro de la <strong>Conferencia </strong><strong>Oeste</strong>. Rivales históricos por los que han pasado grandísimos jugadores de baloncesto. A este grupo de franquicias ganadoras, en los últimos años se han unido los <strong>Golden </strong><strong>State </strong><strong>Warriors </strong>de <strong>Stephen </strong><strong>Curry</strong>, los <strong>Miami </strong><strong>Heat </strong>de <strong>Lebron </strong><strong>James </strong>y <strong>Dwayne </strong><strong>Wade</strong>, o los <strong>Chicago </strong><strong>Bulls </strong>de <strong>Michael </strong><strong>Jordan </strong>y <strong>Scottie </strong><strong>Pippen</strong>. ¿Se estará gestando un nuevo equipo que domine el baloncesto estadounidense durante los próximos años?</span></p>
-<p style="margin-top: 0; margin-bottom: 0; text-align: justify; line-height: normal; font-size: 8.5pt"><br></p>
-<h2>
-    <p style="margin-top: 0; margin-bottom: 0; text-align: justify; line-height: normal; font-size: 8.5pt"><strong><span style="font-family: Poppins">Cuotas y pronósticos de la NBA</span></strong></p>
-</h2>
-<p style="margin-top: 0; margin-bottom: 0; line-height: normal; font-size: 8.5pt"><span style="font-family: Poppins">&nbsp;</span></p>
-<p style="margin-top: 0; margin-bottom: 0; text-align: justify; line-height: normal"><span style="font-family: Poppins; font-size: 8.5pt">En RETABET, te ofrecemos las mejores cuotas y mercados de baloncesto que te permitirán tomar decisiones más acertadas en tus apuestas. Nuestras cuotas competitivas reflejan las posibles ganancias en juego, mientras que nuestros pronósticos deportivos te proporcionan insights valiosos para abordar tus apuestas con mayor confianza y perspicacia, no solo en la NBA, también en otras competiciones de baloncesto como la&nbsp;</span><a href="https://apuestas.retabet.es/deportes/baloncesto/euroliga-s83" style="text-decoration: none"><strong><u><span style="font-family: Poppins; font-size: 8.5pt; color: rgba(0, 0, 0, 1)">Euroliga</span></u></strong></a><span style="font-family: Poppins; font-size: 8.5pt">, la</span><a href="https://apuestas.retabet.es/deportes/baloncesto/liga-acb-s35" style="text-decoration: none"><strong><u><span style="font-family: Poppins; font-size: 8.5pt; color: rgba(17, 85, 204, 1)">&nbsp;</span></u></strong><strong><u><span style="font-family: Poppins; font-size: 8.5pt; color: rgba(0, 0, 0, 1)">Liga ACB</span></u></strong></a><span style="font-family: Poppins; font-size: 8.5pt">.</span></p>
-<p style="margin-top: 0; margin-bottom: 12pt; line-height: normal; font-size: 8.5pt"><span style="font-family: Poppins">&nbsp;</span></p>
-<h2>
-    <p style="margin-top: 0; margin-bottom: 0; text-align: justify; line-height: normal; font-size: 8.5pt"><strong><span style="font-family: Poppins">Cómo Apostar en la NBA paso a paso</span></strong></p>
-</h2>
-<p style="margin-top: 0; margin-bottom: 0; line-height: normal; font-size: 8.5pt"><span style="font-family: Poppins">&nbsp;</span></p>
-<p style="margin-top: 0; margin-bottom: 0; text-align: justify; line-height: normal"><span style="font-family: Poppins; font-size: 8.5pt">Apostar en la NBA desde nuestra página web es muy sencillo. Solo tienes que ir a la sección de&nbsp;</span><a href="https://apuestas.retabet.es/deportes/baloncesto-m5" style="text-decoration: none"><strong><u><span style="font-family: Poppins; font-size: 8.5pt; color: rgba(0, 0, 0, 1)">apuestas en baloncesto</span></u></strong></a><span style="font-family: Poppins; font-size: 8.5pt">&nbsp;en nuestro menú principal. Allí encontrarás una amplia variedad de opciones, entre ellas las apuestas de la NBA. Echa un vistazo a las cuotas y selecciona tus apuestas. ¡Así de fácil!</span></p>
-<p style="margin-top: 0; margin-bottom: 0; line-height: normal; font-size: 8.5pt"><span style="font-family: Poppins">&nbsp;</span></p>
-<p style="margin-top: 0; margin-bottom: 0; text-align: justify; line-height: normal; font-size: 8.5pt"><span style="font-family: Poppins">Descubre la pasión, el talento y la emoción de las apuestas en baloncesto en RETABET. Ya sea en la NBA, la Euroliga, la Liga ACB. Te invitamos a formar parte de la acción y disfrutar de la experiencia única que el mundo del baloncesto tiene para ofrecer.</span></p>
-    </div>
-    <div data-jsfile="htmlContent.widget.js?v=8iumHKsvzpx5Nf4oqTAjAnlt1ASnbTT__lTcL-iNhaA" class="ljs" hidden="hidden"></div>
-
-
-    <div hidden="" id="aw2-3" data-v="{&quot;HtmlContentId&quot;:0,&quot;ClassName&quot;:&quot;mkt_texts contentbox contentbox--radius-m&quot;,&quot;DisciplineId&quot;:5,&quot;SubdisciplineId&quot;:41,&quot;TitleVisible&quot;:null,&quot;VisibleTitleBox&quot;:false,&quot;TitleBox&quot;:null}"></div>
-
-
-
-    </section>
-</section>
-    <section data-cont="3" class="jpanel panel__betslip">
-
-
-    <section id="w_1-p_3-wt_6" class="jqw  widget_type_6" data-wt="6" data-pa="3" data-co="0" data-po="1" data-sw="false" data-vi="True" data-sl="True" data-ti="False" data-sc="False" data-pwi="76" data-nrc="1" data-ic="false" data-vtw="null" data-sn="">
-
-
-
-
-    <div class="video jstreamingContainer jactiveStreaming" data-active="True" data-unpinone="False" data-sc="30073173" data-sbu="False">
-
-
-    <div class="video__content jcontwr " data-pex="0" data-min="0">
-
-        <div class="jvideoSection " data-ty="2" data-sc="30073173" data-sec="pse">
-
-                <div class="str__control_bar">
-<div id="react_0HNCD4MK09B53"><div tabindex="0"><i class="jlistArr ico-s icon-reorder"></i><i class="ico-s mod-mod_8"></i><div><span class="str__list_item active"> <!-- -->D. Yastremska - A. Potapova</span><span class=" tag_streaming tag_streaming--prime"><i class="icon-youtube-play"></i>Prime</span></div><ul class="str__list none jlistCont"><li data-sc="30091676" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_1"></i><span>Corinthians - Red Bull Bragantino</span></div></li><li data-sc="30105993" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_8"></i><span>Rogers, Anna / Sanchez, Ana Sofia - Motosono, Kianah / Schoppe, Ellie</span></div></li><li data-sc="30095660" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_87"></i><span>V. Dyrl - M. Unguryan</span></div></li><li data-sc="30095386" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_87"></i><span>S. Yakimenko - V. Kondratenko</span></div></li><li data-sc="30106824" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Spain (zoyir) - France (Serenity)</span></div></li><li data-sc="30107326" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Italy (Klever) - Germany (Samurai)</span></div></li><li data-sc="30106680" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>FC Porto (hotShot) - S.L. Benfica (LaikingDast)</span></div></li><li data-sc="30106730" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>SC Braga (Kodak) - Sporting CP (Kray)</span></div></li><li data-sc="30107026" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Ukraine (Andrew) - Ghana (pimchik)</span></div></li><li data-sc="30107061" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Czechia (Smetana) - United States (Sheva)</span></div></li><li data-sc="30113805" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Newcastle UTD (FAITH) - Arsenal (POWER)</span></div></li><li data-sc="30113817" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Napoli (HORIZON) - Barcelona (EDEN)</span></div></li><li data-sc="30113991" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Atlanta United (NOBODY) - Los Angeles FC (APOLLO)</span></div></li><li data-sc="30113956" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Boca Juniors (Jindrich) - Palmeiras (Spike)</span></div></li><li data-sc="30114163" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>River Plate (Jadon) - Boca Juniors (Jindrich)</span></div></li><li data-sc="30114184" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Flamengo (Fede) - Palmeiras (Spike)</span></div></li><li data-sc="30114188" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Borussia Dortmund (Dante) - Eintracht Frankfurt (Ashton)</span></div></li><li data-sc="30114200" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Arsenal (Millie) - Manchester Utd (Florie)</span></div></li><li data-sc="30107210" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Memphis Grizzlies (Linkor) - Dallas Mavericks (MaaaS1K)</span></div></li><li data-sc="30107238" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Los Angeles Clippers (Mikki) - Milwaukee Bucks (Yaro)</span></div></li><li data-sc="30113617" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Memphis Grizzlies (Underrated) - Milwaukee Bucks (SPOOKY)</span></div></li><li data-sc="30113622" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Dallas Mavericks (GUARD) - Denver Nuggets (RAZE)</span></div></li><li data-sc="30113766" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Los Angeles Lakers (Karma) - Boston Celtics (Taapz)</span></div></li><li data-sc="30113789" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Miami Heat (CRYPTO) - Toronto Raptors (CRUCIAL)</span></div></li><li data-sc="30114164" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>New York Knicks (Oscar) - Los Angeles Lakers (Damian)</span></div></li><li data-sc="c1745971210949721" data-vt="4" class="jes str__list_item"><div><i class="ico-s mod-mod_27"></i><span>Carreras 24 h</span></div></li><li data-sc="c1745971212885707" data-vt="4" class="jes str__list_item"><div><i class="ico-s mod-mod_28"></i><span>Carreras 24 h</span></div></li></ul></div></div><div hidden="" class="jcr" data-cid="react_0HNCD4MK09B53" data-cn="$R.Jsx.s.streaming.StreamingEventList" data-cp="{&quot;initialData&quot;:{&quot;e&quot;:[{&quot;ty&quot;:2,&quot;c&quot;:&quot;30073173&quot;,&quot;t&quot;:&quot;D. Yastremska - A. Potapova&quot;,&quot;ic&quot;:&quot;8&quot;,&quot;st&quot;:&quot;WTA Roma&quot;,&quot;cd&quot;:null,&quot;ip&quot;:true},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30091676&quot;,&quot;t&quot;:&quot;Corinthians - Red Bull Bragantino&quot;,&quot;ic&quot;:&quot;1&quot;,&quot;st&quot;:&quot;Brasil Paulista Femenino&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30105993&quot;,&quot;t&quot;:&quot;Rogers, Anna / Sanchez, Ana Sofia - Motosono, Kianah / Schoppe, Ellie&quot;,&quot;ic&quot;:&quot;8&quot;,&quot;st&quot;:&quot;ITF Indian Harbour Beach Femenino&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30095660&quot;,&quot;t&quot;:&quot;V. Dyrl - M. Unguryan&quot;,&quot;ic&quot;:&quot;87&quot;,&quot;st&quot;:&quot;Setka Cup Masculina&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30095386&quot;,&quot;t&quot;:&quot;S. Yakimenko - V. Kondratenko&quot;,&quot;ic&quot;:&quot;87&quot;,&quot;st&quot;:&quot;Setka Cup Masculina&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30106824&quot;,&quot;t&quot;:&quot;Spain (zoyir) - France (Serenity)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - International Battle - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30107326&quot;,&quot;t&quot;:&quot;Italy (Klever) - Germany (Samurai)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - International Battle - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30106680&quot;,&quot;t&quot;:&quot;FC Porto (hotShot) - S.L. Benfica (LaikingDast)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Primeira Liga Battle - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30106730&quot;,&quot;t&quot;:&quot;SC Braga (Kodak) - Sporting CP (Kray)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Primeira Liga Battle - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30107026&quot;,&quot;t&quot;:&quot;Ukraine (Andrew) - Ghana (pimchik)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Volta International Battle 2x3 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30107061&quot;,&quot;t&quot;:&quot;Czechia (Smetana) - United States (Sheva)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Volta International Battle 2x3 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113805&quot;,&quot;t&quot;:&quot;Newcastle UTD (FAITH) - Arsenal (POWER)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - GG League - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113817&quot;,&quot;t&quot;:&quot;Napoli (HORIZON) - Barcelona (EDEN)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - GG League - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113991&quot;,&quot;t&quot;:&quot;Atlanta United (NOBODY) - Los Angeles FC (APOLLO)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - GG League - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113956&quot;,&quot;t&quot;:&quot;Boca Juniors (Jindrich) - Palmeiras (Spike)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Valhalla Cup - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30114163&quot;,&quot;t&quot;:&quot;River Plate (Jadon) - Boca Juniors (Jindrich)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Valhalla Cup - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30114184&quot;,&quot;t&quot;:&quot;Flamengo (Fede) - Palmeiras (Spike)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Valhalla Cup - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30114188&quot;,&quot;t&quot;:&quot;Borussia Dortmund (Dante) - Eintracht Frankfurt (Ashton)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Valhalla Cup - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30114200&quot;,&quot;t&quot;:&quot;Arsenal (Millie) - Manchester Utd (Florie)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Valkiria Cup - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30107210&quot;,&quot;t&quot;:&quot;Memphis Grizzlies (Linkor) - Dallas Mavericks (MaaaS1K)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - NBA Battle - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30107238&quot;,&quot;t&quot;:&quot;Los Angeles Clippers (Mikki) - Milwaukee Bucks (Yaro)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - NBA Battle - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113617&quot;,&quot;t&quot;:&quot;Memphis Grizzlies (Underrated) - Milwaukee Bucks (SPOOKY)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - GG League - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113622&quot;,&quot;t&quot;:&quot;Dallas Mavericks (GUARD) - Denver Nuggets (RAZE)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - GG League - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113766&quot;,&quot;t&quot;:&quot;Los Angeles Lakers (Karma) - Boston Celtics (Taapz)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - GG League - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113789&quot;,&quot;t&quot;:&quot;Miami Heat (CRYPTO) - Toronto Raptors (CRUCIAL)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - GG League - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30114164&quot;,&quot;t&quot;:&quot;New York Knicks (Oscar) - Los Angeles Lakers (Damian)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - Valhalla League - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false}],&quot;es&quot;:null,&quot;t&quot;:null,&quot;l&quot;:[{&quot;ty&quot;:4,&quot;c&quot;:&quot;c1745971210949721&quot;,&quot;t&quot;:&quot;Streaming 24h&quot;,&quot;ic&quot;:&quot;27&quot;,&quot;st&quot;:null,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:4,&quot;c&quot;:&quot;c1745971212885707&quot;,&quot;t&quot;:&quot;Streaming 24h&quot;,&quot;ic&quot;:&quot;28&quot;,&quot;st&quot;:null,&quot;cd&quot;:null,&quot;ip&quot;:false}],&quot;ine&quot;:false,&quot;hml&quot;:true},&quot;subscription&quot;:{&quot;type&quot;:14,&quot;param&quot;:{&quot;sdd&quot;:[],&quot;ste&quot;:[1],&quot;spe&quot;:null,&quot;cc&quot;:&quot;ES&quot;,&quot;ec&quot;:[&quot;3 W\u0026B&quot;,&quot;6 W\u0026B&quot;]}},&quot;wid&quot;:&quot;w_1-p_3-wt_6&quot;,&quot;selectedEvent&quot;:{&quot;sec&quot;:&quot;pse&quot;,&quot;ty&quot;:2,&quot;c&quot;:&quot;30073173&quot;,&quot;t&quot;:&quot;D. Yastremska - A. Potapova&quot;,&quot;ic&quot;:&quot;8&quot;,&quot;st&quot;:&quot;WTA Roma&quot;,&quot;cd&quot;:null,&quot;ip&quot;:true},&quot;hasVideoSelector&quot;:true,&quot;resources&quot;:{&quot;greyhounds&quot;:&quot;Galgos&quot;,&quot;horses&quot;:&quot;Caballos&quot;,&quot;greyhoundsAndHorses&quot;:&quot;Carreras 24 h&quot;,&quot;primeLabel&quot;:&quot;Prime&quot;},&quot;isPrimeEnabled&quot;:true}" data-co="false"></div>
-                    <ul class="str__controls jstroplst">
-
-                            <li data-t="4" class="str__control_item jstropt none">
-                                <i class="ico-s icon-expand"></i>
-                            </li>
-                            <li data-t="5" class="str__control_item jstropt ">
-                                <i class="ico-s icon-contract"></i>
-                            </li>
-
-                                <li data-t="2" class="str__control_item jstropt jpinunpin">
-                                    <i class="ico-s icon-pin"></i>
-                                </li>
-
-
-                    </ul>
-                </div>
-                <div class="play jplayerWrapper" data-pt="1">
-
-
-
-
-    <div id="video" class="jintPlayer none" data-pt="1" data-pid="15" data-src="" data-prot="1" data-apiurl="https://wab.performfeeds.com/livestreamlaunch/1gjkdo1pbegih1g5qqlyjwqldf/9f6le1j3km0e15260qn93h74w?_fmt=json&amp;_fld=sl,aLng,pa,sTok,mFmt" data-apihead="{&quot;Authorization&quot;:&quot;Bearer VXjTKRKheQrlH0UHbMxmhhg-6zZukoEbRi0mxJtdW5-GhtIVACawOmB2HP7cVnRqxLXWFlicCGF0xJ75cVM16xUlcvU5KL6zvDBrkqe6H9LjpFYj04P7b1h7qBY6Xiapbh_Sh9V_B9lXlUk-zu_Lj6eDKgcEcK1SpT6r4iVRoP1mDVkCtYQpocRDzc91rRPOSmW9p6D1m168R8BoF57yPgOdNa1zuYZY2u-S-5GnD6UFTCdKaXF_lDlOJXl8F_tHi4i8k08JwIwdktHzFQYQ99duZIWO4nIXUQjpfikh7baHi7mkKdMOTpInTiwTSFt0u4el37ZH2FB5YwQayCKlhA&quot;}" data-an="UA-34961270-1" data-drm="">
-
-    <script src="/js/video.js?v=cgtYl4qcGXYRWYqGwa16sWUVoL1Gml9DOfVHMaQMUJw"></script>
-    <div id="videocontainer">
-        <video class="jshakaplayer vjs-fluid" disableremoteplayback="" autoplay="" muted="muted">
-        </video>
-    </div>
-
-    </div>
-
-                    <p class="play_no_str__text jnovid none">
-                        <span>
-                            en este momento no hay video disponible
-                        </span>
-                    </p>
-                </div>
-
-                <a href="/live/d-yastremska-a-potapova-sc30073173" class="str__bets-link jlink" title="D. Yastremska - A. Potapova">
-                    Ver apuestas
-                    <i class="ico-s icon__bold icon-chevron-thin-right"></i>
-                </a>
-        </div>
-    </div>
-    <div id="login" class="jstPrEnded widget__login_bg none">
-
-        <div class="widget__login">
-            <a class="btn btn-m btn__contrast-outline jlb jt_streamingLog">
-                Entrar a mi cuenta
-            </a>
-            <span class="widget__login_footer-links">
-                <a class="widget__login_text_button jlink jt_streamingReg">
-                    Quiero registrarme
-                    <i class="icon-text-arrow-right icon__bold"></i>
-                </a>
-            </span>
-        </div>
-    </div>
-    <div data-jsfile="streaming.section.js?v=K9IXm3CDCeY7V2LPCt0n_uqSLa0Rayyp5b57q8Lt-Xk" class="ljs" hidden="hidden"></div>
-
-    </div>
-    <div data-jsfile="streaming.widget.js?v=y6DsDbtcBFroCKpeEqKty8uFmvFPmuNsaRhIDA1X26c" class="ljs" hidden="hidden"></div>
-
-
-    <div hidden="" id="aw3-1" data-v="{&quot;QueryStringEventId&quot;:0,&quot;IsPinUnpinEnabled&quot;:true,&quot;HasMinimizeMagnifyOption&quot;:false,&quot;IsOnlyActiveInUnpinnedMode&quot;:false,&quot;HasVideoSelector&quot;:true,&quot;HasScrollTopButton&quot;:false,&quot;DoesShowBetsLinkBar&quot;:true,&quot;VisibleTitleBox&quot;:false,&quot;TitleBox&quot;:null}"></div>
-
-
-
-    </section>
-
-    <section id="w_4-p_3-wt_55" class="jqw  mod_28 widget_type_55" data-wt="55" data-pa="3" data-co="0" data-po="4" data-sw="false" data-vi="True" data-sl="True" data-ti="False" data-sc="False" data-pwi="141" data-nrc="0" data-ic="false" data-vtw="null" data-sn="">
-
-
-
-    <div class="jgg contentbox contentbox--radius-m games-casino__home" data-flu="">
-        <div class="jgcl accordion accordion_m">
-            <h2 class="accordion__text">
-                Juegos casino
-            </h2>
-            <i class="jgcli ico-m icon-chevron-up"></i>
-        </div>
-        <div class="jgl contentbox__content">
-            <ul class="games__list-home">
-                    <li class="jt_casGame jgm game__item ">
-
-                        <div class="game__img">
-                            <picture>
-                                <img src="https://cdn.retabet.es/apuestas/es/CasinoGames/halloween_fortune_6.jpg">
-                            </picture>
-                        </div>
-
-                        <span class="game__name jgn">Halloween Fortune</span>
-
-
-
-                        <div class="game__buttons jgm jgmb" data-gt="gpas_hfortune_pop" data-ct="ngm_desktop" data-gtt="AZA" data-n="Halloween Fortune" data-pid="1" data-url="/halloween-fortune-cg-p1-igpas_hfortune_pop" data-ccd="0" data-sic="ico-xs" data-slic="ico-s" data-cm="real">
-                                    <button class="btn btn-m btn__casino">
-                                        JUGAR
-                                    </button>
-                        </div>
-                    </li>
-                    <li class="jt_casGame jgm game__item ">
-
-                        <div class="game__img">
-                            <picture>
-                                <img src="https://cdn.retabet.es/apuestas/es/CasinoGames/FEED_OInk_Oink_Oink.jpg">
-                            </picture>
-                        </div>
-
-                        <span class="game__name jgn">Oink Oink Oink</span>
-
-
-
-                        <div class="game__buttons jgm jgmb" data-gt="gpas_oinka1_pop" data-ct="ngm_desktop" data-gtt="AZA" data-n="Oink Oink Oink" data-pid="1" data-url="/oink-oink-oink-cg-p1-igpas_oinka1_pop" data-ccd="0" data-sic="ico-xs" data-slic="ico-s" data-cm="real">
-                                    <button class="btn btn-m btn__casino">
-                                        JUGAR
-                                    </button>
-                        </div>
-                    </li>
-                    <li class="jt_casGame jgm game__item ">
-
-                        <div class="game__img">
-                            <picture>
-                                <img src="https://cdn.retabet.es/apuestas/es/CasinoGames/NL_dragon_bonanza.jpg">
-                            </picture>
-                        </div>
-
-                        <span class="game__name jgn">Dragon Bonanza</span>
-
-
-
-                        <div class="game__buttons jgm jgmb" data-gt="gpas_goldhit3_pop" data-ct="ngm_desktop" data-gtt="AZA" data-n="Dragon Bonanza" data-pid="1" data-url="/dragon-bonanza-cg-p1-igpas_goldhit3_pop" data-ccd="0" data-sic="ico-xs" data-slic="ico-s" data-cm="real">
-                                    <button class="btn btn-m btn__casino">
-                                        JUGAR
-                                    </button>
-                        </div>
-                    </li>
-                    <li class="jt_casGame jgm game__item ">
-
-                        <div class="game__img">
-                            <picture>
-                                <img src="https://cdn.retabet.es/apuestas/es/CasinoGames/FEED_Big_Circus.jpg">
-                            </picture>
-                        </div>
-
-                        <span class="game__name jgn">BIG CIRCUS </span>
-
-
-
-                        <div class="game__buttons jgm jgmb" data-gt="gpas_bcircuslo_pop" data-ct="ngm_desktop" data-gtt="AZA" data-n="BIG CIRCUS " data-pid="1" data-url="/big-circus-cg-p1-igpas_bcircuslo_pop" data-ccd="0" data-sic="ico-xs" data-slic="ico-s" data-cm="real">
-                                    <button class="btn btn-m btn__casino">
-                                        JUGAR
-                                    </button>
-                        </div>
-                    </li>
-                    <li class="jt_casGame jgm game__item ">
-
-                        <div class="game__img">
-                            <picture>
-                                <img src="https://cdn.retabet.es/apuestas/es/CasinoGames/piggies_and_the_bank_0.jpg">
-                            </picture>
-                        </div>
-
-                        <span class="game__name jgn">Piggies and The Bank</span>
-
-
-
-                        <div class="game__buttons jgm jgmb" data-gt="gpas_engageb1_pop" data-ct="ngm_desktop" data-gtt="AZA" data-n="Piggies and The Bank" data-pid="1" data-url="/piggies-and-the-bank-cg-p1-igpas_engageb1_pop" data-ccd="0" data-sic="ico-xs" data-slic="ico-s" data-cm="real">
-                                    <button class="btn btn-m btn__casino">
-                                        JUGAR
-                                    </button>
-                        </div>
-                    </li>
-                    <li class="jt_casGame jgm game__item ">
-
-                        <div class="game__img">
-                            <picture>
-                                <img src="https://cdn.retabet.es/apuestas/es/CasinoGames/FEED_Wild_Pistolero.jpg">
-                            </picture>
-                        </div>
-
-                        <span class="game__name jgn">Wild Pistolero</span>
-
-
-
-                        <div class="game__buttons jgm jgmb" data-gt="gpas_wpistolo_pop" data-ct="ngm_desktop" data-gtt="AZA" data-n="Wild Pistolero" data-pid="1" data-url="/wild-pistolero-cg-p1-igpas_wpistolo_pop" data-ccd="0" data-sic="ico-xs" data-slic="ico-s" data-cm="real">
-                                    <button class="btn btn-m btn__casino">
-                                        JUGAR
-                                    </button>
-                        </div>
-                    </li>
-            </ul>
-        </div>
-    </div>
-    <div data-jsfile="quickGames.widget.js?v=HmlVpIfddkyYOkgAMPcyLlgAY_7yKDdSOXPCbhmoEUc" class="ljs" hidden="hidden"></div>
-
-
-    <div hidden="" id="aw3-4" data-v="{&quot;NumGames&quot;:6,&quot;ProviderId&quot;:null,&quot;VisibleTitleBox&quot;:false,&quot;TitleBox&quot;:null}"></div>
-
-
-
-    </section>
-</section>
-    <section data-cont="4" class="jpanel floatbetslip__panel">
-
-
-    <section id="w_1-p_4-wt_6" class="jqw  none widget_type_6" data-wt="6" data-pa="4" data-co="0" data-po="1" data-sw="false" data-vi="False" data-sl="True" data-ti="False" data-sc="False" data-pwi="180" data-nrc="1" data-ic="false" data-vtw="null" data-sn="">
-
-
-
-
-    <div class="video jstreamingContainer " data-active="False" data-unpinone="True" data-sc="30073173" data-sbu="False">
-
-
-    <div class="video__content jcontwr " data-pex="0" data-min="0">
-
-            <div class="video__collapsedheader jcollapseHeaderSection none">
-                <div tabindex="0" class="jminTabCont" data-reactroot="">
-                    <i class="mod-mod_8"></i>
-                    <span class="jminTab str__list_item active">D. Yastremska - A. Potapova</span>
-
-                    <span class=" tag_streaming tag_streaming--prime">
-                        <i class="icon-youtube-play"></i>
-                            Prime
-                    </span>
-                </div>
-                <i class="icon-chevron-up jholdup"></i>
-            </div>
-        <div class="jvideoSection " data-ty="2" data-sc="30073173" data-sec="pse">
-
-                <div class="str__control_bar">
-<div id="react_0HNCD4MK09B54"><div tabindex="0"><i class="jlistArr ico-s icon-reorder"></i><i class="ico-s mod-mod_8"></i><div><span class="str__list_item active"> <!-- -->D. Yastremska - A. Potapova</span><span class=" tag_streaming tag_streaming--prime"><i class="icon-youtube-play"></i>Prime</span></div><ul class="str__list none jlistCont"><li data-sc="30091676" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_1"></i><span>Corinthians - Red Bull Bragantino</span></div></li><li data-sc="30105993" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_8"></i><span>Rogers, Anna / Sanchez, Ana Sofia - Motosono, Kianah / Schoppe, Ellie</span></div></li><li data-sc="30095660" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_87"></i><span>V. Dyrl - M. Unguryan</span></div></li><li data-sc="30095386" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_87"></i><span>S. Yakimenko - V. Kondratenko</span></div></li><li data-sc="30106824" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Spain (zoyir) - France (Serenity)</span></div></li><li data-sc="30107326" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Italy (Klever) - Germany (Samurai)</span></div></li><li data-sc="30106680" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>FC Porto (hotShot) - S.L. Benfica (LaikingDast)</span></div></li><li data-sc="30106730" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>SC Braga (Kodak) - Sporting CP (Kray)</span></div></li><li data-sc="30107026" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Ukraine (Andrew) - Ghana (pimchik)</span></div></li><li data-sc="30107061" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Czechia (Smetana) - United States (Sheva)</span></div></li><li data-sc="30113805" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Newcastle UTD (FAITH) - Arsenal (POWER)</span></div></li><li data-sc="30113817" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Napoli (HORIZON) - Barcelona (EDEN)</span></div></li><li data-sc="30113991" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Atlanta United (NOBODY) - Los Angeles FC (APOLLO)</span></div></li><li data-sc="30113956" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Boca Juniors (Jindrich) - Palmeiras (Spike)</span></div></li><li data-sc="30114163" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>River Plate (Jadon) - Boca Juniors (Jindrich)</span></div></li><li data-sc="30114184" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Flamengo (Fede) - Palmeiras (Spike)</span></div></li><li data-sc="30114188" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Borussia Dortmund (Dante) - Eintracht Frankfurt (Ashton)</span></div></li><li data-sc="30114200" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Arsenal (Millie) - Manchester Utd (Florie)</span></div></li><li data-sc="30107210" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Memphis Grizzlies (Linkor) - Dallas Mavericks (MaaaS1K)</span></div></li><li data-sc="30107238" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Los Angeles Clippers (Mikki) - Milwaukee Bucks (Yaro)</span></div></li><li data-sc="30113617" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Memphis Grizzlies (Underrated) - Milwaukee Bucks (SPOOKY)</span></div></li><li data-sc="30113622" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Dallas Mavericks (GUARD) - Denver Nuggets (RAZE)</span></div></li><li data-sc="30113766" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Los Angeles Lakers (Karma) - Boston Celtics (Taapz)</span></div></li><li data-sc="30113789" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>Miami Heat (CRYPTO) - Toronto Raptors (CRUCIAL)</span></div></li><li data-sc="30114164" data-vt="2" class="jes str__list_item"><div><i class="ico-s mod-mod_118"></i><span>New York Knicks (Oscar) - Los Angeles Lakers (Damian)</span></div></li><li data-sc="c1745971210949721" data-vt="4" class="jes str__list_item"><div><i class="ico-s mod-mod_27"></i><span>Carreras 24 h</span></div></li><li data-sc="c1745971212885707" data-vt="4" class="jes str__list_item"><div><i class="ico-s mod-mod_28"></i><span>Carreras 24 h</span></div></li></ul></div></div><div hidden="" class="jcr" data-cid="react_0HNCD4MK09B54" data-cn="$R.Jsx.s.streaming.StreamingEventList" data-cp="{&quot;initialData&quot;:{&quot;e&quot;:[{&quot;ty&quot;:2,&quot;c&quot;:&quot;30073173&quot;,&quot;t&quot;:&quot;D. Yastremska - A. Potapova&quot;,&quot;ic&quot;:&quot;8&quot;,&quot;st&quot;:&quot;WTA Roma&quot;,&quot;cd&quot;:null,&quot;ip&quot;:true},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30091676&quot;,&quot;t&quot;:&quot;Corinthians - Red Bull Bragantino&quot;,&quot;ic&quot;:&quot;1&quot;,&quot;st&quot;:&quot;Brasil Paulista Femenino&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30105993&quot;,&quot;t&quot;:&quot;Rogers, Anna / Sanchez, Ana Sofia - Motosono, Kianah / Schoppe, Ellie&quot;,&quot;ic&quot;:&quot;8&quot;,&quot;st&quot;:&quot;ITF Indian Harbour Beach Femenino&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30095660&quot;,&quot;t&quot;:&quot;V. Dyrl - M. Unguryan&quot;,&quot;ic&quot;:&quot;87&quot;,&quot;st&quot;:&quot;Setka Cup Masculina&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30095386&quot;,&quot;t&quot;:&quot;S. Yakimenko - V. Kondratenko&quot;,&quot;ic&quot;:&quot;87&quot;,&quot;st&quot;:&quot;Setka Cup Masculina&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30106824&quot;,&quot;t&quot;:&quot;Spain (zoyir) - France (Serenity)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - International Battle - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30107326&quot;,&quot;t&quot;:&quot;Italy (Klever) - Germany (Samurai)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - International Battle - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30106680&quot;,&quot;t&quot;:&quot;FC Porto (hotShot) - S.L. Benfica (LaikingDast)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Primeira Liga Battle - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30106730&quot;,&quot;t&quot;:&quot;SC Braga (Kodak) - Sporting CP (Kray)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Primeira Liga Battle - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30107026&quot;,&quot;t&quot;:&quot;Ukraine (Andrew) - Ghana (pimchik)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Volta International Battle 2x3 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30107061&quot;,&quot;t&quot;:&quot;Czechia (Smetana) - United States (Sheva)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Volta International Battle 2x3 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113805&quot;,&quot;t&quot;:&quot;Newcastle UTD (FAITH) - Arsenal (POWER)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - GG League - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113817&quot;,&quot;t&quot;:&quot;Napoli (HORIZON) - Barcelona (EDEN)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - GG League - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113991&quot;,&quot;t&quot;:&quot;Atlanta United (NOBODY) - Los Angeles FC (APOLLO)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - GG League - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113956&quot;,&quot;t&quot;:&quot;Boca Juniors (Jindrich) - Palmeiras (Spike)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Valhalla Cup - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30114163&quot;,&quot;t&quot;:&quot;River Plate (Jadon) - Boca Juniors (Jindrich)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Valhalla Cup - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30114184&quot;,&quot;t&quot;:&quot;Flamengo (Fede) - Palmeiras (Spike)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Valhalla Cup - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30114188&quot;,&quot;t&quot;:&quot;Borussia Dortmund (Dante) - Eintracht Frankfurt (Ashton)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Valhalla Cup - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30114200&quot;,&quot;t&quot;:&quot;Arsenal (Millie) - Manchester Utd (Florie)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Efútbol - Valkiria Cup - 2x4 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30107210&quot;,&quot;t&quot;:&quot;Memphis Grizzlies (Linkor) - Dallas Mavericks (MaaaS1K)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - NBA Battle - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30107238&quot;,&quot;t&quot;:&quot;Los Angeles Clippers (Mikki) - Milwaukee Bucks (Yaro)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - NBA Battle - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113617&quot;,&quot;t&quot;:&quot;Memphis Grizzlies (Underrated) - Milwaukee Bucks (SPOOKY)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - GG League - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113622&quot;,&quot;t&quot;:&quot;Dallas Mavericks (GUARD) - Denver Nuggets (RAZE)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - GG League - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113766&quot;,&quot;t&quot;:&quot;Los Angeles Lakers (Karma) - Boston Celtics (Taapz)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - GG League - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30113789&quot;,&quot;t&quot;:&quot;Miami Heat (CRYPTO) - Toronto Raptors (CRUCIAL)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - GG League - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:2,&quot;c&quot;:&quot;30114164&quot;,&quot;t&quot;:&quot;New York Knicks (Oscar) - Los Angeles Lakers (Damian)&quot;,&quot;ic&quot;:&quot;118&quot;,&quot;st&quot;:&quot;Ebasket - Valhalla League - 4x5 mins.&quot;,&quot;cd&quot;:null,&quot;ip&quot;:false}],&quot;es&quot;:null,&quot;t&quot;:null,&quot;l&quot;:[{&quot;ty&quot;:4,&quot;c&quot;:&quot;c1745971210949721&quot;,&quot;t&quot;:&quot;Streaming 24h&quot;,&quot;ic&quot;:&quot;27&quot;,&quot;st&quot;:null,&quot;cd&quot;:null,&quot;ip&quot;:false},{&quot;ty&quot;:4,&quot;c&quot;:&quot;c1745971212885707&quot;,&quot;t&quot;:&quot;Streaming 24h&quot;,&quot;ic&quot;:&quot;28&quot;,&quot;st&quot;:null,&quot;cd&quot;:null,&quot;ip&quot;:false}],&quot;ine&quot;:false,&quot;hml&quot;:true},&quot;subscription&quot;:{&quot;type&quot;:14,&quot;param&quot;:{&quot;sdd&quot;:[],&quot;ste&quot;:[1],&quot;spe&quot;:null,&quot;cc&quot;:&quot;ES&quot;,&quot;ec&quot;:[&quot;3 W\u0026B&quot;,&quot;6 W\u0026B&quot;]}},&quot;wid&quot;:&quot;w_1-p_4-wt_6&quot;,&quot;selectedEvent&quot;:{&quot;sec&quot;:&quot;pse&quot;,&quot;ty&quot;:2,&quot;c&quot;:&quot;30073173&quot;,&quot;t&quot;:&quot;D. Yastremska - A. Potapova&quot;,&quot;ic&quot;:&quot;8&quot;,&quot;st&quot;:&quot;WTA Roma&quot;,&quot;cd&quot;:null,&quot;ip&quot;:true},&quot;hasVideoSelector&quot;:true,&quot;resources&quot;:{&quot;greyhounds&quot;:&quot;Galgos&quot;,&quot;horses&quot;:&quot;Caballos&quot;,&quot;greyhoundsAndHorses&quot;:&quot;Carreras 24 h&quot;,&quot;primeLabel&quot;:&quot;Prime&quot;},&quot;isPrimeEnabled&quot;:true}" data-co="false"></div>
-                    <ul class="str__controls jstroplst">
-
-                            <li data-t="4" class="str__control_item jstropt none">
-                                <i class="ico-s icon-expand"></i>
-                            </li>
-                            <li data-t="5" class="str__control_item jstropt ">
-                                <i class="ico-s icon-contract"></i>
-                            </li>
-
-                                <li data-t="1" class="str__control_item jstropt jpinunpin">
-                                    <i class="ico-s icon-pin"></i>
-                                </li>
-
-
-                                <li data-t="6" class="str__control_item jstropt jminmag">
-                                    <i class="ico-l icon-chevron-down"></i>
-                                </li>
-                    </ul>
-                </div>
-                <div class="play jplayerWrapper" data-pt="1">
-
-
-
-
-    <div id="video" class="jintPlayer none" data-pt="1" data-pid="15" data-src="" data-prot="1" data-apiurl="https://wab.performfeeds.com/livestreamlaunch/1gjkdo1pbegih1g5qqlyjwqldf/9f6le1j3km0e15260qn93h74w?_fmt=json&amp;_fld=sl,aLng,pa,sTok,mFmt" data-apihead="{&quot;Authorization&quot;:&quot;Bearer S9lkZZjfdtGlKCiieLg8b75oSDVWBGZQ9hLaomJFT2QX3XtsK9ESG-aFAPaBODYAl_auR3_FJJxoUDZlMh1sV-FGWc3YLRVxpkfWq1_yHIRzzsmyRrhWpp3ZTcwFGF9zR4h9HJW1ld-jN_rUkqmUIl40M8KX-Z7jtqVFieoHWk6YA83I4wvIcUzZsPQxgFMIb9v6jysolU5yZjLPNj3lmErvvUAqjau9P20K_mg-mRtd57TyIstu3jQupCKlxHv7vTgFAXldChxbzDPb9DS1z5QSg0d_U5ZrKA8i3tz7jpLNBKw_cZIfrbsLRwv2ACnunpvxRwNaTBM8r49WC9h6Yw&quot;}" data-an="UA-34961270-1" data-drm="">
-
-    <script src="/js/video.js?v=cgtYl4qcGXYRWYqGwa16sWUVoL1Gml9DOfVHMaQMUJw"></script>
-    <div id="videocontainer">
-        <video class="jshakaplayer vjs-fluid" disableremoteplayback="" autoplay="" muted="muted">
-        </video>
-    </div>
-
-    </div>
-
-                    <p class="play_no_str__text jnovid none">
-                        <span>
-                            en este momento no hay video disponible
-                        </span>
-                    </p>
-                </div>
-
-                <a href="/live/d-yastremska-a-potapova-sc30073173" class="str__bets-link jlink" title="D. Yastremska - A. Potapova">
-                    Ver apuestas
-                    <i class="ico-s icon__bold icon-chevron-thin-right"></i>
-                </a>
-        </div>
-    </div>
-    <div id="login" class="jstPrEnded widget__login_bg none">
-
-        <div class="widget__login">
-            <a class="btn btn-m btn__contrast-outline jlb jt_streamingLog">
-                Entrar a mi cuenta
-            </a>
-            <span class="widget__login_footer-links">
-                <a class="widget__login_text_button jlink jt_streamingReg">
-                    Quiero registrarme
-                    <i class="icon-text-arrow-right icon__bold"></i>
-                </a>
-            </span>
-        </div>
-    </div>
-    <div data-jsfile="streaming.section.js?v=K9IXm3CDCeY7V2LPCt0n_uqSLa0Rayyp5b57q8Lt-Xk" class="ljs" hidden="hidden"></div>
-
-    </div>
-    <div data-jsfile="streaming.widget.js?v=y6DsDbtcBFroCKpeEqKty8uFmvFPmuNsaRhIDA1X26c" class="ljs" hidden="hidden"></div>
-
-
-    <div hidden="" id="aw4-1" data-v="{&quot;QueryStringEventId&quot;:0,&quot;IsPinUnpinEnabled&quot;:true,&quot;HasMinimizeMagnifyOption&quot;:true,&quot;IsOnlyActiveInUnpinnedMode&quot;:true,&quot;HasVideoSelector&quot;:true,&quot;HasScrollTopButton&quot;:false,&quot;DoesShowBetsLinkBar&quot;:true,&quot;VisibleTitleBox&quot;:false,&quot;TitleBox&quot;:null}"></div>
-
-
-
-    </section>
-
-    <section id="w_2-p_4-wt_106_c" class="jqw  widget_type_106_c" data-wt="106" data-pa="4" data-co="0" data-po="2" data-sw="false" data-vi="True" data-sl="True" data-ti="False" data-sc="False" data-pwi="70" data-nrc="0" data-ic="true" data-vtw="null" data-sn="BetslipUserBetsSwitcher">
-
-
-
-
-    <div class="jdata" data-section="betslipUserBetsSwitcher" data-hash="BbkDGL4-jAGQsuevbrrZIAnz05UnQRKYzMPZaF4Usuw"></div>
-
-    <nav class="ticket__nav jbusw
-        jcol collapsed
-        ">
-        <div hidden="" class="jdata" data-btype="106" data-bsec="Betslip" data-utype="106" data-usec="UserBets" data-csu="true" data-ssec="Betslip"></div>
-        <div class="ticket__nav-item">
-            <div class="switcher-content switcher-content--ticket">
-                <input id="rbet" type="radio" value="betslip" name="switcher">
-                <label for="rbet">
-                    Boleto
-                    <span class="jqlop counter counter--small">
-                        0
-                    </span>
-                </label>
-                <input id="ruserb" type="radio" value="userbets" name="switcher">
-                <label for="ruserb">
-                    Mis apuestas
-                </label>
-            </div>
-        </div>
-            <i class="jbback ticket__nav-item icon-chevron-thin-down ico-s jt_bcDesplegar"></i>
-    </nav>
-    <div data-jsfile="sectionWrapper.widget.js?v=xxaM-WzvGe4qczxR6RkNOjhAIRt29kzxVJ5NaSvCXPE" class="ljs" hidden="hidden"></div>
-
-
-    <div hidden="" id="aw4-2" data-v="{&quot;ShowBack&quot;:true,&quot;IsUserBetsAlwaysEnabled&quot;:true,&quot;ParentHtmlId&quot;:&quot;w_2-p_4-wt_106_c&quot;,&quot;HtmlId&quot;:&quot;w_2-p_4-wt_106_c_BetslipUserBetsSwitcher&quot;,&quot;ClassName&quot;:null,&quot;VisibleTitleBox&quot;:false,&quot;TitleBox&quot;:null}"></div>
-
-
-
-    </section>
-
-    <section id="w_3-p_4-wt_106_c" class="jqw  none  betslip_container janimateSquare widget_type_106_c" data-wt="106" data-pa="4" data-co="0" data-po="3" data-sw="false" data-vi="False" data-sl="True" data-ti="False" data-sc="False" data-pwi="47" data-nrc="0" data-ic="true" data-vtw="null" data-sn="Betslip">
-
-
-
-
-    <div class="jdata" data-section="betslip" data-hash="z8ZXs2UbkTieIdWwvbUghWXHPhqVQSkkTU8T2S1_Moc"></div>
-
-<article class="ticket animated jstep" data-step="0">
-    <div class="ticket__content ticket__content--empty wrapper-large">
-        <div class="ticket__titulo">
-            <div class="ticket__illustration">
-                <i class="icon-ticket"></i>
-            </div>
-            <h6 class="title title_l">
-                El boleto está vacio
-            </h6>
-        </div>
-        <div class="ticket__texto text">
-            <p class="title title_m">
-                ¡No hay apuestas seleccionadas!
-            </p>
-            <p>
-                Por favor, navega por nuestra oferta deportiva y selecciona tus apuestas
-            </p>
-        </div>
-        <ul class="list-nav">
-            <li>
-                <a href="/live" data-url="/live" class="jemptyp list-nav__item jt_bcIr" data-lnk="Live">
-                    <i class="ico-m icon-live list-nav__icon"></i>
-                    <span class="list-nav__texto text">
-                        Live
-                    </span>
-                    <span class="list-nav__numero">56</span>
-                    <i class="ico-s icon-chevron-thin-right list-nav__arrow"></i>
-                </a>
-            </li>
-            <li>
-                <a href="/calendario" data-url="/calendario" class="jemptyp list-nav__item jt_bcIr" data-lnk="Calendario">
-                    <i class="ico-m icon-calendar list-nav__icon"></i>
-                    <span class="list-nav__texto text">
-                        Hoy
-                    </span>
-                    <span class="list-nav__numero">346</span>
-                    <i class="ico-s icon-chevron-thin-right list-nav__arrow"></i>
-                </a>
-            </li>
-            <li>
-                <a href="/" data-url="/" class="jemptyp list-nav__item jt_bcIr" data-lnk="Home">
-                    <i class="ico-m icon-home list-nav__icon"></i>
-                    <span class="list-nav__texto text">
-                        Inicio
-                    </span>
-                    <i class="ico-s icon-chevron-thin-right list-nav__arrow"></i>
-                </a>
-            </li>
-        </ul>
-    </div>
-</article><div class="jbsloading loading ticket__panel none">
-    <div class="windows8">
-    <div class="wBall" id="wBall_1">
-        <div class="wInnerBall"></div>
-    </div>
-    <div class="wBall" id="wBall_2">
-        <div class="wInnerBall"></div>
-    </div>
-    <div class="wBall" id="wBall_3">
-        <div class="wInnerBall"></div>
-    </div>
-    <div class="wBall" id="wBall_4">
-        <div class="wInnerBall"></div>
-    </div>
-    <div class="wBall" id="wBall_5">
-        <div class="wInnerBall"></div>
-    </div>
-    <i class="icon-reta2"></i>
-</div>
-</div>    <div data-jsfile="betslip.section.js?v=z8ZXs2UbkTieIdWwvbUghWXHPhqVQSkkTU8T2S1_Moc" class="ljs" hidden="hidden"></div>
-    <div data-jsfile="sectionWrapper.widget.js?v=xxaM-WzvGe4qczxR6RkNOjhAIRt29kzxVJ5NaSvCXPE" class="ljs" hidden="hidden"></div>
-
-
-    <div hidden="" id="aw4-3" data-v="{&quot;ParentHtmlId&quot;:&quot;w_3-p_4-wt_106_c&quot;,&quot;HtmlId&quot;:&quot;w_3-p_4-wt_106_c_Betslip&quot;,&quot;ClassName&quot;:&quot;betslip_container janimateSquare&quot;,&quot;VisibleTitleBox&quot;:false,&quot;TitleBox&quot;:null}"></div>
-
-
-
-    </section>
-
-    <section id="w_14-p_4-wt_106_c" class="jqw  none  betslip_container betslip_container--userbets widget_type_106_c" data-wt="106" data-pa="4" data-co="0" data-po="14" data-sw="false" data-vi="False" data-sl="True" data-ti="False" data-sc="False" data-pwi="95" data-nrc="0" data-ic="true" data-vtw="null" data-sn="UserBets">
-
-
-
-
-    <div class="jdata" data-section="userBets" data-hash="5RFWZowPD2P-Yt41H4kksEoERfQYRWC8L4gfmBKS6TM"></div>
-
-
-<div class="ticket__content ticket__content--loggedout wrapper-large jlogin">
-    <div class="ticket__titulo">
-        <div class="ticket__illustration">
-            <i class="icon-user-ticket"></i>
-        </div>
-        <h6 class="title title_m title--minus">
-            Para ver tus apuestas:
-        </h6>
-    </div>
-    <div class="ticket__texto">
-        <button class="btn btn-m btn__secondary-outline jlog">
-            Entra en tu cuenta
-        </button>
-        <p>
-            o <a href="/registro" class="jlink"><span class="link-inline">regístrate</span> <i class="icon-text-arrow-right"></i></a>
-        </p>
-    </div>
-</div>
-
-<div data-jsfile="userBets.section.js?v=5RFWZowPD2P-Yt41H4kksEoERfQYRWC8L4gfmBKS6TM" class="ljs" hidden="hidden"></div>    <div data-jsfile="sectionWrapper.widget.js?v=xxaM-WzvGe4qczxR6RkNOjhAIRt29kzxVJ5NaSvCXPE" class="ljs" hidden="hidden"></div>
-
-
-    <div hidden="" id="aw4-14" data-v="{&quot;DateFrom&quot;:&quot;2025-05-04T00:00:00&quot;,&quot;DateTo&quot;:&quot;2025-05-07T23:59:59&quot;,&quot;LastDays&quot;:0,&quot;StatusConfigurations&quot;:[{&quot;Status&quot;:3,&quot;ShowDateFilter&quot;:false,&quot;LastDays&quot;:null,&quot;IconClass&quot;:null},{&quot;Status&quot;:2,&quot;ShowDateFilter&quot;:false,&quot;LastDays&quot;:null,&quot;IconClass&quot;:null},{&quot;Status&quot;:4,&quot;ShowDateFilter&quot;:false,&quot;LastDays&quot;:30,&quot;IconClass&quot;:null},{&quot;Status&quot;:1,&quot;ShowDateFilter&quot;:true,&quot;LastDays&quot;:null,&quot;IconClass&quot;:&quot;ico-m icon-calendar&quot;}],&quot;Status&quot;:null,&quot;TabsClasses&quot;:null,&quot;ContainerClasses&quot;:&quot;ticket__userbets&quot;,&quot;TabsNavClasses&quot;:&quot;tab__group--fullwidth&quot;,&quot;AlwaysVisible&quot;:false,&quot;ShowNotLoggedInView&quot;:false,&quot;ParentHtmlId&quot;:null,&quot;HtmlId&quot;:null,&quot;ClassName&quot;:&quot;betslip_container betslip_container--userbets&quot;,&quot;VisibleTitleBox&quot;:false,&quot;TitleBox&quot;:null}"></div>
-
-
-
-    </section>
-</section>
-    <section data-cont="6" class="jpanel searcher__panel">
-
-
-    <section id="w_1-p_6-wt_106_c" class="jqw  widget_type_106_c" data-wt="106" data-pa="6" data-co="0" data-po="1" data-sw="false" data-vi="True" data-sl="True" data-ti="False" data-sc="False" data-pwi="24" data-nrc="0" data-ic="true" data-vtw="null" data-sn="Searcher">
-
-
-
-
-    <div class="jdata" data-section="searcher" data-hash="u_iuzCffABACpNOUqQuIv5nH1YJEH72wMOFJqu5etGU"></div>
-<div class="jsearcherpanel">
-
-</div>
-
-<div data-jsfile="searcher.section.js?v=u_iuzCffABACpNOUqQuIv5nH1YJEH72wMOFJqu5etGU" class="ljs" hidden="hidden"></div>    <div data-jsfile="sectionWrapper.widget.js?v=xxaM-WzvGe4qczxR6RkNOjhAIRt29kzxVJ5NaSvCXPE" class="ljs" hidden="hidden"></div>
-
-
-    <div hidden="" id="aw6-1" data-v="{&quot;MaxPromotedElements&quot;:15,&quot;MaxSuggestElements&quot;:10,&quot;MaxResultElements&quot;:15,&quot;InputText&quot;:null,&quot;IsSearch&quot;:false,&quot;ParentHtmlId&quot;:&quot;w_1-p_6-wt_106_c&quot;,&quot;HtmlId&quot;:&quot;w_1-p_6-wt_106_c_Searcher&quot;,&quot;ClassName&quot;:null,&quot;VisibleTitleBox&quot;:false,&quot;TitleBox&quot;:null}"></div>
-
-
-
-    </section>
-</section>
-</div>
-    </div>
-    <div class="alay"></div>
-</main>
-</div>
-
-    <div id="pamc">
-        <div class="modal jmo " style="display:none;">
-    <div class="modal__wrapper">
-        <form class="modal__content animate" action="/deportes/baloncesto/nba/41" method="post">
-            <div class="modal__header">
-    <h4 id="modalHeader">
-    </h4>
-        <span class="jmocl close"><i class="icon-multiply"></i></span>
-</div>
-<div id="modalBody" class="modal__body">
-</div>
-        </form>
-    </div>
-</div>
-    </div>
-
-<script defer="" src="https://www.retabet.es/js/cookiemodal.js"></script>
-<div class="jpckmsg" data-ckdom="1" data-cui="es-ES" hidden=""></div>
-<div data-jsfile="cookieConfigMessage.section.js?v=LVC4IzO-Axa8gi9eaU57o5RGb6rsfEXO4F-DbgtcJME" class="ljs" hidden="hidden"></div>
-
-    <div>
-    <div class="modal jmo modal_session" id="sessionCountdownMessage" style="display:none;">
-    <div class="modal__wrapper">
-        <form class="modal__content animate" action="/deportes/baloncesto/nba/41" method="post">
-            <div class="modal__header">
-    <h4 id="modalHeader">
-Tu sesión online esta apunto de caducar    </h4>
-        <span class="jmocl close"><i class="icon-multiply"></i></span>
-</div>
-<div id="modalBody" class="modal__body">
-<div class="modal__title">
-    <h4>Tu sesión online caducará en breve</h4>
-</div>
-<div class="modal__container">
-    <div class="modal__box">
-        <div class="jtmpl" hidden="">{sec}s.</div>
-        <span class="modal__num jval"></span>
-        <p>
-             Porfavor haz click en "Continuar" para seguir jugando o haz click en "Salir" para terminar ahora tu sesión
-        </p>
-    </div>
-</div>
-<div class="modal__footer">
-    <div class="botonera">
-        <button type="button" class="jcontinue btn btn-m btn__secondary-outline">
-            <span>Continuar</span>
-        </button>
-        <button type="button" class="jlogOff btn btn-m btn__secondary-outline">
-            <span>Salir</span>
-        </button>
-    </div>
-</div>
-</div>
-        </form>
-    </div>
-</div>
-</div>
-
-
-<div id="casinoMessage">
-    <div class="modal jmo " style="display:none;">
-    <div class="modal__wrapper">
-        <form class="modal__content animate" action="/deportes/baloncesto/nba/41" method="post">
-            <div class="modal__header">
-    <h4 id="modalHeader">
-    </h4>
-</div>
-<div id="modalBody" class="modal__body">
-</div>
-        </form>
-    </div>
-</div>
-</div>
-
-<div data-jsfile="casinoMessage.section.js?v=i5QENHiJ4mx5hJwYbRxUCOoX2q05PcIXDfGpWKa3jn0" class="ljs" hidden="hidden"></div>
-
-
-    <footer class="jfooter ">
-<section class="footer__cont">
-  <nav class="footer__nav">
-    <div class="footer__menu">
-      <h3>
-        <a href="/" title="Deportes">Deportes</a>
-      </h3>
-      <ul>
-        <li class="footer__menu-item">
-          <a href="/" title="Apuestas deportivas">Apuestas deportivas</a>
-        </li>
-        <li class="footer__menu-item">
-          <a href="/live" title="Apuestas en directo">Apuestas en directo</a>
-        </li>
-        <li class="footer__menu-item">
-          <a href="/deportes/futbol-m1" title="Apuestas de fútbol">Apuestas de fútbol</a>
-        </li>
-        <li class="footer__menu-item">
-          <a href="/deportes/baloncesto-m5" title="Apuestas de baloncesto">Apuestas de baloncesto</a>
-        </li>
-        <li class="footer__menu-item">
-          <a href="/deportes/tenis-m8" title="Apuestas de tenis">Apuestas de tenis</a>
-        </li>
-        <li class="footer__menu-item">
-          <a href="/esports" title="Apuestas de Esports">Apuestas de Esports</a>
-        </li>
-        <li class="footer__menu-item">
-          <a href="/juegos-virtuales" title="Apuestas virtuales">Apuestas virtuales</a>
-        </li>
-      </ul>
-    </div>
-    <div class="footer__menu">
-      <h3>
-        <a href="/casino" title="Casino">Casino</a>
-      </h3>
-      <ul>
-        <li class="footer__menu-item">
-          <a href="/casino" title="Juegos de casino">Juegos de casino</a>
-        </li>
-        <li class="footer__menu-item">
-          <a href="/ruleta-en-vivo" title="Ruleta en vivo">Ruleta en vivo</a>
-        </li>
-        <li class="footer__menu-item">
-          <a href="/slots" title="Slots online">Slots online</a>
-        </li>
-        <li class="footer__menu-item">
-          <a href="/blackjack" title="Blackjack online">Blackjack online</a>
-        </li>
-      </ul>
-    </div>
-    <div class="footer__menu">
-      <h3>
-        <a href="https://www.retabet.es/?setUG=true#aboutSec" target="_blank" title="Sobre nosotros">Sobre nosotros</a>
-      </h3>
-      <ul>
-        <li class="footer__menu-item">
-          <a href="https://www.retabet.es/?setUG=true&amp;map&amp;utm_source=Mailify&amp;utm_medium=email&amp;utm_campaign=((News))#establishmentsSec" target="_blank" title="Tiendas y locales">Tiendas y locales</a>
-        </li>
-        <li class="footer__menu-item">
-          <a href="https://retabet.es/mobile" target="_blank" title="Descargar Apps">Descargar Apps</a>
-        </li>
-        <li class="footer__menu-item">
-          <a href="https://blog.retabet.es/" target="_blank" title="Blog">Blog</a>
-        </li>
-        <li class="footer__menu-item">
-          <a href="/contacto#afiliados" title="Afiliados">Afiliados</a>
-        </li>
-        <li class="footer__menu-item">
-          <a href="/contacto" title="Contacto">Contacto</a>
-        </li>
-        <li class="footer__menu-item">
-          <a href="https://www.retabet.es/files/es/pdf/Clausula_informativa_tratamiento_ESTATAL.pdf" title="Cláusulas informativas" target="_blank">Cláusulas informativas</a>
-        </li>
-        <li class="footer__menu-item">
-          <a href="https://www.retabet.es/files/es/pdf/normativa_RETA_Estatal.pdf" title="Normativa Retabet" target="_blank">Normativa Retabet</a>
-        </li>
-        <li class="footer__menu-item">
-          <a href="/sitemap" title="Mapa del sitio">Mapa del sitio</a>
-        </li>
-      </ul>
-    </div>
-    <div class="footer__menu">
-      <h3>
-        <a href="/ayuda" title="Sobre nosotros">Ayuda</a>
-      </h3>
-      <ul>
-        <li class="footer__menu-item">
-          <a href="/ayuda#tarjeta_reta" title="Tarjeta Retabet">Tarjeta Retabet</a>
-        </li>
-        <li class="footer__menu-item">
-          <a href="/ayuda#metodos_ingreso" title="Métodos de ingreso">Métodos de ingreso</a>
-        </li>
-        <li class="footer__menu-item">
-          <a href="/ayuda#metodos_cobro" title="Métodos de cobro">Métodos de cobro</a>
-        </li>
-        <li class="footer__menu-item">
-          <a href="/ayuda#normativa_retabet" title="Reglas de juego">Reglas de juego</a>
-        </li>
-      </ul>
-    </div>
-    <div class="footer__menu">
-      <h3>
-        <a href="/juego-mas-seguro" title="Juego más seguro">Juego más seguro</a>
-      </h3>
-      <ul>
-        <li class="footer__menu-item">
-          <a href="/juego-mas-seguro" title="Medidas multidisciplinares">Medidas multidisciplinares</a>
-        </li>
-        <li class="footer__menu-item">
-          <a href="/juego-mas-seguro" title="¿Tengo problemas con el juego?">¿Tengo problemas con el juego?</a>
-        </li>
-        <li class="footer__menu-item">
-          <a href="/autoexclusion" title="Autoexclusión">Autoexclusión</a>
-        </li>
-      </ul>
-    </div>
-    <div class="footer__menu">
-      <h3>
-        <a href="/juego-autorizado" title="Juego autorizado">Juego autorizado</a>
-      </h3>
-      <ul>
-        <li class="footer__menu-item">
-          <a href="/juego-autorizado" title="juego autorizado">Juego autorizado</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
-  <div class="footer__icons">
-    <ul class="footer__payment">
-      <li>
-        <i class="icon-tarjeta-reta"></i>
-      </li>
-      <li>
-        <i class="logos-cc-visa"></i>
-      </li>
-      <li>
-        <i class="logos-mastercard"></i>
-      </li>
-      <li>
-        <i class="logos-cc-paypal"></i>
-      </li>
-      <li>
-        <i class="icon-tienda"></i>
-      </li>
-      <li>
-        <i class="logos-bizum2"></i>
-      </li>
-    </ul>
-    <ul class="footer__logos footer__logos--estatal">
-      <li class="footer__logo footer__logo--diversion">
-        <a href="https://www.ordenacionjuego.es/operadores-juego/operadores-licencia/operadores/ekasa-apuestas-online-sa" title="sin diversión no hay juego">
-          <img src="https://cdn.retabet.es/apuestas/es/webfooterimages/sindiversion_nojuego.svg" alt="sin diversión no hay juego" loading="lazy">
-        </a>
-      </li>
-      <li class="footer__logo footer__logo--responsable">
-        <a href="https://www.ordenacionjuego.es/operadores-juego/operadores-licencia/operadores/ekasa-apuestas-online-sa" title="juega responsable">
-          <img src="https://cdn.retabet.es/apuestas/es/webfooterimages/juega_responsable.svg" alt="juega responsable" loading="lazy">
-        </a>
-      </li>
-      <li class="footer__logo">
-        <a href="https://www.ordenacionjuego.es/participantes-juego/juego-seguro/rgiaj" title="autoprohibicion">
-          <img src="https://cdn.retabet.es/apuestas/es/webfooterimages/autoprohibicion.svg" alt="autoprohibicion" loading="lazy">
-        </a>
-      </li>
-      <li class="footer__logo">
-        <a href="https://www.boe.es/buscar/act.php?id=BOE-A-2011-9280 " title="mas18">
-          <img src="https://cdn.retabet.es/apuestas/es/webfooterimages/mas_18.svg" alt="mas18" loading="lazy">
-        </a>
-      </li>
-      <li class="footer__logo footer__logo--bien">
-        <a href="https://www.ordenacionjuego.es/participantes-juego/juego-autorizado" title="Juego autorizado">
-          <img src="https://cdn.retabet.es/apuestas/es/webfooterimages/logo-juego-autorizado.jpg" alt="Juego autorizado" loading="lazy">
-        </a>
-      </li>
-      <li class="footer__logo footer__logo--seguro">
-        <a href="https://www.ordenacionjuego.es/participantes-juego/juego-seguro" title="jugar seguro">
-          <img src="https://cdn.retabet.es/apuestas/es/webfooterimages/juego_seguro.png" alt="Juego seguro" loading="lazy">
-        </a>
-      </li>
-    </ul>
-  </div>
-</section>
-<section class="footer__business-info">
-  <div>
-    <p class="footer__text"> © EKASA apuestas online S.A., Parque Tecnológico de Zamudio edificio. 407 1ª planta, 48170 ZAMUDIO (BIZKAIA) · A95774857 · Licencias concedidas por la DGOJ 326/GA/1060, 327/GO/1060, 341/ADC/1060, 340/AOC/1060, 451/AHC/1060, 454/MAZ/1060, 455/BLJ/1060 y 456/RLT/1060.
-    </p>
-    <ul class="footer__social">
-      <li>
-        <a href="https://www.facebook.com/Retabet" target="_blank" title="Facebok">
-          <i class="icon-facebook"></i>
-        </a>
-      </li>
-      <li>
-        <a href="https://twitter.com/Retabet?lang=es" target="_blank" title="Twitter">
-          <i class="icon-logoX"></i>
-        </a>
-      </li>
-      <li>
-        <a href="https://www.instagram.com/retabet/" target="_blank" title="Instagram">
-          <i class="icon-instagram"></i>
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div>
-    <ul class="footer__links">
-      <li>
-        <a href="https://www.retabet.es/files/es/pdf/politica-privacidad-Grupo-Retabet.pdf" target="_blank" title="Política de privacidad">Política de privacidad</a>
-      </li>
-      <li>
-        <a href="https://www.retabet.es/files/es/pdf/contrato-de-juego-Retabet-Apuestas.pdf" target="_blank" title="Términos y condiciones">Términos y condiciones</a>
-      </li>
-      <li>
-        <a href="/politica-cookies" title="Política de cookies" target="_blank">Política de cookies</a>
-      </li>
-    </ul>
-  </div>
-</section>        <div hidden="" id="initHora" data-hour="23" data-min="52" data-sec="5"></div>
-        <section class="footer__time">
-            <div class="footer__time-box">
-                <span id="hora">23:52:15</span>
-
-    <div tabindex="0" class="select-noform select-noform-dark jdivtz ">
-        <div class="select-noform_active">
-            <span>(UTC+01:00) Bruselas, Copenhague, Madrid, París</span>
-        </div>
-        <ul id="tzlst" class="none select-noform__options ps_scroll ps"><div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; right: 0px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div></div></ul>
-    </div>
-
-            </div>
-            <div class="footer__lastlogin">
-
-
-
-            </div>
-        </section>
-    <div class="modal jmo " style="display:none;">
-    <div class="modal__wrapper">
-        <form class="modal__content animate" action="/deportes/baloncesto/nba/41" method="post">
-            <div class="modal__header">
-    <h4 id="modalHeader">
-    </h4>
-        <span class="jmocl close"><i class="icon-multiply"></i></span>
-</div>
-<div id="modalBody" class="modal__body">
-</div>
-        </form>
-    </div>
-</div>
-</footer>
-
-<div data-jsfile="footer.section.js?v=5czERWbmkzVlFPzd-dkWtxxyIaPG-f9BY6lDUNjSa4Q" class="ljs" hidden="hidden"></div>
-
-
-
-<div id="msgList">
-</div>
-
-<div id="amtp" hidden="hidden">
-
-    <div class="jm jmsg msg msg-generic msg--error animated fadeInDown none" data-tp="6" data-ocl="true">
-            <span class="msg__icon icon__bold"></span>
-<div class="msg__text_content">
-        <p class="msg__title title_m jmti">
-        </p>
-        <p class="msg__text jmtx">
-        </p>
-</div>            <span class="jmcls msg__close icon__bold ico-s" onclick="$(this).parent().remove();"></span>
-
-    </div>
-
-    <div class="jm jmsg msg msg-generic msg--success animated fadeInDown none" data-tp="5" data-ocl="true">
-            <span class="msg__icon icon__bold"></span>
-<div class="msg__text_content">
-        <p class="msg__title title_m jmti">
-        </p>
-        <p class="msg__text jmtx">
-        </p>
-</div>            <span class="jmcls msg__close icon__bold ico-s" onclick="$(this).parent().remove();"></span>
-
-    </div>
-
-    <div class="jm jmsg msg msg-generic msg--warning animated fadeInDown none" data-tp="7" data-ocl="true">
-            <span class="msg__icon icon__bold"></span>
-<div class="msg__text_content">
-        <p class="msg__title title_m jmti">
-        </p>
-        <p class="msg__text jmtx">
-        </p>
-</div>            <span class="jmcls msg__close icon__bold ico-s" onclick="$(this).parent().remove();"></span>
-
-    </div>
-
-    <div class="jm jmsg msg msg-generic msg--info animated fadeInDown none" data-tp="8" data-ocl="true">
-            <span class="msg__icon icon__bold"></span>
-<div class="msg__text_content">
-        <p class="msg__title title_m jmti">
-        </p>
-        <p class="msg__text jmtx">
-        </p>
-</div>            <span class="jmcls msg__close icon__bold ico-s" onclick="$(this).parent().remove();"></span>
-
-    </div>
-</div>
-
-<div id="amst" hidden="hidden">
-    <span class="amstm" data-id="1">Sin conexión</span>
-    <span class="amstm" data-id="2">Debes iniciar sesión para ver esta sección</span>
-    <span class="amstm" data-id="3">Error al intentar abrir el juego, intentalo mas tarde</span>
-    <span class="amstm" data-id="5">El usuario está autoexcluido en casino y no puede jugar.</span>
-    <span class="amstm" data-id="6">El usuario está autoexcluido en casino y no puede jugar</span>
-    <span class="amstm" data-id="7">El usuario está autoexcluido en slots y no puede jugar</span>
-    <span class="amstm" data-id="8">Lo sentimos ha ocurrido un error, <b>cierra el navegador y vuelve a intentarlo más tarde</b>. Si el problema persiste, contacta con nuestro Servicio de Atención al Cliente. Referencia: {error}</span>
-</div>
-    <div class="jsiteloading loading" style="display: none;">
-    <div class="windows8">
-    <div class="wBall" id="wBall_1">
-        <div class="wInnerBall"></div>
-    </div>
-    <div class="wBall" id="wBall_2">
-        <div class="wInnerBall"></div>
-    </div>
-    <div class="wBall" id="wBall_3">
-        <div class="wInnerBall"></div>
-    </div>
-    <div class="wBall" id="wBall_4">
-        <div class="wInnerBall"></div>
-    </div>
-    <div class="wBall" id="wBall_5">
-        <div class="wInnerBall"></div>
-    </div>
-    <i class="icon-reta2"></i>
-</div>
-</div>
-
-
-
-
-    <div id="w-chbot" class="jcd" data-providerid="1" data-startonopen="true" data-is="true" data-io="false" data-chs="0">
-
-    <div hidden="" class="jxc" data-key="def3dc47-abc2-4288-8ced-ac937b544c66" data-cau="False" data-cid="0" data-cia="False" data-cug="apuestas" data-cde="0" data-ccd="retabet.es" data-utzs="1" data-ugtzs="1">
-    </div>
-    </div>
-
-<div data-jsfile="chatBot2.section.js?v=s9oOooRpgzKYSKvD-51O4Yq7wPFBTEkKjN67mm4aIf0" class="ljs" hidden="hidden"></div>
-    <img class="reta-square" src="/reta-square.jpg?638822515256060597" alt="Retabet square" style="max-width:0%">
-
-
-
-
-    <div id="modalFactory">
-
-        <div class="modal jmo jModal" style="display:none;">
-            <div class="modal__wrapper">
-                    <form class="modal__content animate jcontent jformModal" action="/deportes/baloncesto/nba/41" method="post">
-
-        <div class="modal__header jheader">
-            <h4 id="modalHeader">
-            </h4>
-                <span class="jmocl close"><i class="icon-multiply"></i></span>
-        </div>
-        <div id="modalBody" class="modal__body">
-        </div>
-
-                    </form>
-            </div>
-        </div>
-
-    </div>
-
-
-<script src="https://rtds.retabet.es/Scripts/rtds.js?4"></script><script src="https://apuestas.retabet.es/js/modules/navMenu.section.js?v=tME5PzfZ54xGB269naOKpHK-RnwrxmnlnMGtNxgQjKk"></script><script src="https://apuestas.retabet.es/js/modules/login.section.js?v=rPzpL_sTWM0GPifOUxK26dWwAnxcJ4BAsLUCGgMlR1Q"></script><script src="https://apuestas.retabet.es/js/modules/forgotPassword.section.js?v=mKdHpqsS2l9rrlL-fyiMSkBfkPsjltOiQpbuvPWiuKY"></script><script src="https://apuestas.retabet.es/js/modules/esportsnav.section.js?v=CpxRLSHqJUNAOeZPMXmZJ7M1rTb8_2cw9Jso8XELkfM"></script><script src="https://apuestas.retabet.es/js/modules/header.section.js?v=Uucyabh6zg8iDg482ZXdQPbDlW0ReT91HH6XrlK8lVI"></script><script src="https://apuestas.retabet.es/js/modules/sportsbookMenu.widget.js?v=znjJeAaH-5uGyINB6dJiPjt-tbHyVTeZmmWC21-v1r8"></script><script src="https://apuestas.retabet.es/js/modules/sportsNoResult.section.js?v=PyjtOZ-2gadSXfwTIK7Ws1oMsxHKC1aEOAT2tBYnb48"></script><script src="https://apuestas.retabet.es/js/modules/sectionWrapper.widget.js?v=xxaM-WzvGe4qczxR6RkNOjhAIRt29kzxVJ5NaSvCXPE"></script><script src="https://apuestas.retabet.es/js/modules/sportsbookDate.section.js?v=QPr7o7VM8Y_cmKDfxSahqCh60fcI2qzXYlY3Rwc1ybg"></script><script src="https://apuestas.retabet.es/js/modules/sportsbookSubdiscipline.widget.js?v=0eN63JXlgxlluqC2ZwYdfY-n1VI8RoYwDRapos9eoEI"></script><script src="https://apuestas.retabet.es/js/modules/htmlContent.widget.js?v=8iumHKsvzpx5Nf4oqTAjAnlt1ASnbTT__lTcL-iNhaA"></script><script src="https://apuestas.retabet.es/js/modules/streaming.section.js?v=K9IXm3CDCeY7V2LPCt0n_uqSLa0Rayyp5b57q8Lt-Xk"></script><script src="https://apuestas.retabet.es/js/modules/streaming.widget.js?v=y6DsDbtcBFroCKpeEqKty8uFmvFPmuNsaRhIDA1X26c"></script><script src="https://apuestas.retabet.es/js/modules/quickGames.widget.js?v=HmlVpIfddkyYOkgAMPcyLlgAY_7yKDdSOXPCbhmoEUc"></script><script src="https://apuestas.retabet.es/js/modules/betslip.section.js?v=z8ZXs2UbkTieIdWwvbUghWXHPhqVQSkkTU8T2S1_Moc"></script><script src="https://apuestas.retabet.es/js/modules/userBets.section.js?v=5RFWZowPD2P-Yt41H4kksEoERfQYRWC8L4gfmBKS6TM"></script><script src="https://apuestas.retabet.es/js/modules/searcher.section.js?v=u_iuzCffABACpNOUqQuIv5nH1YJEH72wMOFJqu5etGU"></script><script src="https://apuestas.retabet.es/js/modules/cookieConfigMessage.section.js?v=LVC4IzO-Axa8gi9eaU57o5RGb6rsfEXO4F-DbgtcJME"></script><script src="https://apuestas.retabet.es/js/modules/casinoMessage.section.js?v=i5QENHiJ4mx5hJwYbRxUCOoX2q05PcIXDfGpWKa3jn0"></script><script src="https://apuestas.retabet.es/js/modules/footer.section.js?v=5czERWbmkzVlFPzd-dkWtxxyIaPG-f9BY6lDUNjSa4Q"></script><script src="https://apuestas.retabet.es/js/modules/chatBot2.section.js?v=s9oOooRpgzKYSKvD-51O4Yq7wPFBTEkKjN67mm4aIf0"></script><link rel="stylesheet" href="https://www.retabet.es/css/cookiemodal.css">
-<div class="modal__cookies-allow jckModal" data-ckt="1" data-ckna="ac" data-ckvl="{ &quot;t&quot;: true, &quot;a&quot;: true, &quot;c&quot;: true }" data-ckexp="365" data-ckd=".retabet.es" data-ln="es-ES">
-    <p>
-        Utilizamos cookies propias y de terceros para analizar nuestros servicios y mostrarte anuncios basados en tus intereses. Puedes obtener más información, configurarlas o rechazar su uso pulsando <a class="jconf modal__cookies-allow__link-config" data-d="https://www.retabet.es/">AQUÍ</a>.
-    </p>
-    <div class="banner__cookies-botones">
-            <button class="btn btn__secondary jreject">
-                Rechazar
-            </button>
-       <button class="btn btn__secondary jaccept">
-           Aceptar
-       </button>
-    </div>
-</div><script src="https://static.xenioo.com/webchat/xenioowebchat.js" data-id="xenioo" data-node="app02"></script></body></html>
+.bottom-nav .menu-item-link.bottom-nav-link .ds-notification-bubble {
+    left: 50%;
+    top: var(--bottom-nav-link-badge-position);
+}
+.bottom-sheet-menu .ds-notification-bubble {
+    top: 0;
+    right: 3px;
+}
+.menu-item-link.tab-nav-link .ds-notification-bubble,
+.navbar-wrapper-right lh-inbox-icon .ds-notification-bubble,
+.am-wrapper .am-inbox .ds-notification-bubble,
+.navigation-wrapper .menu-item-link.top-nav-link .ds-notification-bubble,
+.bottom-nav .menu-item-link.bottom-nav-link .ds-notification-bubble,
+.bottom-sheet-menu .ds-notification-bubble,
+.am-v2 .am-menu-items .ds-notification-bubble,
+.am-v3 .am-menu-items .ds-notification-bubble,
+.am-v4 .am-menu-item .ds-notification-bubble,
+.menu-wrapper .menu-item-link .ds-notification-bubble {
+    font-style: normal;
+    position: absolute;
+}
+.menu-item-link.tab-nav-link .ds-notification-bubble,
+.navbar-wrapper-right lh-inbox-icon .ds-notification-bubble {
+    top: 0.05rem;
+    right: -0.05rem;
+}
+.navbar-wrapper-right lh-inbox-icon .has-text:not(.user-state-no-text) .ds-notification-bubble {
+    top: -8px;
+    right: calc(50% - 16px);
+}
+.navbar-wrapper-right vn-h-avatar-balance .user-state-nav .ds-notification-bubble {
+    position: absolute;
+    top: -6px;
+    right: calc(50% - 20px);
+}
+.am-wrapper .am-inbox .ds-notification-bubble {
+    top: -0.25rem;
+    right: -0.05rem;
+}
+
+.menu-wrapper .menu-item-link .ds-notification-bubble{
+   top: 2px;
+   right: 2px;
+}
+.am-v2 .am-menu-items .ds-notification-bubble, .am-v3 .am-menu-items .ds-notification-bubble{
+    top: -3px;
+    left: 10px;
+}
+
+.am-v4 .am-menu-item .image-icon{
+    position: relative;
+}
+
+.am-v4 .am-menu-item .ds-notification-bubble{
+    top: 0;
+    right: 3px;
+}
+
+.navigation-wrapper .menu-item-link.top-nav-link .ds-notification-bubble {
+    top: -6px;
+    left: 9px;
+}
+@media (max-width: 1279.98px) {
+    .navigation-wrapper .menu-item-link.top-nav-link .ds-notification-bubble {
+        top: 0;
+        left: 50%;
+    }
+}
+.bottom-nav .menu-item-link.bottom-nav-link .ds-notification-bubble {
+    left: 50%;
+    top: var(--bottom-nav-link-badge-position);
+}
+.bottom-sheet-menu .ds-notification-bubble {
+    top: 0;
+    right: 3px;
+}
+.h-avatar:has(ds-notification-bubble) {
+    position: relative;
+
+    .avatar-content {
+        position: initial;
+    }
+    ds-notification-bubble {
+        position: absolute;
+        z-index: 1;
+        top: 0.15rem;
+    }
+}</style><style id="foxy-navbar-alignment-fix-promo">@media (max-width: 599.98px) {
+    offers-navigation .navbar.sub-nav-wrapper, .offers-navigation-epcot .navbar.sub-nav-wrapper {
+        align-items: stretch;
+    }
+    offers-navigation .navbar.sub-nav-wrapper:has(.ds-tabs-group), .offers-navigation-epcot .navbar.sub-nav-wrapper:has(.ds-tabs-group) {
+        align-items: flex-end;
+    }
+}</style><style id="handhistory-icons-fix">.hand-history-mainbody.hh .pk-hands-mainbody.hidefilters .hands-details .gameType .icon-thumb-up,.hand-history-mainbody.hh .pk-hands-mainbody.hidefilters .hands-details .gameType .icon-thumb-down,.hand-history-mainbody.hh .hands-details .time-block .icon-thumb-down,.hand-history-mainbody.hh .hands-details .time-block .icon-thumb-up {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAHKSURBVHgBxZe7SgNBFIb/XDRio6DgBQsLbVQQbBQsLAQbQcTSB7BRsNTWyiaFr6EPYCG+gIhYWQg2IjaJWliIiNl4jjmHTNZdsjPu7vzwMZPJzJx/zuzsBXBTQcoRoiz1InIUB70jmsQHsYZOY5nrSIJ/E4HU51wMuKZtQMqSBGUDF1JamXA10IhoGyOWxUTmBoLQb131FizlaiBu3DxSmihOutLtmP+t0u9igAOsEKOIDvaADKWrv5TgJnoUN5CxhkMBTZ5gp9/sl+3GYEfKqLPOc90SFcRfC9znndgjrnSegjFhWZwxJbSvETX6jL8rt0WzN2k64zvbDfFK1IQ68UYcS59NxKffhappoNrFbUXMpRFc5ziEkeIKoqVb0y9903raPRInpoGgy4BGgj5JxYtYJT65nutLhIjTf6Z1HwY4A+NSIm8Duo2cgaYPA0UJvi91+NiCBbRubF4ywEGniCV4NMCqa0OeBgKJd07cw8Mp4FgHxLrUvWzBrJSB6SpPTYQbbAz04n/ir6jdcKO+aPTEDNIvnSG0bp+LxDSMc5xAvEh+mJ0SL2h/SXVohvhCa29MuOM10lMhqkEd9RGDaF8g2l5DjOs09AOPHJkLX3a5gQAAAABJRU5ErkJggg==);
+    background-size: 100%;
+}
+.hand-history-mainbody.hh .pk-hands-mainbody.hidefilters .hands-details .gameType .icon-thumb-down,.hand-history-mainbody.hh .hands-details .time-block .icon-thumb-down {
+    opacity: 0.4;
+    transform: scaleY(-1) scaleX(-1);
+}
+.hand-history-mainbody.hh .hands-details .time-block .icon-thumb-down:before,.hand-history-mainbody.hh .hands-details .time-block .icon-thumb-up:before,.hand-history-mainbody.hh .pk-hands-mainbody.hidefilters .hands-details .gameType .icon-thumb-up:before,.hand-history-mainbody.hh .pk-hands-mainbody.hidefilters .hands-details .gameType .icon-thumb-down:before {
+    content: none;
+}
+.th-bwin-dark .hand-history-mainbody.hh .pk-hands-mainbody.hidefilters .hands-details .gameType .icon-thumb-up,.th-bwin-dark .hand-history-mainbody.hh .pk-hands-mainbody.hidefilters .hands-details .gameType .icon-thumb-down,.th-bwin-dark .hand-history-mainbody.hh .hands-details .time-block .icon-thumb-down,.th-bwin-dark .hand-history-mainbody.hh .hands-details .time-block .icon-thumb-up,
+.th-bwin-dark .hand-history-mainbody.hh .heading-strip .back-arrow {
+    filter: invert(100%) brightness(200%);
+}
+.hand-history-mainbody.hh .heading-strip .back-arrow {
+    width: 32px;
+    height: 32px;
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAMtJREFUWIXtljsOwjAQRN8C94JjoAiJgjtRIKCDgoKaghvQUXAFLgEaCiIRIpOP7IRmX2db9sxqrLXBcf6Mtd0gyYAsH+7NTGktVYsPJK31IavfVc2gjTiwAhaxoq0JVK583LiAGHGTtCyJb1zcxVPx1YgkjYAzMC5MX4AjkKLh3IGdmT2Dq4HKu2Be1Ow+0xrKEQx5RzApTF+BE2kiuFEVQW4idAm3XV1CN+EmmpoIPcf9tOYaE7PeDPwwMY09M+ZT+gAOvX5KHacLXjtb7s65gPzsAAAAAElFTkSuQmCC) no-repeat;
+    background-size: 26px;
+}
+
+.hand-history-mainbody.hh .icon-arrow-left:before {
+    opacity: 0;
+}
+.hand-history-mainbody.hh .apply-filters .icon-filter-variant {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAIhJREFUWIXt1FEOQEAMBNDWTTgC7n8DbsBRdnxJKOmWbJMVfX/Lx2TDDFEIf8fHA4CRiFrnzJWZp8tTAAOABH8JQL/nNs63zZKfYCCizjlzYebZOSN8CGsvC+3Cfe9zCu7CqfdSXTsgFdqF6H1QqT+hZNyFd703hFt3Qe29VPcOSMZdiN6H8MgGt04IW0piRA4AAAAASUVORK5CYII=) no-repeat;
+    background-size: 17px;
+    width: 17px;
+    height: 15px;
+    display: inline-block;
+}
+.hand-history-mainbody.hh .apply-filters .icon-filter-variant:before {
+    display: none;
+}
+@media screen and (min-width: 768px) {
+.hand-history-mainbody.hh .pk-hands-mainbody.hidefilters .hands-details .hand-btn, .hand-history-mainbody.hh .pk-hands-mainbody.hidefilters .hands-details .replay-hand-btn, .hand-history-mainbody.hh .pk-hands-mainbody.hidefilters .hands-details .text-view-btn, .hand-history-mainbody.hh .pk-hands-mainbody.hidefilters .hands-details .replay-btn {
+	    width: 40px;
+        height: 80px;
+}
+}
+@media screen and (max-width: 767px) {
+.hand-history-mainbody.hh .pk-hands-mainbody.hidefilters .hands-details .gameType .icon-thumb-up,.hand-history-mainbody.hh .pk-hands-mainbody.hidefilters .hands-details .gameType .icon-thumb-down, .hand-history-mainbody.hh .hands-details .gameType .thumbs.icon-thumb-down {
+    display: none;
+}
+}</style><style id="inbox-bgcolor-bwin-darkmode">.th-black-dark .inbox-wrapper .inbox-message-wrapper,
+.th-bwin-dark .inbox-wrapper .inbox-message-wrapper {
+    background-color: var(--inbox-bg);
+}
+
+.th-sports-interaction .inbox-wrapper .inbox-message-wrapper {
+    background-color: var(--inbox-bg);
+}
+
+.th-sports-interaction  .inbox-wrapper .inbox-item-active {
+background-color: var(--theme-body-50);
+}</style><style id="pc-component-override">.pc-banner.pc-component {
+display: flex;
+}</style><style id="vc-bwin-color-mix-fix">/* black */
+:root {
+	--theme-info-bg: #d0e6f9 !important;
+    --theme-success-bg: #d5f0d9 !important;
+    --theme-warning-bg: #fdf2cc !important;
+    --theme-danger-bg: #ffd8d6 !important;
+}
+.btn-outline-primary, .btn-primary {
+    --btn-bg-hover: #ffd940 !important;
+    --btn-bg-active: #bf9900 !important;
+    --btn-border-color-hover: #ffd940 !important;
+    --btn-border-color-active: #bf9900 !important;
+    --btn-bg-ripple-active: rgba(255,222,89,.5) !important;
+}
+.btn-outline-secondary, .btn-secondary {
+  --btn-bg-hover: #3333334d !important;
+    --btn-border-color-hover: #333333 !important;
+    --btn-bg-ripple-active: rgb(112 112 112 / 50%) !important;
+}
+.btn-light {
+ --btn-bg-hover: #33333333 !important;
+ --btn-border-color-hover: #333333 !important;
+--btn-bg-ripple-active: rgb(112 112 112 / 50%) !important;
+}
+.btn-dark {
+--btn-bg-ripple-active: rgb(77 77 77 / 50%) !important;
+}
+.btn-go, .btn-success {
+    --btn-bg-hover: #62c672 !important;
+    --btn-bg-active: #228632 !important;
+    --btn-border-color-hover: #62c672 !important;
+    --btn-border-color-active: #228632 !important;
+    --btn-bg-ripple-active: rgb(108 202 123 / 50%)!important;
+}
+.btn-chat,  .btn-outline-chat {
+ --btn-bg-hover: #4da3e8 !important;
+    --btn-bg-active: #0e63a8 !important;
+    --btn-border-color-hover: #4da3e8 !important;
+    --btn-border-color-active: #0e63a8 !important;
+    --btn-bg-ripple-active: rgb(89 169 233 / 50%) !important;
+}
+.btn-link, .pc-txt .btn-link {
+    --btn-txt-active: #0e63a8 !important;
+   --btn-bg-ripple-active: rgb(255 255 255 / 11% )!important;
+}
+.btn-link-light {
+    --btn-txt-active : #666666 !important;
+}
+.btn-link-dark {
+--btn-txt-active :#bfbfbf !important;
+--btn-bg-ripple-active: #ffffff1c !important;
+}
+.btn-header {
+--btn-bg-hover: #ffffff33 !important;
+--btn-bg-border-hover: #ffffff33 !important;
+--btn-bg-ripple-active: #ffffff60 !important;
+}
+
+/* black-dark */
+:root.th-black-dark, :root.th-bwin-dark {
+    --theme-info-bg: #304455 !important;
+    --theme-success-bg: #394f36 !important;
+    --theme-warning-bg: #594f2d !important;
+    --theme-danger-bg: #5b3a2d !important;
+}
+:root.th-black-dark .btn-outline-secondary, :root.th-black-dark .btn-secondary,
+:root.th-bwin-dark .btn-outline-secondary, :root.th-bwin-dark .btn-secondary {
+ --btn-bg-active: #adadad4d !important;
+ --btn-border-color-active: #adadad4d !important;
+    --btn-bg-ripple-active: rgb(221 221 221 / 26%) !important;
+}
+:root.th-black-dark .btn-light,
+:root.th-bwin-dark .btn-light {
+ --btn-bg-hover: #d9d9d9 !important;
+ --btn-bg-active: #a6a6a6 !important;
+ --btn-border-color-active: #a6a6a6 !important;
+--btn-bg-ripple-active: rgb(90 90 90 / 50%) !important;
+}
+:root.th-black-dark .btn-dark,
+:root.th-bwin-dark .btn-dark {
+--btn-bg-hover: #ffffff80 !important;
+--btn-bg-ripple-active: rgb(255 255 255 / 50%) !important;
+}
+:root.th-black-dark .btn-go, :root.th-black-dark .btn-success,
+:root.th-bwin-dark .btn-go, :root.th-bwin-dark .btn-success {
+    --btn-bg-hover: #72cd67 !important;
+    --btn-bg-active: #328e28 !important;
+    --btn-border-color-hover: #72cd67 !important;
+    --btn-border-color-active: #328e28 !important;
+    --btn-bg-ripple-active: rgb(176 227 170 / 50%) !important;
+}
+:root.th-black-dark .btn-link, :root.th-black-dark .pc-txt .btn-link {
+    --btn-txt-active: #5588b1 !important;
+    --btn-bg-ripple-active: rgb(255 255 255 / 11%) !important;
+}
+:root.th-black-dark .btn-link-light {
+    --btn-txt-active : #ffffff !important;
+}</style><style id="navigation-layout-width-fix">.navigation-layout-page .navigation-content-wrapper {flex: 1;}
+.navigation-layout-page .ch-account-menu-v3__wrapper:not(.ch-account-menu-v3__wrapper--menu) {flex: 1;}
+
+.navigation-layout-page vn-header-bar:first-child {display: none;}
+@media (min-width:600px){.navigation-layout-page vn-header-bar:first-child {display: block;}}
+.navigation-layout-page vn-header-bar:nth-child(2) {display: block !important;}
+@media (min-width:600px){.navigation-layout-page vn-header-bar:nth-child(2) {display: none !important;}}
+
+.bb-v2 vn-bb-items-layout {container-type: normal;}</style><style id="onetrustcookie">#onetrust-consent-sdk a,
+#onetrust-consent-sdk a:focus,
+#onetrust-consent-sdk button,
+#onetrust-consent-sdk button:focus,
+#onetrust-consent-sdk .ot-cat-item:focus,
+#onetrust-consent-sdk .category-menu-switch-handler:focus,
+#onetrust-pc-sdk .ot-chkbox input:focus+label:before {
+    outline-width: 0 !important;
+}
+
+#onetrust-pc-sdk .ot-hlst-cntr .ot-link-btn,
+#onetrust-pc-sdk .ot-hlst-cntr .ot-link-btn:hover,
+#onetrust-pc-sdk a.category-host-list-handler,
+#onetrust-pc-sdk a.category-host-list-handler:hover {
+    text-decoration: underline;
+}
+
+#onetrust-pc-sdk .pc-header,
+#onetrust-pc-sdk .ot-pc-header {
+    background: #000 !important;
+}
+
+#onetrust-pc-sdk .pc-header #pc-title,
+#onetrust-pc-sdk .ot-pc-header #ot-pc-title {
+    color: #FFF !important;
+}
+
+#onetrust-pc-sdk #close-pc-btn-handler.pc-close-button.ot-close-icon,
+#onetrust-pc-sdk #close-pc-btn-handler.ot-close-icon {
+    filter: invert(1);
+    background-color: transparent !important;
+}
+
+#onetrust-pc-sdk .pc-logo,
+#onetrust-pc-sdk .ot-pc-logo {
+    background: url('https://scmedia.bwin.es/$-$/b823fa8dc20f4c3ba4a4469d694907b3.svg') !important;
+    background-size: 50% !important;
+    background-position: left center !important;
+    background-repeat: no-repeat !important;
+}
+
+#onetrust-consent-sdk #onetrust-pc-sdk #pc-title:after,
+#onetrust-consent-sdk #onetrust-pc-sdk #ot-pc-title:after {
+    background-color: transparent !important;
+}
+
+#onetrust-consent-sdk #onetrust-pc-sdk .active-group,
+#onetrust-consent-sdk #onetrust-pc-sdk .ot-active-menu {
+    border-color: #fc0 !important;
+}
+
+#onetrust-banner-sdk #onetrust-accept-btn-handler,
+#onetrust-banner-sdk #onetrust-reject-all-handler,
+#onetrust-consent-sdk #onetrust-pc-sdk button:not(.ot-link-btn):not(.ot-host-box):not(.ot-close-icon):not(#clear-filters-handler),
+#onetrust-consent-sdk #onetrust-pc-sdk .ot-leg-btn-container .ot-active-leg-btn {
+    background-color: #fc0 !important;
+    border-color: #fc0 !important;
+    border-radius: 2px !important;
+    color: #000 !important;
+}
+
+#onetrust-pc-sdk .toggle .checkbox input:checked+label:after,
+#onetrust-pc-sdk .ot-toggle .checkbox input:checked+label:after {
+    background: #fc0 !important;
+}
+
+#onetrust-pc-sdk .ot-tgl input:checked+.ot-switch .ot-switch-nob:before {
+    background: #fc0 !important;
+}
+
+#onetrust-pc-sdk .ot-desc-cntr {
+    outline: none !important;
+}
+
+#onetrust-pc-sdk .ot-pc-footer-logo {
+  display: none;
+}
+
+@media (max-width: 640px) {
+#onetrust-pc-sdk.otPcTab #ot-content {
+        height: calc(100% - 208px) !important;
+    }
+}
+
+@media (max-width: 425px) {
+    #onetrust-pc-sdk .ot-always-active-group .ot-tgl-cntr {
+        max-width: 100% !important;
+    }
+}
+
+@media (max-width: 640px) {
+    #onetrust-pc-sdk .ot-pc-header .ot-title-cntr {
+        width: 85%
+    }
+    #onetrust-pc-sdk .ot-pc-header #ot-pc-title {
+        font-size: 1em;
+        padding-right: 1.5em;
+    }
+    #onetrust-pc-sdk .ot-pc-header .ot-pc-logo {
+        background-size: contain !important;
+        min-width: 60px;
+    }
+}
+
+#onetrust-pc-sdk .ot-pc-header #ot-pc-title:before {
+    content: none;
+}
+
+/* reduction overrides */
+
+/* ToDo: appears on test but doesn't appear on prod */
+#onetrust-consent-sdk .ot-sdk-container #onetrust-reject-all-handler {
+	display:  none;
+}
+
+@media only screen and (max-width: 1280px) and (min-width: 890px) {
+	#onetrust-banner-sdk .ot-sdk-container #onetrust-button-group-parent,
+	#onetrust-banner-sdk .ot-sdk-container #onetrust-group-container {
+		width: unset;
+		position: unset !important;
+		top: unset;
+		left: unset;
+		transform: unset !important;
+	}
+
+	#onetrust-consent-sdk #onetrust-banner-sdk .ot-sdk-container #onetrust-button-group-parent {
+		padding-left: 0;
+		padding-right: 2em;
+		width: unset;
+		flex-grow: 1;
+	}
+
+	#onetrust-consent-sdk #onetrust-banner-sdk .ot-sdk-container #onetrust-group-container {
+		flex: 1 1 50%;
+	}
+
+	#onetrust-consent-sdk #onetrust-banner-sdk .ot-sdk-container .ot-sdk-row {
+		display: flex;
+		align-items: center;
+		gap: 2em;
+	}
+
+	#onetrust-consent-sdk #onetrust-banner-sdk .ot-sdk-container .ot-sdk-row::after {
+		display: none;
+	}
+
+	#onetrust-consent-sdk #onetrust-banner-sdk .ot-sdk-container #onetrust-button-group {
+		width: 100%;
+		margin-top: 0;
+		margin-bottom: 0;
+		margin-right: 0;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-end;
+		align-items: center;
+                gap: 10px;
+	}
+
+	#onetrust-consent-sdk .ot-sdk-container #onetrust-button-group #onetrust-pc-btn-handler,
+	#onetrust-consent-sdk .ot-sdk-container #onetrust-button-group #onetrust-accept-btn-handler {
+		width:  unset !important;
+		margin: 0;
+		text-align: center !important;
+	}
+}
+
+/* Breakpoint from OneTrust styles */
+@media only screen and (max-width: 890px) {
+	#onetrust-consent-sdk #onetrust-banner-sdk .ot-sdk-container {
+		margin: 0;
+		width: 100%;
+		padding: 0 0.75em;
+	}
+
+	#onetrust-consent-sdk .ot-sdk-container #onetrust-policy-text {
+		width:  100%;
+		font-size: 10px;
+	}
+
+	#onetrust-consent-sdk .ot-sdk-container #onetrust-policy {
+		margin: 0.5em 0 0 0;
+	}
+
+	#onetrust-consent-sdk .ot-sdk-container #onetrust-button-group {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+	}
+
+	#onetrust-consent-sdk .ot-sdk-container #onetrust-pc-btn-handler,
+	#onetrust-consent-sdk .ot-sdk-container #onetrust-accept-btn-handler {
+		display: inline-block;
+		flex: 0 0 50%;
+		margin-right: 0;
+		margin-left: 0;
+		margin-bottom: 0.5em;
+		margin-top: 0.5em;
+		font-size: 12px;
+		text-align: center !important;
+	}
+}
+
+@media only screen and (max-width: 420px) {
+	#onetrust-consent-sdk .ot-sdk-container #onetrust-pc-btn-handler,
+	#onetrust-consent-sdk .ot-sdk-container #onetrust-accept-btn-handler {
+		font-size: 10px;
+		padding: 8px;
+		text-align: center !important;
+	}
+}
+
+@media only screen and (min-width: 769px) {
+	#onetrust-banner-sdk #onetrust-button-group{
+		margin-right: auto;
+	}
+}
+
+.th-black-dark.product-promo #onetrust-pc-sdk h3 {
+color: var(--theme-body) !important;
+}</style><style id="social-buttons-style">/* Default social button with image */
+.btn.btn-social-login {
+    --btn-bg: var(--color-white);
+    --btn-bg-hover: rgba(0, 0, 0, 0.2);
+    --btn-bg-active: rgba(0, 0, 0, 0.2);
+    --btn-border-color: var(--theme-body-txt);
+    --btn-border-color-hover: var(--theme-body-txt);
+    --btn-border-color-active: var(--theme-body-txt);
+    --btn-txt: var(--theme-body-txt);
+    --btn-txt-hover: var(--theme-body-txt);
+    --btn-txt-active: var(--theme-body-txt);
+}
+
+/* Default social button active */
+.btn.btn-social-login:active {
+    --btn-bg-active: rgba(0, 0, 0, 1);
+    --btn-border-color-active: rgba(0, 0, 0, 1);
+    --btn-txt-active: var(--color-white);
+}
+
+/* Default itsme btn */
+.btn-social-login.itsme {
+    --btn-bg: #ff4612;
+    --btn-bg-hover: #ff7149;
+    --btn-bg-active: #ff4612;
+    --btn-border-color: #ff4612;
+    --btn-border-color-hover: #ff7149;
+    --btn-border-color-active: #ff4612;
+    --btn-txt: #fff;
+    --btn-txt-hover: #fff;
+    --btn-txt-active: #fff;
+}
+
+/* Default social button active class active */
+.btn.btn-social-login.btn-social-login-active:active {
+    --btn-bg-active: rgba(255, 255 , 255, 1);
+    --btn-border-color-active: rgba(255, 255, 255, 1);
+    --btn-txt-active: var(--color-black);
+    filter: invert(1);
+}
+
+/* Default apple btn */
+.btn-social-login.apple {
+}
+/* Colored-connected apple btn */
+.btn-social-login.apple.login-provider-button--connected {
+	--btn-bg: black;
+    --btn-bg-hover: #333333;
+    --btn-bg-active: black;
+    --btn-border-color: black;
+    --btn-border-color-hover: #333333;
+    --btn-border-color-active: black;
+    --btn-txt: #fff;
+    --btn-txt-hover: #fff;
+    --btn-txt-active: #fff;
+}
+/* Default facebook btn */
+.btn-social-login.facebook {
+}
+/* Colored-connected facebook btn */
+.btn-social-login.facebook.login-provider-button--connected {
+	--btn-bg: #4267b2;
+    --btn-bg-hover: #6484c5;
+    --btn-bg-active: #4267b2;
+    --btn-border-color: #4267b2;
+    --btn-border-color-hover: #6484c5;
+    --btn-border-color-active: #4267b2;
+    --btn-txt: #fff;
+    --btn-txt-hover: #fff;
+    --btn-txt-active: #fff;
+}
+/* Default google btn */
+.btn-social-login.google {
+}
+/* Colored-connected google btn */
+.btn-social-login.google.login-provider-button--connected {
+	--btn-bg: #fff;
+    --btn-bg-hover: #d5d5d5;
+    --btn-bg-active: black;
+    --btn-border-color: black;
+    --btn-border-color-hover: black;
+    --btn-border-color-active: black;
+    --btn-txt: black;
+    --btn-txt-hover: black;
+    --btn-txt-active: #fff;
+}
+/* Default paypal btn */
+.btn-social-login.paypal {
+}
+/* Colored-connected paypal btn */
+.btn-social-login.paypal.login-provider-button--connected {
+	--btn-bg: #0070ba;
+    --btn-bg-hover: #0097fb;
+    --btn-bg-active: #0070ba;
+    --btn-border-color: #0070ba;
+    --btn-border-color-hover: #0097fb;
+    --btn-border-color-active: #0070ba;
+    --btn-txt: #fff;
+    --btn-txt-hover: #fff;
+    --btn-txt-active: #fff;
+}
+/* Default yahoo btn */
+.btn-social-login.yahoo {
+}
+/* Colored-connected yahoo btn */
+.btn-social-login.yahoo.login-provider-button--connected {
+    --btn-bg: #6001d2;
+    --btn-bg-hover: #7d11fe;
+    --btn-bg-active: #6001d2;
+    --btn-border-color: #6001d2;
+    --btn-border-color-hover: #7d11fe;
+    --btn-border-color-active: #6001d2;
+    --btn-txt: #fff;
+    --btn-txt-hover: #fff;
+    --btn-txt-active: #fff;
+}
+
+/* Sports yahoo btn */
+.btn.btn-yahoo {
+    --btn-bg: #6001d2;
+    --btn-bg-hover: #8841dd;
+    --btn-bg-active: #48019e;
+    --btn-border-color: #6001d2;
+    --btn-border-color-hover: #8841dd;
+    --btn-border-color-active: #48019e;
+    --btn-txt: #fff;
+    --btn-txt-hover: #fff;
+	--btn-txt-active: #fff;
+	background-position: center;
+    background-repeat: no-repeat;
+}
+/* Default mlife btn */
+.btn-social-login.mlife {
+}
+/* Colored-connected mlife btn */
+.btn-social-login.mlife.login-provider-button--connected {
+	--btn-bg: #996d12;
+    --btn-bg-hover: #d69819;
+    --btn-bg-active: #996d12;
+    --btn-border-color: #996d12;
+    --btn-border-color-hover: #d69819;
+    --btn-border-color-active: #996d12;
+    --btn-txt: #fff;
+    --btn-txt-hover: #fff;
+    --btn-txt-active: #fff;
+}</style><style id="hidegooglerecaptchabadge">.grecaptcha-badge { visibility: hidden; }</style><style id="resetpasswordbutton">@media only screen and (max-width: 480px) {
+                pt-reset-password lh-cross-product-layout {
+                      .ui-revamp.mobile-revamp{
+                             min-height: 0vh !important;
+                            .form-element .btn-primary{
+                                         margin-top: 1rem !important;
+                             }
+                        }
+               }
+}</style><script async="" id="GoogleTagManagerRenderer" type="text/javascript">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='//www.googletagmanager.com/gtm.js?id='+i+dl;j.addEventListener('load',function(){var _ge = new CustomEvent('gtm_loaded',{ bubbles: true });d.dispatchEvent(_ge);w[l].push({event:'vanilla_gtm_loaded'})});f.parentNode.insertBefore(j,f);})
+(window,document,'script','dataLayer','GTM-N48RN3R');
+</script><script type="application/javascript" src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" charset="UTF-8" data-domain-script="598065e0-eda5-49b2-8945-ba3a4ceb647c"></script><div id="svg-cache" style="
+      overflow: hidden;
+      width: 0px;
+      height: 0px;
+      position: fixed;
+      bottom: -2000px;
+      contain: content;
+      content-visibility: auto;
+    "><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 176 176" id="suspense"><style>:root {--ds-fast-svg-placeholder-icon-fill: #00000009;}</style><path class="ds-fast-svg-placeholder-icon" style="fill: var(--ds-fast-svg-placeholder-icon-fill);" d="M0,88c0,48.6000061,39.4000015,88,88,88s88-39.3999939,88-88S136.6000061,0,88,0,0,39.4000015,0,88Z"></path></svg></div><style id="brand-colors">:root {
+    --color-betboo:         #ca3b1b;
+    --color-borgata:        #000;
+    --color-bwin:           #000;
+    --color-casinoclub:     #5d0102;
+    --color-cheekybingo:    #b31172;
+    --color-coral:          #084d8d;
+    --color-foxybingo:      #412175;
+    --color-foxygames:      #000a8c;
+    --color-galabingo:      #082ba6;
+    --color-galacasino:     #222;
+    --color-galaspins:      #2b3151;
+    --color-gamebookers:    #343236;
+    --color-ladbrokes:      #f01e28;
+    --color-partycasino:    #211551;
+    --color-partypoker:     #0f0f10;
+    --color-sportingbet:    #0988d1;
+   --color-vistabet: #000000;
+   --color-partysports: #0f0f10;
+   --color-ninjacasino: #1e2225;
+}</style><div class="cdk-live-announcer-element cdk-visually-hidden" aria-atomic="true" aria-live="polite" id="cdk-live-announcer-0"></div><script type="application/ld+json" id="ldJson_BreadcrumbList">{"@graph":{"@type":"BreadcrumbList","@context":"http://schema.org","itemListElement":[{"@type":"ListItem","name":"España | LaLiga 2","item":{"@type":"Thing","@id":"https://www.bwin.es/es/sports/eventos/granada-eibar-2:7609147"},"position":0}]}}</script></body></html>
 
 """
 from parsel import Selector
@@ -1848,41 +1768,55 @@ html_cleaner = re.compile("<.*?>")
 response = Selector(response)
 sport = "Football"
 match_infos = []
-list_of_markets = list_of_markets_V2["RetaBet"]["1"]
+list_of_markets = list_of_markets_V2["Bwin"]["1"]
 print("list_of_markets", list_of_markets)
 html_cleaner = re.compile("<.*?>")
 try:
-    selection_keys = response.xpath("//div[@class='bets__wrapper jbgroup jgroup']").extract()
+    selection_keys = response.xpath("//ms-option-panel[@class='option-panel']").extract()
     odds = []
     for selection_key in selection_keys:
         selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t",
                                                                                                     "")
+
         clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
+
         clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
-        # print(clean_selection_keys)
+        print("clean selection_key", clean_selection_keys)
+        stop_words = ["Tiempo reglamentario", "1ª parte", "2ª parte", "Más de", "Menos de", "Mostrar más"]
+        teams = []
         for selection_key02 in clean_selection_keys:
             if clean_selection_keys[0] in list_of_markets:
                 market = clean_selection_keys[0]
+                # print("market", market)
+
             else:
                 market = "empty"
+                # result = "empty"
+                # odd = "empty"
+
             if (
                 selection_key02 != market
+                and selection_key02 not in teams
+                and selection_key02 not in stop_words
                 and market in list_of_markets
                 and re.search('[a-zA-Z]', selection_key02) is not None
                 or "-" in selection_key02
-                or "1" == selection_key02
-                or "2" == selection_key02
             ):
                 result = selection_key02
                 odd = "empty"
+                if market == "Resultado del partido":
+                    teams.append(result)
+                # print("result", result)
+
             elif (
                 re.search("[a-zA-Z]", selection_key02) is None
                 and "-" not in selection_key02
-                and "+" not in selection_key02
-                and "," in selection_key02
+                and "." in selection_key02
                 and market in list_of_markets
             ):
+
                 odd = selection_key02
+                # print("odd", odd)
             try:
                 if (
                     market in list_of_markets
@@ -1895,7 +1829,7 @@ try:
             except UnboundLocalError:
                 pass
             except NameError:
-                pass
+                continue
 except:
     pass
 print('odds', odds)

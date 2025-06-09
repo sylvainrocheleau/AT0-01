@@ -59,6 +59,7 @@ class TwoStepsSpider(scrapy.Spider):
                 xpath_result = Selector(xpath_result)
                 home_team = xpath_result.xpath("//span[@class='partido']/a/text()").extract()[0].split(" vs. ")[0]
                 away_team = xpath_result.xpath("//span[@class='partido']/a/text()").extract()[0].split(" vs. ")[1]
+                away_team = away_team.split(" <")[0].strip()
                 try:
                     url = xpath_result.xpath("//span[@class='partido']/a/@href").extract()[1]
                 except IndexError:

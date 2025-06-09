@@ -1,22 +1,19 @@
-from http.client import responses
-
 import dateparser
 import re
 import json
 import traceback
 import datetime
 from parsel import Selector
-# from scrapy_playwright_ato.team_and_dates_from_response_V2 import match_infos
 from scrapy_playwright_ato.utilities import Helpers
 
 def build_match_infos(url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id):
     match_info = {
         "url": url,
-        "web_url": web_url,
-        "home_team": home_team.strip(),
+        "web_url": Helpers().build_web_url(web_url),
+        "home_team": home_team.split(" <")[0].strip(),
         "home_team_normalized": "",
         "home_team_status": "",
-        "away_team": away_team.strip(),
+        "away_team": away_team.split(" <")[0].strip(),
         "away_team_normalized": "",
         "away_team_status": "",
         "date": date,
@@ -144,9 +141,11 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                         if debug:
                             print("match already in map_matches_urls", home_team, away_team)
                 except IndexError as e:
-                    print("IndexError", e)
+                    if debug:
+                        print(f"Error on {bookie_id} for {competition_id}")
+                        print(traceback.format_exc())
                     continue
-            print("Match_infos", match_infos)
+
         elif bookie_id == "Bet777":
             try:
                 html_cleaner = re.compile("<.*?>")
@@ -225,6 +224,9 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                     if url not in map_matches_urls:
                         match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id)
                         match_infos.append(match_info)
+                    else:
+                        if debug:
+                            print("match already in map_matches_urls", home_team, away_team)
             except KeyError as e:
                 print("KeyError:", e)
         elif bookie_id == "BetWay":
@@ -392,8 +394,10 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                         if debug:
                             print("match already in map_matches_urls", home_team, away_team)
         elif bookie_id == "DaznBet":
+            if debug == True:
+                print(f"Parsing {bookie_id} {competition_id}")
             match_infos = []
-            xpath_results = response.xpath("//div[@class='accordion-container competition-accordion-container']").extract()
+            xpath_results = response.xpath("//div[@class='accordion-container competition-accordion-container ']").extract()
             for xpath_result in xpath_results:
                 try:
                     xpath_result = Selector(xpath_result)
@@ -404,13 +408,10 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                         "//div[contains(@class, 'event-text event-text-margin text-ellipsis')]/text()").extract()[1]
                     away_team = away_team.strip()
                     url = xpath_result.xpath("//a/@href").extract()[0]
-                    url = "https://sb-pp-esfe.daznbet.es/" + url + "?tab=todo"
-                    web_url = url
-                    day = xpath_result.xpath("//div[@class='competition-header-title ']//span/text()").extract()[0]
-                    time = xpath_result.xpath("//span[@class='game-timer-text']/text()").extract()[0]
-                    date = day + ", " + time
-                    date = dateparser.parse(date, languages=["es"],
-                                            settings={"TIMEZONE": "UTC", "RETURN_AS_TIMEZONE_AWARE": False})
+                    url = "https://sb-pp-esfe.daznbet.es" + url + "?tab=todo"
+                    web_url = "https://www.daznbet.es/es-es/deportes" + url
+                    date = xpath_result.xpath("//div[@class='competition-header-title ']/span/text()").extract()[0]
+                    date = dateparser.parse(date, languages=["es"])
                     if url not in map_matches_urls:
                         match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id)
                         match_infos.append(match_info)
@@ -420,10 +421,12 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                         if debug:
                             print("match already in map_matches_urls", home_team, away_team)
                 except IndexError as e:
-                    # print("Index error", e)
+                    if debug:
+                        print(traceback.format_exc())
                     continue
                 except Exception as e:
-                    # print(traceback.format_exc())
+                    if debug:
+                        print(traceback.format_exc())
                     continue
         elif bookie_id == "EfBet":
             match_infos = []
@@ -642,8 +645,7 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                     url = xpath_result.xpath("//a[@class='lp-event__teams']/@href").extract()[0]
                     url = "https://apuestas.luckia.es/" + url
                     web_url = url
-                    date = \
-                    xpath_result.xpath("//span[@class='lp-event__extra-date event-header-date-date']/text()").extract()[
+                    date = xpath_result.xpath("//span[@class='lp-event__extra-date event-header-date-date']/text()").extract()[
                         0].strip()
                     date = dateparser.parse(''.join(date))
                     if url not in map_matches_urls:
@@ -656,9 +658,9 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                 except IndexError:
                     continue
         elif bookie_id == "MarathonBet":
+            match_infos = []
             if response.url == competition_url_id:
                 xpath_results = response.xpath("//div[@class='bg coupon-row']").extract()
-                match_infos = []
                 for xpath_result in xpath_results:
                     try:
                         xpath_result = Selector(xpath_result)
@@ -697,7 +699,28 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                     except Exception as e:
                         continue
         elif bookie_id == "MarcaApuestas":
-            pass
+            match_infos = []
+            xpath_results = response.xpath("//tr[contains(@class, 'mkt mkt_content mkt-')]").extract()
+            for xpath_result in xpath_results:
+                # print(xpath_result)
+                try:
+                    xpath_result = Selector(xpath_result)
+                    home_team = xpath_result.xpath("//span[@class='seln-name']/text()").extract()[0]
+                    away_team = xpath_result.xpath("//span[@class='seln-name']/text()").extract()[1]
+                    url = xpath_result.xpath("//a[@title='Nº de mercados']/@href").extract()[0]
+                    url = "https://deportes.marcaapuestas.es" + url
+                    web_url = url
+                    time = xpath_result.xpath("//span[@class='time']/text()").extract()[0]
+                    day = xpath_result.xpath("//span[@class='date']/text()").extract()[0]
+                    date = dateparser.parse(time + " " + day)
+                    if url not in map_matches_urls:
+                        match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id)
+                        match_infos.append(match_info)
+                    else:
+                        if debug:
+                            print("match already in map_matches_urls", home_team, away_team)
+                except IndexError as e:
+                    continue
         elif bookie_id == "OlyBet":
             xpath_results = response.xpath("//div[@class='lines']").extract()
             match_infos = []
@@ -796,8 +819,37 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
             except Exception as e:
 
                 pass
-        elif bookie_id == "Retabet":
-            pass
+        elif bookie_id == "RetaBet":
+            try:
+                xpath_results = response.xpath("//li[@class='jlink jev event__item']").extract()
+                match_infos = []
+                for xpath_result in xpath_results:
+                    try:
+                        xpath_result = Selector(xpath_result)
+                        home_team = xpath_result.xpath("//@title").extract()[0].split(" - ")[0]
+                        away_team = xpath_result.xpath("//@title").extract()[0].split(" - ")[1]
+                        url = xpath_result.xpath("//li[@class='jlink jev event__item']/@data-u").extract()[0]
+                        url = "https://apuestas.retabet.es" + url
+                        web_url = url
+
+                        day_and_month = xpath_result.xpath("//span[@class='event__day']/text()").extract()[0]
+                        day, month = day_and_month.split("/")
+                        swapped_month_date = f"{month}/{day}"
+                        time = xpath_result.xpath("//span[@class='event__time']/text()").extract()[0]
+                        date = dateparser.parse(''.join(swapped_month_date + " " + time))
+                        if "/live/" not in url:
+                            if url not in map_matches_urls:
+                                match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id)
+                                match_infos.append(match_info)
+                            else:
+                                if debug:
+                                    print("match already in map_matches_urls", home_team, away_team)
+                    except Exception as e:
+                        if debug:
+                            print(traceback.format_exc())
+                        continue
+            except Exception as e:
+                Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
         elif bookie_id == "SpeedyBet":
             match_infos = []
             jsonresponse = json.loads(response.text)
@@ -927,8 +979,34 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                                 else:
                                     if debug:
                                         print("match already in map_matches_urls", home_team, away_team)
-        elif bookie_id == "YaasCasino":
-            pass
+        elif bookie_id == "YaassCasino":
+            match_infos = []
+            try:
+                jsonresponse = json.loads(response.text)
+                # if debug:
+                #     print("YaassCasino jsonresponse", jsonresponse)
+                for key, value in jsonresponse["data"]["currentOffer"].items():
+                    if key == "nodes":
+                        for nodes in value:
+                            for key_02, value_02 in nodes.items():
+                                if key_02 == "eventName":
+                                    teams = value_02.split(" - ")
+                                    home_team = teams[0]
+                                    away_team = teams[1]
+                                if key_02 == "eventId":
+                                    url = "https://www.yaasscasino.es/apuestas/event/" + value_02
+                                    web_url = url
+                                if key_02 == "utcStartDate":
+                                    date = dateparser.parse(''.join(value_02)).replace(tzinfo=None)
+                            match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id,
+                                                           bookie_id, sport_id)
+                            match_infos.append(match_info)
+
+            except Exception as e:
+                if debug:
+                    print("Exception in YaassCasino parsing", e)
+                Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
+
         elif bookie_id == "YoSports":
             match_infos = []
             jsonresponse = json.loads(response.text)
@@ -2359,8 +2437,114 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                         except UnboundLocalError:
                             pass
         except Exception as e:
-            print("Error in parsing odds:", e)
-            traceback.print_exc()
+            if debug:
+                print("Error in parsing odds:", e)
+                traceback.print_exc()
+            Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
+    elif bookie_id == "MarcaApuestas":
+        # This spider needs to make a third request to get Resultado Exacto.
+        # Cliking on Resultado Exacto did not work, because for some odd reasons, when using Playwright, a match page is redirected
+        # to its comp page. The JS script ending with 'desktop/js/jquery-3.6.0.min.js' is responsible for redirection, but it
+        # is also the script that makes Resultado Exacto clickable.
+        import requests
+        import random
+        from scrapy_playwright_ato.settings import proxy_prefix, proxy_suffix, list_of_proxies, list_of_headers
+        odds = []
+        markets = response.css('div.expander.mkt')
+
+        for market in markets:
+            try:
+                if market.css('span.mkt-name::text').get() is not None:
+                    market_name = market.css('span.mkt-name::text').get().strip()
+                else:
+                    continue
+                if market_name in list_of_markets:
+                    if market_name == "Línea de Juego" and sport_id == "1":
+                        for bet in market.css('tbody').css('tr'):
+                            # print("bet", bet)
+                            result = bet.css('div.team-name').css('a::text').get().strip()
+                            odd = bet.css('td.mkt-sort')[-1].css('span.price.dec::text').get().strip()
+                            odds.append({'Market': market_name, 'Result': result, 'Odds': odd})
+                    else:
+                        for bet in market.css('button[name="add-to-slip"]'):
+                            # print("else bet", bet)
+                            if (
+                                "Total" in market_name
+                                and bet.css('span.seln-name::text').get() is not None
+                                and (
+                                "Menos" in bet.css('span.seln-name::text').get()
+                                or "Más" in bet.css('span.seln-name::text').get()
+                            )
+                            ):
+                                result = bet.css('span.seln-name::text').get() + " " + bet.css(
+                                    'span.seln-hcap::text').get()
+                                odd = float(bet.css('span.price.dec::text').get())
+                                odds.append({"Market": market_name, "Result": result, "Odds": odd})
+
+                            elif bet.css('span.seln-name::text').get() is not None:
+                                result = bet.css('span.seln-name::text').get()
+                                odd = float(bet.css('span.price.dec::text').get())
+                                odds.append({"Market": market_name, "Result": result, "Odds": odd})
+                            if result is None and "Total" not in market_name:
+                                result = "draw"
+                                odd = float(bet.css('span.price.dec::text').get())
+                                odds.append({"Market": market_name, "Result": result, "Odds": odd})
+            except Exception as e:
+                if debug:
+                    print("Error in parsing odds:", e)
+                    traceback.print_exc()
+                Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
+        if sport_id == "1":
+            response_xpath = response.xpath(
+                "//div[contains(@class, 'expander expander-collapsed fetch-on-expand no-child-update efav-section')]").extract()
+            for selection_keys in response_xpath:
+                if "Resultado Exacto" in selection_keys:
+                    url_suffix = selection_keys.split("data-fetch_url=\"")[1]
+                    url_suffix = url_suffix.split("\">")[0].replace("&amp;", "&")
+                    try:
+                        match_url = "https://deportes.marcaapuestas.es" + url_suffix
+                        proxy_ip = proxy_prefix + random.choice(list_of_proxies) + proxy_suffix
+
+                        reponse_resultado = requests.get(
+                            url=match_url,
+                            headers=random.choice(list_of_headers),
+                            proxies={
+                                "http": proxy_ip.replace("https://", "http://"),
+                                "https": proxy_ip.replace("https://", "http://"),
+                            }
+                        )
+                        html = reponse_resultado.text
+                        html_cleaner = re.compile('<.*?>')
+                        for bet in html.split("\\n"):
+                            try:
+                                if "seln-sort" in bet:
+                                    result = re.sub(html_cleaner, "", bet)
+                                elif "price dec" in bet:
+                                    odd = re.sub(html_cleaner, "", bet)
+                                try:
+                                    if (
+                                        result != "empty"
+                                        and odd != "empty"
+                                    ):
+                                        odds.append(
+                                            {"Market": "Resultado Correcto",
+                                             "Result": result,
+                                             "Odds": odd,
+                                             }
+                                        )
+                                        result = "empty"
+                                        odd = "empty"
+                                except UnboundLocalError:
+                                    pass
+                            except Exception as e:
+                                # print(e)
+                                continue
+
+                    except Exception as e:
+                        if debug:
+                            print("Error in parsing odds:", e)
+                            traceback.print_exc()
+                        Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
 
     elif bookie_id == "MarathonBet":
         try:
@@ -2518,6 +2702,57 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                                 )
         except Exception as e:
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
+    elif bookie_id == "RetaBet":
+        try:
+            selection_keys = response.xpath("//div[@class='bets__wrapper jbgroup jgroup']").extract()
+            odds = []
+            for selection_key in selection_keys:
+                selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t","")
+                clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
+                clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
+                # print(clean_selection_keys)
+                for selection_key02 in clean_selection_keys:
+                    if clean_selection_keys[0] in list_of_markets:
+                        market = clean_selection_keys[0]
+                    else:
+                        market = "empty"
+                    if (
+                        selection_key02 != market
+                        and market in list_of_markets
+                        and re.search('[a-zA-Z]', selection_key02) is not None
+                        or "-" in selection_key02
+                        or "1" == selection_key02
+                        or "2" == selection_key02
+                    ):
+                        result = selection_key02
+                        odd = "empty"
+                    elif (
+                        re.search("[a-zA-Z]", selection_key02) is None
+                        and "-" not in selection_key02
+                        and "+" not in selection_key02
+                        and "," in selection_key02
+                        and market in list_of_markets
+                    ):
+                        odd = selection_key02
+                    try:
+                        if (
+                            market in list_of_markets
+                            and result != "empty"
+                            and odd != "empty"
+                        ):
+                            odds.append({"Market": market, "Result": result, "Odds": odd})
+                            result = "empty"
+                            odd = "empty"
+                    except UnboundLocalError:
+                        pass
+                    except NameError:
+                        pass
+        except Exception as e:
+            if debug:
+                print("Error in parsing odds:", e)
+                traceback.print_exc()
+            Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
+
     elif bookie_id == "SpeedyBet":
         try:
             jsonresponse = json.loads(response.text)
@@ -2650,6 +2885,7 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
         except Exception as e:
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
     elif bookie_id == "YaassCasino ":
+
         pass
     elif bookie_id == "YoSports":
         try:

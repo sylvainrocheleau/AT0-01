@@ -1,28 +1,11 @@
-from bookies_configurations import bookie_config, get_context_infos
-from utilities import Helpers
 
-# competitions = [x for x in bookie_config(bookie=["888Sport"]) if x["competition_id"] == "UEFAChampionsLeague"]
-# match_filter = {"type": "bookie_and_comp", "params": ["888Sport", "UEFAChampionsLeague"]}
-# print(competitions)
-#
-# all_competitions = Helpers().load_competitions_urls_and_sports()
-# all_competitions = {x[1]: {"competition_name_es": x[2], "competition_url_id": x[0] } for x in all_competitions if x[4] == "888Sport"}
-# # print(all_competitions)
-#
-# map_matches_urls = [x[0] for x in Helpers().load_matches_urls("888Sport")]
-# # print(map_matches_urls)
-# map_matches = {}
-# for match in Helpers().load_matches():
-#     try:
-#         map_matches[match[6]].append(match[0])
-#     except KeyError:
-#         map_matches.update({match[6]: [match[0]]})
-#
-# print(map_matches)
-import datetime
-import time
 
-start_time = datetime.datetime.now()
-time.sleep(5.5)
-end_time = datetime.datetime.now()
-print("Execution time:",(end_time - start_time).total_seconds())
+comp = {'categories': [{'name': 'UTR Men', 'slug': 'utr-men', 'sport': {'name': 'Tennis', 'slug': 'tennis', 'id': 5}, 'id': 1843, 'flag': 'utr-men'}, {'name': 'UTR Women', 'slug': 'utr-women', 'sport': {'name': 'Tennis', 'slug': 'tennis', 'id': 5}, 'id': 1844, 'flag': 'utr-women'}, {'name': 'Grand Slam', 'slug': 'grand-slam', 'sport': {'name': 'Tennis', 'slug': 'tennis', 'id': 5}, 'priority': 1000, 'id': -100, 'flag': 'grand-slam'}, {'name': 'United Cup', 'slug': 'united-cup', 'sport': {'name': 'Tennis', 'slug': 'tennis', 'id': 5}, 'priority': 0, 'id': 1705, 'flag': 'united-cup'}, {'name': 'ATP', 'slug': 'atp', 'sport': {'name': 'Tennis', 'slug': 'tennis', 'id': 5}, 'priority': 7, 'id': 3, 'flag': 'atp', 'fieldTranslations': {'nameTranslation': {'ar': 'رابطة محترفي التنس', 'hi': 'डब्ल्यूटीए', 'bn': 'এটিপি'}, 'shortNameTranslation': {}}}, {'name': 'ITF Women', 'slug': 'itf-women', 'sport': {'name': 'Tennis', 'slug': 'tennis', 'id': 5}, 'priority': 2, 'id': 213, 'flag': 'itf-women'}, {'name': 'ITF Men', 'slug': 'itf-men', 'sport': {'name': 'Tennis', 'slug': 'tennis', 'id': 5}, 'priority': 3, 'id': 785, 'flag': 'itf-men'}, {'name': 'Davis Cup', 'slug': 'davis-cup', 'sport': {'name': 'Tennis', 'slug': 'tennis', 'id': 5}, 'priority': 0, 'id': 76, 'flag': 'davis-cup'}, {'name': 'WTA 125', 'slug': 'wta-125', 'sport': {'name': 'Tennis', 'slug': 'tennis', 'id': 5}, 'priority': 4, 'id': 871, 'flag': 'wta-125'}, {'name': 'In Progress', 'slug': 'in-progress', 'sport': {'name': 'Tennis', 'slug': 'tennis', 'id': 5}, 'priority': 1001, 'id': -101, 'flag': 'in-progress'}, {'name': 'Challenger', 'slug': 'challenger', 'sport': {'name': 'Tennis', 'slug': 'tennis', 'id': 5}, 'priority': 5, 'id': 72, 'flag': 'challenger', 'fieldTranslations': {'nameTranslation': {'ar': 'تحدي (تنس)', 'hi': 'डेनमार्क', 'bn': 'চ্যালেঞ্জার'}, 'shortNameTranslation': {}}}, {'name': 'Exhibition', 'slug': 'exhibition', 'sport': {'name': 'Tennis', 'slug': 'tennis', 'id': 5}, 'priority': 0, 'id': 79, 'flag': 'exhibition'}, {'name': 'WTA', 'slug': 'wta', 'sport': {'name': 'Tennis', 'slug': 'tennis', 'id': 5}, 'priority': 6, 'id': 6, 'flag': 'wta', 'fieldTranslations': {'nameTranslation': {'ar': 'رابطة لاعبات التنس', 'hi': 'चैलेंजर', 'bn': 'ডব্লিউটিএ'}, 'shortNameTranslation': {}}}, {'name': 'Billie Jean King Cup', 'slug': 'billie-jean-king-cup', 'sport': {'name': 'Tennis', 'slug': 'tennis', 'id': 5}, 'priority': 0, 'id': 74, 'flag': 'billie-jean-king-cup'}]}
+
+
+for key, value in comp.items():
+    if isinstance(value, list):
+        for item in value:
+            print(item.get("name"), ",",  item.get("id"))
+    else:
+        print(key, value)

@@ -3,14 +3,52 @@ import json
 import random
 import requests
 import dateparser
+import traceback
 import os
 from ..items import ScrapersItem
-from ..settings import proxy_prefix, proxy_suffix, list_of_proxies
-from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables
+from ..settings import proxy_prefix, proxy_suffix, list_of_proxies, LOCAL_USERS
+from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables, list_of_markets_V2
+from ..parsing_logic import parse_competition, parse_match
+from ..utilities import Helpers
 
 
 class OneStepJsonSpider(scrapy.Spider):
-    name = "YaassCasino"
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            if os.environ["USER"] in LOCAL_USERS:
+                self.debug = True
+                print("PROCESSING IN DEBUG MODE")
+                self.competitions = [x for x in bookie_config(bookie=["YaassCasino"]) if x["competition_id"] == "NBA"]
+                # self.competitions = bookie_config(bookie=["YaassCasino"])
+
+                self.match_filter = {"type": "bookie_and_comp", "params": ["YaassCasino", "NBA"]}
+                # self.match_filter = {"type": "bookie_id", "params": ["YaassCasino"]}
+                # self.match_filter = {"type": "match_url", "params": [
+                #     "https://www.winamax.es/apuestas-deportivas/match/56690703"]}
+        except:
+            self.debug = False
+            self.competitions = bookie_config(bookie=["YaassCasino"])
+            self.match_filter = {"type": "bookie_id", "params": ["YaassCasino"]}
+
+    name = "YaassCasinov2"
+    custom_settings = {
+        "CONCURRENT_REQUESTS": 1,
+        "DOWNLOAD_DELAY": 3
+    }
+    context_infos = get_context_infos(bookie_name=["YaassCasino"])
+    map_matches_urls = [x[0] for x in Helpers().load_matches_urls("YaassCasino")]
+    map_matches = {}
+    for match in Helpers().load_matches():
+        try:
+            map_matches[match[6]].append(match[0])
+        except KeyError:
+            map_matches.update({match[6]: [match[0]]})
+    all_competitions = Helpers().load_competitions_urls_and_sports()
+    all_competitions = {x[1]: {"competition_name_es": x[2], "competition_url_id": x[0]} for x in all_competitions if
+                        x[4] == "YaassCasino"}
+    match_filter_enabled = True
+    v2 = True
     match_found = 0
     header = {
         'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:132.0) Gecko/20100101 Firefox/132.0',
@@ -32,11 +70,8 @@ class OneStepJsonSpider(scrapy.Spider):
     }
 
     def start_requests(self):
-        context_infos = get_context_infos(bookie_name=self.name)
-        self.context_infos = [x for x in context_infos if x["proxy_ip"] not in []]
-        for data in bookie_config(self.name):
-            competition_id = data["url"].split("/")[-1]
-
+        for data in self.competitions:
+            competition_id = data["competition_url_id"].split("/")[-1]
             json_data = {
                 'operationName': 'currentOffer',
                 'variables': {
@@ -149,20 +184,21 @@ class OneStepJsonSpider(scrapy.Spider):
             try:
                 request_body = json.dumps(json_data)
                 context_info = random.choice(self.context_infos)
-                self.proxy_ip = proxy_prefix + context_info["proxy_ip"] + proxy_suffix
+                # self.proxy_ip = proxy_prefix + context_info["proxy_ip"] + proxy_suffix
                 self.header["User-Agent"] = context_info["user_agent"]
-                self.header["Referer"] = data["url"]
+                self.header["Referer"] = data["competition_url_id"]
                 yield scrapy.Request(
                     url="https://online-sportsbook.orenes.tech/offermanager/graphql",
                     method="POST",
                     body=request_body,
                     headers=self.header,
                     meta={
-                        "proxy": self.proxy_ip,
-                        "sport": data["sport"],
-                        "competition": data["competition"],
-                        "list_of_markets": data["list_of_markets"],
-                        "competition_url": data["url"].replace("https://online-sportsbook.orenes.tech/", "https://www.yaasscasino.es/apuestas/"),
+                        "proxy": proxy_prefix + context_info["proxy_ip"] + proxy_suffix,
+                        "sport_id": data["sport_id"],
+                        "competition_id": data["competition_id"],
+                        "competition_url_id": data["competition_url_id"],
+                        "bookie_id": data["bookie_id"],
+                        "scraping_tool": data["scraping_tool"],
                     },
                     callback=self.parse_match,
                 )
@@ -172,31 +208,79 @@ class OneStepJsonSpider(scrapy.Spider):
 
     def parse_match(self, response):
         item = ScrapersItem()
+        match_infos = parse_competition(
+            response=response,
+            bookie_id="YaassCasino",
+            competition_id=response.meta.get("competition_id"),
+            competition_url_id=response.meta.get("competition_url_id"),
+            sport_id=response.meta.get("sport_id"),
+            map_matches_urls=self.map_matches_urls,
+            debug=self.debug
+        )
+        try:
+            if len(match_infos) > 0:
+                match_infos = Helpers().normalize_team_names(
+                    match_infos=match_infos,
+                    competition_id=response.meta.get("competition_id"),
+                    bookie_id=response.meta.get("bookie_id"),
+                    debug=self.debug
+                )
+                if self.debug:
+                    print("match_infos", match_infos)
+                if response.meta.get("competition_id") in self.map_matches.keys():
+                    item["data_dict"] = {
+                        "map_matches": self.map_matches[response.meta.get("competition_id")],
+                        "match_infos": match_infos,
+                        "comp_infos": [
+                            {
+                                "competition_url_id": response.meta.get("competition_url_id"),
+                                "http_status": response.status,
+                                "updated_date": Helpers().get_time_now("UTC")
+                            },
+                        ]
+                    }
+                    item["pipeline_type"] = ["match_urls"]
+                    yield item
+                else:
+                    error = (f"{response.meta.get('bookie_id')} {response.meta.get('competition_id')} comp not in map_matches ")
+                    if self.debug:
+                        print(error)
+                    Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
+            else:
+                item["data_dict"] = {
+                    "map_matches": self.map_matches[response.meta.get("competition_id")],
+                    "match_infos": match_infos,
+                    "comp_infos": [
+                        {
+                            "competition_url_id": response.meta.get("competition_url_id"),
+                            "http_status": response.status,
+                            "updated_date": Helpers().get_time_now("UTC")
+                        },
+                    ]
+                }
+                item["pipeline_type"] = ["match_urls"]
+                yield item
+                error = (f"{response.meta.get('bookie_id')} {response.meta.get('competition_id')} comp has no new match ")
+                Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
+
+        except Exception as e:
+            print(traceback.format_exc())
+            Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
+
         jsonresponse = json.loads(response.text)
         for key, value in jsonresponse["data"]["currentOffer"].items():
             if key == "nodes":
                 for nodes in value:
                     for key_02, value_02 in nodes.items():
-                        if key_02 == "eventId":
-                            item["Match_Url"] = "https://www.yaasscasino.es/apuestas/event/" + value_02
                         if key_02 == "eventName":
                             teams = value_02.split(" - ")
-                            if response.meta.get("competition") == "NBA":
-                                item["Home_Team"] = teams[0]
-                                item["Away_Team"] = teams[1]
-                            else:
-                                item["Home_Team"] = teams[0]
-                                item["Away_Team"] = teams[1]
-                        if key_02 == "utcStartDate":
-                            item["Date"] = dateparser.parse(''.join(value_02)).replace(tzinfo=None)
-
-
-
+                            home_team = teams[0]
+                            away_team = teams[1]
                         if key_02 == "marketHeaders":
                             odds = []
                             for entry_02 in value_02:
                                 for markets in entry_02["markets"]:
-                                    if markets["marketName"] in response.meta.get("list_of_markets"):
+                                    if markets["marketName"] in list_of_markets_V2[response.meta.get("bookie_id")][response.meta.get("sport_id")]:
                                         if "+/-" in markets["marketName"]:
                                             market_name = "Totales"
                                         else:
@@ -204,20 +288,56 @@ class OneStepJsonSpider(scrapy.Spider):
                                         for details in markets["selectionHeaders"]:
                                             for selection in details["selections"]:
                                                 odd = selection["price"]
+                                                # result = selection["selectionName"].replace("+", "Más de ").replace("-", "Menos de ")
                                                 result = selection["selectionName"]
                                                 if market_name == "Totales" and result == "":
                                                     result = "Menos de "
+
+
                                             odds.append({"Market": market_name, "Result": result, "Odds": odd })
-                                    # else:ager/graphql
-                                    #     print("Not found", markets["marketName"])
 
-                            item["Sport"] = response.meta.get("sport")
-                            item["Competition"] = response.meta.get("competition")
-                            item["Competition_Url"] = response.meta.get("competition_url")
-                            item["Bets"] = normalize_odds_variables(odds, response.meta.get("sport"),
-                                                                    item["Home_Team"], item["Away_Team"])
 
+
+                            away_team_normalised = next((team['away_team_normalized'] for team in match_infos
+                                  if team['away_team'] == away_team and len(team['match_id']) > 0), None)
+                            home_team_normalised = next((team['home_team_normalized'] for team in match_infos
+                                  if team['home_team'] == home_team and len(team['match_id']) > 0), None)
+                            match_id = next((team['match_id'] for team in match_infos
+                                    if team['home_team'] == home_team and team['away_team'] == away_team and len(team['match_id']) > 0), None)
+                            web_url = next((team['web_url'] for team in match_infos
+                                             if team['home_team'] == home_team and team['away_team'] == away_team), None)
+                            match_url_id = next((team['url'] for team in match_infos
+                                            if team['home_team'] == home_team and team['away_team'] == away_team), None)
+
+                            if away_team_normalised is not None or home_team_normalised is not None:
+                                odds = Helpers().build_ids(
+                                    id_type="bet_id",
+                                    data={
+                                        "match_id": match_id,
+                                        "odds": normalize_odds_variables(
+                                            odds,
+                                            response.meta.get("sport_id"),
+                                            home_team_normalised,
+                                            away_team_normalised,
+                                        )
+                                    }
+                                )
+                                item["data_dict"] = {
+                                    "match_id": match_id,
+                                    "bookie_id": response.meta.get("bookie_id"),
+                                    "odds": odds,
+                                    "updated_date": Helpers().get_time_now(country="UTC"),
+                                    "web_url": web_url,
+                                    "http_status": response.status,
+                                    "match_url_id": match_url_id,
+                                }
+                            else:
+                                if self.debug:
+                                    print("No match found for teams", home_team, away_team)
+
+                            item["pipeline_type"] = ["match_odds"]
                             yield item
+
     def raw_html(self, response):
         try:
             print("### TEST OUTPUT")
@@ -231,7 +351,3 @@ class OneStepJsonSpider(scrapy.Spider):
             # print(response.meta["playwright_page"])
         except Exception as e:
             print(e)
-
-    def closed(self, reason):
-        requests.post(
-            "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")

@@ -24,19 +24,24 @@ class WebsocketsSpider(Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                # self.competitions = [x for x in bookie_config(bookie=["Versus"]) if x["competition_id"] == "Premier League Inglesa"]
-                # self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", "Premier League Inglesa"]}
+                # self.competitions = [x for x in bookie_config(bookie=["Versus"]) if x["competition_id"] == "NBA"]
+                # self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", "UEFANationsLeague"]}
 
                 self.competitions = bookie_config(bookie=["Versus"])
                 self.match_filter = {"type": "bookie_id", "params": ["Versus"]}
         except:
-            self.competitions = bookie_config(bookie=["Versus"])
+            if 0 <= Helpers().get_time_now("UTC").hour < 4:
+                print("PROCESSING ALL COMPETITIONS between and midnight and 4AM UTC")
+                self.competitions = bookie_config(bookie=["Versus"])
+            else:
+                print("PROCESSING COMPETITIONS WITH HTTP ERRORS between 4AM and midnight UTC")
+                self.competitions = bookie_config(bookie=["Versus", "http_errors"])
             self.match_filter = {"type": "bookie_id", "params": ["Versus"]}
             self.debug = False
     name = "Versus"
     start_urls = ["data:,"]
     custom_settings = {"TWISTED_REACTOR": "twisted.internet.asyncioreactor.AsyncioSelectorReactor"}
-    context_infos = get_context_infos(bookie_name=["Versus"])
+    context_infos = get_context_infos(bookie_name="Versus")
     map_matches_urls = [x[0] for x in Helpers().load_matches_urls(name)]
     map_matches = {}
     for match in Helpers().load_matches():
@@ -147,10 +152,15 @@ locale:es
 destination:/api/events/{match_id}
 
 \x00""")
-                    match_details = await self.ws.recv()
-                    match_details = re.search(r'\{.*\}', match_details, re.DOTALL).group()
-                    match_details = json.loads(match_details)
-                    matches_details.append(match_details)
+                    try:
+                        match_details = await self.ws.recv()
+                        match_details = re.search(r'\{.*\}', match_details, re.DOTALL).group()
+                        match_details = json.loads(match_details)
+                        matches_details.append(match_details)
+                    except Exception as e:
+                        print(f"error in match_details for {competition['competition_id']}")
+                        matches_details = []
+                        continue
 
                 match_infos = parse_competition(
                     response=matches_details,
@@ -191,7 +201,7 @@ destination:/api/events/{match_id}
                             Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
                     else:
                         item["data_dict"] = {
-                            "map_matches": self.map_matches[competition['competition_id']],
+                            "map_matches": [],
                             "match_infos": match_infos,
                             "comp_infos": [
                                 {

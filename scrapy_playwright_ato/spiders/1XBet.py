@@ -123,7 +123,6 @@ class TwoStepsSpider(scrapy.Spider):
                                         # print(traceback.format_exc())
                                         continue
 
-
         for match_info in match_infos:
             context_info = random.choice(self.context_infos)
             self.proxy_ip = context_info["proxy_ip"]

@@ -79,7 +79,6 @@ class TwoStepsSpider(scrapy.Spider):
                 start_date=match_info["date"],
             )
 
-            # Rickiiiii
 
             # if match_info["url"] == "https://eu-offering.kambicdn.org/offering/v2018/caes/betoffer/event/1020370871.json?lang=es_ES&market=ES":
             # print("request for", match_info["url"])

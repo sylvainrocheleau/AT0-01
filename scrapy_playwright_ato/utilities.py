@@ -972,6 +972,7 @@ class Helpers():
                              }
                     }
                 )
+
             elif data["scraping_tool"] == 'scrape_ops':
                 payload = {'api_key': SCRAPE_OPS_API_KEY, 'url': meta_request["competition_url_id"], 'country': 'es', }
                 url = 'https://proxy.scrapeops.io/v1/?' + urlencode(payload)
@@ -1040,6 +1041,7 @@ class Helpers():
             elif data["bookie_id"] == "Codere":
                 pass
             elif data["bookie_id"] == "DaznBet":
+                url = data["competition_url_id"].replace("https://www.daznbet.es/es-es/deportes/", "https://sb-pp-esfe.daznbet.es/")
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
                         method="wait_for_selector",
@@ -1065,6 +1067,23 @@ class Helpers():
                         selector="//div[@class='bg coupon-row']",
                     ),
                 ],
+                }
+                )
+            elif data["bookie_id"] == "RetaBet":
+                meta_request.update({"zyte_api_automap": {
+                        "geolocation": "ES",
+                        "browserHtml": True,
+                        "actions":[
+                            {
+                              "action": "waitForSelector",
+                              "selector": {
+                                  "type": "xpath",
+                                  "value": "//article[@class='module__list-events']",
+                                  "state": "visible",
+                              }
+                            }
+                        ]
+                    }
                 }
                 )
             elif data["bookie_id"] == "Sportium":
@@ -1383,6 +1402,23 @@ class Helpers():
                         selector="//div[@class='bg coupon-row']",
                     ),
                 ],
+                }
+                )
+            elif data["bookie_id"] == "RetaBet":
+                meta_request.update({"zyte_api_automap": {
+                        "geolocation": "ES",
+                        "browserHtml": True,
+                        "actions":[
+                            {
+                                "action": "waitForSelector",
+                                "selector": {
+                                    "type": "xpath",
+                                    "value": "//div[@class='bets__wrapper jbgroup jgroup']",
+                                    "state": "visible",
+                                }
+                            }
+                        ]
+                }
                 }
                 )
             elif data["bookie_id"] == "Sportium":

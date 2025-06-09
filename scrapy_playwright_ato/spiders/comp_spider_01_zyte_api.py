@@ -14,7 +14,7 @@ from ..utilities import Helpers
 # https://substack.thewebscraping.club/p/advanced-logging-in-playwright?publication_id=1023328&post_id=154490033&isFreemail=true&r=bffc4&triedRedirect=true
 
 class TwoStepsSpider(scrapy.Spider):
-    name = "comp_spider_01"
+    name = "comp_spider_01_zyte_api"
     if name == "comp_spider_01":
         settings_used = "USING PLAYWRIGHT SETTINGS"
         custom_settings = get_custom_playwright_settings(browser="Chrome", rotate_headers=False)
@@ -46,13 +46,12 @@ class TwoStepsSpider(scrapy.Spider):
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
                 # No filters
-                # competitions = bookie_config(bookie=["all_bookies"])
+                # competitions = bookie_config(bookie=["RetaBet"])
                 # Filter by bookie
                 # competitions = bookie_config(bookie=["WilliamHill", "http_errors"])
                 # Filter by boookie and competition
-                competitions = [x for x in bookie_config(bookie=["Bwin"]) if x["competition_id"] == "America-ClasificacionMundialFIFA"]
-
-        except Exception as e:
+                competitions = [x for x in bookie_config(bookie=["RetaBet"]) if x["competition_id"] == "NBA"]
+        except:
             if 0 <= Helpers().get_time_now("UTC").hour < 4:
                 print("PROCESSING ALL COMPETITIONS between and midnight and 4AM UTC")
                 competitions = bookie_config(bookie=["all_bookies"])

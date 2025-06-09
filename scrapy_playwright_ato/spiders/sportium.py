@@ -25,13 +25,18 @@ class WebsocketsSpider(Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                self.competitions = [x for x in bookie_config(bookie=["Sportium"]) if x["competition_id"] == "UEFAChampionsLeague"]
-                self.match_filter = {"type": "bookie_and_comp", "params": ["Sportium", "UEFAChampionsLeague"]}
+                # self.competitions = [x for x in bookie_config(bookie=["Sportium"]) if x["competition_id"] == "Argentina-PrimeraDivision"]
+                # self.match_filter = {"type": "bookie_and_comp", "params": ["Sportium", "Argentina-PrimeraDivision"]}
 
-                # self.competitions = bookie_config(bookie=["Sportium"])
-                # self.match_filter = {"type": "bookie_id", "params": ["Sportium"]}
+                self.competitions = bookie_config(bookie=["Sportium"])
+                self.match_filter = {"type": "bookie_id", "params": ["Sportium"]}
         except:
-            self.competitions = bookie_config(bookie=["Sportium"])
+            if 0 <= Helpers().get_time_now("UTC").hour < 4:
+                print("PROCESSING ALL COMPETITIONS between and midnight and 4AM UTC")
+                self.competitions = bookie_config(bookie=["Sportium"])
+            else:
+                print("PROCESSING COMPETITIONS WITH HTTP ERRORS between 4AM and midnight UTC")
+                self.competitions = bookie_config(bookie=["Sportium", "http_errors"])
             self.match_filter = {"type": "bookie_id", "params": ["Sportium"]}
             self.debug = False
     name = "Sportium"
@@ -58,12 +63,6 @@ class WebsocketsSpider(Spider):
                     break
                 await self.ws.send("")
                 print("PING sent at", datetime.datetime.now())
-                # try:
-                #     # Recevoir un message avec un timeout
-                #     message = await asyncio.wait_for(self.ws.recv(), timeout=interval)
-                #     print(f"Message received: {message}")
-                # except asyncio.TimeoutError:
-                #     print("No message received, continuing...")
                 await asyncio.sleep(interval)
             except Exception as e:
                 print(f"Error in keep_alive: {e}")
@@ -140,9 +139,6 @@ destination:/api/events/{match_id}
                     match_details = re.search(r'\{.*\}', raw_match_details, re.DOTALL).group()
                     match_details = json.loads(match_details)
                     matches_details.append(match_details)
-                if self.debug:
-                    if competition["competition_id"] == "UEFAChampionsLeague":
-                        print("matches_details for UEFAChampionsLeague", matches_details)
 
                 match_infos = parse_competition(
                     response=matches_details,
@@ -183,7 +179,7 @@ destination:/api/events/{match_id}
                             Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
                     else:
                         item["data_dict"] = {
-                            "map_matches": self.map_matches[competition['competition_id']],
+                            "map_matches": [],
                             "match_infos": match_infos,
                             "comp_infos": [
                                 {
@@ -374,7 +370,7 @@ destination:/api/markets/multi
             print(f"Unexpected error: {e}")
         finally:
             print("closing connection")
-            # keep_alive_task.cancel()
+            keep_alive_task.cancel()
             await self.ws.close()
 
     def closed(self, reason):

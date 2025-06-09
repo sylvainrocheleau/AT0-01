@@ -12,7 +12,7 @@ from ..parsing_logic import parse_match as parse_match_logic
 from ..utilities import Helpers
 
 class MetaSpider(scrapy.Spider):
-    name = "match_spider_01"
+    name = "match_spider_01_zyte_api"
     if name == "match_spider_01":
         settings_used = "USING PLAYWRIGHT SETTINGS"
         allowed_scraping_tools = ["playwright", "scrape_ops", "requests", "zyte_proxy_mode"]
@@ -28,7 +28,7 @@ class MetaSpider(scrapy.Spider):
             match_filter = {}
             # FILTER OPTIONS
             # match_filter = {"type": "bookie_id", "params":["1XBet"]}
-            # match_filter = {"type": "bookie_and_comp", "params": ["Bwin", "CONMEBOL-CopaLibertadores"]}
+            match_filter = {"type": "bookie_and_comp", "params": ["RetaBet", "NBA"]}
             # match_filter = {"type": "comp", "params":["LaLigaEspanola"]}
             # match_filter = {"type": "match_url", "params":
             #     "https://sports.williamhill.es/betting/es-es/f%C3%83%C2%BAtbol/OB_EV35037573/alemania-%C3%A2%E2%80%9A%E2%80%B9-portugal"]}
@@ -36,6 +36,8 @@ class MetaSpider(scrapy.Spider):
         match_filter_enabled = False
         match_filter = {}
         debug = False
+
+
     pipeline_type = []
     close_playwright = False
 

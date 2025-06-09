@@ -28,11 +28,12 @@ class WebsocketsSpider(Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                self.competitions = [x for x in bookie_config(bookie=["Betsson"]) if x["competition_id"] == "PremierLeagueInglesa"]
-                self.match_filter = {"type": "bookie_and_comp", "params": ["Betsson", "PremierLeagueInglesa"]}
+                # self.competitions = [x for x in bookie_config(bookie=["Betsson"]) if x["competition_id"] == "UEFAChampionsLeague"]
+                # self.match_filter = {"type": "bookie_and_comp", "params": ["Betsson", "UEFAChampionsLeague"]}
 
-                # self.competitions = bookie_config(bookie=["Betsson"])
-                # self.match_filter = {"type": "bookie_id", "params": ["Betsson"]}
+                self.competitions = bookie_config(bookie=["Betsson"])
+                self.match_filter = {"type": "bookie_id", "params": ["Betsson"]}
+                print(self.competitions)
         except:
             self.competitions = bookie_config(bookie=["Betsson"])
             self.match_filter = {"type": "bookie_id", "params": ["Betsson"]}
@@ -130,13 +131,10 @@ class WebsocketsSpider(Spider):
                 )
                 )
                 matches_details = await self.ws.recv()
-                # print("matches_details", matches_details)
+
                 matches_details = matches_details.replace("null", '0').replace("true", '0').replace("false", '0')
                 matches_details = eval(matches_details)
                 matches_details.update({"betsson_competition_id": betsson_competition_id, "betsson_sport_id": betsson_sport_id})
-
-                # print("matches", matches_details)
-                # url example https://sportsbook.betsson.es/#/sport/?type=0&region=20001&competition=566&sport=1&game=27082038
 
                 match_infos = parse_competition(
                     response=matches_details,
@@ -147,7 +145,7 @@ class WebsocketsSpider(Spider):
                     map_matches_urls=self.map_matches_urls,
                     debug=self.debug
                 )
-                # print("match_infos", match_infos)
+
                 try:
                     if len(match_infos) > 0:
                         match_infos = Helpers().normalize_team_names(
@@ -156,6 +154,8 @@ class WebsocketsSpider(Spider):
                             bookie_id=competition["bookie_id"],
                             debug=self.debug
                         )
+                        if self.debug:
+                            print("match_infos", match_infos)
                         if competition["competition_id"] in self.map_matches.keys():
                             item["data_dict"] = {
                                 "map_matches": self.map_matches[competition["competition_id"]],
@@ -178,7 +178,7 @@ class WebsocketsSpider(Spider):
                             Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
                     else:
                         item["data_dict"] = {
-                            "map_matches": self.map_matches[competition['competition_id']],
+                            "map_matches": [],
                             "match_infos": match_infos,
                             "comp_infos": [
                                 {
@@ -199,11 +199,11 @@ class WebsocketsSpider(Spider):
             await self.ws.close()
 
     async def parse_match(self, response):
-        try:
-            if os.environ["USER"] in LOCAL_USERS:
-                self.debug = True
-        except:
-            pass
+        # try:
+        #     if os.environ["USER"] in LOCAL_USERS:
+        #         self.debug = True
+        # except:
+        #     pass
         context_info = random.choice(self.context_infos)
         proxy = Proxy.from_url(proxy_prefix_http + context_info.get("proxy_ip") + proxy_suffix)
         matches_details_and_urls = Helpers().matches_details_and_urls(
@@ -212,6 +212,8 @@ class WebsocketsSpider(Spider):
         )
         matches_details_and_urls = {k: [v for v in lst if v['to_delete'] != 1] for k, lst in
                                     matches_details_and_urls.items() if any(v['to_delete'] != 1 for v in lst)}
+        if self.debug:
+            print("matches_details_and_urls", matches_details_and_urls)
         async with proxy_connect(
             'wss://eu-swarm-ws-re.betconstruct.com/',
             proxy=proxy,

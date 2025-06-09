@@ -5,7 +5,7 @@ import os
 import requests
 from ..items import ScrapersItem
 from ..settings import proxy_prefix, proxy_suffix
-from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables
+from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables, LOCAL_USERS
 
 # This spider is not updated to V2, because it needs to make a third request to get Resultado Exacto.
 # Cliking on Resultado Exacto did not work, because for some odd reasons, when using Playwright, a match page is redirected
@@ -13,6 +13,13 @@ from ..bookies_configurations import get_context_infos, bookie_config, normalize
 # is also the script that makes Resultado Exacto clickable.
 
 class TwoStepsSpider(scrapy.Spider):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            if os.environ["USER"] in LOCAL_USERS:
+                self.debug = True
+        except:
+            self.debug = False
     name = "MarcaApuestas"
     match_url = str
     comp_url = str
@@ -21,9 +28,12 @@ class TwoStepsSpider(scrapy.Spider):
     header = {'Accept': '*/*', 'Connection': 'keep-alive', 'User-Agent': '', 'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'es-ES;q=0.5,en;q=0.3', 'Cache-Control': 'max-age=0', 'DNT': '1', 'Upgrade-Insecure-Requests': '1', 'Referer': 'https://google.com', 'Pragma': 'no-cache'}
     custom_settings = {"REDIRECT_ENABLED": True}
     def start_requests(self):
+
         context_infos = get_context_infos(bookie_name=self.name)
         self.context_infos = [x for x in context_infos if x["proxy_ip"] not in []]
         for data in bookie_config(self.name):
+            if self.debug is True:
+                print("comp url", data["url"])
             context_info = random.choice(self.context_infos)
             self.proxy_ip = proxy_prefix+context_info["proxy_ip"]+proxy_suffix
             self.header["User-Agent"] = context_info["user_agent"]
@@ -58,6 +68,8 @@ class TwoStepsSpider(scrapy.Spider):
                 urls.append(response.urljoin(match.css('div.mkt-count').css('a::attr(href)').get()))
 
         for url in urls:
+            if self.debug is True:
+                print("match url", url)
             context_info = random.choice(self.context_infos)
             self.match_url = url,
             self.proxy_ip = proxy_prefix+context_info["proxy_ip"]+proxy_suffix
@@ -80,16 +92,7 @@ class TwoStepsSpider(scrapy.Spider):
     def parse_match(self, response):
         item = ScrapersItem()
         odds = []
-        item["Sport"] = response.meta.get("sport")
-        item["Competition"] = response.meta.get("competition")
-        item["Match_Url"] = response.meta.get("match_url")
-        item["Competition_Url"] = response.meta.get("competition_url")
-        try:
-            item["Home_Team"] = response.css('span.ev-name::text').get().strip().split(' vs ')[0]
-            item["Away_Team"] = response.css('span.ev-name::text').get().strip().split(' vs ')[1].split("(")[0]
-        except:
-            item["Home_Team"] = response.css('span.ev-name::text').get().strip().split(' @ ')[1].split("(")[0]
-            item["Away_Team"] = response.css('span.ev-name::text').get().strip().split(' @ ')[0]
+
         markets = response.css('div.expander.mkt')
 
         for market in markets:
@@ -152,31 +155,61 @@ class TwoStepsSpider(scrapy.Spider):
                         self.header["User-Agent"] = context_info["user_agent"]
 
                         self.user_agent_hash = context_info["user_agent_hash"]
-                        yield scrapy.Request(
+                        reponse_resultado = requests.get(
                             url=self.match_url,
-                            callback=self.parse_football,
-                            meta={
-                                "proxy":self.proxy_ip ,
-                                "header": self.header,
-                                "sport": item["Sport"],
-                                # "sport_url": response.meta["splash"]["args"]["sport_url"],
-                                "competition": item["Competition"],
-                                "match_url": item["Match_Url"],
-                                "home_team": item["Home_Team"],
-                                "away_team": item["Away_Team"],
-                                "list_of_markets": response.meta.get("list_of_markets"),
-                                "competition_url": item["Competition_Url"],
-                                "odds": odds,
-                            },
+                            headers=self.header,
+                            proxies={
+                                "http": self.proxy_ip.replace("https://", "http://"),
+                                "https": self.proxy_ip.replace("https://", "http://"),
+                            }
                         )
+                        html = reponse_resultado.text
+                        html_cleaner = re.compile('<.*?>')
+                        for bet in html.split("\\n"):
+                            try:
+                                if "seln-sort" in bet:
+                                    result = re.sub(html_cleaner, "", bet)
+                                elif "price dec" in bet:
+                                    odd = re.sub(html_cleaner, "", bet)
+                                try:
+                                    if (
+                                        result != "empty"
+                                        and odd != "empty"
+                                    ):
+                                        odds.append(
+                                            {"Market": "Resultado Correcto",
+                                             "Result": result,
+                                             "Odds": odd,
+                                             }
+                                        )
+                                        result = "empty"
+                                        odd = "empty"
+                                except UnboundLocalError:
+                                    pass
+
+                            except Exception as e:
+                                # print(e)
+                                continue
+
                     except Exception as e:
+                        print("Error fetching Resultado Exacto", e)
                         continue
-                        # print("error", e)
-        else:
-            item["Bets"] = normalize_odds_variables(
-                odds, response.meta.get("sport"), item["Home_Team"], item["Away_Team"]
-            )
-            yield item
+            print("odds", odds)
+
+        item["Sport"] = response.meta.get("sport")
+        item["Competition"] = response.meta.get("competition")
+        item["Match_Url"] = response.meta.get("match_url")
+        item["Competition_Url"] = response.meta.get("competition_url")
+        try:
+            item["Home_Team"] = response.css('span.ev-name::text').get().strip().split(' vs ')[0]
+            item["Away_Team"] = response.css('span.ev-name::text').get().strip().split(' vs ')[1].split("(")[0]
+        except:
+            item["Home_Team"] = response.css('span.ev-name::text').get().strip().split(' @ ')[1].split("(")[0]
+            item["Away_Team"] = response.css('span.ev-name::text').get().strip().split(' @ ')[0]
+        item["Bets"] = normalize_odds_variables(
+            odds, response.meta.get("sport"), item["Home_Team"], item["Away_Team"]
+        )
+        yield item
 
     def parse_football(self, response):
         item = ScrapersItem()
@@ -235,11 +268,8 @@ class TwoStepsSpider(scrapy.Spider):
             print(e)
 
     def closed(self, reason):
-        # try:
-        #     if os.environ.get("USER") == "sylvain":
-        #         pass
-        # except Exception as e:
-        #     requests.post(
-        #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
-        requests.post(
-            "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
+        if self.debug is True:
+            pass
+        else:
+            requests.post(
+                "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
