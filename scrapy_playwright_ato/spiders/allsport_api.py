@@ -44,7 +44,7 @@ class APISpider(scrapy.Spider):
                 # No filters
                 # list_of_competitions = bookie_config(bookie=["AllSportAPI"])
                 # Filter by competition
-                list_of_competitions = [x for x in bookie_config(bookie=["AllSportAPI"]) if x["competition_id"] == "ATP"]
+                list_of_competitions = [x for x in bookie_config(bookie=["AllSportAPI"]) if x["competition_id"] == "Challenger"]
                 if self.debug:
                     print("list of competitions", list_of_competitions)
                 pass
@@ -52,25 +52,49 @@ class APISpider(scrapy.Spider):
             list_of_competitions = bookie_config(bookie=["AllSportAPI"])
         for data in list_of_competitions:
             tournament_id = data["competition_url_id"]
-            season_id = self.get_season(tournament_id)
             self.data_dict = {}
             try:
-                url = f"https://allsportsapi2.p.rapidapi.com/api/tournament/{tournament_id}/season/{season_id}/matches/next/{str(self.page_count)}"
-                # TODO add a function get all teams, see get_all_teams_for_competition
-                if self.debug:
-                    print("url", url)
-                yield scrapy.Request(
-                    url=url,
-                    callback=self.parse,
-                    headers={"x-rapidapi-key": ALL_SPORTS_API_KEY, "x-rapidapi-host": "allsportsapi2.p.rapidapi.com"},
-                    meta={
-                        "season_id": season_id,
-                        "tournament_id": tournament_id,
-                        "sport_id": data["sport_id"],
-                        "competition_id": data["competition_id"],
-                        "competition_url_id": data["competition_url_id"],
-                    }
-                )
+                if data["sport_id"] == "1" or data["sport_id"] == "2":
+                    season_id = self.get_season(tournament_id)
+                    url = f"https://allsportsapi2.p.rapidapi.com/api/tournament/{tournament_id}/season/{season_id}/matches/next/{str(self.page_count)}"
+                    if self.debug:
+                        print("url", url)
+                    yield scrapy.Request(
+                        url=url,
+                        callback=self.parse,
+                        headers={"x-rapidapi-key": ALL_SPORTS_API_KEY,
+                                 "x-rapidapi-host": "allsportsapi2.p.rapidapi.com"},
+                        meta={
+                            "season_id": season_id,
+                            "tournament_id": tournament_id,
+                            "sport_id": data["sport_id"],
+                            "competition_id": data["competition_id"],
+                            "competition_url_id": data["competition_url_id"],
+                        }
+                    )
+                elif data["sport_id"] == "3":
+                    date_to_scrape = 0
+                    while date_to_scrape <= 3:
+                        today = datetime.datetime.today() + datetime.timedelta(days=date_to_scrape)
+                        formatted_date = f"{today.day}/{today.month}/{today.year}"
+                        season_id = None
+                        date_to_scrape += 1
+                        url = f"https://allsportsapi2.p.rapidapi.com/api/tennis/category/{tournament_id}/events/{formatted_date}"
+                        if self.debug:
+                            print("url", url)
+                        yield scrapy.Request(
+                            url=url,
+                            callback=self.parse,
+                            headers={"x-rapidapi-key": ALL_SPORTS_API_KEY,
+                                     "x-rapidapi-host": "allsportsapi2.p.rapidapi.com"},
+                            meta={
+                                "season_id": season_id,
+                                "tournament_id": tournament_id,
+                                "sport_id": data["sport_id"],
+                                "competition_id": data["competition_id"],
+                                "competition_url_id": data["competition_url_id"],
+                            }
+                        )
             except Exception as e:
                 print("error from request to Allsport", e)
 
@@ -137,7 +161,7 @@ class APISpider(scrapy.Spider):
                     Helpers().insert_log(level="CRITICIAL", type="CODE", error=response.meta.get("competition_id"), message=traceback.format_exc())
                     continue
 
-            next_page = jsonresponse["hasNextPage"]
+            next_page = jsonresponse["hasNextPage"] if "hasNextPage" in jsonresponse else False
             if next_page:
                 self.page_count = int(response.url.split("/")[-1]) + 1
                 print("page count", self.page_count, "for", response.meta.get("competition_id"))
