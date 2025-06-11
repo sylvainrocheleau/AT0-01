@@ -22,12 +22,30 @@
    * Ajouter la compétition dans la BD locale en suivant les directives de [Add or update competitions urls](https://docs.google.com/document/d/1btxYAmFdTrhuHYIDWfrwl2DV_G3_HD1DXYhBupCqMlk/edit?tab=t.0#bookmark=id.43abmljpfumc)
    *
 3. Faire tourner le script de synchronistation de BD
-4. Faire tourner comp_spider_01
+4. Faire tourner comp_spider_01 pour s'assurer que les noms de match sont sauvegardés dans V2_Matches_Urls
 5. Vérifier que les noms d'équipe sont normalisés dans V2_Team_Names
-6. Si les équipes ne sont pas normalisées, aller dans Dash_Teams_to_update et filter par bookie et compétition
+6. Si aucune équipe est normalisée, aller dans Dash_Teams_to_update et filter par bookie et compétition
 7. Suivre les instructions [pour normaliser les noms d'équipe](https://docs.google.com/document/d/1btxYAmFdTrhuHYIDWfrwl2DV_G3_HD1DXYhBupCqMlk/edit?tab=t.0#bookmark=id.b0ho7maigb5s)
-8. Faire tourner comp_spider_01 pour s'assurer que les noms de match sont sauvegardés dans V2_Matches_Urls
+8. Reprendre à partir de l'étape 4
 9. Ajouter les valeurs "Markets" dans le dictionnaire list_of_markets_V2 de bookies_config
-10. Faire check_list_of_markets de misc_tool.py pour s'assurer que les valeurs sont correctes
+10. Faire tourner check_list_of_markets de misc_tool.py pour s'assurer que les valeurs sont correctes
 10. Aller dans def parse_match dans parsing_logic.py et s'assure que le xpatch de selections_keys fonctionne
 11. Faire tourner match_spider_01 en mode raw_html et debugger dans parse_match de parsing_logic.py
+
+
+Liste de bookies à ajouter ppour le tennis:
+- Bwin: FAIT
+- BetWay: FAIT
+- AdmiralBet:
+- AupaBet:
+- Bet777:
+- DaznBet
+- EfBet
+- GoldenPark
+- Juegging
+- KirolBet
+- Luckia
+- MarathonBet
+- RetaBet
+- WilliamHill
+- ZeBet
