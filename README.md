@@ -28,5 +28,6 @@
 7. Suivre les instructions [pour normaliser les noms d'équipe](https://docs.google.com/document/d/1btxYAmFdTrhuHYIDWfrwl2DV_G3_HD1DXYhBupCqMlk/edit?tab=t.0#bookmark=id.b0ho7maigb5s)
 8. Faire tourner comp_spider_01 pour s'assurer que les noms de match sont sauvegardés dans V2_Matches_Urls
 9. Ajouter les valeurs "Markets" dans le dictionnaire list_of_markets_V2 de bookies_config
-10. Aller dans def parse_match dans parsing_logic.py et s'assure rque le xpatch de selections_keys fonctionne
-11. Faire tourner match_spider_01
+10. Faire check_list_of_markets de misc_tool.py pour s'assurer que les valeurs sont correctes
+10. Aller dans def parse_match dans parsing_logic.py et s'assure que le xpatch de selections_keys fonctionne
+11. Faire tourner match_spider_01 en mode raw_html et debugger dans parse_match de parsing_logic.py
