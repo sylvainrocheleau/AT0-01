@@ -36,7 +36,7 @@
 Liste de bookies à ajouter ppour le tennis:
 - Bwin: FAIT
 - BetWay: FAIT
-- AdmiralBet:
+- AdmiralBet: Potentielles erreurs liées à la base de donnée(à revoir)
 - AupaBet:
 - Bet777:
 - DaznBet
@@ -45,7 +45,7 @@ Liste de bookies à ajouter ppour le tennis:
 - Juegging
 - KirolBet
 - Luckia
-- MarathonBet
+- MarathonBet : FAIT
 - RetaBet
 - WilliamHill
 - ZeBet

@@ -50,12 +50,12 @@ class TwoStepsSpider(scrapy.Spider):
                 # Filter by bookie
                 # competitions = bookie_config(bookie=["WilliamHill", "http_errors"])
                 # Filter by boookie and competition
-                competitions = [x for x in bookie_config(bookie=["Bwin"]) if x["competition_id"] == "America-ClasificacionMundialFIFA"]
+                competitions = [x for x in bookie_config(bookie=["AdmiralBet"]) if x["competition_id"] == "ATP"]
 
         except Exception as e:
             if 0 <= Helpers().get_time_now("UTC").hour < 4:
                 print("PROCESSING ALL COMPETITIONS between and midnight and 4AM UTC")
-                competitions = bookie_config(bookie=["all_bookies"])
+                competitions = bookie_config(bookie=["all_bookies"]) #v2_competitions_url
             else:
                 print("PROCESSING COMPETITIONS WITH HTTP ERRORS between 4AM and midnight UTC")
                 competitions = bookie_config(bookie=["all_bookies", "http_errors"])
@@ -117,8 +117,7 @@ class TwoStepsSpider(scrapy.Spider):
                     bookie_id=response.meta.get("bookie_id"),
                     debug=self.debug
                 )
-                if self.debug:
-                    print("match_infos", match_infos)
+
                 if response.meta.get("competition_id") in self.map_matches.keys():
                     item["data_dict"] = {
                         "map_matches": self.map_matches[response.meta.get("competition_id")],
