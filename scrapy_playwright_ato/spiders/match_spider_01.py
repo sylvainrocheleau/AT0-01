@@ -28,7 +28,7 @@ class MetaSpider(scrapy.Spider):
             match_filter = {}
             # FILTER OPTIONS
             # match_filter = {"type": "bookie_id", "params":["1XBet"]}
-            match_filter = {"type": "bookie_and_comp", "params": ["AdmiralBet", "ATP"]}
+            match_filter = {"type": "bookie_and_comp", "params": ["AupaBet", "ATP"]}
             # match_filter = {"type": "comp", "params":["LaLigaEspanola"]}
             # match_filter = {"type": "match_url", "params":
             #     "https://www.admiralbet.es/es/apuestas/deportes/tenis/atp/stuttgart-ger-grass/michelsen-alex-vs-engel-justin?t=17497188"}
@@ -70,7 +70,7 @@ class MetaSpider(scrapy.Spider):
                     yield scrapy.Request(
                         dont_filter=dont_filter,
                         url=url,
-                        callback=self.raw_html if self.debug else self.parse_match,
+                        callback=self.parse_match if self.debug else self.parse_match,
                         errback=self.errback,
                         meta=meta_request,
                     )

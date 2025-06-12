@@ -32,6 +32,7 @@ list_of_markets_V2 = {
     "1": ["1X2","Nº Goles (1,5)", "Nº Goles (2,5)", "Nº Goles (3,5)", "Nº Goles (4,5)", "Nº Goles (5,5)", "Resultado Exacto"],
     "2": ["Ganador"] + ["Total Puntos (" + str(x).replace(".", ",") + ")" for x in basketball_intervals],
     "3": ["Ganador"] + ["Nº Juegos Total (" + str(x).replace(".", ",") + ")" for x in tennis_intervals],
+    # "3": ["Ganador", "Nº Juegos Total (23,5)"]
 },
 "KirolBet": {
     "1": ["1X2","Nº Goles (1,5)", "Nº Goles (2,5)", "Nº Goles (3,5)", "Nº Goles (4,5)", "Nº Goles (5,5)", "Resultado Exacto"],
