@@ -5,7 +5,7 @@ import requests
 import datetime
 import time
 import os
-# import json
+import json
 # import traceback
 from scrapy_playwright.page import PageMethod
 from parsel import Selector
@@ -39,12 +39,12 @@ class TwoStepsSpider(scrapy.Spider):
 
     def start_requests(self):
         self.start_time = time.time()
-        context_infos = get_context_infos(bookie_name=self.name)
-        self.context_infos = [x for x in context_infos if x["proxy_ip"] not in []]
+        self.context_infos = get_context_infos(bookie_name=self.name)
+
         for data in bookie_config(self.name):
             if len(data["url"]) < 5:
                 continue
-            context_info = random.choice(self.context_infos)
+            context_info = random.choice([x for x in self.context_infos if x["cookies"] is not None])
             self.proxy_ip = context_info["proxy_ip"]
             self.comp_url=data["url"]
             self.user_agent_hash = context_info["user_agent_hash"]
@@ -69,6 +69,9 @@ class TwoStepsSpider(scrapy.Spider):
                                 "server": "http://"+self.proxy_ip+":58542/",
                                 "username": soltia_user_name,
                                 "password": soltia_password,
+                            },
+                            "storage_state": {
+                                "cookies": json.loads(context_info["cookies"])
                             },
                         },
                         playwright_accept_request_predicate = {
@@ -124,7 +127,7 @@ class TwoStepsSpider(scrapy.Spider):
                 continue
 
         for match_info in match_infos:
-            context_info = random.choice(self.context_infos)
+            context_info = random.choice([x for x in self.context_infos if x["cookies"] is not None])
             self.match_url = match_info["url"]
             self.proxy_ip = context_info["proxy_ip"]
             # self.cookies = json.loads(context_info["cookies"])
@@ -150,9 +153,9 @@ class TwoStepsSpider(scrapy.Spider):
                         "username": soltia_user_name,
                         "password": soltia_password,
                     },
-                    # "storage_state": {
-                    #     "cookies": self.cookies,
-                    # },
+                    "storage_state": {
+                        "cookies": json.loads(context_info["cookies"])
+                    },
                 },
                 playwright_accept_request_predicate={
                     'activate': True,

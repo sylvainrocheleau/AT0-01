@@ -31,7 +31,7 @@ def teams_and_dates_from_response():
         print("File 'comp_spider_01_response.txt' not found. Please provide a valid response file.")
         return []
     print("RAW match infos", match_infos)
-    if normalize:
+    if normalize is True:
         match_infos = Helpers().normalize_team_names(
             match_infos=match_infos,
             competition_id=competition_id,
@@ -73,6 +73,8 @@ def get_odds_from_response():
         debug=True
     )
 
+    return None
+
 def check_list_of_markets():
     from bookies_configurations import list_of_markets_V2
 
@@ -81,10 +83,21 @@ def check_list_of_markets():
     sport_id = str(input("enter sport_id "))
     # END VARIABLES TO CHANGE
     print("List of markets for bookie_id", list_of_markets_V2[bookie_id][sport_id])
+def get_matches_details_and_urls():
+    from utilities import Helpers
+    match_filter_enabled = True
+    match_filter = {"type": "bookie_and_comp", "params": ["Bwin", "CONMEBOL-CopaLibertadores"]}
+
+    matches_details_and_urls = Helpers().matches_details_and_urls(
+            filter=match_filter_enabled,
+            filter_data=match_filter
+        )
+    print(matches_details_and_urls)
+    return None
 
 if __name__ == "__main__":
     # check_list_of_markets()
     # get_comps_for_bookie()
-    # teams_and_dates_from_response()
-    get_odds_from_response()
-
+    teams_and_dates_from_response()
+    # get_odds_from_response()
+    # get_matches_details_and_urls()

@@ -297,7 +297,8 @@ def test(filters):
     print(bookies_infos)
 
 if __name__ == "__main__":
-    get_cookies(test_mode=False, headless=True, pause_time=5, filters={"bookie_name": "all_bookies", "only_cookies": True})
+    get_cookies(test_mode=False, headless=True, pause_time=5, filters={"bookie_name": "DaznBet", "only_cookies": True})
+    # get_cookies(test_mode=False, headless=True, pause_time=5, filters={"bookie_name": "all_bookies", "only_cookies": True})
     # test(filters={"bookie_name": "all_bookies", "only_cookies": True})
     # use_cookies()
 

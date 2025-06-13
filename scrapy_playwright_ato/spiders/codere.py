@@ -146,7 +146,6 @@ class TwoStepsSpider(scrapy.Spider):
                 },
             )
 
-
             # if "https://sports.bwin.es/es/sports/eventos/suecia-azerbaiy%C3%A1n-2:7511872" == match_info["url"]:
             try:
                 yield scrapy.Request(
@@ -188,7 +187,7 @@ class TwoStepsSpider(scrapy.Spider):
             item["Sport"] = response.meta.get("sport")
             item["Competition"] = response.meta.get("competition")
             item["Date"] = response.meta.get("start_date")
-            item["Match_Url"] = response.meta.get("match_url")
+            item["Match_Url"] = response.meta.get("web_url")
             item["Competition_Url"] = response.meta.get("competition_url")
             # item["proxy_ip"] = self.proxy_ip
             yield item

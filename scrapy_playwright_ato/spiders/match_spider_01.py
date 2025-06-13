@@ -28,10 +28,10 @@ class MetaSpider(scrapy.Spider):
             match_filter = {}
             # FILTER OPTIONS
             # match_filter = {"type": "bookie_id", "params":["1XBet"]}
-            # match_filter = {"type": "bookie_and_comp", "params": ["Bwin", "CONMEBOL-CopaLibertadores"]}
+            match_filter = {"type": "bookie_and_comp", "params": ["AupaBet", "ATP"]}
             # match_filter = {"type": "comp", "params":["LaLigaEspanola"]}
             # match_filter = {"type": "match_url", "params":
-            #     "https://sports.williamhill.es/betting/es-es/f%C3%83%C2%BAtbol/OB_EV35037573/alemania-%C3%A2%E2%80%9A%E2%80%B9-portugal"]}
+            #     "https://www.admiralbet.es/es/apuestas/deportes/tenis/atp/stuttgart-ger-grass/michelsen-alex-vs-engel-justin?t=17497188"}
     except:
         match_filter_enabled = False
         match_filter = {}
