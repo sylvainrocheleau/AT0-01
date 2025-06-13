@@ -42,10 +42,10 @@ Liste de bookies à ajouter ppour le tennis:
 - DaznBet
 - EfBet
 - GoldenPark
-- Juegging
-- KirolBet
+- Juegging : FAIT
+- KirolBet : FAIT
 - Luckia
 - MarathonBet : FAIT
 - RetaBet
 - WilliamHill
-- ZeBet
+- ZeBet : Erreur 403 sur lien de la competition(à revoir)

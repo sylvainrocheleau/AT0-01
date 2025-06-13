@@ -70,7 +70,7 @@ class MetaSpider(scrapy.Spider):
                     yield scrapy.Request(
                         dont_filter=dont_filter,
                         url=url,
-                        callback=self.parse_match if self.debug else self.parse_match,
+                        callback=self.raw_html if self.debug else self.parse_match,
                         errback=self.errback,
                         meta=meta_request,
                     )
