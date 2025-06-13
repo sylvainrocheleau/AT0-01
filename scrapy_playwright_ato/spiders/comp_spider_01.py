@@ -50,7 +50,7 @@ class TwoStepsSpider(scrapy.Spider):
                 # Filter by bookie
                 # competitions = bookie_config(bookie=["WilliamHill", "http_errors"])
                 # Filter by boookie and competition
-                competitions = [x for x in bookie_config(bookie=["AupaBet"]) if x["competition_id"] == "ATP"]
+                competitions = [x for x in bookie_config(bookie=["ZeBet"]) if x["competition_id"] == "ATP"]
 
         except Exception as e:
             if 0 <= Helpers().get_time_now("UTC").hour < 4:
@@ -76,7 +76,7 @@ class TwoStepsSpider(scrapy.Spider):
                 yield scrapy.Request(
                     dont_filter=dont_filter,
                     url=url,
-                    callback=self.match_requests if self.debug else self.match_requests,
+                    callback=self.raw_html if self.debug else self.match_requests,
                     errback=self.errback,
                     meta=meta_request,
                 )
