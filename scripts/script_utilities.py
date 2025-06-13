@@ -29,6 +29,7 @@ class Connect():
 
         return connection
 
+
 class Helpers():
     def __init__(self):
         pass
@@ -110,3 +111,118 @@ class Helpers():
                     e))
             # sendSMS(status)
             print(status)
+
+
+class CreateViews:
+    def __init__(self):
+        self.connection = Connect().to_db(db="ATO_production", table=None)
+
+    def create__view_Dash_Competitions_per_Bookie(self):
+        cursor = self.connection.cursor()
+        try:
+            # Step 1: Generate the view SQL
+            generator_query = """
+                SELECT CONCAT(
+                    'CREATE OR REPLACE VIEW ATO_production.Dash_Competitions_per_Bookie AS SELECT b.bookie_id ',
+                    GROUP_CONCAT(
+                        CONCAT(
+                            ', (SELECT cu.http_status FROM ATO_production.V2_Competitions_Urls cu WHERE cu.bookie_id = b.bookie_id AND cu.competition_id = ''', c.competition_id, ''') AS `', c.competition_id, '`'
+                        )
+                        ORDER BY c.competition_id
+                        SEPARATOR ''
+                    ),
+                    ' FROM ATO_production.V2_Bookies b WHERE b.V2_ready = 1;'
+                ) AS view_sql
+                FROM ATO_production.V2_Competitions c
+                WHERE c.start_date <= NOW() AND c.end_date >= NOW();
+            """
+            cursor.execute(generator_query)
+            view_sql = cursor.fetchone()[0]
+            if not view_sql:
+                print("No competitions found for the current date range.")
+                return
+
+            # Step 2: Execute the generated SQL to create/update the view
+            cursor.execute(view_sql)
+            self.connection.commit()
+            print("View created or updated successfully.")
+        except Exception as e:
+            print("Error creating/updating view:", e)
+            print(traceback.format_exc())
+        finally:
+            cursor.close()
+            self.connection.close()
+
+    def create_view_Dash_MatchUrlCounts_per_Bookie(self):
+        cursor = self.connection.cursor()
+        try:
+            generator_query = """
+                SELECT CONCAT(
+                    'CREATE OR REPLACE VIEW ATO_production.Dash_MatchUrlCounts_per_Bookie AS SELECT b.bookie_id ',
+                    GROUP_CONCAT(
+                        CONCAT(
+                            ', (SELECT COUNT(DISTINCT mu.match_url_id) ',
+                            'FROM ATO_production.V2_Matches_Urls mu ',
+                            'JOIN ATO_production.V2_Matches m ON mu.match_id = m.match_id ',
+                            'WHERE mu.bookie_id = b.bookie_id AND m.competition_id = ''', c.competition_id, ''') AS `', c.competition_id, '`'
+                        )
+                        ORDER BY c.competition_id
+                        SEPARATOR ''
+                    ),
+                    ' FROM ATO_production.V2_Bookies b WHERE b.V2_ready = 1 AND b.bookie_id NOT IN (''BetfairExchange'', ''AllSportAPI'');'
+                ) AS view_sql
+                FROM ATO_production.V2_Competitions c
+                WHERE c.start_date <= NOW()
+                AND c.end_date >= NOW()
+            """
+            cursor.execute(generator_query)
+            view_sql = cursor.fetchone()[0]
+            if not view_sql:
+                print("No competitions found for the current date range.")
+                return
+
+            cursor.execute(view_sql)
+            self.connection.commit()
+            print("MatchUrlCounts view created or updated successfully.")
+        except Exception as e:
+            print("Error creating/updating MatchUrlCounts view:", e)
+            print(traceback.format_exc())
+        finally:
+            cursor.close()
+            self.connection.close()
+
+    def create_view_Dash_Competitions_and_MatchUrlCounts_per_Bookie(self):
+        cursor = self.connection.cursor()
+        try:
+            generator_query = """
+                SELECT CONCAT(
+                    'CREATE OR REPLACE VIEW ATO_production.Dash_Competitions_and_MatchUrlCounts_per_Bookie AS SELECT b.bookie_id ',
+                    GROUP_CONCAT(
+                        CONCAT(
+                            ', (SELECT cu.http_status FROM ATO_production.V2_Competitions_Urls cu WHERE cu.bookie_id = b.bookie_id AND cu.competition_id = ''', c.competition_id, ''') AS `', c.competition_id, '_status`',
+                            ', (SELECT COUNT(DISTINCT mu.match_url_id) FROM ATO_production.V2_Matches_Urls mu JOIN ATO_production.V2_Matches m ON mu.match_id = m.match_id WHERE mu.bookie_id = b.bookie_id AND m.competition_id = ''', c.competition_id, ''') AS `', c.competition_id, '_count`',
+                            ', (SELECT cu.competition_url_id FROM ATO_production.V2_Competitions_Urls cu WHERE cu.bookie_id = b.bookie_id AND cu.competition_id = ''', c.competition_id, ''') AS `', c.competition_id, '_url`'
+                        )
+                        ORDER BY c.competition_id
+                        SEPARATOR ''
+                    ),
+                    ' FROM ATO_production.V2_Bookies b WHERE b.V2_ready = 1 AND b.bookie_id NOT IN (''BetfairExchange'', ''AllSportAPI'');'
+                ) AS view_sql
+                FROM ATO_production.V2_Competitions c
+                WHERE c.start_date <= NOW() AND c.end_date >= NOW();
+            """
+            cursor.execute(generator_query)
+            view_sql = cursor.fetchone()[0]
+            if not view_sql:
+                print("No competitions found for the current date range.")
+                return
+
+            cursor.execute(view_sql)
+            self.connection.commit()
+            print("Combined view created or updated successfully.")
+        except Exception as e:
+            print("Error creating/updating combined view:", e)
+            print(traceback.format_exc())
+        finally:
+            cursor.close()
+            self.connection.close()

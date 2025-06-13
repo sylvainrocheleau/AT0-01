@@ -48,9 +48,10 @@ class TwoStepsSpider(scrapy.Spider):
                 # No filters
                 # competitions = bookie_config(bookie=["all_bookies"])
                 # Filter by bookie
-                # competitions = bookie_config(bookie=["WilliamHill", "http_errors"])
+                # competitions = bookie_config(bookie=["Bwin"])
                 # Filter by boookie and competition
-                competitions = [x for x in bookie_config(bookie=["Bwin"]) if x["competition_id"] == "America-ClasificacionMundialFIFA"]
+                competitions = [x for x in bookie_config(
+                    bookie=["DaznBet"]) if x["competition_id"] == "CopaSudamericana"]
 
         except Exception as e:
             if 0 <= Helpers().get_time_now("UTC").hour < 4:

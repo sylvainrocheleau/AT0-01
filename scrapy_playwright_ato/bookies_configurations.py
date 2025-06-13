@@ -429,7 +429,7 @@ def bookie_config(bookie):
             if os.environ["USER"] in LOCAL_USERS:
                 # data = data.iloc[0:1]
                 data = data
-                # data = data.loc[data["competition"] == "Argentina - Primera División"] # CONMEBOL - Copa Libertadores
+                data = data.loc[data["competition"] == "España - Segunda división"]
                 # FOOTBALL: UEFA Champions League, Serie A Italiana, Premier League Inglesa, La Liga Española, Bundesliga Alemana, Eurocopa 2024,
                 #           Argentina - Primera división, España - Segunda división
                 # Basketball: NBA, Liga ACB

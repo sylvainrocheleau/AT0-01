@@ -3,3 +3,7 @@ project.egg-info/
 *.pyc
 .releases
 /archives/
+/scrapy_playwright_ato/team_and_dates_from_response_V2.py
+/scrapy_playwright_ato/teams_and_date_from_response.py
+/scrapy_playwright_ato/odds_from_response_V2.py
+/scrapy_playwright_ato/odds_from_response.py
