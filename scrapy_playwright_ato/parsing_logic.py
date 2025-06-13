@@ -1224,6 +1224,7 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
 
                 clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
                 clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
+                print(f"clean selection keys {clean_selection_keys}")
                 for selection_key02 in clean_selection_keys:
                     if clean_selection_keys[0] in list_of_markets:
                         market = clean_selection_keys[0]
@@ -1574,7 +1575,7 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                 clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
                 stop_words = ["Cash Out", "Cancelado"]
                 teams = []
-                # print(clean_selection_keys)
+                print(clean_selection_keys)
                 for selection_key02 in clean_selection_keys:
                     if clean_selection_keys[0] in list_of_markets:
                         market = clean_selection_keys[0]
@@ -1598,6 +1599,11 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                             total = [x for x in clean_selection_keys if "," in x and float(x.replace(",", ".")) > 100][
                                 0]
                             result = result + " " + total
+
+                        elif market == "Juegos en total":
+                            total = [x for x in clean_selection_keys if "," in x and float(x.replace(",", ".")) > 15][
+                                0]
+                            result = result + " " + total
                         odd = "empty"
                         # if market == "Resultado del partido":
                         #     teams.append(result)
@@ -1608,7 +1614,7 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                         and "-" not in selection_key02
                         and "," in selection_key02
                         and market in list_of_markets
-                        and float(selection_key02.replace(",", ".")) < 100
+                        and float(selection_key02.replace(",", ".")) < 15
                     ):
 
                         odd = selection_key02
@@ -1723,6 +1729,67 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                                     odd = "empty"
                             except UnboundLocalError:
                                 pass
+            elif sport_id == "3":
+                print("sport 3")
+                selection_keys = response.xpath("//ms-option-panel[contains(@class, 'option-panel')]").extract()
+                odds = []
+                for selection_key in selection_keys:
+                    selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace(
+                        "\t",
+                        "")
+                    clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
+                    clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
+                    stop_words = ["Tiempo reglamentario", "1ª parte", "2ª parte", "Más de", "Menos de",
+                                  "Mostrar más"]
+                    teams = []
+                    print(f"Clean select key: {clean_selection_keys}")
+                    for selection_key02 in clean_selection_keys:
+                        if clean_selection_keys[0] in list_of_markets:
+                            market = clean_selection_keys[0]
+                            print("market", market)
+
+                        else:
+                            market = "empty"
+                            # result = "empty"
+                            # odd = "empty"
+
+                        if (
+                            selection_key02 != market
+                            and selection_key02 not in teams
+                            and selection_key02 not in stop_words
+                            and market in list_of_markets
+                            and re.search('[a-zA-Z]', selection_key02) is not None
+                            or "-" in selection_key02
+                        ):
+                            result = selection_key02
+                            odd = "empty"
+                            if market == "Resultado del partido":
+                                teams.append(result)
+                            # print("result", result)
+
+                        elif (
+                            re.search("[a-zA-Z]", selection_key02) is None
+                            and "-" not in selection_key02
+                            and "." in selection_key02
+                            and market in list_of_markets
+                        ):
+
+                            odd = selection_key02
+                            # print("odd", odd)
+                        try:
+                            if (
+                                market in list_of_markets
+                                and result != "empty"
+                                and odd != "empty"
+                            ):
+                                odds.append({"Market": market, "Result": result, "Odds": odd})
+                                result = "empty"
+                                odd = "empty"
+                        except UnboundLocalError:
+                            pass
+                        except NameError:
+                            continue
+                        # print(odds)
         except Exception as e:
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
     elif bookie_id == "CasinoBarcelona":
@@ -2556,6 +2623,7 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                 market_and_result = re.sub(r'^.*?@', '', selection_key)
                 market = ''.join(i for i in market_and_result.split(".")[0] if not i.isdigit())
                 result = market_and_result.replace(market_and_result.split(".")[0], "")
+                print(f"market: {market}\nresult:{result}")
                 if market + result in list_of_markets and result[1:] not in [x["Result"] for x in odds]:
                     if sport_id == "2":
                         result_switch = result[1:]
