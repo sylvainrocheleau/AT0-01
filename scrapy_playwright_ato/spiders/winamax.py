@@ -67,6 +67,8 @@ class TwoStepsSpider(scrapy.Spider):
         for data in bookie_config(self.name):
             if len(data["url"]) < 5:
                 continue
+            if self.debug:
+                print(f"### Starting requests for {data['url']} with {self.name} spider")
             context_info = random.choice([x for x in self.context_infos])
             self.proxy_ip = context_info["proxy_ip"]
             # self.comp_url=data["url"]
@@ -221,16 +223,15 @@ class TwoStepsSpider(scrapy.Spider):
                     print(f"Second reload for {competition_url}")
                     await page.reload()
 
-            else:
-                if len(self.match_infos[competition_url]) > 0:
-                    if self.debug:
-                        print(f"matches infos {self.match_infos[competition_url]}")
-                        # f = open("response_body_match_requests.txt", "a")
-                        # f.write(f"found matches for {competition} {competition_url} {len(self.match_infos[competition_url])} ")
-                        # f.write(str(self.match_infos[competition_url]))
-                        # f.write("\n")
-                        # f.write("\n")
-                        # f.close()
+            if len(self.match_infos[competition_url]) > 0:
+                if self.debug:
+                    print(f"matches infos {self.match_infos[competition_url]}")
+                    # f = open("response_body_match_requests.txt", "a")
+                    # f.write(f"found matches for {competition} {competition_url} {len(self.match_infos[competition_url])} ")
+                    # f.write(str(self.match_infos[competition_url]))
+                    # f.write("\n")
+                    # f.write("\n")
+                    # f.close()
         finally:
             try:
                 await page.close()
@@ -389,37 +390,36 @@ class TwoStepsSpider(scrapy.Spider):
                     print(f"Second reload for {match_url}")
                     await page.reload()
 
-            else:
-                if len(self.odds[match_url]) > 0:
-                    # f = open("response_body_parse_match.txt", "a")
-                    # f.write(f"found odds {len(self.odds[match_url])} for {match_url}")
-                    # f.write("\n")
-                    # f.write("\n")
-                    # f.close()
-                    try:
-                        item["Home_Team"] = home_team
-                        item["Away_Team"] = away_team
-                        item["Bets"] = normalize_odds_variables(
-                            self.odds[match_url], sport ,item["Home_Team"], item["Away_Team"]
-                        )
-                        # item["Bets"] = self.odds[match_url]
-                        item["extraction_time_utc"] = datetime.datetime.now()
-                        item["Sport"] = sport
-                        item["Competition"] = competition
-                        item["Date"] = start_date
-                        item["Match_Url"] = match_url
-                        item["Competition_Url"] = competition_url
-                        item["proxy_ip"] = self.proxy_ip
-                        if len(self.odds[match_url]) == 0:
-                            print(f"odds empty for {match_url}")
-                        print("item[Match_Url]", item["Match_Url"] )
-                        yield item
+            if len(self.odds[match_url]) > 0:
+                # f = open("response_body_parse_match.txt", "a")
+                # f.write(f"found odds {len(self.odds[match_url])} for {match_url}")
+                # f.write("\n")
+                # f.write("\n")
+                # f.close()
+                try:
+                    item["Home_Team"] = home_team
+                    item["Away_Team"] = away_team
+                    item["Bets"] = normalize_odds_variables(
+                        self.odds[match_url], sport ,item["Home_Team"], item["Away_Team"]
+                    )
+                    # item["Bets"] = self.odds[match_url]
+                    item["extraction_time_utc"] = datetime.datetime.now()
+                    item["Sport"] = sport
+                    item["Competition"] = competition
+                    item["Date"] = start_date
+                    item["Match_Url"] = match_url
+                    item["Competition_Url"] = competition_url
+                    item["proxy_ip"] = self.proxy_ip
+                    if len(self.odds[match_url]) == 0:
+                        print(f"odds empty for {match_url}")
+                    print("item[Match_Url]", item["Match_Url"] )
+                    yield item
 
-                    except Exception as e:
-                        item["Competition_Url"] = competition_url
-                        item["Match_Url"] = match_url
-                        item["error_message"] = str(e)
-                        yield item
+                except Exception as e:
+                    item["Competition_Url"] = competition_url
+                    item["Match_Url"] = match_url
+                    item["error_message"] = str(e)
+                    yield item
 
         except Exception as e:
             pass
