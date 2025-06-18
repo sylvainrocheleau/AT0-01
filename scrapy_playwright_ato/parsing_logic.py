@@ -6,6 +6,7 @@ import datetime
 from parsel import Selector
 from scrapy_playwright_ato.utilities import Helpers
 
+# comment RB
 def build_match_infos(url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id):
     match_info = {
         "url": url,
@@ -24,7 +25,6 @@ def build_match_infos(url, web_url, home_team, away_team, date, competition_id, 
     }
     return match_info
 
-# comment RB
 def parse_competition(response, bookie_id, competition_id, competition_url_id, sport_id, map_matches_urls, debug):
     try:
         html_cleaner = re.compile("<.*?>")
