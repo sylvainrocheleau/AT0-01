@@ -6,14 +6,12 @@ import datetime
 from parsel import Selector
 from scrapy_playwright_ato.utilities import Helpers
 
-# comment SR
+# comment # 2 SR
 
 def build_match_infos(
     url: str, web_url: str, home_team: str, away_team: str, date: datetime,
     competition_id: str, bookie_id: str, sport_id: str
 ):
-# comment RB
-def build_match_infos(url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id):
     match_info = {
         "url": url,
         "web_url": Helpers().build_web_url(web_url),
