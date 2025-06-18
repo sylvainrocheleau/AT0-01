@@ -95,7 +95,7 @@ class TwoStepsSpider(scrapy.Spider):
                 await page.context.close()
             except Exception as e:
                 print("Error closing playwright page/context:", e)
-                Helpers().insert_log(level="CRITICIAL", type="CODE", error=e, message=traceback.format_exc())
+                Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
                 pass
 
         match_infos = parse_competition(
@@ -133,7 +133,7 @@ class TwoStepsSpider(scrapy.Spider):
                     item["pipeline_type"] = self.pipeline_type
                     yield item
                 else:
-                    error = (f"{response.meta.get('bookie_id')} {response.meta.get('competition_id')} comp_id not in map_matches ")
+                    error = f"{response.meta.get('bookie_id')} {response.meta.get('competition_id')} comp_id not in map_matches "
                     if self.debug:
                         print(error)
                     Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
@@ -151,7 +151,7 @@ class TwoStepsSpider(scrapy.Spider):
                 }
                 item["pipeline_type"] = self.pipeline_type
                 yield item
-                error = (f"{response.meta.get('bookie_id')} {response.meta.get('competition_id')} comp has no new match ")
+                error = f"{response.meta.get('bookie_id')} {response.meta.get('competition_id')} comp has no new match "
                 Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
 
         except Exception as e:
@@ -187,7 +187,7 @@ class TwoStepsSpider(scrapy.Spider):
 
             Helpers().insert_log(level="INFO", type="NETWORK", error=error, message=traceback.format_exc())
         except Exception as e:
-            Helpers().insert_log(level="CRITICIAL", type="CODE", error=e, message=traceback.format_exc())
+            Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
 
         if failure.check(HttpError):
             response = failure.value.response
@@ -212,7 +212,7 @@ class TwoStepsSpider(scrapy.Spider):
                 status = 1200
                 # print("Unknown error on", request.url)
             except Exception as e:
-                Helpers().insert_log(level="CRITICIAL", type="CODE", error=e, message=traceback.format_exc())
+                Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
         try:
             item["data_dict"] = {
                 "comp_infos": [
@@ -229,7 +229,7 @@ class TwoStepsSpider(scrapy.Spider):
             yield item
 
         except Exception as e:
-            Helpers().insert_log(level="CRITICIAL", type="CODE", error=e, message=traceback.format_exc())
+            Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
 
         try:
             if self.close_playwright is True:
@@ -239,7 +239,7 @@ class TwoStepsSpider(scrapy.Spider):
                 print("Closing context on error")
                 await page.context.close()
         except Exception as e:
-            Helpers().insert_log(level="CRITICIAL", type="CODE", error=e, message=traceback.format_exc())
+            Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
             pass
 
 

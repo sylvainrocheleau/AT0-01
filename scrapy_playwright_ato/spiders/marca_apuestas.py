@@ -74,7 +74,6 @@ class TwoStepsSpider(scrapy.Spider):
             self.match_url = url,
             self.proxy_ip = proxy_prefix+context_info["proxy_ip"]+proxy_suffix
             self.user_agent_hash = context_info["user_agent_hash"]
-            # if url == "https://deportes.marcaapuestas.es/es/e/22973290/New-York-Knicks-%40-Boston-Celtics":
             yield scrapy.Request(
                 url=url,
                 callback=self.parse_match,
@@ -96,25 +95,18 @@ class TwoStepsSpider(scrapy.Spider):
         markets = response.css('div.expander.mkt')
 
         for market in markets:
-            # print("MARKETZ", market)
             try:
                 if market.css('span.mkt-name::text').get() is not None:
                     market_name = market.css('span.mkt-name::text').get().strip()
-                    # print("market_name", market_name)
-                # else:
-                    # print("else market", market_name)
 
                 if market_name in response.meta.get("list_of_markets"):
-                    # print("market in list", market_name)
                     if market_name == "Línea de Juego" and response.meta.get("sport") == "Basketball":
-
                         for bet in market.css('tbody').css('tr'):
                             # print("bet", bet)
                             result = bet.css('div.team-name').css('a::text').get().strip()
                             odd = bet.css('td.mkt-sort')[-1].css('span.price.dec::text').get().strip()
                             odds.append({'Market': market_name, 'Result': result, 'Odds': odd})
                     else:
-
                         for bet in market.css('button[name="add-to-slip"]'):
                             # print("else bet", bet)
                             if (
@@ -133,6 +125,7 @@ class TwoStepsSpider(scrapy.Spider):
                                 result = bet.css('span.seln-name::text').get()
                                 odd = float(bet.css('span.price.dec::text').get())
                                 odds.append({"Market": market_name, "Result": result, "Odds": odd})
+
                             if result is None and "Total" not in market_name:
                                 result = "draw"
                                 odd = float(bet.css('span.price.dec::text').get())
@@ -144,10 +137,12 @@ class TwoStepsSpider(scrapy.Spider):
             response_xpath = response.xpath(
                 "//div[contains(@class, 'expander expander-collapsed fetch-on-expand no-child-update efav-section')]").extract()
             for selection_keys in response_xpath:
-                if "Resultado Exacto" in selection_keys:
+                if (
+                    "Resultado Exacto" in selection_keys
+                    and "Mitad " not in selection_keys
+                ):
                     url_suffix = selection_keys.split("data-fetch_url=\"")[1]
                     url_suffix = url_suffix.split("\">")[0].replace("&amp;", "&")
-                    # print("valueX", url_suffix)
                     try:
                         context_info = random.choice(self.context_infos)
                         self.match_url = "https://deportes.marcaapuestas.es"+url_suffix
@@ -166,6 +161,7 @@ class TwoStepsSpider(scrapy.Spider):
                         html = reponse_resultado.text
                         html_cleaner = re.compile('<.*?>')
                         for bet in html.split("\\n"):
+                            # print("bet", bet)
                             try:
                                 if "seln-sort" in bet:
                                     result = re.sub(html_cleaner, "", bet)
@@ -194,7 +190,7 @@ class TwoStepsSpider(scrapy.Spider):
                     except Exception as e:
                         print("Error fetching Resultado Exacto", e)
                         continue
-            print("odds", odds)
+            # print("odds", odds)
 
         item["Sport"] = response.meta.get("sport")
         item["Competition"] = response.meta.get("competition")

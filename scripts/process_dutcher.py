@@ -113,7 +113,7 @@ def update_dutcher():
 
     except Exception as e:
         print(traceback.format_exc())
-        Helpers().insert_log(level="CRITICIAL", type="CODE", error=e, message=traceback.format_exc())
+        Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
     finally:
         cursor.close()
         connection.close()

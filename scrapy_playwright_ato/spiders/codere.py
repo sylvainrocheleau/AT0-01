@@ -123,6 +123,7 @@ class TwoStepsSpider(scrapy.Spider):
                 home_team=match_info["home_team"],
                 away_team=match_info["away_team"],
                 match_url=match_info["url"],
+                web_url=match_info["web_url"],
                 competition_url=response.meta.get("competition_url"),
                 start_date=match_info["date"],
                 playwright=True,

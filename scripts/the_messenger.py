@@ -55,7 +55,7 @@ class Messenger():
             msg['Subject'] = subject
             # msg['From'] = "sylvainrocheleau@gmail.com"
             msg['From'] = "admin@users.againsttheodds.es"
-            msg['To'] = "info@sylvainrocheleau.com, admin@againsttheodds.es" #
+            msg['To'] = "info@sylvainrocheleau.com" # , scrappers@againsttheodd.es
             final_body = body_header + self.body + body_footer
             msg.attach(MIMEText(final_body, 'html'))
             server.sendmail(msg['From'], msg['To'].split(', '), msg.as_string())
@@ -71,22 +71,25 @@ class Messenger():
             html_link = self.html_link(link, text_of_link)
             self.body += f"""<p><i>Siga las instrucciones aquí para {html_link}</i></p>"""
             if 301 in paragraph["content"] and len(paragraph["content"][301]) > 0:
-                self.body += """<h3>Estatus 301:</h3>"""
+                self.body += """<h3>Estatus 301 (A corregir por el equipo de Madrid):</h3>"""
                 for item in paragraph["content"][301]:
                     self.body += item
             if 302 in paragraph["content"] and len(paragraph["content"][302]) > 0:
-                self.body += """<h3>Estatus 302:</h3>"""
+                self.body += """<h3>Estatus 302 (A corregir por el equipo de Madrid):</h3>"""
                 for item in paragraph["content"][302]:
                     self.body += item
             if 404 in paragraph["content"] and len(paragraph["content"][404]) > 0:
-                self.body += """<h3>Estatus 404 o 410:</h3>"""
+                self.body += """<h3>Estatus 404 o 410 (A corregir por el equipo de Madrid):</h3>"""
                 for item in paragraph["content"][404]:
                     self.body += item
             if None in paragraph["content"] and len(paragraph["content"][None]) > 0:
-                self.body += """<h3>Estatus nulo:</h3>"""
+                self.body += """<h3>Estatus nulo (A corregir por el equipo de Madrid):</h3>"""
                 for item in paragraph["content"][None]:
                     self.body += item
-
+            if "other" in paragraph["content"] and len(paragraph["content"]["other"]) > 0:
+                self.body += """<h3>Otros estatus (A corregir por el equipo de Montreal)</h3>"""
+                for item in paragraph["content"]["other"]:
+                    self.body += item
 
         if paragraph["from"] == "count_matches_id_to_reviewd":
             link = "https://docs.google.com/document/d/1btxYAmFdTrhuHYIDWfrwl2DV_G3_HD1DXYhBupCqMlk/edit?tab=t.0#bookmark=id.b0ho7maigb5s"
@@ -94,6 +97,20 @@ class Messenger():
             html_link = self.html_link(link, text_of_link)
             self.body += f"""<p><i>Siga las instrucciones aquí para {html_link}</i></p>"""
             self.body += ''.join(paragraph["content"])
+
+        if paragraph["from"] == "report_on_active_competitions":
+            if "1" in paragraph["content"] and len(paragraph["content"]["1"]) > 0:
+                self.body += """<h3>Fútbol</h3>"""
+                for item in paragraph["content"]["1"]:
+                    self.body += item
+            if "2" in paragraph["content"] and len(paragraph["content"]["2"]) > 0:
+                self.body += """<h3>Baloncesto</h3>"""
+                for item in paragraph["content"]["2"]:
+                    self.body += item
+            if "3" in paragraph["content"] and len(paragraph["content"]["3"]) > 0:
+                self.body += """<h3>Tenis</h3>"""
+                for item in paragraph["content"]["3"]:
+                    self.body += item
 
     def count_matches_id_to_reviewd(self):
         print("Generating report on matches to be reviewed")
@@ -134,7 +151,7 @@ class Messenger():
         self.add_to_body(paragraph)
 
     def report_on_competitions_01(self):
-        print("Generating report on competitions")
+        print("Generating report on competitions status with TENNIS FILTER ON")
         # select the view ATO_production.Dash_Competitions_and_MatchUrlCounts_per_Bookie
         query = """
         SELECT * FROM ATO_production.Dash_Competitions_and_MatchUrlCounts_per_Bookie
@@ -145,10 +162,13 @@ class Messenger():
         paragraph = {}
         paragraph["from"] = "report_on_competitions_01"
         paragraph["title"] = "<h2>Competiciones con estatus 301, 302, 404 o nulo.</h2>"
-        paragraph["content"] = {301: [], 302: [], 404: [], None: []}
+        paragraph["content"] = {301: [], 302: [], 404: [], None: [], "other": []}
         for row in results:
             bookie_id = row["bookie_id"]
             for key, value in row.items():
+                if any(sub in key for sub in ["ATP", "Challenger", "Exhibition", "GranSlam", "BillieJeanKingCup", "DavisCup", "UnitedCup"]):
+                    # Skip keys that are not related to ATP or Challenger
+                    continue
                 if "_status" in key:
                     if value == 301:
                         paragraph["content"][301].append(
@@ -162,6 +182,43 @@ class Messenger():
                     elif value is None:
                         paragraph["content"][None].append(
                             f"<li>{bookie_id}: {key.replace('_status', '')}</li>")
+                    elif value !=200:
+                        paragraph["content"]["other"].append(
+                            f"<li>{value} on {bookie_id}: {key.replace('_status', '')}</li>")
+        self.add_to_body(paragraph)
+
+    def active_competitions(self):
+        print("Generating report on active competitions")
+        query = """
+        SELECT competition_id, next_match_date, sport_id FROM ATO_production.V2_Competitions
+        WHERE active = 1
+        ORDER BY next_match_date ASC
+        """
+        self.cursor.execute(query)
+        results = self.cursor.fetchall()
+        paragraph = {}
+        paragraph["from"] = "report_on_active_competitions"
+        paragraph["title"] = "<h2>Competiciones activas (fase de prueba)</h2>"
+        paragraph["content"] = {"1": [], "2": [], "3": [], }
+        for row in results:
+            competition_id = row[0]
+            next_match_date = row[1]
+            if next_match_date.tzinfo is None:
+                next_match_date = next_match_date.replace(tzinfo=datetime.timezone.utc)
+            sport_id = row[2]
+            if sport_id == "1":
+                paragraph["content"]["1"].append(
+                    f"<li>{competition_id}, Fecha del próximo partido: {next_match_date.strftime('%Y-%m-%d %H:%M')} UTC</li>"
+                )
+            elif sport_id == "2":
+                paragraph["content"]["2"].append(
+                    f"<li>{competition_id}, Fecha del próximo partido: {next_match_date.strftime('%Y-%m-%d %H:%M')} UTC</li>"
+                )
+            elif sport_id == "3":
+                paragraph["content"]["3"].append(
+                    f"<li>{competition_id}, Fecha del próximo partido: {next_match_date.strftime('%Y-%m-%d %H:%M')} UTC</li>"
+                )
+
 
         self.add_to_body(paragraph)
 
@@ -181,5 +238,6 @@ if __name__ == "__main__":
     Messenger = Messenger()
     Messenger.count_matches_id_to_reviewd()
     Messenger.report_on_competitions_01()
+    Messenger.active_competitions()
     Messenger.send_email(subject=f"Informe sobre el raspado {formatted_date.capitalize()}")
 

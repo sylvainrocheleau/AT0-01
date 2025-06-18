@@ -44,7 +44,7 @@ class APISpider(scrapy.Spider):
                 # No filters
                 # list_of_competitions = bookie_config(bookie=["AllSportAPI"])
                 # Filter by competition
-                list_of_competitions = [x for x in bookie_config(bookie=["AllSportAPI"]) if x["competition_id"] == "America-ClasificacionMundialFIFA"]
+                list_of_competitions = [x for x in bookie_config(bookie=["AllSportAPI"]) if x["competition_id"] == "LigaACB"]
                 if self.debug:
                     print("list of competitions", list_of_competitions)
                 pass
@@ -75,13 +75,15 @@ class APISpider(scrapy.Spider):
                 elif data["sport_id"] == "3":
                     date_to_scrape = 0
                     while date_to_scrape <= 3:
+                        if date_to_scrape == 3:
+                            date_to_scrape = 10
                         today = datetime.datetime.today() + datetime.timedelta(days=date_to_scrape)
                         formatted_date = f"{today.day}/{today.month}/{today.year}"
                         season_id = None
                         date_to_scrape += 1
                         url = f"https://allsportsapi2.p.rapidapi.com/api/tennis/category/{tournament_id}/events/{formatted_date}"
                         if self.debug:
-                            print("url", url)
+                            print("url", url," with date", formatted_date)
                         yield scrapy.Request(
                             url=url,
                             callback=self.parse,
@@ -101,25 +103,30 @@ class APISpider(scrapy.Spider):
     def parse(self, response):
         item = ScrapersItem()
         try:
-            jsonresponse = json.loads(response.text)
-            connection = Connect().to_db(db="ATO_production", table=None)
-            cursor = connection.cursor()
-            update_query = """
-                        UPDATE ATO_production.V2_Competitions_Urls
-                        SET updated_date = %s, http_status = %s
-                        WHERE competition_url_id = %s
-                    """
-            update_values = (Helpers().get_time_now("UTC"), response.status, response.meta.get("competition_url_id"))
-            cursor.execute(update_query, update_values)
-            connection.commit()
-            cursor.close()
-            connection.close()
+            if response.status == 200:
+                jsonresponse = json.loads(response.text)
+            else:
+                jsonresponse = {}
         except Exception as e:
             if self.debug:
                 print("error from response", response.text)
             jsonresponse = {}
             print("parsing error", e, "on", response.meta.get("competition_id"))
-            Helpers().insert_log(level="CRITICIAL", type="CODE", error=response.meta.get("competition_id"), message=traceback.format_exc())
+            Helpers().insert_log(level="CRITICAL", type="CODE", error=response.meta.get("competition_id"), message=traceback.format_exc())
+        finally:
+            connection = Connect().to_db(db="ATO_production", table=None)
+            cursor = connection.cursor()
+            update_query = """
+                                        UPDATE ATO_production.V2_Competitions_Urls
+                                        SET updated_date = %s, http_status = %s
+                                        WHERE competition_url_id = %s
+                                    """
+            update_values = (
+                Helpers().get_time_now("UTC"), response.status, response.meta.get("competition_url_id"))
+            cursor.execute(update_query, update_values)
+            connection.commit()
+            cursor.close()
+            connection.close()
 
         if "events" in jsonresponse:
             for data in jsonresponse["events"]:
@@ -158,8 +165,9 @@ class APISpider(scrapy.Spider):
                 except Exception as e:
                     if self.debug:
                         print("error from data", data, e, response.meta.get("competition_id"))
-                    Helpers().insert_log(level="CRITICIAL", type="CODE", error=response.meta.get("competition_id"), message=traceback.format_exc())
+                    Helpers().insert_log(level="CRITICAL", type="CODE", error=response.meta.get("competition_id"), message=traceback.format_exc())
                     continue
+
 
             next_page = jsonresponse["hasNextPage"] if "hasNextPage" in jsonresponse else False
             if next_page:
@@ -187,5 +195,4 @@ class APISpider(scrapy.Spider):
                 if self.debug:
                     print("data_dict", item["data_dict"])
                 yield item
-
 

@@ -391,11 +391,6 @@ class TwoStepsSpider(scrapy.Spider):
                     await page.reload()
 
             if len(self.odds[match_url]) > 0:
-                # f = open("response_body_parse_match.txt", "a")
-                # f.write(f"found odds {len(self.odds[match_url])} for {match_url}")
-                # f.write("\n")
-                # f.write("\n")
-                # f.close()
                 try:
                     item["Home_Team"] = home_team
                     item["Away_Team"] = away_team
