@@ -66,11 +66,11 @@ list_of_markets_V2 = {
             ] + [
                 "Total_Points.Over_" + str(x).rstrip(".0") for x in basketball_intervals
             ],
-"3": ["Match_Result.1", "Match_Result.3", ] + [
-                "Total_Games.Under_" + str(x).rstrip(".0") for x in tennis_intervals
-            ] + [
-                "Total_Games.Over_" + str(x).rstrip(".0") for x in tennis_intervals
-            ],
+    "3": ["Match_Result.1", "Match_Result.3", ] + [
+                    "Total_Games.Under_" + str(x).rstrip(".0") for x in tennis_intervals
+                ] + [
+                    "Total_Games.Over_" + str(x).rstrip(".0") for x in tennis_intervals
+                ],
 },
 "ZeBet": {
     "1": ["1-X-2", "Más de / Menos de", "Puntuación exacta"],
