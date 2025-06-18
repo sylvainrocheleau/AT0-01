@@ -10,7 +10,7 @@ from difflib import SequenceMatcher
 from scrapy_playwright_ato.settings import LOCAL_USERS
 from scrapy_playwright_ato.utilities import Connect, Helpers
 
-#RB
+# coR
 
 basketball_intervals = np.arange(79.5, 260.5, 1)
 tennis_intervals = np.arange(15.5, 45.5, 1)
@@ -67,11 +67,11 @@ list_of_markets_V2 = {
             ] + [
                 "Total_Points.Over_" + str(x).rstrip(".0") for x in basketball_intervals
             ],
-    "3": ["Match_Result.1", "Match_Result.3", ] + [
-                    "Total_Games.Under_" + str(x).rstrip(".0") for x in tennis_intervals
-                ] + [
-                    "Total_Games.Over_" + str(x).rstrip(".0") for x in tennis_intervals
-                ],
+"3": ["Match_Result.1", "Match_Result.3", ] + [
+                "Total_Games.Under_" + str(x).rstrip(".0") for x in tennis_intervals
+            ] + [
+                "Total_Games.Over_" + str(x).rstrip(".0") for x in tennis_intervals
+            ],
 },
 "ZeBet": {
     "1": ["1-X-2", "Más de / Menos de", "Puntuación exacta"],
