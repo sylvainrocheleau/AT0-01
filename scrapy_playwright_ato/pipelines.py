@@ -1,6 +1,8 @@
 # from itemadapter import ItemAdapter
 import os
 import datetime
+from logging import raiseExceptions
+
 import dateparser
 import pytz
 import traceback
@@ -14,7 +16,7 @@ class ScrapersPipeline:
     try:
         if os.environ["USER"] in LOCAL_USERS:
             f = open("demo_data.txt", "w")
-            debug = True
+            debug = False
         else:
             debug = False
     except:
@@ -73,7 +75,7 @@ class ScrapersPipeline:
                     except Exception as e:
                         if self.debug:
                             print(traceback.format_exc())
-                        Helpers().insert_log(level="CRITICAL", type="CODE", error=str(e), message=traceback.format_exc())
+                        Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
 
                 # if batch_insert_match_odds:
                 #     cursor.executemany(query_insert_match_odds, batch_insert_match_odds)
@@ -83,7 +85,7 @@ class ScrapersPipeline:
                     except Exception as e:
                         if self.debug:
                             print(traceback.format_exc())
-                        Helpers().insert_log(level="CRITICAL", type="CODE", error=str(e),message=traceback.format_exc())
+                        Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}",message=traceback.format_exc())
                         print(f"Error at index {i}: {entry}")
                         break
                 if batch_update_match_urls:
@@ -92,7 +94,7 @@ class ScrapersPipeline:
             except Exception as e:
                 if self.debug:
                     print(traceback.format_exc())
-                Helpers().insert_log(level="CRITICAL", type="CODE", error=str(e), message=traceback.format_exc())
+                Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
                 # print(traceback.format_exc())
             finally:
                 try:
@@ -120,7 +122,7 @@ class ScrapersPipeline:
             except Exception as e:
                 if self.debug:
                     print(traceback.format_exc())
-                Helpers().insert_log(level="CRITICAL", type="CODE", error=str(e), message=traceback.format_exc())
+                Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
                 pass
             finally:
                 try:
@@ -135,7 +137,7 @@ class ScrapersPipeline:
 
             # TODO if there is a mismatch between UTC and Spain time, we need to report it
             try:
-                print(f"UPDATING V2_Matches_Urls and competitions status for ")
+                print(f"UPDATING V2_Matches_Urls and competitions status ")
                 for key, value in item["data_dict"].items():
                     if key == "match_infos":
                         print("new matches", len(value))
@@ -240,9 +242,9 @@ class ScrapersPipeline:
                     VALUES(%s, %s, %s, %s, %s)
                     """
                 )
-                if self.debug:
-                    print("create_match_urls", create_match_urls)
-                    print("create_match_urls_with_no_ids", create_match_urls_with_no_ids)
+
+                print("create_match_urls", create_match_urls)
+                print("create_match_urls_with_no_ids", create_match_urls_with_no_ids)
                 cursor.executemany(query_create_match_urls, create_match_urls)
                 connection.commit()
 
@@ -287,14 +289,15 @@ class ScrapersPipeline:
             except Exception as e:
                 if self.debug:
                     print(traceback.format_exc())
-                Helpers().insert_log(level="CRITICAL", type="CODE", error=str(e), message=traceback.format_exc())
+                Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
             finally:
                 try:
                     end_time = datetime.datetime.now()
-                    print(f"Time taken to update V2_Matches_Urls and competitions status for ", (end_time - start_time).total_seconds())
+                    print(f"Time taken to update V2_Matches_Urls and competitions status ", (end_time - start_time).total_seconds())
                     cursor.close()
                     connection.close()
                 except Exception:
+                    print(traceback.format_exc())
                     pass
 
         elif "pipeline_type" in item.keys() and "error_on_competition_url" in item["pipeline_type"]:
@@ -318,7 +321,7 @@ class ScrapersPipeline:
             except Exception as e:
                 if self.debug:
                     print(traceback.format_exc())
-                Helpers().insert_log(level="CRITICIAL", type="CODE", error=e, message=traceback.format_exc())
+                Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
             finally:
                 try:
                     end_time = datetime.datetime.now()
@@ -350,7 +353,7 @@ class ScrapersPipeline:
             except Exception as e:
                 if self.debug:
                     print(traceback.format_exc())
-                Helpers().insert_log(level="CRITICIAL", type="CODE", error=e, message=traceback.format_exc())
+                Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
             finally:
                 try:
                     end_time = datetime.datetime.now()
@@ -426,7 +429,7 @@ class ScrapersPipeline:
             except Exception as e:
                 if self.debug:
                     print(traceback.format_exc())
-                Helpers().insert_log(level="CRITICIAL", type="CODE", error=e, message=traceback.format_exc())
+                Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
             finally:
                 try:
                     end_time = datetime.datetime.now()
@@ -436,16 +439,16 @@ class ScrapersPipeline:
                 except Exception:
                     pass
 
-            if "pipeline_type" in item.keys() and "normalize_teams" in item["pipeline_type"]:
-                competition_id = [v["competition_id"] for k, v in item["data_dict"].items()][0]
-                debug = False
-                try:
-                    print("RUNNING: change_normalized_team_names_from_betfair_to_all_sport() with debug", debug, "on", competition_id)
-                    Helpers().change_normalized_team_names_from_betfair_to_all_sport(competition_id=competition_id, debug=debug )
-                except Exception as e:
-                    if self.debug:
-                        print(traceback.format_exc())
-                    Helpers().insert_log(level="CRITICAL", type="CODE", error=str(e), message=traceback.format_exc())
+            # if "pipeline_type" in item.keys() and "normalize_teams" in item["pipeline_type"]:
+            #     competition_id = [v["competition_id"] for k, v in item["data_dict"].items()][0]
+            #     debug = False
+            #     try:
+            #         print("RUNNING: change_normalized_team_names_from_betfair_to_all_sport() with debug", debug, "on", competition_id)
+            #         Helpers().change_normalized_team_names_from_betfair_to_all_sport(competition_id=competition_id, debug=debug )
+            #     except Exception as e:
+            #         if self.debug:
+            #             print(traceback.format_exc())
+            #         Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
 
             if "pipeline_type" in item.keys() and "matches" in item["pipeline_type"]:
                 print(f"UPDATING {len(item['data_dict'])} matches in V2_Matches")
@@ -477,7 +480,7 @@ class ScrapersPipeline:
                 except Exception as e:
                     if self.debug:
                         print(traceback.format_exc())
-                    Helpers().insert_log(level="CRITICIAL", type="CODE", error=e, message=traceback.format_exc())
+                    Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
                 finally:
                     try:
                         end_time = datetime.datetime.now()
@@ -516,7 +519,7 @@ class ScrapersPipeline:
                 except Exception as e:
                     if self.debug:
                         print(traceback.format_exc())
-                    Helpers().insert_log(level="CRITICIAL", type="CODE", error=e, message=traceback.format_exc())
+                    Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
                 finally:
                     try:
                         end_time = datetime.datetime.now()
@@ -563,7 +566,7 @@ class ScrapersPipeline:
             except Exception as e:
                 if self.debug:
                     print(traceback.format_exc())
-                Helpers().insert_log(level="CRITICIAL", type="CODE", error=e, message=traceback.format_exc())
+                Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
             finally:
                 try:
                     end_time = datetime.datetime.now()
@@ -608,7 +611,7 @@ class ScrapersPipeline:
             except Exception as e:
                 if self.debug:
                     print(traceback.format_exc())
-                Helpers().insert_log(level="CRITICAL", type="CODE", error=str(e), message=traceback.format_exc())
+                Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
             finally:
                 try:
                     end_time = datetime.datetime.now()

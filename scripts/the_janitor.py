@@ -72,9 +72,11 @@ def delete_old_cookies():
             AND vc.timestamp < DATE_SUB(NOW(), INTERVAL 6 DAY)
         """
         cursor.execute(query)
+        deleted_count = cursor.rowcount
         connection.commit()
         cursor.close()
         connection.close()
+        print(f"{deleted_count} old cookies  removed")
     except Exception as e:
         print("Error deleting old cookies:", e)
         Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
@@ -90,9 +92,11 @@ def delete_old_logs():
             WHERE date < DATE_SUB(NOW(), INTERVAL 7 DAY)
         """
         cursor.execute(query)
+        deleted_count = cursor.rowcount
         connection.commit()
         cursor.close()
         connection.close()
+        print(f"{deleted_count} old logs deleted successfully")
     except Exception as e:
         print("Error deleting old logs:", e)
         Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
@@ -107,9 +111,11 @@ def delete_old_matches():
             WHERE `date` < (UTC_TIMESTAMP() - INTERVAL 2 HOUR)
         """
         cursor.execute(query)
+        deleted_count = cursor.rowcount
         connection.commit()
         cursor.close()
         connection.close()
+        print(f"{deleted_count} old matches deleted successfully")
     except Exception as e:
         print("Error deleting old matches:", e)
         Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
@@ -121,27 +127,76 @@ def delete_old_matches_with_no_id():
         cursor = connection.cursor()
         query = """
             DELETE FROM ATO_production.V2_Matches_Urls_No_Ids
-            WHERE `date` < (NOW() - INTERVAL 1 MONTH);
+            WHERE `date` < (NOW() - INTERVAL 1 MONTH)
         """
         cursor.execute(query)
+        deleted_count = cursor.rowcount
         connection.commit()
         cursor.close()
         connection.close()
+        print(f"{deleted_count} old matches with no ID deleted successfully")
     except Exception as e:
         print("Error deleting old matches with no ID:", e)
         Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
 
 
+def select_next_match_date():
+    try:
+        from script_utilities import Connect
+        connection = Connect().to_db(db="ATO_production", table=None)
+        cursor = connection.cursor()
+        query = """
+            SELECT
+                competition_id,
+                MIN(`date`) AS next_match_date
+            FROM
+                ATO_production.V2_Matches
+            WHERE
+                `date` > NOW()
+            GROUP BY
+                competition_id
+        """
+        cursor.execute(query)
+        results = cursor.fetchall()
+        next_match_update = []
+        for result in results:
+            try:
+                match_date = result[1]
+                if match_date.tzinfo is None:
+                    match_date = match_date.replace(tzinfo=datetime.timezone.utc)
+                now_utc = datetime.datetime.now(tz=datetime.timezone.utc)
+                if match_date < now_utc + datetime.timedelta(days=7):
+                    next_match_update.append((match_date, True, result[0]))
+                    # print(f"Active true {result[0]} {match_date}")
+                else:
+                    # print(f"Active false {result[0]} {match_date}")
+                    next_match_update.append((match_date, False, result[0]))
+            except Exception as e:
+                print(f"Error processing result {result}: {e}")
+                continue
+        query_update_next_matches = (
+            "UPDATE ATO_production.V2_Competitions "
+            "SET next_match_date = %s, active = %s "
+            "WHERE competition_id = %s"
+        )
+        cursor.executemany(query_update_next_matches, next_match_update)
+        connection.commit()
+        cursor.close()
+        connection.close()
+        print(f"Next match dates updated successfully for {len(next_match_update)} competitions")
+    except Exception as e:
+        print("Error selecting next match date:", e)
+        Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
+        return None
+
 if __name__ == "__main__":
     delete_old_matches()
-    delete_old_matches_with_no_id()
-    stop_hanging_spiders()
-    delete_old_cookies()
-    delete_old_logs()
+    # delete_old_matches_with_no_id()
+    # stop_hanging_spiders()
+    # delete_old_cookies()
+    # delete_old_logs()
 
-    process_views_all_the_time = False
-    if datetime.datetime.now().minute == 0 or process_views_all_the_time:
-        print("Creating views")
-        # CreateViews().create__view_Dash_Competitions_per_Bookie()
-        # CreateViews().create_view_Dash_MatchUrlCounts_per_Bookie()
+    process_all_the_time = False
+    if datetime.datetime.now().minute == 0 or process_all_the_time:
         CreateViews().create_view_Dash_Competitions_and_MatchUrlCounts_per_Bookie()
+        select_next_match_date()

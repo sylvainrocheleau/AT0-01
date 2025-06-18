@@ -7,6 +7,7 @@ import datetime
 import requests
 import scrapy
 import asyncio
+import re
 from numpy.random import randint
 from websockets_proxy import Proxy, proxy_connect
 from scrapy import Spider
@@ -28,14 +29,20 @@ class WebsocketsSpider(Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                # self.competitions = [x for x in bookie_config(bookie=["Betsson"]) if x["competition_id"] == "UEFAChampionsLeague"]
-                # self.match_filter = {"type": "bookie_and_comp", "params": ["Betsson", "UEFAChampionsLeague"]}
+                # self.competitions = [x for x in bookie_config(bookie=["Betsson"]) if x["competition_id"] == "SegundaDivisionEspanola"]
+                # self.match_filter = {"type": "bookie_and_comp", "params": ["Betsson", "SegundaDivisionEspanola"]}
 
                 self.competitions = bookie_config(bookie=["Betsson"])
                 self.match_filter = {"type": "bookie_id", "params": ["Betsson"]}
                 print(self.competitions)
         except:
-            self.competitions = bookie_config(bookie=["Betsson"])
+            # TODO: change the time to smaller time range
+            if 0 <= Helpers().get_time_now("UTC").hour <= 24:
+                print("PROCESSING ALL COMPETITIONS between and midnight and 4AM UTC")
+                self.competitions = bookie_config(bookie=["Betsson"])
+            else:
+                print("PROCESSING COMPETITIONS WITH HTTP ERRORS between 4AM and midnight UTC")
+                self.competitions = bookie_config(bookie=["Betsson", "http_errors"])
             self.match_filter = {"type": "bookie_id", "params": ["Betsson"]}
             self.debug = False
     name = "Betsson"
@@ -108,7 +115,9 @@ class WebsocketsSpider(Spider):
                 await self.ws.recv()
 
             for competition in self.competitions:
-                betsson_competition_id = int(competition["competition_url_id"].split("competition=")[1].split("&")[0])
+                # betsson_competition_id = int(competition["competition_url_id"].split("competition=")[1].split("&")[0])
+                betsson_competition_id = re.search(r'competition=(\d+)', competition["competition_url_id"])
+                betsson_competition_id = int(betsson_competition_id.group(1)) if betsson_competition_id else None
                 if competition["sport_id"] == "1":
                     betsson_sport_id = 1
                 elif competition["sport_id"] == "2":
@@ -131,7 +140,6 @@ class WebsocketsSpider(Spider):
                 )
                 )
                 matches_details = await self.ws.recv()
-
                 matches_details = matches_details.replace("null", '0').replace("true", '0').replace("false", '0')
                 matches_details = eval(matches_details)
                 matches_details.update({"betsson_competition_id": betsson_competition_id, "betsson_sport_id": betsson_sport_id})
@@ -170,6 +178,7 @@ class WebsocketsSpider(Spider):
                             }
                             # print("data_dict", item["data_dict"])
                             item["pipeline_type"] = ["match_urls"]
+                            print("YIELDING item with match_infos", item["data_dict"]["match_infos"])
                             yield item
                         else:
                             error = f"{competition['bookie_id']} {competition['competition_id']} comp not in map_matches "
@@ -199,11 +208,6 @@ class WebsocketsSpider(Spider):
             await self.ws.close()
 
     async def parse_match(self, response):
-        # try:
-        #     if os.environ["USER"] in LOCAL_USERS:
-        #         self.debug = True
-        # except:
-        #     pass
         context_info = random.choice(self.context_infos)
         proxy = Proxy.from_url(proxy_prefix_http + context_info.get("proxy_ip") + proxy_suffix)
         matches_details_and_urls = Helpers().matches_details_and_urls(

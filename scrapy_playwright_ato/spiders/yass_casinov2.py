@@ -19,10 +19,10 @@ class OneStepJsonSpider(scrapy.Spider):
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
                 print("PROCESSING IN DEBUG MODE")
-                self.competitions = [x for x in bookie_config(bookie=["YaassCasino"]) if x["competition_id"] == "NBA"]
+                self.competitions = [x for x in bookie_config(bookie=["YaassCasino"]) if x["competition_id"] == "LigaACB"]
                 # self.competitions = bookie_config(bookie=["YaassCasino"])
 
-                self.match_filter = {"type": "bookie_and_comp", "params": ["YaassCasino", "NBA"]}
+                self.match_filter = {"type": "bookie_and_comp", "params": ["YaassCasino", "LigaACB"]}
                 # self.match_filter = {"type": "bookie_id", "params": ["YaassCasino"]}
                 # self.match_filter = {"type": "match_url", "params": [
                 #     "https://www.winamax.es/apuestas-deportivas/match/56690703"]}
@@ -70,6 +70,8 @@ class OneStepJsonSpider(scrapy.Spider):
     }
 
     def start_requests(self):
+        if self.debug:
+            print("competiton", self.competitions)
         for data in self.competitions:
             competition_id = data["competition_url_id"].split("/")[-1]
             json_data = {
@@ -242,13 +244,13 @@ class OneStepJsonSpider(scrapy.Spider):
                     item["pipeline_type"] = ["match_urls"]
                     yield item
                 else:
-                    error = (f"{response.meta.get('bookie_id')} {response.meta.get('competition_id')} comp not in map_matches ")
+                    error = f"{response.meta.get('bookie_id')} {response.meta.get('competition_id')} comp not in map_matches "
                     if self.debug:
                         print(error)
                     Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
             else:
                 item["data_dict"] = {
-                    "map_matches": self.map_matches[response.meta.get("competition_id")],
+                    "map_matches": [],
                     "match_infos": match_infos,
                     "comp_infos": [
                         {
@@ -260,7 +262,7 @@ class OneStepJsonSpider(scrapy.Spider):
                 }
                 item["pipeline_type"] = ["match_urls"]
                 yield item
-                error = (f"{response.meta.get('bookie_id')} {response.meta.get('competition_id')} comp has no new match ")
+                error = f"{response.meta.get('bookie_id')} {response.meta.get('competition_id')} comp has no new match "
                 Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
 
         except Exception as e:
@@ -309,7 +311,7 @@ class OneStepJsonSpider(scrapy.Spider):
                             match_url_id = next((team['url'] for team in match_infos
                                             if team['home_team'] == home_team and team['away_team'] == away_team), None)
 
-                            if away_team_normalised is not None or home_team_normalised is not None:
+                            if away_team_normalised is not None and home_team_normalised is not None:
                                 odds = Helpers().build_ids(
                                     id_type="bet_id",
                                     data={
@@ -336,7 +338,8 @@ class OneStepJsonSpider(scrapy.Spider):
                                     print("No match found for teams", home_team, away_team)
 
                             item["pipeline_type"] = ["match_odds"]
-                            yield item
+                            if "data_dict" in item:
+                                yield item
 
     def raw_html(self, response):
         try:

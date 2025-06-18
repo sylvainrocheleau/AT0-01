@@ -27,11 +27,10 @@ class MetaSpider(scrapy.Spider):
             match_filter_enabled = True
             match_filter = {}
             # FILTER OPTIONS
-            # match_filter = {"type": "bookie_id", "params":["1XBet"]}
-            match_filter = {"type": "bookie_and_comp", "params": ["AupaBet", "ATP"]}
+            # match_filter = {"type": "bookie_id", "params":["ZeBet"]}
+            # match_filter = {"type": "bookie_and_comp", "params": ["AupaBet", "ATP"]}
             # match_filter = {"type": "comp", "params":["LaLigaEspanola"]}
-            # match_filter = {"type": "match_url", "params":
-            #     "https://www.admiralbet.es/es/apuestas/deportes/tenis/atp/stuttgart-ger-grass/michelsen-alex-vs-engel-justin?t=17497188"}
+            match_filter = {"type": "match_url_id", "params":["https://www.zebet.es/es/event/74j73-real_oviedo_mirandes"]}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -70,26 +69,33 @@ class MetaSpider(scrapy.Spider):
                     yield scrapy.Request(
                         dont_filter=dont_filter,
                         url=url,
-                        callback=self.raw_html if self.debug else self.parse_match,
+                        callback=self.parse_match if self.debug else self.parse_match,
                         errback=self.errback,
                         meta=meta_request,
                     )
                 except PlaywrightTimeoutError:
                     print("TimeoutError from playwright on", data["bookie_id"], "from start request")
-                    Helpers().insert_log(level="CRITICIAL", type="CODE", error=e, message=traceback.format_exc())
+                    Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
                     continue
                 except Exception as e:
                     print("General exception on", data["bookie_id"], "from start request")
                     print(traceback.format_exc())
-                    Helpers().insert_log(level="CRITICIAL", type="CODE", error=e, message=traceback.format_exc())
+                    Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
 
 
     async def parse_match(self, response):
         item = ScrapersItem()
         if response.meta.get("scraping_tool") == "playwright":
-            page = response.meta["playwright_page"]
-            await page.close()
-            await page.context.close()
+            print('found playwright')
+            try:
+                page = response.meta["playwright_page"]
+                await page.close()
+                await page.context.close()
+            except Exception as e:
+                print("Error closing playwright page/context:", e)
+                Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
+                pass
+
         odds = parse_match_logic(
             bookie_id=response.meta.get("bookie_id"),
             response=response,
@@ -129,6 +135,7 @@ class MetaSpider(scrapy.Spider):
 
 
     def raw_html(self, response):
+        print("RAW HTML RESPONSE")
         parent = os.path.dirname(os.getcwd())
         try:
             with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/" + self.name + "_response" + ".txt", "w") as f:
@@ -158,7 +165,7 @@ class MetaSpider(scrapy.Spider):
             Helpers().insert_log(level="INFO", type="NETWORK", error=error, message=None)
         except Exception as e:
             error = "no bookie or comp info"
-            Helpers().insert_log(level="CRITICIAL", type="CODE", error=error, message=traceback.format_exc())
+            Helpers().insert_log(level="CRITICAL", type="CODE", error=error, message=traceback.format_exc())
 
         if failure.check(HttpError):
             response = failure.value.response
@@ -183,7 +190,7 @@ class MetaSpider(scrapy.Spider):
                 status = 1200
                 print("Unknown error on", request.url)
             except Exception as e:
-                Helpers().insert_log(level="CRITICIAL", type="CODE", error=error, message=traceback.format_exc())
+                Helpers().insert_log(level="CRITICAL", type="CODE", error=error, message=traceback.format_exc())
         try:
             item["data_dict"] = {
                 "match_infos": [
@@ -199,16 +206,16 @@ class MetaSpider(scrapy.Spider):
                 print("Item error yielded", item)
             yield item
         except Exception as e:
-            Helpers().insert_log(level="CRITICIAL", type="CODE", error=error, message=traceback.format_exc())
+            Helpers().insert_log(level="CRITICAL", type="CODE", error=error, message=traceback.format_exc())
 
         try:
-            if self.close_playwright is True and "playwright_page" in failure.request.meta:
+            if self.close_playwright is True : # and "playwright_page" in failure.request.meta
                 page = failure.request.meta["playwright_page"]
                 print("Closing page on error")
                 await page.close()
                 print("Closing context on error")
                 await page.context.close()
         except Exception as e:
-            Helpers().insert_log(level="CRITICIAL", type="CODE", error=error, message=traceback.format_exc())
+            Helpers().insert_log(level="CRITICAL", type="CODE", error=error, message=traceback.format_exc())
             pass
 

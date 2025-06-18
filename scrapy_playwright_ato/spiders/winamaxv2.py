@@ -371,8 +371,7 @@ class TwoStepsSpider(scrapy.Spider):
                         item["pipeline_type"] = ["match_urls"]
                         yield item
                     else:
-                        error = (
-                            f"{bookie_id} {competition_id} comp not in map_matches ")
+                        error = f"{bookie_id} {competition_id} comp not in map_matches "
                         if self.debug:
                             print(error)
                         Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
@@ -390,8 +389,7 @@ class TwoStepsSpider(scrapy.Spider):
                     }
                     item["pipeline_type"] = self.pipeline_type
                     yield item
-                    error = (
-                        f"{bookie_id} {competition_id} comp has no new match ")
+                    error = f"{bookie_id} {competition_id} comp has no new match "
                     Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
 
             except Exception as e:

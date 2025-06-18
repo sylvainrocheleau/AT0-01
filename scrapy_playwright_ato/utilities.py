@@ -85,8 +85,9 @@ class Helpers():
             connection.commit()
         except Exception:
             print(traceback.format_exc())
-        cursor.close()
-        connection.close()
+        finally:
+            cursor.close()
+            connection.close()
 
     def build_ids(self, id_type, data):
         from replace_accents import replace_accents_characters
@@ -231,11 +232,7 @@ class Helpers():
                 "competition_id": x[2],
                 "bookie_team_name": x[5]
             }).replace(x[0].split("_")[0], ""): x[7] for x in results } # if x[5] is not None and x[7] is not None
-        # if debug:
-        #     print(
-        #         "partial_team_ids_and_normalized", partial_team_ids_and_normalized,
-        #         "partial_team_ids_and_short_normalized", partial_team_ids_and_short_normalized,
-        #     )
+
         query_ignored_teams = """
             SELECT bookie_team_name
             FROM ATO_production.V2_Teams
@@ -355,15 +352,21 @@ class Helpers():
                 home_ratios = {}
                 for key, value in partial_team_ids_and_normalized.items():
                     home_ratios.update({key: round(SequenceMatcher(None, value, match_info["home_team"]).ratio(), 2)})
+                    if "," in match_info["home_team"]:
+                        home_team_reversed = f"{match_info['home_team'].split(', ')[1]} {match_info['home_team'].split(', ')[0]}"
+                        home_ratios.update({key: round(SequenceMatcher(None, value, home_team_reversed).ratio(), 2)})
                 if len(home_ratios) > 0:
                     home_ratios = {max(home_ratios, key=home_ratios.get): max(home_ratios.values())}
                     for key, home_ratio in home_ratios.items():
-                        if home_ratio > 0.75:
+                        if home_ratio > 0.70:
                             sequence_message = f"normalize_team_names(sequence>{home_ratio})"
                             match_info["home_team_normalized"] = partial_team_ids_and_normalized[key]
-                            match_info["home_team_status"] = "to_be_reviewed"
+                            if home_ratio > 0.9:
+                                match_info["home_team_status"] = "confirmed"
+                            else:
+                                match_info["home_team_status"] = "to_be_reviewed"
                             if debug:
-                                print(sequence_message, "original",match_info["home_team"], "normalized key", partial_team_ids_and_normalized[key],
+                                print(sequence_message, match_info["home_team_status"], "original",match_info["home_team"], "normalized key", partial_team_ids_and_normalized[key],
                                   "tested key", key, "saving with key:", team_id_to_test)
                             cursor.execute(
                                 update_query,
@@ -375,14 +378,14 @@ class Helpers():
                                     match_info["home_team"],
                                     partial_team_ids_and_normalized[key],
                                     partial_team_ids_and_short_normalized[key],
-                                    "to_be_reviewed",
+                                    match_info["home_team_status"],
                                     sequence_message,
                                     partial_team_ids_and_numerical[key],
                                     Helpers().get_time_now("UTC"),
                                     # on duplicate key update normalized_team_name,normalized_short_name,status,source,numerical_team_id,update_date
                                     partial_team_ids_and_normalized[key],
                                     partial_team_ids_and_short_normalized[key],
-                                    "to_be_reviewed",
+                                    match_info["home_team_status"],
                                     sequence_message,
                                     partial_team_ids_and_numerical[key],
                                     Helpers().get_time_now("UTC"),
@@ -498,17 +501,23 @@ class Helpers():
                 away_ratios = {}
                 for key, value in partial_team_ids_and_normalized.items():
                     away_ratios.update({key: round(SequenceMatcher(None, value, match_info["away_team"]).ratio(), 2)})
+                    if "," in match_info["away_team"]:
+                        away_team_reversed = f"{match_info['away_team'].split(', ')[1]} {match_info['away_team'].split(', ')[0]}"
+                        away_ratios.update({key: round(SequenceMatcher(None, value, away_team_reversed).ratio(), 2)})
                 if len(away_ratios) > 0:
                     away_ratios = {max(away_ratios, key=away_ratios.get): max(away_ratios.values())}
                     for key, away_ratio in away_ratios.items():
-                        if away_ratio > 0.75:
+                        if away_ratio > 0.70:
                             sequence_message = f"normalize_team_names(sequence>{away_ratio})"
                             match_info["away_team_normalized"] = partial_team_ids_and_normalized[key]
-                            match_info["away_team_status"] = "to_be_reviewed"
+                            if away_ratio > 0.9:
+                                match_info["away_team_status"] = "confirmed"
+                            else:
+                                match_info["away_team_status"] = "to_be_reviewed"
                             if debug:
                                 print(
-                                    sequence_message, "original:",match_info["away_team"],
-                                    "tested key", key, "normalized:", partial_team_ids_and_normalized[key],"saving with key:", team_id_to_test
+                                    sequence_message, match_info["away_team_status"], "original:",match_info["away_team"],
+                                    "tested key:", key, "normalized:", partial_team_ids_and_normalized[key],"saving with key:", team_id_to_test
                                 )
                             cursor.execute(
                                 update_query,
@@ -520,14 +529,14 @@ class Helpers():
                                     match_info["away_team"],
                                     partial_team_ids_and_normalized[key],
                                     partial_team_ids_and_short_normalized[key],
-                                    "to_be_reviewed",
+                                    match_info["away_team_status"],
                                     sequence_message,
                                     partial_team_ids_and_numerical[key],
                                     Helpers().get_time_now("UTC"),
                                     # on duplicate key update normalized_team_name,normalized_short_name,status,source,numerical_team_id,update_date
                                     partial_team_ids_and_normalized[key],
                                     partial_team_ids_and_short_normalized[key],
-                                    "to_be_reviewed",
+                                    match_info["away_team_status"],
                                     sequence_message,
                                     partial_team_ids_and_numerical[key],
                                     Helpers().get_time_now("UTC"),
@@ -790,7 +799,10 @@ class Helpers():
     def load_competitions(self):
         connection = Connect().to_db(db="ATO_production", table="V2_Competitions")
         cursor = connection.cursor()
-        query_competitions = ("SELECT * FROM V2_Competitions")
+        query_competitions = """
+            SELECT competition_id,competition_name_es,sport_id,start_date,end_date
+            FROM V2_Competitions
+            """
         cursor.execute(query_competitions)
         competitions = cursor.fetchall()
         connection.close()
@@ -839,12 +851,16 @@ class Helpers():
         cursor = connection.cursor()
         if filter is False:
             query_matches = """
-                SELECT * FROM ATO_production.V2_Scraping_Schedules vss
+                SELECT match_url_id,match_id,`date`,updated_date,to_scrape,to_delete,competition_id,sport_id,bookie_id,
+                scraping_tool,render_js,use_cookies,home_team,away_team,web_url
+                FROM ATO_production.V2_Scraping_Schedules vss
                 WHERE vss.to_scrape = 1
             """
         elif filter is True:
             query_matches = """
-                SELECT * FROM ATO_production.V2_Scraping_Schedules vss
+                SELECT match_url_id,match_id,`date`,updated_date,to_scrape,to_delete,competition_id,sport_id,bookie_id,
+                scraping_tool,render_js,use_cookies,home_team,away_team,web_url
+                FROM ATO_production.V2_Scraping_Schedules vss
                 # WHERE vss.scraping_tool = 'playwright'
             """
         cursor.execute(query_matches)
@@ -879,13 +895,16 @@ class Helpers():
         # FILTER BY MATCH URLS OR BOOKIES AND COMPETITION
         try:
             if filter is True:
-                if filter_data["type"] == "match_url":
+
+                if filter_data["type"] == "match_url_id":
                     for key, value in dict_of_matches_details_and_urls.items():
                         for match in value:
                             if match["match_url_id"] == filter_data["params"][0]:
                                 if key not in filtered_dict_of_matches_details_and_urls.keys():
                                     filtered_dict_of_matches_details_and_urls[key] = []
                                 filtered_dict_of_matches_details_and_urls[key].append(match)
+                            # else:
+                            #     print("not match", match["match_url_id"])
                 elif filter_data["type"] == "bookie_and_comp":
                     for key, value in dict_of_matches_details_and_urls.items():
                         for match in value:
@@ -1118,17 +1137,17 @@ class Helpers():
                            'Referer': 'https://google.com', 'Pragma': 'no-cache'},
                     },
                 )
-            elif data["bookie_id"] == "ZeBet":
-                meta_request.update(
-                    {
-                    "header": {
-                        'Accept': '*/*', 'Connection': 'keep-alive', 'User-Agent': '',
-                        'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'es-ES;q=0.5,en;q=0.3',
-                        'Cache-Control': 'max-age=0', 'DNT': '1', 'Upgrade-Insecure-Requests': '1',
-                        'Referer': 'https://google.com', 'Pragma': 'no-cache'
-                    }
-                }
-                )
+            # elif data["bookie_id"] == "ZeBet":
+            #     meta_request.update(
+            #         {
+            #         "header": {
+            #             'Accept': '*/*', 'Connection': 'keep-alive', 'User-Agent': '',
+            #             'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'es-ES;q=0.5,en;q=0.3',
+            #             'Cache-Control': 'max-age=0', 'DNT': '1', 'Upgrade-Insecure-Requests': '1',
+            #             'Referer': 'https://google.com', 'Pragma': 'no-cache'
+            #         }
+            #     }
+            #     )
 
         elif meta_type == "match":
             url = data["match_url_id"]

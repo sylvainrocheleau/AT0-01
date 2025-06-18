@@ -7,17 +7,23 @@ import json
 from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError, TimeoutError
 from ..items import ScrapersItem
-from ..settings import proxy_prefix, proxy_suffix
+from ..settings import proxy_prefix, proxy_suffix, LOCAL_USERS
 from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables
 
 
 class TwoStepsJsonSpider(scrapy.Spider):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            if os.environ["USER"] in LOCAL_USERS:
+                self.debug = True
+        except:
+            self.debug = False
     name = "YoSports"
     match_url = str
     comp_url = str
     proxy_ip = str
     user_agent_hash = int
-    # custom_settings = get_custom_playwright_settings(browser="Chrome", rotate_headers=False)
 
     def start_requests(self):
         context_infos = get_context_infos(bookie_name=self.name)
@@ -59,7 +65,6 @@ class TwoStepsJsonSpider(scrapy.Spider):
                     continue
                 except Exception as e:
                     continue
-
         for match_info in match_infos:
             context_info = random.choice(self.context_infos)
             self.match_url = match_info["url"]
@@ -98,6 +103,10 @@ class TwoStepsJsonSpider(scrapy.Spider):
                     if key == "betOffers":
                         for field in values:
                             if field["criterion"]["label"] in response.meta.get("list_of_markets"):
+                                if field["criterion"]["label"] == "Resultado Final":
+                                    market = "Match Result"
+                                else:
+                                    market = field["criterion"]["label"]
                                 for bet in field["outcomes"]:
                                     try:
                                         result = bet["label"] + " " + str(bet["line"] / 1000)
@@ -109,7 +118,7 @@ class TwoStepsJsonSpider(scrapy.Spider):
                                         odd = float(bet["odds"] / 1000)
                                         odd = round(odd, 2)
                                         odds.append(
-                                            {"Market": field["criterion"]["label"],
+                                            {"Market": market,
                                              "Result": result,
                                              "Odds": odd
                                              }
@@ -194,12 +203,9 @@ class TwoStepsJsonSpider(scrapy.Spider):
         yield item
 
     def closed(self, reason):
-        # try:
-        #     if os.environ.get("USER") == "sylvain":
-        #         pass
-        # except Exception as e:
-        #     requests.post(
-        #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
-        requests.post(
-            "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
+        if self.debug is True:
+            pass
+        else:
+            requests.post(
+                "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
 

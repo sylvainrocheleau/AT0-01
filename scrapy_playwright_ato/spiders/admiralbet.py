@@ -173,7 +173,7 @@ class TwoStepsSpider(scrapy.Spider):
                     )
                     )
 
-                # if match_info["url"] == "https://www.admiralbet.es/es/apuestas/deportes/futbol/espana/laliga/girona-vs-rcd-mallorca?t=17464716&tab=filter_1":
+                # if match_info["url"] == "https://deportes.marcaapuestas.es/es/e/26454436/Flamengo-RJ-vs-Internacional-RS":
                 yield scrapy.Request(
                     url=match_info["url"],
                     callback=self.parse_match,

@@ -146,7 +146,7 @@ list_of_markets_V2 = {
     "3": ["Cuotas del partido", "Total de juegos"],
 },
 "YoSports": {
-    "1": ["Tiempo reglamentario", "Total de goles", "Resultado Correcto", ],
+    "1": ["Resultado Final", "Total de goles", "Resultado Correcto", ],
     "2": ["Prórroga incluida", "Total de puntos - Prórroga incluida", ],
     "3": ["Cuotas del partido", "Total de juegos"],
 },
@@ -329,12 +329,24 @@ def bookie_config(bookie):
                 FROM ATO_production.V2_Competitions vc
                 INNER JOIN ATO_production.V2_Competitions_Urls vcu ON vc.competition_id = vcu.competition_id
                 INNER JOIN ATO_production.V2_Bookies vb ON vcu.bookie_id = vb.bookie_id
-                WHERE vc.start_date < %s AND vc.end_date > %s
+                # WHERE vc.start_date < %s AND vc.end_date > %s
+                WHERE vc.active = 1
                 AND vcu.bookie_id NOT IN ('BetfairExchange', 'AllSportAPI')
                 AND vb.v2_ready = 1
                 ORDER BY vc.competition_id
             """
             cursor.execute(query, (now, now, ))
+        elif bookie[0] == "AllSportAPI":
+            query = """
+                SELECT vcu.competition_url_id, vc.competition_id, vc.sport_id,
+                vb.scraping_tool, vb.render_js, vb.use_cookies, vb.bookie_id
+                FROM V2_Competitions vc
+                INNER JOIN V2_Competitions_Urls vcu ON vc.competition_id = vcu.competition_id
+                INNER JOIN V2_Bookies vb ON vcu.bookie_id = vb.bookie_id
+                WHERE vcu.bookie_id = %s
+                ORDER BY vc.competition_id
+            """
+            cursor.execute(query, (bookie[0], )) # ,
         else:
             query = """
                 SELECT vcu.competition_url_id, vc.competition_id, vc.sport_id,
@@ -342,7 +354,8 @@ def bookie_config(bookie):
                 FROM V2_Competitions vc
                 INNER JOIN V2_Competitions_Urls vcu ON vc.competition_id = vcu.competition_id
                 INNER JOIN V2_Bookies vb ON vcu.bookie_id = vb.bookie_id
-                WHERE start_date < %s AND end_date > %s AND vcu.bookie_id = %s
+                # WHERE start_date < %s AND end_date > %s
+                WHERE vc.active = 1 AND vcu.bookie_id = %s
                 ORDER BY vc.competition_id
                 """
             cursor.execute(query, (now, now, bookie[0], )) # ,
@@ -392,7 +405,7 @@ def bookie_config(bookie):
             if os.environ["USER"] in LOCAL_USERS:
                 # data = data.iloc[0:1]
                 data = data
-                data = data.loc[data["competition"] == "NBA"] # CONMEBOL - Copa Libertadores
+                data = data.loc[data["competition"] == "LigaACB"] # CONMEBOL - Copa Libertadores
                 # FOOTBALL: UEFA Champions League, Serie A Italiana, Premier League Inglesa, La Liga Española, Bundesliga Alemana, Eurocopa 2024,
                 #           Argentina - Primera división, España - Segunda división
                 # Basketball: NBA, Liga ACB
@@ -761,7 +774,7 @@ def bookie_config(bookie):
                 list_of_competitions.append(value)
             # YoSport
             elif "YoSports" == bookie and value["bookie"] == bookie and value["sport"] == "Football":
-                list_of_markets = ["Tiempo reglamentario", "Total de goles", "Resultado Correcto", ]
+                list_of_markets = ["Resultado Final", "Total de goles", "Resultado Correcto", ]
                 value.update({"list_of_markets": list_of_markets})
                 list_of_competitions.append(value)
             elif "YoSports" == bookie and value["bookie"] == bookie and value["sport"] == "Basketball":
@@ -1241,6 +1254,6 @@ if __name__ == "__main__":
     try:
         if os.environ["USER"] in LOCAL_USERS:
             SYSTEM_VERSION = "V1"
-            print(bookie_config("Bwin"))
+            print(bookie_config("DaznBet"))
     except:
         pass

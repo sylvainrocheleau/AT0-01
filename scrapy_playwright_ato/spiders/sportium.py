@@ -10,7 +10,6 @@ import asyncio
 import scrapy
 import websockets
 from websockets_proxy import Proxy, proxy_connect
-# from websockets.exceptions import ConnectionClosedError
 from scrapy import Spider
 from ..items import ScrapersItem
 from ..parsing_logic import parse_competition, parse_match
@@ -24,14 +23,16 @@ class WebsocketsSpider(Spider):
         super().__init__(*args, **kwargs)
         try:
             if os.environ["USER"] in LOCAL_USERS:
-                self.debug = True
-                # self.competitions = [x for x in bookie_config(bookie=["Sportium"]) if x["competition_id"] == "Argentina-PrimeraDivision"]
-                # self.match_filter = {"type": "bookie_and_comp", "params": ["Sportium", "Argentina-PrimeraDivision"]}
+                self.debug = False
+                # self.competitions = [x for x in bookie_config(bookie=["Sportium"]) if x["competition_id"] == "FIFAClubWorldCup"]
+                # self.match_filter = {"type": "bookie_and_comp", "params": ["Sportium", "FIFAClubWorldCup"]}
+
 
                 self.competitions = bookie_config(bookie=["Sportium"])
                 self.match_filter = {"type": "bookie_id", "params": ["Sportium"]}
         except:
-            if 0 <= Helpers().get_time_now("UTC").hour < 4:
+            # TODO: change the time to smaller time range
+            if 0 <= Helpers().get_time_now("UTC").hour <= 24:
                 print("PROCESSING ALL COMPETITIONS between and midnight and 4AM UTC")
                 self.competitions = bookie_config(bookie=["Sportium"])
             else:
@@ -68,6 +69,8 @@ class WebsocketsSpider(Spider):
                 print(f"Error in keep_alive: {e}")
                 break
     async def parse(self, response):
+        if self.debug:
+            print("competitons", self.competitions)
         item = ScrapersItem()
         context_info = random.choice(self.context_infos)
         proxy = Proxy.from_url(proxy_prefix_http+context_info.get("proxy_ip")+proxy_suffix)
@@ -171,6 +174,7 @@ destination:/api/events/{match_id}
                                 ]
                             }
                             item["pipeline_type"] = ["match_urls"]
+                            print("YIELDING item with match_infos", item["data_dict"]["match_infos"])
                             yield item
                         else:
                             error = f"{competition['bookie_id']} {competition['competition_id']} comp not in map_matches "
@@ -197,7 +201,7 @@ destination:/api/events/{match_id}
                     print(traceback.format_exc())
                     Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
 
-            print("closing connection")
+            print("closing connection after parse comp")
             keep_alive_task.cancel()
             await self.ws.close()
             await asyncio.sleep(5)
@@ -255,7 +259,6 @@ destination:/user/request-response
                             suffix = "-TOPFT"
                         elif data["sport_id"] == "2":
                             suffix = "-TOPBK"
-                        print("data['match_url_id']", data['match_url_id'])
                         await self.ws.send(f"""SUBSCRIBE
 id:/api/marketgroup/{data['match_url_id'].split('/')[-1]}{suffix}
 locale:es
@@ -328,7 +331,6 @@ destination:/api/markets/multi
                                         yield item
                                     if self.v2:
                                         item = ScrapersItem()
-                                        # print("YIELDING v2")
                                         odds = Helpers().build_ids(
                                             id_type="bet_id",
                                             data={
@@ -369,7 +371,7 @@ destination:/api/markets/multi
         except Exception as e:
             print(f"Unexpected error: {e}")
         finally:
-            print("closing connection")
+            print("closing connection after parse match")
             keep_alive_task.cancel()
             await self.ws.close()
 

@@ -86,7 +86,9 @@ def check_list_of_markets():
 def get_matches_details_and_urls():
     from utilities import Helpers
     match_filter_enabled = True
-    match_filter = {"type": "bookie_and_comp", "params": ["Bwin", "CONMEBOL-CopaLibertadores"]}
+    # match_filter = {"type": "bookie_and_comp", "params": ["Bwin", "LigaACB"]}
+    match_filter = {"type": "match_url_id", "params":
+        ["https://www.zebet.es/es/event/40h73-paris_sg_botafogo_rj"]}
 
     matches_details_and_urls = Helpers().matches_details_and_urls(
             filter=match_filter_enabled,
@@ -98,6 +100,6 @@ def get_matches_details_and_urls():
 if __name__ == "__main__":
     # check_list_of_markets()
     # get_comps_for_bookie()
-    teams_and_dates_from_response()
+    # teams_and_dates_from_response()
     # get_odds_from_response()
-    # get_matches_details_and_urls()
+    get_matches_details_and_urls()

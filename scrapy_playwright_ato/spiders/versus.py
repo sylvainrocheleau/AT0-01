@@ -24,14 +24,15 @@ class WebsocketsSpider(Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                # self.competitions = [x for x in bookie_config(bookie=["Versus"]) if x["competition_id"] == "NBA"]
-                # self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", "UEFANationsLeague"]}
+                # self.competitions = [x for x in bookie_config(bookie=["Versus"]) if x["competition_id"] == "FIFAClubWorldCup"]
+                # self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", "FIFAClubWorldCup"]}
 
                 self.competitions = bookie_config(bookie=["Versus"])
                 self.match_filter = {"type": "bookie_id", "params": ["Versus"]}
         except:
-            if 0 <= Helpers().get_time_now("UTC").hour < 4:
-                print("PROCESSING ALL COMPETITIONS between and midnight and 4AM UTC")
+            # TODO: change the time to smaller time range
+            if 0 <= Helpers().get_time_now("UTC").hour <= 24:
+                print("PROCESSING ALL COMPETITIONS between and midnight and 0AM UTC (test 17 juin 10:49")
                 self.competitions = bookie_config(bookie=["Versus"])
             else:
                 print("PROCESSING COMPETITIONS WITH HTTP ERRORS between 4AM and midnight UTC")
@@ -53,35 +54,6 @@ class WebsocketsSpider(Spider):
     all_competitions = {x[1]: {"competition_name_es": x[2], "competition_url_id": x[0] } for x in all_competitions if x[4] == "Versus"}
     match_filter_enabled = True
     v2 = True
-
-    # async def connect_to_api(self):
-    #     context_info = random.choice(self.context_infos)
-    #     proxy = Proxy.from_url(proxy_prefix_http + context_info.get("proxy_ip") + proxy_suffix)
-    #     async with proxy_connect(
-    #         'wss://sportswidget.versus.es/api/websocket',
-    #         proxy=proxy,
-    #         user_agent_header=context_info.get("user_agent")
-    #     ) as self.ws:
-    #         connect_message = """CONNECT
-    #     protocol-version:1.5
-    #     accept-version:1.2,1.1,1.0
-    #     heart-beat:10000,10000
-    #
-    #     \x00"""
-    #         await self.ws.send(connect_message)
-    #         response = await self.ws.recv()
-    #         if self.debug:
-    #             print(f"Connected to API: {response}")
-    #
-    #         await self.ws.send("""SUBSCRIBE
-    #     id:/user/request-response
-    #     destination:/user/request-response
-    #
-    #     \x00""")
-    #         response = await self.ws.recv()
-    #         if self.debug:
-    #             print(f"Subscribed to API: {response}")
-    #     return self.ws
 
     async def keep_alive(self, interval=5):
         while True:
@@ -143,6 +115,7 @@ destination:/api/eventgroups/{competition_id}-all-match-events
                     # print("match_ids", match_ids)
                 except KeyError:
                     print(f"error in match_ids for {competition['competition_id']}")
+                    match_ids = []
                     continue
                 matches_details = []
                 for match_id in match_ids:
@@ -161,6 +134,10 @@ destination:/api/events/{match_id}
                         print(f"error in match_details for {competition['competition_id']}")
                         matches_details = []
                         continue
+
+                if len(matches_details) == 0:
+                    print(f"No matches found for {competition['competition_id']}")
+                    continue
 
                 match_infos = parse_competition(
                     response=matches_details,
@@ -193,6 +170,7 @@ destination:/api/events/{match_id}
                                 ]
                             }
                             item["pipeline_type"] = ["match_urls"]
+                            print("YIELDING item with match_infos 1", item["data_dict"]["match_infos"])
                             yield item
                         else:
                             error = f"{competition['bookie_id']} {competition['competition_id']} comp not in map_matches "
@@ -212,6 +190,7 @@ destination:/api/events/{match_id}
                             ]
                         }
                         item["pipeline_type"] = ["match_urls"]
+                        print("YIELDING item with match_infos 2", item["data_dict"]["match_infos"])
                         yield item
                         error = f"{competition['bookie_id']} {competition['competition_id']} comp has no new match "
                         Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
@@ -219,15 +198,12 @@ destination:/api/events/{match_id}
                     print(traceback.format_exc())
                     Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
 
-            print("closing connection")
-            keep_alive_task.cancel()
-            await self.ws.close()
-            await asyncio.sleep(5)
-            # async for item in self.parse_match():
-            #     yield item
+        print("closing connection for comp")
+        keep_alive_task.cancel()
+        await self.ws.close()
+        await asyncio.sleep(5)
 
     async def parse_match(self, response):
-        # item = ScrapersItem()
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
@@ -336,7 +312,6 @@ destination:/api/markets/multi
                                 yield item
                             if self.v2:
                                 item = ScrapersItem()
-                                # print("YIELDING v2")
                                 odds = Helpers().build_ids(
                                     id_type="bet_id",
                                     data={
@@ -370,6 +345,11 @@ destination:/api/markets/multi
                         if self.debug:
                             print(error)
                         Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
+
+        print("closing connection for matches")
+        keep_alive_task.cancel()
+        await self.ws.close()
+        await asyncio.sleep(5)
 
     def closed(self, reason):
         if self.debug:

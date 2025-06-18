@@ -6,7 +6,12 @@ import datetime
 from parsel import Selector
 from scrapy_playwright_ato.utilities import Helpers
 
-def build_match_infos(url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id):
+# modification SR
+
+def build_match_infos(
+    url: str, web_url: str, home_team: str, away_team: str, date: datetime,
+    competition_id: str, bookie_id: str, sport_id: str
+):
     match_info = {
         "url": url,
         "web_url": Helpers().build_web_url(web_url),
@@ -555,9 +560,12 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                                 match["SportId"]) + "/category/" + str(match["CategoryId"]) + "/championship/" + str(
                                 match["ChampId"])
                             web_url = comp_url + "/event/" + str(match["Id"])
-                            home_team = match["Competitors"][0]["Name"].strip
-                            away_team = match["Competitors"][1]["Name"].strip
+                            home_team = match["Competitors"][0]["Name"]
+                            away_team = match["Competitors"][1]["Name"]
                             date = dateparser.parse(''.join(match["EventDate"]))
+                            if debug:
+                                print("home team:", home_team, type(home_team))
+                                print("away team:", away_team, type(away_team))
                             if url not in map_matches_urls:
                                 match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id,
                                                            bookie_id, sport_id)
@@ -1062,7 +1070,10 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
 
         return match_infos
     except Exception as e:
-        print("General exception on", bookie_id, "from parse_match_logic")
+        print("GENERAL EXCEPTION ON", bookie_id, "from parse_match_logic")
+        if debug:
+            print(traceback.format_exc())
+
         Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
         return []
 
@@ -2566,7 +2577,10 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
             response_xpath = response.xpath(
                 "//div[contains(@class, 'expander expander-collapsed fetch-on-expand no-child-update efav-section')]").extract()
             for selection_keys in response_xpath:
-                if "Resultado Exacto" in selection_keys:
+                if (
+                    "Resultado Exacto" in selection_keys
+                    and "Mitad " not in selection_keys
+                ):
                     url_suffix = selection_keys.split("data-fetch_url=\"")[1]
                     url_suffix = url_suffix.split("\">")[0].replace("&amp;", "&")
                     try:
@@ -2965,6 +2979,10 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                     if key == "betOffers":
                         for field in values:
                             if field["criterion"]["label"] in list_of_markets:
+                                if field["criterion"]["label"] == "Resultado Final":
+                                    market = "Match Result"
+                                else:
+                                    market = field["criterion"]["label"]
                                 for bet in field["outcomes"]:
                                     try:
                                         result = bet["label"] + " " + str(bet["line"] / 1000)
@@ -2975,7 +2993,7 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                                         odd = float(bet["odds"] / 1000)
                                         odd = round(odd, 2)
                                         odds.append(
-                                            {"Market": field["criterion"]["label"],
+                                            {"Market": market,
                                              "Result": result,
                                              "Odds": odd
                                              }
