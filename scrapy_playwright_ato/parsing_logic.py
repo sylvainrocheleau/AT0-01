@@ -12,6 +12,8 @@ def build_match_infos(
     url: str, web_url: str, home_team: str, away_team: str, date: datetime,
     competition_id: str, bookie_id: str, sport_id: str
 ):
+# comment RB
+def build_match_infos(url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id):
     match_info = {
         "url": url,
         "web_url": Helpers().build_web_url(web_url),
@@ -28,7 +30,6 @@ def build_match_infos(
         "sport_id": sport_id
     }
     return match_info
-
 
 def parse_competition(response, bookie_id, competition_id, competition_url_id, sport_id, map_matches_urls, debug):
     try:
@@ -563,9 +564,6 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                             home_team = match["Competitors"][0]["Name"]
                             away_team = match["Competitors"][1]["Name"]
                             date = dateparser.parse(''.join(match["EventDate"]))
-                            if debug:
-                                print("home team:", home_team, type(home_team))
-                                print("away team:", away_team, type(away_team))
                             if url not in map_matches_urls:
                                 match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id,
                                                            bookie_id, sport_id)
@@ -842,6 +840,7 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                         web_url = url
 
                         day_and_month = xpath_result.xpath("//span[@class='event__day']/text()").extract()[0]
+                        print(f"day_and_month = {day_and_month}")
                         day, month = day_and_month.split("/")
                         swapped_month_date = f"{month}/{day}"
                         time = xpath_result.xpath("//span[@class='event__time']/text()").extract()[0]
@@ -2213,6 +2212,54 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                         if clean_selection_keys[0] in list_of_markets:
                             market = clean_selection_keys[0]
                             # print("market", selection_key02)
+                        else:
+                            market = "empty"
+                            continue
+                        if (
+                            (selection_key02 == "1"
+                             or selection_key02 == "X"
+                             or selection_key02 == "2"
+                             or "+" in selection_key02
+                             or "-" in selection_key02
+                             or re.search('[a-zA-Z]', selection_key02) is not None)
+                            and market in list_of_markets
+                        ):
+                            result = selection_key02
+                            # print("result", result)
+                        elif (
+                            "-" not in selection_key02
+                            and "+" not in selection_key02
+                            and re.search('[a-zA-Z]', selection_key02) is None
+                            and "," in selection_key02
+                            and market in list_of_markets
+                        ):
+                            odd = selection_key02
+                            # print("odd", odd)
+                        try:
+                            if (
+                                market in list_of_markets
+                                and result != "empty"
+                                and odd != "empty"
+                            ):
+                                odds.append({"Market": market, "Result": result, "Odds": odd})
+                                result = "empty"
+                                odd = "empty"
+                        except UnboundLocalError:
+                            pass
+
+            elif sport_id == "3":
+                selection_keys = response.xpath("//ul[@sport-type=\"Mkt\"]").extract()
+                odds = []
+                for selection_key in selection_keys:
+                    selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace(
+                        "\t", "")
+                    clean_selection_key = re.sub(html_cleaner, '@', selection_key).split("@")
+                    clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
+                    for selection_key02 in clean_selection_keys:
+                        # print(selection_key02)
+                        if clean_selection_keys[0] in list_of_markets:
+                            market = clean_selection_keys[0]
+                            print("market", selection_key02)
                         else:
                             market = "empty"
                             continue
