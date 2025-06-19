@@ -34,15 +34,15 @@
 
 
 Liste de bookies à ajouter ppour le tennis:
-- EfBet
-- Luckia
+- EfBet: timeout
+- Luckia: FAIT
 - GoldenPark
-- Bwin: FAIT
+- Bwin: FAIT(timeout après essai recent)
 - BetWay: FAIT
 - AdmiralBet: Potentielles erreurs liées à la base de donnée(à revoir)
 - AupaBet: FAIT
-- Bet777:
-- DaznBet
+- Bet777: timeout
+- DaznBet: timeout
 - GoldenPark
 - Juegging : FAIT
 - KirolBet : FAIT

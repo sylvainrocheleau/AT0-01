@@ -28,9 +28,9 @@ class MetaSpider(scrapy.Spider):
             match_filter = {}
             # FILTER OPTIONS
             # match_filter = {"type": "bookie_id", "params":["ZeBet"]}
-            # match_filter = {"type": "bookie_and_comp", "params": ["AupaBet", "ATP"]}
+            match_filter = {"type": "bookie_and_comp", "params": ["Luckia", "ATP"]}
             # match_filter = {"type": "comp", "params":["LaLigaEspanola"]}
-            match_filter = {"type": "match_url_id", "params":["https://www.zebet.es/es/event/74j73-real_oviedo_mirandes"]}
+            # match_filter = {"type": "match_url_id", "params":["https://www.zebet.es/es/event/74j73-real_oviedo_mirandes"]}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -69,7 +69,7 @@ class MetaSpider(scrapy.Spider):
                     yield scrapy.Request(
                         dont_filter=dont_filter,
                         url=url,
-                        callback=self.parse_match if self.debug else self.parse_match,
+                        callback=self.raw_html if self.debug else self.parse_match,
                         errback=self.errback,
                         meta=meta_request,
                     )
