@@ -34,17 +34,21 @@
 
 
 Liste de bookies à ajouter ppour le tennis:
+- EfBet
+- Luckia
+- GoldenPark
 - Bwin: FAIT
 - BetWay: FAIT
 - AdmiralBet: Potentielles erreurs liées à la base de donnée(à revoir)
 - AupaBet: FAIT
 - Bet777:
 - DaznBet
-- EfBet
 - GoldenPark
 - Juegging : FAIT
 - KirolBet : FAIT
-- Luckia
+- BetfairSportsbook
+- CasinoBarcelona
+- CasinoGranMadrid
 - MarathonBet : FAIT
 - RetaBet
 - WilliamHill
