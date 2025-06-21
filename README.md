@@ -36,19 +36,18 @@
 Liste de bookies à ajouter ppour le tennis:
 - EfBet: timeout
 - Luckia: FAIT
-- GoldenPark
+- GoldenPark: timeout
 - Bwin: FAIT(timeout après essai recent)
 - BetWay: FAIT
 - AdmiralBet: Potentielles erreurs liées à la base de donnée(à revoir)
 - AupaBet: FAIT
 - Bet777: timeout
 - DaznBet: timeout
-- GoldenPark
 - Juegging : FAIT
 - KirolBet : FAIT
-- BetfairSportsbook
-- CasinoBarcelona
-- CasinoGranMadrid
+- BetfairSportsbook: timeout
+- CasinoBarcelona: timeout
+- CasinoGranMadrid: timeout
 - MarathonBet : FAIT
 - RetaBet
 - WilliamHill
