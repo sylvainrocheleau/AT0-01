@@ -44,7 +44,7 @@ class APISpider(scrapy.Spider):
                 # No filters
                 # list_of_competitions = bookie_config(bookie=["AllSportAPI"])
                 # Filter by competition
-                list_of_competitions = [x for x in bookie_config(bookie=["AllSportAPI"]) if x["competition_id"] == "LigaACB"]
+                list_of_competitions = [x for x in bookie_config(bookie=["AllSportAPI"]) if x["competition_id"] == "Partidosamistosos"]
                 if self.debug:
                     print("list of competitions", list_of_competitions)
                 pass

@@ -351,13 +351,23 @@ class Helpers():
             elif match_info["home_team_status"] != "confirmed":
                 home_ratios = {}
                 for key, value in partial_team_ids_and_normalized.items():
-                    home_ratios.update({key: round(SequenceMatcher(None, value, match_info["home_team"]).ratio(), 2)})
+                    home_ratios.update({key+"_normalized": round(
+                        SequenceMatcher(None, str(value).lower(), str(match_info["home_team"]).lower()).ratio(), 2)})
                     if "," in match_info["home_team"]:
                         home_team_reversed = f"{match_info['home_team'].split(', ')[1]} {match_info['home_team'].split(', ')[0]}"
-                        home_ratios.update({key: round(SequenceMatcher(None, value, home_team_reversed).ratio(), 2)})
+                        home_ratios.update({key+"_normalized-reversed": round(
+                            SequenceMatcher(None, str(value).lower(), str(home_team_reversed).lower()).ratio(), 2)})
+                for key, value in partial_team_ids_and_short_normalized.items():
+                    home_ratios.update({key+"_short": round(
+                        SequenceMatcher(None, str(value).lower(), str(match_info["home_team"]).lower()).ratio(), 2)})
+                    if "," in match_info["home_team"]:
+                        home_team_reversed = f"{match_info['home_team'].split(', ')[1]} {match_info['home_team'].split(', ')[0]}"
+                        home_ratios.update({key+"_short-reversed": round(
+                            SequenceMatcher(None, str(value).lower(), str(home_team_reversed).lower()).ratio(), 2)})
                 if len(home_ratios) > 0:
                     home_ratios = {max(home_ratios, key=home_ratios.get): max(home_ratios.values())}
                     for key, home_ratio in home_ratios.items():
+                        key = key.rsplit("_", 1)[0]
                         if home_ratio > 0.70:
                             sequence_message = f"normalize_team_names(sequence>{home_ratio})"
                             match_info["home_team_normalized"] = partial_team_ids_and_normalized[key]
@@ -500,13 +510,23 @@ class Helpers():
             elif match_info["away_team_status"] != "confirmed":
                 away_ratios = {}
                 for key, value in partial_team_ids_and_normalized.items():
-                    away_ratios.update({key: round(SequenceMatcher(None, value, match_info["away_team"]).ratio(), 2)})
+                    away_ratios.update({key+"_normalized": round(
+                        SequenceMatcher(None, str(value).lower(), str(match_info["away_team"]).lower()).ratio(), 2)})
                     if "," in match_info["away_team"]:
                         away_team_reversed = f"{match_info['away_team'].split(', ')[1]} {match_info['away_team'].split(', ')[0]}"
-                        away_ratios.update({key: round(SequenceMatcher(None, value, away_team_reversed).ratio(), 2)})
+                        away_ratios.update({key+"_normalized-reversed": round(
+                            SequenceMatcher(None, str(value).lower(), str(away_team_reversed).lower()).ratio(), 2)})
+                for key, value in partial_team_ids_and_short_normalized.items():
+                    away_ratios.update({key+"_short": round(
+                        SequenceMatcher(None, str(value).lower(), str(match_info["away_team"]).lower()).ratio(), 2)})
+                    if "," in match_info["away_team"]:
+                        away_team_reversed = f"{match_info['away_team'].split(', ')[1]} {match_info['away_team'].split(', ')[0]}"
+                        away_ratios.update({key+"_short-reversed": round(
+                            SequenceMatcher(None, str(value).lower(), str(away_team_reversed).lower()).ratio(), 2)})
                 if len(away_ratios) > 0:
                     away_ratios = {max(away_ratios, key=away_ratios.get): max(away_ratios.values())}
                     for key, away_ratio in away_ratios.items():
+                        key = key.rsplit("_", 1)[0]
                         if away_ratio > 0.70:
                             sequence_message = f"normalize_team_names(sequence>{away_ratio})"
                             match_info["away_team_normalized"] = partial_team_ids_and_normalized[key]
@@ -514,7 +534,6 @@ class Helpers():
                                 match_info["away_team_status"] = "confirmed"
                             else:
                                 match_info["away_team_status"] = "to_be_reviewed"
-                            if debug:
                                 print(
                                     sequence_message, match_info["away_team_status"], "original:",match_info["away_team"],
                                     "tested key:", key, "normalized:", partial_team_ids_and_normalized[key],"saving with key:", team_id_to_test
@@ -1053,6 +1072,7 @@ class Helpers():
                     PageMethod(
                         method="wait_for_selector",
                         selector="//div[@class='flex flex-col bg-gray-800 rounded-lg mb-3 p-1']",
+                        timeout=30000,
                     ),
                 ],
                 }
@@ -1078,7 +1098,7 @@ class Helpers():
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
                         method="wait_for_selector",
-                        selector="//tr[@class='row1']",
+                        selector="//div[@class='event-level']",
                     ),
                 ],
                 }
@@ -1262,18 +1282,34 @@ class Helpers():
                     )
 
             elif data["bookie_id"] == "Bet777":
-                meta_request.update({"playwright_page_methods": [
-                    PageMethod(
-                        method="wait_for_selector",
-                        selector="//span[@class='text-xs sm:text-sm truncate w-full  text-gray-200']"
-                    ),
-                    PageMethod(
-                        method="wait_for_selector",
-                        selector="//div[@class='py-1 px-2']"
+                if data["sport_id"] == "1":
+                    meta_request.update(dict(playwright_page_methods=[
+                        PageMethod(
+                            method="wait_for_selector",
+                            selector="//span[@class='text-xs sm:text-sm truncate w-full text-white']"
+                        ),
+                        PageMethod(
+                            method="click",
+                            selector="//*[text()='Marcador correcto']",
+                        ),
+                        PageMethod(
+                            method="wait_for_timeout",
+                            timeout=1000
+                        ),
+                    ]
                     )
-                ]
-                }
-                )
+                    )
+                else:
+                    meta_request.update(dict(playwright_page_methods=[
+                        PageMethod(
+                            method="wait_for_selector",
+                            selector="//span[@class='text-xs sm:text-sm truncate w-full text-white']"
+                        )
+                    ]
+                    )
+                    )
+
+
             elif data["bookie_id"] == "BetWay":
                 meta_request.update({"playwright_page_methods":[
                     PageMethod(
@@ -1483,7 +1519,6 @@ class Helpers():
                     ],
                     }
                     )
-
             elif data["bookie_id"] == "Versus":
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
@@ -1496,11 +1531,10 @@ class Helpers():
                 )
             elif data["bookie_id"] == "WilliamHill":
                 meta_request.update(
-                    {
-                        "playwright_page_methods": [
-                            PageMethod(
-                                method="wait_for_selector",
-                                selector= "//section[@class='event-container scrollable']"
+                    {"playwright_page_methods": [
+                        PageMethod(
+                            method="wait_for_selector",
+                            selector= "//section[@class='event-container scrollable']"
                     ),
                 ],
                         "header": {
@@ -1511,12 +1545,22 @@ class Helpers():
                             'Referer': 'https://google.com', 'Pragma': 'no-cache'},
                     },
                 )
+            elif data["bookie_id"] == "ZeBet":
+                meta_request.update({"playwright_page_methods": [
+                    PageMethod(
+                        method="wait_for_selector",
+                        selector="//section[@id='event-top-bets']",
+                        timeout=40000,
+                    ),
+                ],
+                }
+                )
 
         return url, dont_filter, meta_request
 
 
     def build_web_url(self, url):
-        web_url = "https://href.li/?"+ url
+        web_url = "https://href.li/?" + url
         return web_url
 
 if __name__ == "__main__":

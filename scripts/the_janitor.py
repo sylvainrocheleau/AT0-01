@@ -174,6 +174,16 @@ def select_next_match_date():
             except Exception as e:
                 print(f"Error processing result {result}: {e}")
                 continue
+        print("Setting all competitions to inactive")
+        query_set_inactive = (
+            "UPDATE ATO_production.V2_Competitions "
+            "SET next_match_date = NULL, active = FALSE "
+            "WHERE competition_id NOT IN (SELECT competition_id FROM ATO_production.V2_Matches WHERE `date` > NOW())"
+        )
+        cursor.execute(query_set_inactive)
+        connection.commit()
+
+        print(f"Setting next match dates for {len(next_match_update)} competitions")
         query_update_next_matches = (
             "UPDATE ATO_production.V2_Competitions "
             "SET next_match_date = %s, active = %s "
@@ -191,12 +201,13 @@ def select_next_match_date():
 
 if __name__ == "__main__":
     delete_old_matches()
-    # delete_old_matches_with_no_id()
-    # stop_hanging_spiders()
-    # delete_old_cookies()
-    # delete_old_logs()
+    delete_old_matches_with_no_id()
+    stop_hanging_spiders()
+    delete_old_cookies()
+    delete_old_logs()
+    select_next_match_date()
 
     process_all_the_time = False
     if datetime.datetime.now().minute == 0 or process_all_the_time:
         CreateViews().create_view_Dash_Competitions_and_MatchUrlCounts_per_Bookie()
-        select_next_match_date()
+

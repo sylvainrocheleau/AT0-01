@@ -13,11 +13,12 @@ SPIDER_MODULES = ["scrapy_playwright_ato.spiders"]
 NEWSPIDER_MODULE = "scrapy_playwright_ato.spiders"
 ROBOTSTXT_OBEY = False
 TELNETCONSOLE_ENABLED = False
-CONCURRENT_REQUESTS = 200
-CONCURRENT_REQUESTS_PER_DOMAIN = 2 # equals the number of units divided by 2
-CONCURRENT_ITEMS = 500
+CONCURRENT_REQUESTS = 100
+CONCURRENT_REQUESTS_PER_DOMAIN = 3 # equals the number of units divided by 2
+CONCURRENT_ITEMS = 1500
 LOG_LEVEL = "INFO"
 DOWNLOAD_DELAY = 2
+RANDOMIZE_DOWNLOAD_DELAY = True
 DOWNLOAD_TIMEOUT = 200
 # TODO reduce this value for V2
 CLOSESPIDER_TIMEOUT = 60*80
@@ -260,9 +261,10 @@ def get_custom_playwright_settings(browser, rotate_headers):
     )
 
     custom_settings.update({
-        "PLAYWRIGHT_MAX_CONTEXTS": 8,
+        # TODO: adapt this to the number of units
+        "PLAYWRIGHT_MAX_CONTEXTS": 2,
         # "PLAYWRIGHT_MAX_CONTEXTS": 10,
-        "PLAYWRIGHT_MAX_PAGES_PER_CONTEXT": 10,
+        "PLAYWRIGHT_MAX_PAGES_PER_CONTEXT": 1,
         "COOKIES_DEBUG": False,
         "USER_AGENT": None,
         "DOWNLOADER_MIDDLEWARES": {
@@ -280,13 +282,7 @@ def get_custom_playwright_settings(browser, rotate_headers):
         # },
         "PLAYWRIGHT_DEFAULT_NAVIGATION_TIMEOUT" : 60*1000, # 25000, 7200
         "PLAYWRIGHT_BROWSER_TYPE" : playwright_browser_type,
-        # "PLAYWRIGHT_CONTEXTS": {
-        #     "context_01": {
-        #         "viewport": {"width": 1280, "height": 720},
-        #         "locale": "fr-FR",
-        #         "timezone_id": "Europe/Paris",
-        #     }
-    # }
+
 
     },
     )

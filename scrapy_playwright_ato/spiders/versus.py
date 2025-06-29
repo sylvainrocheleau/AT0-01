@@ -32,10 +32,10 @@ class WebsocketsSpider(Spider):
         except:
             # TODO: change the time to smaller time range
             if 0 <= Helpers().get_time_now("UTC").hour <= 24:
-                print("PROCESSING ALL COMPETITIONS between and midnight and 0AM UTC (test 17 juin 10:49")
+                print("PROCESSING ALL COMPETITIONS (test 25 juin 10:10")
                 self.competitions = bookie_config(bookie=["Versus"])
             else:
-                print("PROCESSING COMPETITIONS WITH HTTP ERRORS between 4AM and midnight UTC")
+                print("PROCESSING COMPETITIONS")
                 self.competitions = bookie_config(bookie=["Versus", "http_errors"])
             self.match_filter = {"type": "bookie_id", "params": ["Versus"]}
             self.debug = False
@@ -66,7 +66,7 @@ class WebsocketsSpider(Spider):
                 break
 
     async def parse(self, response):
-        item = ScrapersItem()
+
         context_info = random.choice(self.context_infos)
         proxy = Proxy.from_url(proxy_prefix_http+context_info.get("proxy_ip")+proxy_suffix)
         async with proxy_connect(
@@ -83,7 +83,7 @@ heart-beat:10000,10000
             await self.ws.send(connect_message)
             message = await self.ws.recv()
             if self.debug:
-                print(f"Connected to API: {message}")
+                print(f"Connected to API:")
 
             await self.ws.send("""SUBSCRIBE
 id:/user/request-response
@@ -92,11 +92,12 @@ destination:/user/request-response
 \x00""")
             message = await self.ws.recv()
             if self.debug:
-                print(f"Subscribed to API: {message}")
+                print(f"Subscribed to API")
 
             keep_alive_task = asyncio.create_task(self.keep_alive())
 
             for competition in self.competitions:
+                item = ScrapersItem()
                 competition_id = competition["competition_url_id"].split("/")[-1]
                 await self.ws.send(f"""SUBSCRIBE
 id:/api/eventgroups/{competition_id}-all-match-events
@@ -114,7 +115,7 @@ destination:/api/eventgroups/{competition_id}-all-match-events
                     match_ids = [event['id'] for group in match_ids['groups'] for event in group['events']]
                     # print("match_ids", match_ids)
                 except KeyError:
-                    print(f"error in match_ids for {competition['competition_id']}")
+                    print(f"error in match_ids for {competition['competition_id']} - {competition['competition_url_id']}")
                     match_ids = []
                     continue
                 matches_details = []
@@ -190,7 +191,7 @@ destination:/api/events/{match_id}
                             ]
                         }
                         item["pipeline_type"] = ["match_urls"]
-                        print("YIELDING item with match_infos 2", item["data_dict"]["match_infos"])
+                        print("YIELDING item without match_infos 2", item["data_dict"])
                         yield item
                         error = f"{competition['bookie_id']} {competition['competition_id']} comp has no new match "
                         Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
@@ -353,6 +354,7 @@ destination:/api/markets/multi
 
     def closed(self, reason):
         if self.debug:
+            print(f"Spider {self.name} closed with reason: {reason}")
             pass
         else:
             requests.post(

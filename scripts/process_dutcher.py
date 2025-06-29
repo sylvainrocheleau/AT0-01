@@ -12,9 +12,10 @@ def update_dutcher():
         cursor = connection.cursor()
 
         # Récupérer tous les match_ids en une seule requête
-        query = "SELECT vm.match_id FROM ATO_production.V2_Matches vm WHERE vm.queue_dutcher = 1 LIMIT 50"
+        query = "SELECT vm.match_id FROM ATO_production.V2_Matches vm WHERE vm.queue_dutcher = 1 LIMIT 200"
         cursor.execute(query)
         match_ids = [result[0] for result in cursor.fetchall()]
+        print("match_ids:", match_ids)
 
         if not match_ids:
             print("No matches to process")
@@ -50,11 +51,11 @@ def update_dutcher():
                     ROUND((100 * (vmo1.back_odd - 1) / vmo2.back_odd * (vmo2.back_odd - 1)), 2) AS rating_free_bets,
                     ROUND((100 * ((vmo1.back_odd - 0.7) / vmo2.back_odd * (vmo2.back_odd - 1) - 0.3)), 2) AS rating_refund_bets,
                     vmo1.result AS result_1,
-                    vmo1.back_odd AS back_odds_1,
-                    b1.bookie_name AS bookie_id,
+                    ROUND(vmo1.back_odd, 2) AS back_odds_1,
+                    b1.bookie_id AS bookie_id,
                     vmo2.result AS result_2,
-                    vmo2.back_odd AS back_odds_2,
-                    b2.bookie_name AS bookie_2,
+                    ROUND(vmo2.back_odd,2) AS back_odds_2,
+                    b2.bookie_id AS bookie_2,
                     vmu1.web_url AS url_1,
                     vmu2.web_url AS url_2,
                     NOW() AS updated_date,
@@ -91,11 +92,10 @@ def update_dutcher():
                     #     WHERE vmo.bet_id = vmo1.bet_id AND vmo.bookie_id = vmo1.bookie_id
                     # )
             ) AS ranked
-            WHERE
-                ranked.RowNum = 1
-                AND ranked.rating_qualifying_bets < 105
-                AND ranked.rating_free_bets < 85
-                AND ranked.rating_refund_bets < 65;
+            # WHERE
+            #     ranked.rating_qualifying_bets < 105
+            #     AND ranked.rating_free_bets < 85
+            #     AND ranked.rating_refund_bets < 65;
         """ % (",".join(["%s"] * len(match_ids)))
 
         query_update_queue = """
@@ -117,6 +117,7 @@ def update_dutcher():
     finally:
         cursor.close()
         connection.close()
+
 if __name__ == "__main__":
     print("Starting process_dutcher at", datetime.datetime.now())
     process_list = []

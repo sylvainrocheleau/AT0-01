@@ -18,11 +18,6 @@ from ..settings import proxy_prefix_http, proxy_suffix, LOCAL_USERS
 from ..utilities import Helpers
 
 
-# logging.getLogger("websockets").setLevel(logging.INFO)
-# sports_to_scrape = ["Fútbol", "Basket"] # Tenis
-# list_of_markets = ["Correct Score", "Total Goals", "Total Points", "Match Result", "Match Winner"] #
-
-
 class WebsocketsSpider(Spider):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -101,7 +96,7 @@ class WebsocketsSpider(Spider):
                 break
 
     async def parse(self, response):
-        item = ScrapersItem()
+
         context_info = random.choice(self.context_infos)
         proxy = Proxy.from_url(proxy_prefix_http + context_info.get("proxy_ip") + proxy_suffix)
         async with proxy_connect(
@@ -115,6 +110,7 @@ class WebsocketsSpider(Spider):
                 await self.ws.recv()
 
             for competition in self.competitions:
+                item = ScrapersItem()
                 # betsson_competition_id = int(competition["competition_url_id"].split("competition=")[1].split("&")[0])
                 betsson_competition_id = re.search(r'competition=(\d+)', competition["competition_url_id"])
                 betsson_competition_id = int(betsson_competition_id.group(1)) if betsson_competition_id else None
@@ -139,10 +135,19 @@ class WebsocketsSpider(Spider):
                     "rid": self.rid},
                 )
                 )
-                matches_details = await self.ws.recv()
-                matches_details = matches_details.replace("null", '0').replace("true", '0').replace("false", '0')
-                matches_details = eval(matches_details)
-                matches_details.update({"betsson_competition_id": betsson_competition_id, "betsson_sport_id": betsson_sport_id})
+                try:
+                    matches_details = await self.ws.recv()
+                    matches_details = matches_details.replace("null", '0').replace("true", '0').replace("false", '0')
+                    matches_details = eval(matches_details)
+                    matches_details.update({"betsson_competition_id": betsson_competition_id, "betsson_sport_id": betsson_sport_id})
+                except Exception as e:
+                    print(f"error in match_details for {competition['competition_id']}")
+                    matches_details = []
+                    continue
+
+                if len(matches_details) == 0:
+                    print(f"No matches found for {competition['competition_id']}")
+                    continue
 
                 match_infos = parse_competition(
                     response=matches_details,

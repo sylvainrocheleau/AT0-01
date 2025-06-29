@@ -69,7 +69,7 @@ class TwoStepsSpider(scrapy.Spider):
                             playwright_page_methods=[
                                 PageMethod(
                                     method="wait_for_selector",
-                                    selector="//tr[@class='row1']",
+                                    selector="//div[@class='event-level']",
                                 ),
                             ]
                     ),

@@ -15,8 +15,8 @@ class Connect():
         conn_params = {
             'user': SQL_USER,
             'password': SQL_PWD,
-            'host': "127.0.0.1",
-            # 'host': "164.92.191.102",
+            # 'host': "127.0.0.1",
+            'host': "164.92.191.102",
             'port': 3306,
             'database': db,
         }

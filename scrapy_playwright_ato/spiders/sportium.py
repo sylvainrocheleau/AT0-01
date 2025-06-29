@@ -33,10 +33,10 @@ class WebsocketsSpider(Spider):
         except:
             # TODO: change the time to smaller time range
             if 0 <= Helpers().get_time_now("UTC").hour <= 24:
-                print("PROCESSING ALL COMPETITIONS between and midnight and 4AM UTC")
+                print("PROCESSING ALL COMPETITIONS")
                 self.competitions = bookie_config(bookie=["Sportium"])
             else:
-                print("PROCESSING COMPETITIONS WITH HTTP ERRORS between 4AM and midnight UTC")
+                print("PROCESSING COMPETITIONS WITH HTTP ERRORS")
                 self.competitions = bookie_config(bookie=["Sportium", "http_errors"])
             self.match_filter = {"type": "bookie_id", "params": ["Sportium"]}
             self.debug = False
@@ -71,7 +71,6 @@ class WebsocketsSpider(Spider):
     async def parse(self, response):
         if self.debug:
             print("competitons", self.competitions)
-        item = ScrapersItem()
         context_info = random.choice(self.context_infos)
         proxy = Proxy.from_url(proxy_prefix_http+context_info.get("proxy_ip")+proxy_suffix)
         async with proxy_connect(
@@ -102,6 +101,7 @@ destination:/user/request-response
             keep_alive_task = asyncio.create_task(self.keep_alive())
 
             for competition in self.competitions:
+                item = ScrapersItem()
                 competition_id = competition["competition_url_id"].split("/")[-1]
                 count = 0
                 await self.ws.send(f"""SUBSCRIBE
@@ -121,7 +121,6 @@ destination:/api/eventgroups/{competition_id}-all-match-events
                             match_ids = re.search(r'\{.*\}', raw_match_ids, re.DOTALL).group()
                             match_ids = json.loads(match_ids)
                             match_ids = [event['id'] for group in match_ids['groups'] for event in group['events']]
-                            print("good raw match_id", raw_match_ids)
                         except Exception as e:
                             print(f"error in match_ids for {competition['competition_id']}")
                             if self.debug:
@@ -138,10 +137,19 @@ locale:es
 destination:/api/events/{match_id}
 
 \x00""")
-                    raw_match_details = await self.ws.recv()
-                    match_details = re.search(r'\{.*\}', raw_match_details, re.DOTALL).group()
-                    match_details = json.loads(match_details)
-                    matches_details.append(match_details)
+                    try:
+                        raw_match_details = await self.ws.recv()
+                        match_details = re.search(r'\{.*\}', raw_match_details, re.DOTALL).group()
+                        match_details = json.loads(match_details)
+                        matches_details.append(match_details)
+                    except Exception as e:
+                        print(f"error in match_details for {competition['competition_id']}")
+                        matches_details = []
+                        continue
+
+                if len(matches_details) == 0:
+                    print(f"No matches found for {competition['competition_id']}")
+                    continue
 
                 match_infos = parse_competition(
                     response=matches_details,

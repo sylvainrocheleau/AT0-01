@@ -319,24 +319,47 @@ def get_context_infos(bookie_name):
 
 def bookie_config(bookie):
     if isinstance(bookie, list):
+        try:
+            if bookie[1] == "http_errors":
+                comps_with_errors = True
+            else:
+                comps_with_errors = False
+        except IndexError:
+            comps_with_errors = False
         connection = Connect().to_db(db="ATO_production", table=None)
         now = Helpers().get_time_now("UTC")
-        seven_days_ago = now - datetime.timedelta(days=7)
+        # seven_days_ago = now - datetime.timedelta(days=7)
         cursor = connection.cursor()
-        if bookie[0] == "all_bookies":
+        if bookie[0] == "all_bookies" and comps_with_errors is False:
+            print("All bookie without errors")
+            # WHERE vc.start_date < %s AND vc.end_date > %s
             query = """
                 SELECT vcu.competition_url_id, vc.competition_id, vc.sport_id,
                 vb.scraping_tool, vb.render_js, vb.use_cookies, vb.bookie_id, vb.v2_ready
                 FROM ATO_production.V2_Competitions vc
                 INNER JOIN ATO_production.V2_Competitions_Urls vcu ON vc.competition_id = vcu.competition_id
                 INNER JOIN ATO_production.V2_Bookies vb ON vcu.bookie_id = vb.bookie_id
-                # WHERE vc.start_date < %s AND vc.end_date > %s
                 WHERE vc.active = 1
                 AND vcu.bookie_id NOT IN ('BetfairExchange', 'AllSportAPI')
                 AND vb.v2_ready = 1
                 ORDER BY vc.competition_id
             """
-            cursor.execute(query, (now, now, ))
+            cursor.execute(query)
+        elif bookie[0] == "all_bookies" and comps_with_errors is True:
+            print("All bookies with errors")
+            query = """
+                        SELECT vcu.competition_url_id, vc.competition_id, vc.sport_id,
+                        vb.scraping_tool, vb.render_js, vb.use_cookies, vb.bookie_id, vb.v2_ready
+                        FROM ATO_production.V2_Competitions vc
+                        INNER JOIN ATO_production.V2_Competitions_Urls vcu ON vc.competition_id = vcu.competition_id
+                        INNER JOIN ATO_production.V2_Bookies vb ON vcu.bookie_id = vb.bookie_id
+                        WHERE vc.active = 1
+                        AND vcu.http_status NOT IN (200, 404, 1500)
+                        AND vcu.bookie_id NOT IN ('BetfairExchange', 'AllSportAPI')
+                        AND vb.v2_ready = 1
+                        ORDER BY vc.competition_id
+                    """
+            cursor.execute(query)
         elif bookie[0] == "AllSportAPI":
             query = """
                 SELECT vcu.competition_url_id, vc.competition_id, vc.sport_id,
@@ -347,19 +370,31 @@ def bookie_config(bookie):
                 WHERE vcu.bookie_id = %s
                 ORDER BY vc.competition_id
             """
-            cursor.execute(query, (bookie[0], )) # ,
+            cursor.execute(query, (bookie[0],)) # ,
         else:
-            query = """
-                SELECT vcu.competition_url_id, vc.competition_id, vc.sport_id,
-                vb.scraping_tool, vb.render_js, vb.use_cookies, vb.bookie_id
-                FROM V2_Competitions vc
-                INNER JOIN V2_Competitions_Urls vcu ON vc.competition_id = vcu.competition_id
-                INNER JOIN V2_Bookies vb ON vcu.bookie_id = vb.bookie_id
-                # WHERE start_date < %s AND end_date > %s
-                WHERE vc.active = 1 AND vcu.bookie_id = %s
-                ORDER BY vc.competition_id
+            if comps_with_errors is False:
+                query = """
+                    SELECT vcu.competition_url_id, vc.competition_id, vc.sport_id,
+                    vb.scraping_tool, vb.render_js, vb.use_cookies, vb.bookie_id
+                    FROM V2_Competitions vc
+                    INNER JOIN V2_Competitions_Urls vcu ON vc.competition_id = vcu.competition_id
+                    INNER JOIN V2_Bookies vb ON vcu.bookie_id = vb.bookie_id
+                    WHERE vc.active = 1 AND vcu.bookie_id = %s
+                    ORDER BY vc.competition_id
+                    """
+                cursor.execute(query, (bookie[0],)) # ,
+            elif comps_with_errors is True:
+                query = """
+                    SELECT vcu.competition_url_id, vc.competition_id, vc.sport_id,
+                    vb.scraping_tool, vb.render_js, vb.use_cookies, vb.bookie_id
+                    FROM V2_Competitions vc
+                    INNER JOIN V2_Competitions_Urls vcu ON vc.competition_id = vcu.competition_id
+                    INNER JOIN V2_Bookies vb ON vcu.bookie_id = vb.bookie_id
+                    WHERE vc.active = 1 AND vcu.bookie_id = %s
+                    AND vcu.http_status NOT IN (200, 404, 1500)
+                    ORDER BY vc.competition_id
                 """
-            cursor.execute(query, (now, now, bookie[0], )) # ,
+                cursor.execute(query, (bookie[0],))
 
         results = cursor.fetchall()
         list_of_competitions = []
@@ -376,6 +411,7 @@ def bookie_config(bookie):
                 }
             )
         connection.close()
+        print("competion list", list_of_competitions)
         return list_of_competitions
 
     else:
@@ -406,7 +442,7 @@ def bookie_config(bookie):
             if os.environ["USER"] in LOCAL_USERS:
                 # data = data.iloc[0:1]
                 data = data
-                data = data.loc[data["competition"] == "LigaACB"] # CONMEBOL - Copa Libertadores
+                # data = data.loc[data["competition"] == "Mundial de Clubes"] # CONMEBOL - Copa Libertadores
                 # FOOTBALL: UEFA Champions League, Serie A Italiana, Premier League Inglesa, La Liga Española, Bundesliga Alemana, Eurocopa 2024,
                 #           Argentina - Primera división, España - Segunda división
                 # Basketball: NBA, Liga ACB

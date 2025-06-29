@@ -29,19 +29,20 @@ class TwoStepsSpider(scrapy.Spider):
                 spider.debug = True
                 if spider.parser == "comp":
                     print("PROCESSING COMPETITIONS DEBUG MODE")
-                    spider.competitions = [x for x in bookie_config(bookie=["WinaMax"]) if x["competition_id"] == "NBA"]
+                    spider.competitions = [x for x in bookie_config(bookie=["WinaMax"]) if x["competition_id"] == "FIFAClubWorldCup"]
                     # spider.competitions = bookie_config(bookie=["WinaMax"])
                 else:
                     print("PROCESSING MATCHES DEBUG MODE")
-                    spider.match_filter = {"type": "bookie_and_comp", "params": ["WinaMax", "MajorLeagueSoccerUSA"]}
+                    spider.match_filter = {"type": "bookie_and_comp", "params": ["WinaMax", "FIFAClubWorldCup"]}
                     # spider.match_filter = {"type": "bookie_id", "params": ["WinaMax"]}
                     # spider.match_filter = {"type": "match_url", "params": [
                     #     "https://www.winamax.es/apuestas-deportivas/match/56690703"]}
         except:
             spider.debug = False
             if spider.parser == "comp":
-                if 0 <= Helpers().get_time_now("UTC").hour < 4:
-                    print("PROCESSING ALL COMPETITIONS between and midnight and 4AM UTC")
+                # TODO: chnage the time when ready
+                if 0 <= Helpers().get_time_now("UTC").hour < 24:
+                    print("PROCESSING ALL COMPETITIONS between and midnight and 24AM UTC")
                     spider.competitions = bookie_config(bookie=["WinaMax"])
                 else:
                     print("PROCESSING COMPETITIONS WITH HTTP ERRORS between 4AM and midnight UTC")
@@ -53,12 +54,37 @@ class TwoStepsSpider(scrapy.Spider):
 
     name = "WinaMaxv2"
     proxy_ip = str
+    user_agent_hash = int
+    custom_settings = get_custom_playwright_settings(browser="Chrome", rotate_headers=False)
+    custom_settings.update({
+        "CONCURRENT_REQUESTS_PER_DOMAIN": 2,
+        "HTTPCACHE_ENABLED": False,
+        "PLAYWRIGHT_MAX_CONTEXTS": 2,
+    })
+
+    def should_block_request(self, request):
+        strings_to_block = [
+            '.fontawesome.com',
+            '.google.com', 'google.com', '.google-analytics.com', 'google-analytics.com',
+            '.googletagmanager.com', 'googletagmanager.com',
+            '.zdassets', '.facebook',
+            '.amplitude', '.bing', '.taboola', '.zopim.com', '.mbstatic', '.newrelic',
+            '.usabilla', '.cdnfonts.com', 'braze.eu', 'akstat.io', 'typekit.net', '.sportradar.com',
+            '.woff2', '.woff', '.ttf', '.webp', '.jpg', '.jpeg', '.gif', '.webm', '.mp4', '.mp3',
+
+            '.png', '.svg',
+        ]
+        return (
+            request.resource_type in ["font", "imageset", "media", "stylesheet"] or
+            any(ext in request.url for ext in strings_to_block)
+        )
+
     odds = {}
     results = {}
     match_infos = {}
     found_no_matches_count = {}
     found_no_odds_count = {}
-    user_agent_hash = int
+    custom_timeout = {}
     map_matches = {}
     for match in Helpers().load_matches():
         try:
@@ -67,41 +93,16 @@ class TwoStepsSpider(scrapy.Spider):
             map_matches.update({match[6]: [match[0]]})
     map_matches_urls = [x[0] for x in Helpers().load_matches_urls(name)]
     match_filter_enabled = True
-    custom_settings = get_custom_playwright_settings(browser="Chrome", rotate_headers=False)
-    custom_settings.update({
-        "CONCURRENT_REQUESTS_PER_DOMAIN": 2,
-        "HTTPCACHE_ENABLED": False,
-        "PLAYWRIGHT_MAX_CONTEXTS": 2,
-    })
-
-
-    def should_block_request(self, request):
-        strings_to_block = [
-            # domains
-            '.fontawesome.com',
-            '.google.com', 'google.com', '.google-analytics.com', 'google-analytics.com',
-            '.googletagmanager.com', 'googletagmanager.com',
-            '.zdassets', '.facebook',
-            '.amplitude', '.bing', '.taboola', '.zopim.com', '.mbstatic', '.newrelic',
-            '.usabilla', '.cdnfonts.com', 'braze.eu', 'akstat.io', 'typekit.net', '.sportradar.com',
-            # extensions
-            '.woff2', '.woff', '.ttf', '.webp', '.jpg', '.jpeg', '.gif', '.webm', '.mp4', '.mp3', '.png', '.svg',
-        ]
-        # Block requests for specific resource types or URLs containing certain strings
-        return (
-            request.resource_type in ["font", "imageset", "media", "stylesheet"] or
-            any(ext in request.url for ext in strings_to_block)
-        )
-
 
     def start_requests(self):
+        if self.debug:
+            print("### opening file response_body_match_requests.txt")
+            f = open("response_body_match_requests.txt", "w")
+            f2 = open("response_body_parse_match.txt", "w")
         context_infos = get_context_infos(bookie_name="WinaMax")
         self.context_infos = [x for x in context_infos if x["proxy_ip"]]
         if self.parser == "comp":
-            if self.debug:
-                print("### opening file response_body_match_requests.txt")
-                f = open("response_body_match_requests.txt", "w")
-                print("parser is comp")
+
             for data in self.competitions:
                 context_info = random.choice([x for x in self.context_infos])
                 self.proxy_ip = context_info["proxy_ip"]
@@ -143,10 +144,6 @@ class TwoStepsSpider(scrapy.Spider):
                 except PlaywrightTimeoutError:
                     continue
         else:
-            if self.debug:
-                print("### opening file response_body_parse_match.txt")
-                f = open("response_body_parse_match.txt", "w")
-
             matches_details_and_urls = Helpers().matches_details_and_urls(
                 filter=self.match_filter_enabled,
                 filter_data=self.match_filter
@@ -207,26 +204,32 @@ class TwoStepsSpider(scrapy.Spider):
     async def match_requests(self,response):
         item = ScrapersItem()
         winamax_competition_id = int(response.meta.get("competition_url_id").split("/")[-1])
-        # sport = response.meta.get("sport")
-        competition = response.meta.get("competition")
-        competition_url = response.meta.get("competition_url_id")
         competition_id = response.meta.get("competition_id")
         bookie_id = response.meta.get("bookie_id")
         sport_id = response.meta.get("sport_id")
+        competition = response.meta.get("competition")
+        list_of_markets = response.meta.get("list_of_markets")
+        competition_url = response.meta.get("competition_url_id")
         self.match_infos.update({competition_url: []})
         self.found_no_matches_count.update({competition_url: 0})
-
-        def on_request(request):
-            if "transport=polling" in request.url:
-                print(f"match_requests intercepted request : {request.url}")
-                print(f"match_requests payload : {request.post_data}, {type(request.post_data)}")
-
+        self.custom_timeout.update({competition_url: datetime.datetime.now() + datetime.timedelta(seconds=30)})
+        print("Bookie_id", bookie_id)
         async def on_response(response):
             if "transport=polling" in response.url:
+                if self.debug:
+                    print(f"Number of retries for {competition_url} : {self.found_no_matches_count[competition_url]}")
                 try:
                     if len(self.match_infos[competition_url]) > 0:
                         if self.debug:
-                            print(f"Already found odds for {competition_url}, skipping response parsing")
+                            print(f"Exiting on_response: found matches for {competition_url}")
+                        page.remove_listener("response", on_response)
+                        return
+                    elif datetime.datetime.now() > self.custom_timeout[competition_url]:
+                        print(f"Exiting on_response: custom timeout reached for {competition_url}")
+                        page.remove_listener("response", on_response)
+                        return
+                    elif self.found_no_matches_count[competition_url] > 7:
+                        print(f"Exiting on_response: after {self.found_no_matches_count[competition_url]} retries for {competition_url}")
                         page.remove_listener("response", on_response)
                         return
                     response_body = await response.text()
@@ -251,15 +254,9 @@ class TwoStepsSpider(scrapy.Spider):
                                                 value["matchId"])
                                             web_url = url
                                             if url not in [x["url"] for x in self.match_infos[competition_url]]:
-                                                match_info = build_match_infos(
-                                                    url, web_url, home_team, away_team,date, competition_id,
-                                                    bookie_id, sport_id,
-                                                )
+                                                match_info = build_match_infos(url, web_url, home_team, away_team, date,
+                                                                               competition_id, bookie_id, sport_id)
                                                 self.match_infos[competition_url].append(match_info)
-                                            else:
-                                                if self.debug:
-                                                    print("match already in map_matches_urls", home_team, away_team)
-
                                         elif value["competitor1Name"] is None:
                                             pass
                                         else:
@@ -272,37 +269,13 @@ class TwoStepsSpider(scrapy.Spider):
                                                     # f.write(response_body[0:1000])
                                                     f.write(str(self.matches_details))
                                                     f.write("\n")
-                                                    f.write(f"tournamentid {value['tournamentId']} status {value['status']} home_team {value['competitor1Name']}")
+                                                    f.write(
+                                                        f"tournamentid {value['tournamentId']} status {value['status']} home_team {value['competitor1Name']}")
                                                     f.write("\n")
                                                     f.write("\n")
                                                     f.close()
                     else:
                         self.found_no_matches_count[competition_url] += 1
-                        if self.found_no_matches_count[competition_url] == 3:
-                            await page.route(
-                                "**/*",
-                                lambda route: route.abort() if self.should_block_request(
-                                    route.request) else route.continue_()
-                            )
-                            await page.reload()
-                            print(f"Reloading page {competition_url}")
-                            if self.debug:
-                                f = open("response_body_match_requests.txt", "a")
-                                f.write("\n")
-                                f.write("\n")
-                                f.close()
-
-                        if self.found_no_matches_count[competition_url] > 5:
-                            print(f"Closing page and context after no matches for {self.found_no_matches_count[competition_url]}  {competition_url}")
-                            if self.debug:
-                                f = open("response_body_match_requests.txt", "a")
-                                f.write(f"Closing page and context after no matches for {self.found_no_matches_count[competition_url]}  {competition_url}")
-                                f.write("\n")
-                                f.write("\n")
-                                f.close()
-                            await page.close()
-                            await page.context.close()
-                            return
 
                 except Error as e:
                     if self.debug:
@@ -317,68 +290,56 @@ class TwoStepsSpider(scrapy.Spider):
                             f.close()
                     return
 
-
         page = response.meta["playwright_page"]
-        # page.on("request", on_request)
-        # await page.route("**/*", on_request)
         page.on("response", on_response)
         await page.route(
             "**/*",
             lambda route: route.abort() if self.should_block_request(route.request) else route.continue_()
         )
-        await page.reload()
-        await asyncio.sleep(5)
-        if len(self.match_infos[competition_url]) == 0:
-            await asyncio.sleep(15)
-            print(f"Waiting for 15 seconds for {competition} {competition_url}")
 
-        if len(self.match_infos[competition_url]) > 0:
-            if self.debug:
-                print(f"matches infos {self.match_infos[competition_url]}")
-                f = open("response_body_match_requests.txt", "a")
-                f.write(f"found matches for {competition} {competition_url} {len(self.match_infos[competition_url])} ")
-                f.write(str(self.match_infos[competition_url]))
-                f.write("\n")
-                f.write("\n")
-                f.close()
-                # print(f"found matches for {competition} {competition_url} {len(self.match_infos[competition_url])} ")
+        try:
+            while (datetime.datetime.now() < self.custom_timeout[competition_url]
+            ):
+                if len(self.match_infos[competition_url]) > 0:
+                    print(
+                        f"Exiting before time out {len(self.match_infos[competition_url])} matches for {competition_url}")
+                    break
+                if len(self.match_infos[competition_url]) == 0:
+                    print(f"Waiting for 5 seconds for match requests for {competition_url}")
+                    await asyncio.sleep(5)
+                if len(self.match_infos[competition_url]) == 0:
+                    print(f"First reloading for {competition_url}")
+                    await page.reload()
+                if len(self.match_infos[competition_url]) == 0:
+                    print(f"Waiting for 15 seconds for {competition_url}")
+                    await asyncio.sleep(15)
+                if len(self.match_infos[competition_url]) == 0:
+                    print(f"Second reload for {competition_url}")
+                    await page.reload()
+        except Exception as e:
+            print(traceback.format_exc())
+            Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
+        finally:
             try:
                 await page.close()
                 await page.context.close()
+                print(
+                    f"Closed page and context after match_requests with {len(self.match_infos[competition_url])} matches for  {competition_url}")
             except Error as e:
                 pass
 
-            try:
-                if len(self.match_infos[competition_url]) > 0:
-                    match_infos = Helpers().normalize_team_names(
-                        match_infos=self.match_infos[competition_url],
-                        competition_id=competition_id,
-                        bookie_id=bookie_id,
-                        debug=self.debug
-                    )
-                    if competition_id in self.map_matches.keys():
-                        item["data_dict"] = {
-                            "map_matches": self.map_matches[competition_id],
-                            "match_infos": match_infos,
-                            "comp_infos": [
-                                {
-                                    "competition_url_id": competition_url,
-                                    "http_status": response.status,
-                                    "updated_date": Helpers().get_time_now("UTC")
-                                },
-                            ]
-                        }
-                        item["pipeline_type"] = ["match_urls"]
-                        yield item
-                    else:
-                        error = f"{bookie_id} {competition_id} comp not in map_matches "
-                        if self.debug:
-                            print(error)
-                        Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
-                else:
+        try:
+            if len(self.match_infos[competition_url]) > 0:
+                match_infos = Helpers().normalize_team_names(
+                    match_infos=self.match_infos[competition_url],
+                    competition_id=competition_id,
+                    bookie_id=bookie_id,
+                    debug=self.debug
+                )
+                if competition_id in self.map_matches.keys():
                     item["data_dict"] = {
                         "map_matches": self.map_matches[competition_id],
-                        "match_infos": self.match_infos[competition_url],
+                        "match_infos": match_infos,
                         "comp_infos": [
                             {
                                 "competition_url_id": competition_url,
@@ -387,15 +348,33 @@ class TwoStepsSpider(scrapy.Spider):
                             },
                         ]
                     }
-                    item["pipeline_type"] = self.pipeline_type
+                    item["pipeline_type"] = ["match_urls"]
                     yield item
-                    error = f"{bookie_id} {competition_id} comp has no new match "
+                else:
+                    error = f"{bookie_id} {competition_id} comp not in map_matches "
+                    if self.debug:
+                        print(error)
                     Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
+            else:
+                item["data_dict"] = {
+                    "map_matches": self.map_matches[competition_id],
+                    "match_infos": self.match_infos[competition_url],
+                    "comp_infos": [
+                        {
+                            "competition_url_id": competition_url,
+                            "http_status": response.status,
+                            "updated_date": Helpers().get_time_now("UTC")
+                        },
+                    ]
+                }
+                item["pipeline_type"] = self.pipeline_type
+                yield item
+                error = f"{bookie_id} {competition_id} comp has no new match "
+                Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
 
-            except Exception as e:
-                print(traceback.format_exc())
-                Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
-
+        except Exception as e:
+            print(traceback.format_exc())
+            Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
 
     async def parse_match(self, response):
         item = ScrapersItem()
@@ -409,26 +388,30 @@ class TwoStepsSpider(scrapy.Spider):
         match_url = response.meta.get("url")
         # competition_url = response.meta.get("competition_url")
         self.found_no_odds_count.update({match_url: 0})
+        self.custom_timeout.update({match_url: datetime.datetime.now() + datetime.timedelta(seconds=30)})
 
         self.odds.update({match_url: []})
         self.results.update({match_url: []})
-        def on_request(request):
-            if "transport=polling" in request.url:
-                print(f"Intercepted request : {request.url}")
-                print(f"Payload : {request.post_data}")
-
         async def on_response(response):
             if "transport=polling" in response.url:
-                # if self.debug:
-                #     print(f"parse match intercepted response : {response.url}")
+                if self.debug:
+                    print(f"Number of retries for {match_url} : {self.found_no_odds_count[match_url]}")
                 try:
                     if len(self.odds[match_url]) > 0:
                         if self.debug:
-                            print(f"Already found odds for {match_url}, skipping response parsing")
+                            print(f"Exiting on_response: found odds for {match_url}")
+                        page.remove_listener("response", on_response)
+                        return
+                    elif datetime.datetime.now() > self.custom_timeout[match_url]:
+                        print(f"Exiting on_response: custom timeout reached for {match_url}")
+                        page.remove_listener("response", on_response)
+                        return
+                    elif self.found_no_odds_count[match_url] > 7:
+                        print(f"Exiting on_response: {self.found_no_odds_count[match_url]} retries for {match_url}")
                         page.remove_listener("response", on_response)
                         return
                     response_body = await response.text()
-                    if "{\"matches\"" in response_body:
+                    if "[\"m\",{\"matches\"" in response_body:
                         response_match = json_repair.repair_json(response_body, return_objects=True)
                         for data in response_match:
                             for matches in data:
@@ -439,12 +422,12 @@ class TwoStepsSpider(scrapy.Spider):
                                             if market == "Resultado":
                                                 market = "Match Result"
                                             for outcome in value["outcomes"]:
-                                                result = matches["outcomes"][str(outcome)]["label"]
                                                 odd = matches["odds"][str(outcome)]
+                                                result = matches["outcomes"][str(outcome)]["label"]
                                                 if str(result) not in self.results[match_url]:
                                                     self.results[match_url].append(str(result))
-                                                    self.odds[match_url].append({"Market": market, "Result": result, "Odds": odd})
-
+                                                    self.odds[match_url].append(
+                                                        {"Market": market, "Result": result, "Odds": odd})
 
                     else:
                         if self.debug:
@@ -455,25 +438,7 @@ class TwoStepsSpider(scrapy.Spider):
                             f.write("\n")
                             f.close()
                         self.found_no_odds_count[match_url] += 1
-                        if self.found_no_odds_count[match_url] == 3:
-                            await page.route(
-                                "**/*",
-                                lambda route: route.abort() if self.should_block_request(
-                                    route.request) else route.continue_()
-                            )
-                            await page.reload()
-                            print(f"Reloading page {match_url}")
 
-                        if self.found_no_odds_count[match_url] > 7:
-                            print(f"Closing page and context after no odds for {self.found_no_odds_count[match_url]}  {match_url}")
-                            f = open("response_body_parse_match.txt", "a")
-                            f.write(f"Closing page and context after no odds for {self.found_no_odds_count[match_url]}  {match_url}")
-                            f.write("\n")
-                            f.write("\n")
-                            f.close()
-                            await page.close()
-                            await page.context.close()
-                            return
 
                 except Error as e:
                     if self.debug:
@@ -484,52 +449,69 @@ class TwoStepsSpider(scrapy.Spider):
                         f.write("\n")
                         f.write("\n")
                         f.close()
-                        # print(traceback.format_exc())
+                        print("Error getting response body from parse_match")
                     return
 
         page = response.meta["playwright_page"]
-        # page.on("request", on_request)
         page.on("response", on_response)
         await page.route(
             "**/*",
             lambda route: route.abort() if self.should_block_request(route.request) else route.continue_()
         )
-        await page.reload()
-        await asyncio.sleep(5)
+        try:
+            while datetime.datetime.now() < self.custom_timeout[match_url]:
+                if len(self.odds[match_url]) > 0:
+                    print(f"Exiting before time out {len(self.odds[match_url])} odds for {match_url}")
+                    break
+                if len(self.odds[match_url]) == 0:
+                    print(f"Waiting for 5 seconds for match requests for {match_url}")
+                    await asyncio.sleep(5)
+                if len(self.odds[match_url]) == 0:
+                    print(f"First reloading for {match_url}")
+                    await page.reload()
+                if len(self.odds[match_url]) == 0:
+                    print(f"Waiting for 15 seconds for {match_url}")
+                    await asyncio.sleep(15)
+                if len(self.odds[match_url]) == 0:
+                    print(f"Second reload for {match_url}")
+                    await page.reload()
 
-        if len(self.odds[match_url]) == 0:
-            await asyncio.sleep(15)
-            print(f"Waiting again for 15 seconds for {match_id} {match_url}")
+            if len(self.odds[match_url]) > 0:
+                odds = Helpers().build_ids(
+                    id_type="bet_id",
+                    data={
+                        "match_id": match_id,
+                        "odds": normalize_odds_variables(
+                            self.odds[match_url],
+                            sport_id,
+                            home_team,
+                            away_team,
+                        )
+                    }
+                )
 
-        elif len(self.odds[match_url]) > 0:
+                item["data_dict"] = {
+                    "match_id": match_id,
+                    "bookie_id": bookie_id,
+                    "odds": odds,
+                    "updated_date": Helpers().get_time_now(country="UTC"),
+                    "web_url": match_url,
+                    "http_status": response.status,
+                    "match_url_id": match_url,
+                }
+                item["pipeline_type"] = ["match_odds"]
+                yield item
+        except Exception as e:
+            pass
+        finally:
             try:
                 await page.close()
                 await page.context.close()
+                print(f"Closed page and context after parse_match with {len(self.odds[match_url])} odds for {match_url}")
             except Error as e:
                 pass
-            odds = Helpers().build_ids(
-                id_type="bet_id",
-                data={
-                    "match_id": match_id,
-                    "odds": normalize_odds_variables(
-                        self.odds[match_url],
-                        sport_id,
-                        home_team,
-                        away_team,
-                    )
-                }
-            )
-            item["data_dict"] = {
-                "match_id": match_id,
-                "bookie_id": bookie_id,
-                "odds": odds,
-                "updated_date": Helpers().get_time_now(country="UTC"),
-                "web_url": match_url,
-                "http_status": response.status,
-                "match_url_id": match_url,
-            }
-            item["pipeline_type"] = ["match_odds"]
-            yield item
+
+
 
 
     def raw_html(self, response):

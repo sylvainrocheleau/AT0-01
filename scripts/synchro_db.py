@@ -1,6 +1,7 @@
 import os
 import sys
 import subprocess
+import traceback
 
 import  pandas as pd
 from datetime import datetime
@@ -52,8 +53,8 @@ except Exception as e:
     sys.exit(1)
 
 # Back up the database
-def dump_database(conn_params, output_dir="db_backups"):
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+def dump_database(conn_params, output_dir="../archives/db_backups"):
+    timestamp = datetime.now().strftime("%Y%m%d")
     filename = f"{conn_params['database']}_backup_{timestamp}.sql"
     filepath = os.path.join(output_dir, filename)
 
@@ -129,6 +130,7 @@ def sync_table(table_info):
     try:
         df = pd.read_sql(query, remote_conn)
     except Exception as e:
+        print(traceback.format_exc())
         print(f"[{table}] Failed to fetch from remote: {e}")
         return
 

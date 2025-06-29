@@ -1,35 +1,137 @@
-import re
+# from itemadapter import ItemAdapter
+import os
+import datetime
+from logging import raiseExceptions
 
-def extract_competition_id(url):
-    match = re.search(r'competition=(\d+)', url)
-    if match:
-        return int(match.group(1))
-    return None
+import dateparser
+import pytz
+import traceback
+import mysql.connector
+from scrapy_playwright_ato.utilities import Connect, Helpers
+from scrapy_playwright_ato.settings import LOCAL_USERS
 
-urls = ["https://sportsbook.betsson.es/#/sport/?type=0&region=20001&competition=566&sport=1",
- "https://sportsbook.betsson.es/#/sport/?type=0&sport=3&region=20003&competition=686",
- "https://sportsbook.betsson.es/#/sport/?type=0&region=20001&competition=1861&sport=1",
- "https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=541&region=900001",
- "https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=548&region=830001",
- "https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=1685&region=180001",
- "https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=1792&region=390001",
- "https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=538&region=1850001",
- "https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=543&region=1170001",
- "https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=545&region=2150001",
- "https://sportsbook.betsson.es/#/sport/?type=0&region=20001&competition=18278410&sport=1",
- "https://sportsbook.betsson.es/#/sport/?type=0&game=25519596&competition=756&sport=3&region=50003",
- "https://sportsbook.betsson.es/#/sport/?type=0&game=27251301&region=10001&competition=4171&sport=1",
- "https://sportsbook.betsson.es/#/sport/?type=0&game=27404283&region=10001&competition=4171&sport=1",
- "https://sportsbook.betsson.es/#/sport/?type=0&game=25519596&competition=792&sport=3&region=2150003",
- "https://sportsbook.betsson.es/#/sport/?type=0&game=25582234&region=20001&competition=27844&sport=1",
- "https://sportsbook.betsson.es/#/sport/?type=0&game=25807433&region=2150001&competition=553&sport=1",
- "https://sportsbook.betsson.es/#/sport/?type=0&game=25848065&region=2570001&competition=564&sport=1",
- "https://sportsbook.betsson.es/#/sport/?type=0&game=26905490&region=20001&competition=27844&sport=1",
- "https://sportsbook.betsson.es/#/sport/?type=0&game=25432826&region=2420001&competition=3025&sport=1",
- "https://sportsbook.betsson.es/#/sport/?type=0&game=25590940&region=10001&competition=18278053&sport=1",
- "https://sportsbook.betsson.es/#/sport/?type=0&sport=1&competition=566&region=20001"]
-# Example usage:
-for url in urls:
-    competition_id = extract_competition_id(url)
-    print("from def", competition_id)
-    print("from code",int(url.split("competition=")[1].split("&")[0])) # Alternative method
+
+class ScrapersPipeline:
+    def __init__(self):
+        # Define buffer and batch size
+        self.match_odds_buffer = []
+        self.match_urls_update_buffer = []
+        self.batch_size = 500  # Adjust as needed
+        self.connection = None
+        self.cursor = None
+        try:
+            if os.environ["USER"] in LOCAL_USERS:
+                self.debug = True
+                open("demo_data.txt", "w").close()  # Clear file on start
+            else:
+                self.debug = False
+        except KeyError:
+            self.debug = False
+
+    def _connect_db(self):
+        """Establishes or re-establishes the database connection."""
+        print("Connecting to the database...")
+        self.connection = Connect().to_db(db="ATO_production", table=None)
+        self.cursor = self.connection.cursor()
+
+    def _ensure_connection(self):
+        """Ensures the database connection is active, reconnecting if necessary."""
+        try:
+            if self.connection is None or not self.connection.is_connected():
+                self._connect_db()
+            # A simple query to check if the connection is truly alive
+            self.cursor.execute("SELECT 1")
+        except (mysql.connector.Error, AttributeError):
+            # Reconnect if ping fails or connection is lost
+            self._connect_db()
+
+    def open_spider(self, spider):
+        """Initialize database connection when the spider starts."""
+        self.spider_name = spider.name
+        self._connect_db()
+
+    def close_spider(self, spider):
+        """Flush any remaining items and close the connection when the spider finishes."""
+        self._flush_match_odds_batch()
+        if self.connection and self.connection.is_connected():
+            self.cursor.close()
+            self.connection.close()
+
+    def _flush_match_odds_batch(self):
+        """Write the buffered items to the database."""
+        if not self.match_odds_buffer and not self.match_urls_update_buffer:
+            return
+
+        start_time = datetime.datetime.now()
+        try:
+            self._ensure_connection()  # Check connection before executing queries
+
+            if self.match_odds_buffer:
+                query_insert_match_odds = """
+                    INSERT INTO ATO_production.V2_Matches_Odds
+                    (bet_id, match_id, bookie_id, market, market_binary, result, back_odd, web_url, updated_date)
+                    VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    ON DUPLICATE KEY UPDATE back_odd = VALUES(back_odd), updated_date = VALUES(updated_date)
+                """
+                self.cursor.executemany(query_insert_match_odds, self.match_odds_buffer)
+
+            if self.match_urls_update_buffer:
+                unique_updates = list(set(self.match_urls_update_buffer))
+                query_update_match_urls = """
+                    UPDATE ATO_production.V2_Matches_Urls
+                    SET updated_date = %s, http_status = %s
+                    WHERE match_url_id = %s
+                """
+                self.cursor.executemany(query_update_match_urls, unique_updates)
+
+            self.connection.commit()
+            print(f"Flushed {len(self.match_odds_buffer)} odds and {len(self.match_urls_update_buffer)} URL updates.")
+        except mysql.connector.Error as e:
+            if self.debug:
+                print(f"Database error during flush: {e}")
+                print(traceback.format_exc())
+            Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{self.spider_name} DB_FLUSH_ERROR: {str(e)}",
+                                 message=traceback.format_exc())
+            if self.connection and self.connection.is_connected():
+                self.connection.rollback()
+        finally:
+            self.match_odds_buffer.clear()
+            self.match_urls_update_buffer.clear()
+            end_time = datetime.datetime.now()
+            print(f"Time taken for batch flush: {(end_time - start_time).total_seconds()}s")
+
+    def process_item(self, item, spider):
+        # Refactor all other 'elif' blocks to use self.cursor and self._ensure_connection()
+        # instead of creating a new connection for every item. This is crucial for performance
+        # and stability. For brevity, only the first block is fully refactored here.
+
+        if "pipeline_type" in item and "match_odds" in item["pipeline_type"]:
+            try:
+                for data in item["data_dict"]["odds"]:
+                    values_odds = (
+                        data["bet_id"], item["data_dict"]["match_id"], item["data_dict"]["bookie_id"],
+                        data["Market"], data["Market_Binary"], data["Result"], data["Odds"],
+                        item["data_dict"]["web_url"], item["data_dict"]["updated_date"],
+                    )
+                    self.match_odds_buffer.append(values_odds)
+
+                values_url_update = (
+                    item["data_dict"]["updated_date"], item["data_dict"]["http_status"],
+                    item["data_dict"]["match_url_id"],
+                )
+                self.match_urls_update_buffer.append(values_url_update)
+
+                if len(self.match_odds_buffer) >= self.batch_size:
+                    self._flush_match_odds_batch()
+
+            except Exception as e:
+                if self.debug:
+                    print(traceback.format_exc())
+                Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}",
+                                     message=traceback.format_exc())
+        # ... (rest of your process_item logic) ...
+        # IMPORTANT: You must refactor all other database operations in this method
+        # to use the shared self.connection and self.cursor, and call self._ensure_connection()
+        # before executing queries. Remove all `Connect().to_db()` calls from the other blocks.
+
+        return item

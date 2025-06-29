@@ -17,6 +17,7 @@ class MetaSpider(scrapy.Spider):
         settings_used = "USING PLAYWRIGHT SETTINGS"
         allowed_scraping_tools = ["playwright", "scrape_ops", "requests", "zyte_proxy_mode"]
         custom_settings = get_custom_playwright_settings(browser="Chrome", rotate_headers=False)
+        custom_settings["PLAYWRIGHT_MAX_CONTEXTS"] = 2
     elif name == "match_spider_01_zyte_api":
         settings_used = "USING ZYTE API SETTINGS"
         allowed_scraping_tools = ["zyte_api"]
@@ -28,9 +29,9 @@ class MetaSpider(scrapy.Spider):
             match_filter = {}
             # FILTER OPTIONS
             # match_filter = {"type": "bookie_id", "params":["ZeBet"]}
-            # match_filter = {"type": "bookie_and_comp", "params": ["AupaBet", "ATP"]}
-            # match_filter = {"type": "comp", "params":["LaLigaEspanola"]}
-            match_filter = {"type": "match_url_id", "params":["https://www.zebet.es/es/event/74j73-real_oviedo_mirandes"]}
+            match_filter = {"type": "bookie_and_comp", "params": ["EfBet", "Partidosamistosos"]}
+            # match_filter = {"type": "comp", "params":["FIFAClubWorldCup"]}
+            # match_filter = {"type": "match_url_id", "params":["https://www.efbet.es/ES/sports#bo-navigation=282241.1,480527.1,480692.1&action=market-group-list&event=37769490.1"]}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -117,6 +118,8 @@ class MetaSpider(scrapy.Spider):
                 )
             }
         )
+        if self.debug:
+            print("Odds parsed:", odds)
         item["data_dict"] = {
             "match_id": response.meta.get("match_id"),
             "bookie_id": response.meta.get("bookie_id"),
@@ -146,7 +149,6 @@ class MetaSpider(scrapy.Spider):
     async def errback(self, failure):
         item = ScrapersItem()
         print("### errback triggered")
-        print("proxy", failure.request.meta["proxy_ip"])
         # print("proxy", failure.request.meta["proxy_ip"])
         # print("user_agent", failure.request.meta["user_agent"])
         # print("failure.request.url", failure.request.url)

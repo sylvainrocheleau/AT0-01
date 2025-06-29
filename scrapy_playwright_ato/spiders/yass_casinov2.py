@@ -333,13 +333,14 @@ class OneStepJsonSpider(scrapy.Spider):
                                     "http_status": response.status,
                                     "match_url_id": match_url_id,
                                 }
+                                item["pipeline_type"] = ["match_odds"]
+                                if "data_dict" in item:
+                                    yield item
                             else:
                                 if self.debug:
                                     print("No match found for teams", home_team, away_team)
 
-                            item["pipeline_type"] = ["match_odds"]
-                            if "data_dict" in item:
-                                yield item
+
 
     def raw_html(self, response):
         try:

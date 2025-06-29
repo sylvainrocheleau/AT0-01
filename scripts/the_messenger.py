@@ -7,6 +7,7 @@ import smtplib
 import traceback
 import locale
 import datetime
+import os
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from script_utilities import Connect
@@ -23,7 +24,7 @@ class Messenger():
         """
         return f'<a href="{url}" target="_blank" rel="noopener noreferrer">{text_of_link}</a>'
 
-    def send_email(self, subject):
+    def send_email(self, subject, to):
         print("Sending email with subject:", subject)
         body_header = """
         <!DOCTYPE html>
@@ -55,7 +56,7 @@ class Messenger():
             msg['Subject'] = subject
             # msg['From'] = "sylvainrocheleau@gmail.com"
             msg['From'] = "admin@users.againsttheodds.es"
-            msg['To'] = "info@sylvainrocheleau.com" # , scrappers@againsttheodd.es
+            msg['To'] = to # , scrappers@againsttheodd.es
             final_body = body_header + self.body + body_footer
             msg.attach(MIMEText(final_body, 'html'))
             server.sendmail(msg['From'], msg['To'].split(', '), msg.as_string())
@@ -85,6 +86,10 @@ class Messenger():
             if None in paragraph["content"] and len(paragraph["content"][None]) > 0:
                 self.body += """<h3>Estatus nulo (A corregir por el equipo de Madrid):</h3>"""
                 for item in paragraph["content"][None]:
+                    self.body += item
+            if 1500 in paragraph["content"] and len(paragraph["content"][1500]) > 0:
+                self.body += """<h3>Estatus 1500 (mensaje que dice "lo sentimos"):</h3>"""
+                for item in paragraph["content"][1500]:
                     self.body += item
             if "other" in paragraph["content"] and len(paragraph["content"]["other"]) > 0:
                 self.body += """<h3>Otros estatus (A corregir por el equipo de Montreal)</h3>"""
@@ -162,7 +167,7 @@ class Messenger():
         paragraph = {}
         paragraph["from"] = "report_on_competitions_01"
         paragraph["title"] = "<h2>Competiciones con estatus 301, 302, 404 o nulo.</h2>"
-        paragraph["content"] = {301: [], 302: [], 404: [], None: [], "other": []}
+        paragraph["content"] = {301: [], 302: [], 404: [], None: [], 1500:[], "other": []}
         for row in results:
             bookie_id = row["bookie_id"]
             for key, value in row.items():
@@ -181,6 +186,9 @@ class Messenger():
                             f"<li>{bookie_id}: {key.replace('_status', '')}</li>")
                     elif value is None:
                         paragraph["content"][None].append(
+                            f"<li>{bookie_id}: {key.replace('_status', '')}</li>")
+                    elif value == 1500:
+                        paragraph["content"][1500].append(
                             f"<li>{bookie_id}: {key.replace('_status', '')}</li>")
                     elif value !=200:
                         paragraph["content"]["other"].append(
@@ -225,6 +233,13 @@ class Messenger():
 
 if __name__ == "__main__":
     try:
+        if os.environ["USER"] in ["sylvain","rickiel"]:
+            debug = True
+        else:
+            debug = False
+    except KeyError:
+        debug = False
+    try:
         locale.setlocale(locale.LC_TIME, 'es_ES.utf8')
     except locale.Error:
         try:
@@ -232,12 +247,20 @@ if __name__ == "__main__":
         except locale.Error:
             print("Locale 'es_ES' not available, using default locale.")
             locale.setlocale(locale.LC_TIME, '')
-    today = datetime.datetime.now()
+    today = datetime.datetime.now(datetime.timezone.utc)
     formatted_date = today.strftime('%A, %-d de %B')
-    print(formatted_date.capitalize())
+    formatted_time = today.strftime('%H:%M')
     Messenger = Messenger()
     Messenger.count_matches_id_to_reviewd()
     Messenger.report_on_competitions_01()
     Messenger.active_competitions()
-    Messenger.send_email(subject=f"Informe sobre el raspado {formatted_date.capitalize()}")
+    if debug:
+        recipients = "info@sylvainrocheleau.com"
+    else:
+        recipients = "info@sylvainrocheleau.com, scrapers@againsttheodds.es"
+
+    Messenger.send_email(
+        subject=f"Informe sobre el raspado {formatted_date.capitalize()} a las {formatted_time} UTC",
+        to=recipients
+    )
 
