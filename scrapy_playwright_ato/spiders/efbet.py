@@ -1,4 +1,6 @@
 import random
+import traceback
+
 import scrapy
 import re
 import datetime
@@ -69,7 +71,7 @@ class TwoStepsSpider(scrapy.Spider):
                             playwright_page_methods=[
                                 PageMethod(
                                     method="wait_for_selector",
-                                    selector="//div[@class='event-level']",
+                                    selector="//tr[@class='row1']",
                                 ),
                             ]
                     ),
@@ -105,10 +107,10 @@ class TwoStepsSpider(scrapy.Spider):
                 )
                 )
             except IndexError as e:
-                # print("indexerror", e)
+                print(traceback.format_exc())
                 continue
             except Exception as e:
-                # print("Exceptions", e)
+                print(traceback.format_exc())
                 continue
 
         await page.close()
@@ -162,19 +164,23 @@ class TwoStepsSpider(scrapy.Spider):
                             ),
                             PageMethod(
                                 method="click",
-                                selector="//div[@class='container']"
+                                selector="//div[@class='container']",
+                                timeout=1000
                             ),
                             PageMethod(
                                 method="click",
-                                selector="//div[@class='container']"
+                                selector="//div[@class='container']",
+                                timeout=1000
                             ),
                             PageMethod(
                                 method="click",
-                                selector="//div[@class='container']"
+                                selector="//div[@class='container']",
+                                timeout=1000
                             ),
                             PageMethod(
                                 method="click",
                                 selector="//*[text()='Resultado Exacto']",
+                                timeout=1000
                             ),
                             PageMethod(
                                 method="wait_for_timeout",
@@ -227,9 +233,9 @@ class TwoStepsSpider(scrapy.Spider):
                     )
                 )
 
-            # if "https://www.efbet.es/ES/sports#bo-navigation=281982.1,282013.1,474525.1&action=market-group-list&event=36924434.1" == match_info["url"]:
-            self.match_url = match_info["url"]
-            # print("processing match from", response.meta.get("competition"), match_info["url"])
+            # if "https://www.efbet.es/ES/sports#bo-navigation=282241.1,480527.1,480693.1&action=market-group-list&event=37754378.1" == match_info["url"]:
+            #     self.match_url = match_info["url"]
+                # print("processing match from", response.meta.get("competition"), match_info["url"])
             try:
                 yield scrapy.Request(
                     dont_filter=True,

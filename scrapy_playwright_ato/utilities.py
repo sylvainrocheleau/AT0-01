@@ -1,7 +1,7 @@
-import datetime
 import sys
-import os
 import traceback
+# from asyncio import timeout
+
 from scrapy_playwright_ato.settings import SQL_USER, SQL_PWD, TEST_ENV, soltia_user_name, soltia_password, \
     SCRAPE_OPS_API_KEY, proxy_prefix, proxy_suffix, ZYTE_PROXY_MODE
 
@@ -133,24 +133,24 @@ class Helpers():
                     {"bet_id": bet_id})
             return data["odds"]
 
-    def check_team_names_from_v1(self, team_name):
-        connection = Connect().to_db(db="ATO_production", table=None)
-        cursor = connection.cursor()
-        query_search_team_name = """
-            SELECT Team_Normalized
-            FROM ATO_production.Map_v2 mv
-            WHERE mv.Team_Original = %s
-            LIMIT 1
-        """
-        cursor.execute(query_search_team_name, (team_name,))
-        normalized_team = cursor.fetchall()
-        try:
-            normalized_team = normalized_team[0][0]
-            connection.close()
-            return normalized_team
-        except:
-            connection.close()
-            pass
+    # def check_team_names_from_v1(self, team_name):
+    #     connection = Connect().to_db(db="ATO_production", table=None)
+    #     cursor = connection.cursor()
+    #     query_search_team_name = """
+    #         SELECT Team_Normalized
+    #         FROM ATO_production.Map_v2 mv
+    #         WHERE mv.Team_Original = %s
+    #         LIMIT 1
+    #     """
+    #     cursor.execute(query_search_team_name, (team_name,))
+    #     normalized_team = cursor.fetchall()
+    #     try:
+    #         normalized_team = normalized_team[0][0]
+    #         connection.close()
+    #         return normalized_team
+    #     except:
+    #         connection.close()
+    #         pass
 
     def normalize_team_names(self, match_infos=list, competition_id=str, bookie_id=str, debug=bool):
         # TODO add a check only on teams names
@@ -835,6 +835,7 @@ class Helpers():
             FROM ATO_production.V2_Competitions_Urls as vcu
             JOIN ATO_production.V2_Competitions vc ON vcu.competition_id = vc.competition_id
             JOIN ATO_production.V2_Sports vs ON vc.sport_id = vs.sport_id
+                WHERE vc.active = 1
         """
         cursor.execute(query_competition_url)
         competitions_urls = cursor.fetchall()
@@ -844,7 +845,7 @@ class Helpers():
     def load_matches(self):
         connection = Connect().to_db(db="ATO_production", table="V2_Matches")
         cursor = connection.cursor()
-        query_matches = ("SELECT * FROM V2_Matches")
+        query_matches = "SELECT * FROM V2_Matches"
         cursor.execute(query_matches)
         matches = cursor.fetchall()
         connection.close()
@@ -871,16 +872,15 @@ class Helpers():
         if filter is False:
             query_matches = """
                 SELECT match_url_id,match_id,`date`,updated_date,to_scrape,to_delete,competition_id,sport_id,bookie_id,
-                scraping_tool,render_js,use_cookies,home_team,away_team,web_url
+                scraping_tool,render_js,use_cookies,home_team,away_team,web_url, scraping_group, frequency_group
                 FROM ATO_production.V2_Scraping_Schedules vss
                 WHERE vss.to_scrape = 1
             """
-        elif filter is True:
+        else:
             query_matches = """
                 SELECT match_url_id,match_id,`date`,updated_date,to_scrape,to_delete,competition_id,sport_id,bookie_id,
-                scraping_tool,render_js,use_cookies,home_team,away_team,web_url
+                scraping_tool,render_js,use_cookies,home_team,away_team,web_url, scraping_group, frequency_group
                 FROM ATO_production.V2_Scraping_Schedules vss
-                # WHERE vss.scraping_tool = 'playwright'
             """
         cursor.execute(query_matches)
         matches_details_and_urls = cursor.fetchall()
@@ -907,14 +907,14 @@ class Helpers():
                         "home_team": match[12],
                         "away_team": match[13],
                         "web_url": match[14],
-
+                        "scraping_group": match[15],
+                        "frequency_group": match[16],
                     }
                 )
 
         # FILTER BY MATCH URLS OR BOOKIES AND COMPETITION
         try:
             if filter is True:
-
                 if filter_data["type"] == "match_url_id":
                     for key, value in dict_of_matches_details_and_urls.items():
                         for match in value:
@@ -944,7 +944,17 @@ class Helpers():
                 elif filter_data["type"] == "bookie_id":
                     for key, value in dict_of_matches_details_and_urls.items():
                         for match in value:
-                            if match["bookie_id"] == filter_data["params"][0]:
+                            if (
+                                match["bookie_id"] == filter_data["params"][0]
+                                and match["to_scrape"] == filter_data["params"][1]
+                            ):
+                                if key not in filtered_dict_of_matches_details_and_urls.keys():
+                                    filtered_dict_of_matches_details_and_urls[key] = []
+                                filtered_dict_of_matches_details_and_urls[key].append(match)
+                            elif (
+                                match["bookie_id"] == filter_data["params"][0]
+                                and filter_data["params"][1] == 2
+                            ):
                                 if key not in filtered_dict_of_matches_details_and_urls.keys():
                                     filtered_dict_of_matches_details_and_urls[key] = []
                                 filtered_dict_of_matches_details_and_urls[key].append(match)
@@ -1049,7 +1059,25 @@ class Helpers():
                     # print("cookies type", type(json.loads(data["cookies"])))
 
             # pagemethods and addons for competition
-            if data["bookie_id"] == "Bwin":
+            if data["bookie_id"] == "1XBet":
+                meta_request.update({"playwright_page_methods": [
+                    PageMethod(
+                        method="wait_for_timeout",
+                        timeout=5000,
+                    ),
+                ],
+                }
+                )
+            elif data["bookie_id"] == "BetWay":
+                meta_request.update({"playwright_page_methods": [
+                    PageMethod(
+                        method="wait_for_selector",
+                        selector="//div[@data-testid='table-sectionGroup']",
+                    ),
+                ],
+                }
+                )
+            elif data["bookie_id"] == "Bwin":
                 meta_request.update({"playwright_page_methods":[
                     PageMethod(
                         method="wait_for_selector",
@@ -1098,7 +1126,8 @@ class Helpers():
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
                         method="wait_for_selector",
-                        selector="//div[@class='event-level']",
+                        # selector="//div[@class='event-level']",
+                        selector="//tr[@class='row1']",
                     ),
                 ],
                 }
@@ -1249,7 +1278,16 @@ class Helpers():
                     )
 
             # pagemethods and addons for match
-            if data["bookie_id"] == "AdmiralBet":
+            if data["bookie_id"] == "1XBet":
+                meta_request.update({"playwright_page_methods": [
+                    PageMethod(
+                        method="wait_for_selector",
+                        selector="//div[@class='game-markets__groups']",
+                    )
+                ],
+                }
+                )
+            elif data["bookie_id"] == "AdmiralBet":
                 if data["sport_id"] == "1":
                     meta_request.update(dict(playwright_page_methods = [
                         PageMethod(
@@ -1311,14 +1349,21 @@ class Helpers():
 
 
             elif data["bookie_id"] == "BetWay":
-                meta_request.update({"playwright_page_methods":[
-                    PageMethod(
-                        method="wait_for_selector",
-                        selector="//div[@class='collapsablePanel']",
-                    ),
-                ]
-                }
-                )
+                if data["sport_id"] == "1":
+                    meta_request.update({"playwright_page_methods":[
+                        PageMethod(
+                            method="wait_for_selector",
+                            selector="//section[@data-testid='market-table-section']"
+                        ),
+                        PageMethod(
+                            method="click",
+                            selector="//*[text()='Resultado Exacto']",
+                            force=True,
+                            timeout=2000
+                        )
+                    ]
+                    }
+                    )
             elif data["bookie_id"] == "Bwin":
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
@@ -1351,12 +1396,12 @@ class Helpers():
                         ),
                         PageMethod(
                             method="click",
-                            selector="//*[text()='GOLES TOTALES']",
+                            selector="//*[normalize-space()='GOLES TOTALES']",
                             # timeout=40000
                         ),
                         PageMethod(
                             method="click",
-                            selector="//*[text()='MARCADOR EXACTO']",
+                            selector="//*[normalize-space()='MARCADOR EXACTO']",
                             # timeout=40000
                         ),
                     ],
@@ -1381,38 +1426,72 @@ class Helpers():
             elif data["bookie_id"] == "EfBet":
                 dont_filter = True
                 if data["sport_id"] == "1":
-                    meta_request.update({"playwright_page_methods":[
+                    repeated_clicks = [
                         PageMethod(
-                            method="click",
-                            selector="//*[text()='Todos']",
-                        ),
-                        PageMethod(
-                            method="click",
-                            selector="//div[@class='container']"
-                        ),
-                        PageMethod(
-                            method="click",
-                            selector="//div[@class='container']"
-                        ),
-                        PageMethod(
-                            method="click",
-                            selector="//div[@class='container']"
-                        ),
-                        PageMethod(
-                            method="click",
-                            selector="//div[@class='container']"
-                        ),
-                        PageMethod(
-                            method="click",
-                            selector="//*[text()='Resultado Exacto']",
-                        ),
-                        PageMethod(
-                            method="wait_for_timeout",
-                            timeout=2000
+                            "evaluate",
+                            expression="""
+                                const element = document.evaluate("//div[contains(@class, 'container')]", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                                if (element) {
+                                    element.click();
+                                }
+                            """
                         )
+                        for _ in range(5)
                     ]
-                    }
-                    )
+
+                    page_methods = [
+                        PageMethod("click", selector="//*[text()='Todos']"),
+                        *repeated_clicks,
+                        PageMethod(
+                            "evaluate",
+                            expression="""
+                                const element = document.evaluate("//*[text()='Resultado Exacto']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                                if (element) {
+                                    element.click();
+                                }
+                            """
+                        ),
+                        PageMethod("wait_for_timeout", timeout=2000)
+                    ]
+                    meta_request.update({"playwright_page_methods": page_methods})
+                # if data["sport_id"] == "1":
+                #     meta_request.update({"playwright_page_methods":[
+                #         PageMethod(
+                #             method="click",
+                #             selector="//*[text()='Todos']",
+                #         ),
+                #         PageMethod(
+                #             method="click",
+                #             selector="//div[@class='container']",
+                #             timeout=1000
+                #         ),
+                #         PageMethod(
+                #             method="click",
+                #             selector="//div[@class='container']",
+                #             timeout=1000
+                #         ),
+                #         PageMethod(
+                #             method="click",
+                #             selector="//div[@class='container']",
+                #             timeout=1000
+                #         ),
+                #         PageMethod(
+                #             method="click",
+                #             selector="//div[@class='container']",
+                #             timeout=1000
+                #         ),
+                #         PageMethod(
+                #             method="click",
+                #             selector="//*[text()='Resultado Exacto']",
+                #             timeout=1000
+                #         ),
+                #         PageMethod(
+                #             method="wait_for_timeout",
+                #             timeout=2000
+                #         )
+                #     ]
+                #     }
+                #     )
                 elif data["sport_id"] == "2":
                     meta_request.update({"playwright_page_methods":[
                         PageMethod(
@@ -1560,8 +1639,12 @@ class Helpers():
 
 
     def build_web_url(self, url):
-        web_url = "https://href.li/?" + url
-        return web_url
+        url_prefix = "https://href.li/?"
+        if url.startswith(url_prefix):
+            return url
+        else:
+            web_url = "https://href.li/?" + url
+            return web_url
 
 if __name__ == "__main__":
     print("main from utilities")

@@ -16,8 +16,8 @@ basketball_intervals = np.arange(79.5, 260.5, 1)
 tennis_intervals = np.arange(15.5, 45.5, 1)
 list_of_markets_V2 = {
 "1XBet": {
-    "1": [],
-    "2":[]
+    "1": ["1X2", "Total", "Marcador correcto"],
+    "2":["Victorias del equipo", "Total"]
 },
 "Betsson": {
     "1": ["Correct Score", "Total Goals", "Total Points", "Match Result", "Match Winner"],
@@ -115,8 +115,7 @@ list_of_markets_V2 = {
     "3": ["¿Ganador del partido (1-2)?", "¿Cuántos juegos se disputarán en el partido?"],
 },
 "BetWay": {
-    "1": ["1-X-2",  "Goles en total 0.5", "Goles en total 1.5", "Goles en total 2.5", "Goles en total 3.5",
-          "Goles en total 4.5", "Goles en total 5.5", "Goles en total 6.5", "Resultado Exacto"],
+    "1": ["1-X-2",  "Goles en total", "Resultado Exacto"],
     "2": ["Ganador del partido", "Vencedor del partido", "Puntos totales"],
     "3": ["Ganador del Partido", "Juegos en total"],
 },
@@ -235,7 +234,7 @@ list_of_markets_V2 = {
 },
 "YaassCasino": {
     "1": [
-        'Ganador partido', '+/- 2.5 Goles', '+/- 1.5 Goles', '+/- 3.5 Goles',
+        'Ganador (1X2)', 'Ganador partido', '+/- 2.5 Goles', '+/- 1.5 Goles', '+/- 3.5 Goles',
         "+/- 0.5 Goles", "+/- 4.5 Goles", "+/- 5.5 Goles", 'Resultado exacto'
     ],
     "2": ['Ganador Partido (Incl. Prórroga)']+
@@ -411,7 +410,7 @@ def bookie_config(bookie):
                 }
             )
         connection.close()
-        print("competion list", list_of_competitions)
+        print("competion list", [x['competition_id'] for x in list_of_competitions])
         return list_of_competitions
 
     else:
@@ -442,7 +441,7 @@ def bookie_config(bookie):
             if os.environ["USER"] in LOCAL_USERS:
                 # data = data.iloc[0:1]
                 data = data
-                # data = data.loc[data["competition"] == "Mundial de Clubes"] # CONMEBOL - Copa Libertadores
+                data = data.loc[data["competition"] == "UEFA Europa League - Eliminatorias"] # CONMEBOL - Copa Libertadores
                 # FOOTBALL: UEFA Champions League, Serie A Italiana, Premier League Inglesa, La Liga Española, Bundesliga Alemana, Eurocopa 2024,
                 #           Argentina - Primera división, España - Segunda división
                 # Basketball: NBA, Liga ACB
@@ -453,11 +452,11 @@ def bookie_config(bookie):
         for key, value in data.T.to_dict().items():
             # 1XBet
             if "1XBet" == bookie and value["bookie"] == bookie and value["sport"] == "Football":
-                list_of_markets = []
+                list_of_markets = ["1X2", "Total", "Marcador correcto"]
                 value.update({"list_of_markets": list_of_markets})
                 list_of_competitions.append(value)
             elif "1XBet" == bookie and value["bookie"] == bookie and value["sport"] == "Basketball":
-                list_of_markets = []
+                list_of_markets = ["Victorias del equipo", "Total"]
                 value.update({"list_of_markets": list_of_markets})
                 list_of_competitions.append(value)
             elif "1XBet" == bookie and value["bookie"] == bookie and value["sport"] == "Tennis":
@@ -728,8 +727,7 @@ def bookie_config(bookie):
 
             # BetWay
             elif "BetWay" == bookie and value["bookie"] == bookie and value["sport"] == "Football":
-                list_of_markets = ["1-X-2",  "Goles en total 0.5", "Goles en total 1.5", "Goles en total 2.5", "Goles en total 3.5",
-                       "Goles en total 4.5", "Goles en total 5.5", "Goles en total 6.5", "Resultado Exacto"]
+                list_of_markets = ["1-X-2",  "Goles en total", "Resultado Exacto"]
                 value.update({"list_of_markets": list_of_markets})
                 list_of_competitions.append(value)
             elif "BetWay" == bookie and value["bookie"] == bookie and value["sport"] == "Basketball":
@@ -1291,6 +1289,6 @@ if __name__ == "__main__":
     try:
         if os.environ["USER"] in LOCAL_USERS:
             SYSTEM_VERSION = "V1"
-            print(bookie_config("DaznBet"))
+            print(bookie_config("1XBet"))
     except:
         pass

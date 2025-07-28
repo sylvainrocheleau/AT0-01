@@ -3,9 +3,10 @@ import scrapy
 import re
 import requests
 import datetime
-# import time
+import ast
 import os
 import json
+from urllib.parse import urlparse, urlunparse
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 from scrapy_playwright.page import PageMethod
 from parsel import Selector
@@ -39,6 +40,7 @@ class TwoStepsSpider(scrapy.Spider):
                     yield scrapy.Request(
                         url=data["url"],
                         callback=self.match_requests,
+                        errback=self.errback,
                         meta=dict(
                             sport= data["sport"],
                             competition = data["competition"],
@@ -64,8 +66,14 @@ class TwoStepsSpider(scrapy.Spider):
                                 'activate': True,
                                 # 'position': 1
                             },
+                            playwright_page_methods=[
+                                PageMethod(
+                                    method="wait_for_selector",
+                                    selector="//section[@data-testid='event-table-section']",
+                                ),
+                            ],
                     ),
-                        errback=self.errback,
+
                     )
                 except PlaywrightTimeoutError:
                     # print("Time out out on ", self.match_url)
@@ -73,25 +81,28 @@ class TwoStepsSpider(scrapy.Spider):
 
     async def match_requests(self,response):
         page = response.meta["playwright_page"]
-        xpath_results = response.xpath("//a[@class='scoreboardInfoNames']").extract()
+        matches = response.text.split("<script type=\"application/ld+json\" data-testid=\"ldjson-events\">")[1]
+        matches = matches.split("</script>")[0]
+        matches = ast.literal_eval(matches)
+        # print(matches)
         match_infos = []
-        for xpath_result in xpath_results:
-            try:
-                xpath_result = Selector(xpath_result)
-                away_team = xpath_result.xpath("//span[contains(@class, 'teamNameFirstPart teamNameAway')]/text()").extract()[0]
-                home_team = xpath_result.xpath("//span[contains(@class, 'teamNameFirstPart teamNameHome')]/text()").extract()[0]
-                url = xpath_result.xpath("//a[@class='scoreboardInfoNames']/@href").extract()[0]
-                date = None
-                if response.meta.get("competition") == "NBA":
-                    match_infos.append({"url": url, "home_team": away_team, "away_team": home_team, "date": date})
-                else:
-                    match_infos.append({"url": url, "home_team": home_team, "away_team": away_team, "date": date})
-            except IndexError as e:
-                # print("indexerror", e)
-                continue
-            except Exception as e:
-                # print("Exceptions", e)
-                continue
+        if '@graph' in matches:
+            for match in matches['@graph']:
+                home_team = match['homeTeam']
+                away_team = match['awayTeam']
+                date = datetime.datetime.fromisoformat(match['startDate'].replace('Z', '+00:00')).replace(tzinfo=None)
+                url = urlparse(match['url'])
+                url = urlunparse(url._replace(query=''))
+                web_url = url
+                match_info = {
+                    'home_team': home_team,
+                    'away_team': away_team,
+                    'date': date,
+                    'url': url,
+                    'web_url': web_url
+                }
+                match_infos.append(match_info)
+        print("match_infos", match_infos)
         # print("Closing page for comp", response.meta.get("competition"))
         await page.close()
         # print("closing context for comp", response.meta.get("competition"))
@@ -131,19 +142,36 @@ class TwoStepsSpider(scrapy.Spider):
                     # 'position': 1
                 },
             )
-            params.update(
-                dict(
-                    playwright_page_methods= [
+            if response.meta.get("sport") == 'Football':
+                params.update(
+                    dict(
+                        playwright_page_methods= [
                             PageMethod(
-                                "wait_for_selector",
-                                selector="//div[@class='collapsablePanel']"
+                                method="wait_for_selector",
+                                selector="//section[@data-testid='market-table-section']"
+                                ),
+                            PageMethod(
+                                method="click",
+                                selector="//*[text()='Resultado Exacto']",
+                                force = True,
+                                timeout = 2000
                             )
-                    ]
+                        ]
+                    )
                 )
-            )
+            else:
+                params.update(
+                    dict(
+                        playwright_page_methods=[
+                            PageMethod(
+                                method="wait_for_selector",
+                                selector="//section[@data-testid='market-table-section']"
+                            )
+                        ]
+                    )
+                )
 
-            # if "https://betway.es/es/sports/evt/14548433" == match_info["url"]:
-            # print("request for", match_info["url"])
+            # if "https://betway.es/es/es/sports/event/15533023" == match_info["url"]:
             self.match_url = match_info["url"]
             try:
                 yield scrapy.Request(
@@ -162,19 +190,75 @@ class TwoStepsSpider(scrapy.Spider):
         # print("### Parsing ", response.url)
         html_cleaner = re.compile("<.*?>")
         item = ScrapersItem()
-        selection_keys = response.xpath("//div[@class='collapsablePanel']").extract()
-        odds = []
+
         try:
+            selection_keys = response.xpath("//section[@data-testid='market-table-section']").extract()
+            odds = []
+            clean_selection_keys = []
             for selection_key in selection_keys:
-                selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t", "")
-                clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
-                clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
-                stop_words = ["Cash Out", "Cancelado"]
-                teams = []
-                # print(clean_selection_keys)
-                for selection_key02 in clean_selection_keys:
-                    if clean_selection_keys[0] in response.meta.get("list_of_markets"):
-                        market = clean_selection_keys[0]
+                pattern = re.compile(r'data-outcomename="([^"]*)"|>([^<]+)<')
+                raw_parts = pattern.findall(selection_key)
+                clean_selection_key = [part for tpl in raw_parts for part in tpl if part]
+                clean_selection_key = [data for data in clean_selection_key if data != 'Cash Out']
+                if clean_selection_key[0] == '1-X-2':
+                    winners = []
+                    winners.append(clean_selection_key[0])
+                    for data in clean_selection_key:
+                        if " " in data:
+                            try:
+                                if float(data.split(" ")[-1].replace(',', '.')):
+                                    result = data.split(" ")[:-1]
+                                    result = ' '.join(result)
+                                    winners.append(result)
+                            except ValueError:
+                                pass
+                        elif "," in data:
+                            try:
+                                odd = float(data.replace(',', '.'))
+                                winners.append(odd)
+                            except ValueError:
+                                pass
+                    clean_selection_keys.append(winners)
+                elif clean_selection_key[0] == 'Goles en total':
+                    total_goles = []
+                    total_goles.append(clean_selection_key[0])
+                    for data in clean_selection_key:
+
+                        if "Más de" in data or "Menos de" in data:
+                            continue
+                        elif data.startswith("O "):
+                            total_goles.append(data.replace('O ', 'Más de '))
+                        elif data.startswith("U "):
+                            total_goles.append(data.replace('U ', 'Menos de '))
+                        elif "," in data:
+                            try:
+                                odd = float(data.replace(',', '.'))
+                                total_goles.append(odd)
+                            except ValueError:
+                                print("ValueError in total_goles:", data)
+                                pass
+                        else:
+                            pass
+                    clean_selection_keys.append(total_goles)
+                elif clean_selection_key[0] == 'Resultado Exacto':
+                    exact_results = []
+                    exact_results.append(clean_selection_key[0])
+                    for data in clean_selection_key:
+                        if " " in data:
+                            try:
+                                if float(data.split(" ")[1].replace(',', '.')):
+                                    result = data.split(" ")[0]
+                                    exact_results.append(result)
+                                    odd = float(data.split(" ")[1].replace(',', '.'))
+                                    exact_results.append(odd)
+                            except ValueError:
+                                pass
+                    clean_selection_keys.append(exact_results)
+
+            for list_item in clean_selection_keys:
+                for selection_key02 in list_item:
+                    if list_item[0] in response.meta.get("list_of_markets"):
+                        market = list_item[0]
                         # print("market", market)
 
                     else:
@@ -184,28 +268,13 @@ class TwoStepsSpider(scrapy.Spider):
 
                     if (
                         selection_key02 != market
-                        # and selection_key02 not in teams
-                        and selection_key02 not in stop_words
-                        and market in response.meta.get("list_of_markets")
-                        and re.search('[a-zA-Z]', selection_key02) is not None
-                        or "-" in selection_key02
+                        and isinstance(selection_key02, str)
                     ):
                         result = selection_key02
-                        if market == "Puntos totales":
-                            total = [x for x in clean_selection_keys if "," in x and float(x.replace(",", ".")) > 100][
-                                0]
-                            result = result + " " + total
-                        odd = "empty"
-                        # if market == "Resultado del partido":
-                        #     teams.append(result)
-                        # print("result", result)
+
 
                     elif (
-                        re.search("[a-zA-Z]", selection_key02) is None
-                        and "-" not in selection_key02
-                        and "," in selection_key02
-                        and market in response.meta.get("list_of_markets")
-                        and float(selection_key02.replace(",", ".")) < 100
+                        isinstance(selection_key02, float)
                     ):
 
                         odd = selection_key02
@@ -221,13 +290,17 @@ class TwoStepsSpider(scrapy.Spider):
                             odd = "empty"
                     except UnboundLocalError:
                         pass
+                    except Exception as e:
+                        print("Error in processing selection_key02:", selection_key02)
+                        print(traceback.format_exc())
+                        continue
             item["Home_Team"] = response.meta.get("home_team")
             item["Away_Team"] = response.meta.get("away_team")
             item["Bets"] = normalize_odds_variables(
                 odds, response.meta.get("sport"),item["Home_Team"], item["Away_Team"]
             )
             # item["Bets"] = odds
-            item["extraction_time_utc"] = datetime.datetime.utcnow().replace(second=0, microsecond=0)
+            item["extraction_time_utc"] = datetime.datetime.now(datetime.timezone.utc).replace(second=0, microsecond=0)
             item["Sport"] = response.meta.get("sport")
             item["Competition"] = response.meta.get("competition")
             item["Date"] = response.meta.get("start_date")
@@ -253,21 +326,19 @@ class TwoStepsSpider(scrapy.Spider):
         # print(response.text)
         print("Proxy_ip", self.proxy_ip)
         parent = os.path.dirname(os.getcwd())
-        with open(parent + "/scrapy_playwright_ato/" + self.name + "_response" + ".py", "w") as f:
-            f.write(response.text) # response.meta["playwright_page"]
+        with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/" + self.name + "_response" + ".txt", "w") as f:
+            f.write(response.text)  # response.meta["playwright_page"]
         # print("custom setting", self.custom_settings)
         # print(response.meta["playwright_page"])
 
     async def parse_headers(self, response):
         page = response.meta["playwright_page"]
-        storage_state = await page.context.storage_state()
         await page.close()
 
         print("Cookies sent: ", response.request.headers.get("Cookie"))
         print("Response cookies: ", response.headers.getlist("Set-Cookie"))
         # print("Page cookies: ", storage_state["cookies"])
         print("Response.headers: ", response.headers)
-        print("Cookie from db: ", self.cookie_to_send_from_db)
 
     async def errback(self, failure):
         item = ScrapersItem()

@@ -137,8 +137,8 @@ class TwoStepsSpider(scrapy.Spider):
                     date = dateparser.parse(''.join(date))
 
                     if (
-                        response.meta.get("competition") == "Eurocopa 2024"
-                        and ("," in home_team or "," in away_team)
+                        "(" in home_team
+                        or "(" in away_team
                     ):
                         pass
                     else:

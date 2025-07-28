@@ -1,20 +1,19 @@
 import random
 import os
+import math
 from playwright.async_api import Request
 from scrapy.http.headers import Headers
-# from scrapy.settings.default_settings import CONCURRENT_ITEMS
 
 # scrapy settings
 #################
-# SEE: https://docs.scrapy.org/en/latest/topics/broad-crawls.html
-# https://docs.scrapy.org/en/latest/topics/request-response.html
 BOT_NAME = "scrapy_playwright_ato"
 SPIDER_MODULES = ["scrapy_playwright_ato.spiders"]
 NEWSPIDER_MODULE = "scrapy_playwright_ato.spiders"
 ROBOTSTXT_OBEY = False
 TELNETCONSOLE_ENABLED = False
-CONCURRENT_REQUESTS = 100
-CONCURRENT_REQUESTS_PER_DOMAIN = 3 # equals the number of units divided by 2
+ZYTE_UNITS = 3
+CONCURRENT_REQUESTS = math.floor(ZYTE_UNITS*2)
+CONCURRENT_REQUESTS_PER_DOMAIN = 2
 CONCURRENT_ITEMS = 1500
 LOG_LEVEL = "INFO"
 DOWNLOAD_DELAY = 2
@@ -30,9 +29,9 @@ ITEM_PIPELINES = {
    'scrapy_playwright_ato.pipelines.ScrapersPipeline': 300,
 }
 
-
 # ATO settings
 ###################
+# custom status 1200=timeout, 1300=Playwright HTTP response failure, 1500=Lo sentimos, 1600=200 but no odds
 LOCAL_USERS = ["sylvain","rickiel"]
 try:
     if os.environ["USER"] in LOCAL_USERS:
@@ -44,7 +43,7 @@ except KeyError:
     PLAYWRIGHT_HEADLESS = True
 
 # ALL_SPORTS_API_KEY = "uNqyISH2ausxwgyW2rhoRZHUWIMd7GYU"
-ALL_SPORTS_API_KEY = "uNqyISH2ausxwgyW2rhoRZHUWIMd7GYU" # free plan
+ALL_SPORTS_API_KEY = "2b8a801f7dmshabee8de6884c434p14d1dfjsnd5a9a6bb9c3f"
 SQL_USER = "spider_rw_03"
 SQL_PWD = "43&trdGhqLlM"
 list_of_proxies = [
@@ -262,7 +261,7 @@ def get_custom_playwright_settings(browser, rotate_headers):
 
     custom_settings.update({
         # TODO: adapt this to the number of units
-        "PLAYWRIGHT_MAX_CONTEXTS": 2,
+        "PLAYWRIGHT_MAX_CONTEXTS": math.floor(ZYTE_UNITS/2),
         # "PLAYWRIGHT_MAX_CONTEXTS": 10,
         "PLAYWRIGHT_MAX_PAGES_PER_CONTEXT": 1,
         "COOKIES_DEBUG": False,

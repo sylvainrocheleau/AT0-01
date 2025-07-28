@@ -1,6 +1,4 @@
 import random
-# from http.cookiejar import debug
-
 import scrapy
 import requests
 import datetime
@@ -21,6 +19,15 @@ def list_spliter(a_list=list, chunk_size=int):
     return (a_list[i:i + chunk_size] for i in range(0, len(a_list), chunk_size))
 
 class TwoStepsJsonSpider(scrapy.Spider):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            if os.environ["USER"] in LOCAL_USERS:
+                self.debug = True
+            else:
+                self.debug = False
+        except Exception:
+            self.debug = False
     name = "BetfairExchange"
     number_of_runs = 0
     max_number_of_runs = 10
@@ -59,7 +66,7 @@ class TwoStepsJsonSpider(scrapy.Spider):
                 pass
                 # FILTER BY COMPETITION
                 self.map_competitions_urls = {key: value for key, value in self.map_competitions_urls.items()
-                                              if value["competition_id"] == "FIFAClubWorldCup"}
+                                              if value["competition_id"] == "SerieABrasil"}
         except:
             pass
 
@@ -91,8 +98,8 @@ class TwoStepsJsonSpider(scrapy.Spider):
         request_body = json.dumps(json_data)
         context_info = random.choice(self.context_infos)
         self.proxy_ip = proxy_prefix + context_info["proxy_ip"] + proxy_suffix
-        # self.comp_url = data["competition_url_id"]
-        # self.user_agent_hash = context_info["user_agent_hash"]
+        if self.debug:
+            print("map_competitions_urls", self.map_competitions_urls)
 
         yield scrapy.Request(
             url="https://www.betfair.es/www/sports/navigation/facet/v1/search?alt=json",
@@ -173,11 +180,13 @@ class TwoStepsJsonSpider(scrapy.Spider):
                             "sport_id": self.map_competitions_urls[data['competitionId']]['sport_id']
                         }
                     ]
+                    if self.debug:
+                        print(f"Normalize matches for {self.map_competitions_urls[data['competitionId']]['competition_id']}")
                     match_infos = Helpers().normalize_team_names(
                         match_infos=match_infos,
                         competition_id=self.map_competitions_urls[data['competitionId']]['competition_id'],
                         bookie_id=self.name,
-                        debug=False
+                        debug=self.debug
                     )
                     # print("match_infos", match_infos)
                     if len(match_infos[0]["match_id"]) > 0:
@@ -237,8 +246,8 @@ class TwoStepsJsonSpider(scrapy.Spider):
             # print("market_ids", market_ids)
             # GETS ODDS
             while self.number_of_runs < self.max_number_of_runs:
-                if self.number_of_runs > 0 and "all_tables" in self.pipeline_type:
-                    self.pipeline_type.remove("all_tables")
+                # if self.number_of_runs > 0 and "all_tables" in self.pipeline_type:
+                #     self.pipeline_type.remove("all_tables")
                 self.number_of_runs += 1
                 for chunked_list in list_spliter(market_ids, 40):
                     url = f"https://ero.betfair.es/www/sports/exchange/readonly/v1/bymarket?alt=json&currencyCode=EUR&locale=es&marketIds={chunked_list}&rollupLimit=10&rollupModel=STAKE&types=MARKET_DESCRIPTION,EVENT,RUNNER_DESCRIPTION,RUNNER_EXCHANGE_PRICES_BEST"
@@ -250,7 +259,6 @@ class TwoStepsJsonSpider(scrapy.Spider):
                     }
                     response = requests.post(url, proxies=proxies)
                     jsonresponse = json.loads(response.text)
-                    # print(jsonresponse)
                     for data in jsonresponse["eventTypes"]:
                         for data_02 in data["eventNodes"]:
                             event_id = data_02["eventId"]
@@ -270,6 +278,8 @@ class TwoStepsJsonSpider(scrapy.Spider):
                                     )
                                 ):
                                     for data_04 in data_03["runners"]:
+                                        if "runnerName" not in data_04["description"].keys():
+                                            continue
                                         result = data_04["description"]["runnerName"]
                                         try:
                                             for data_05 in data_04["exchange"]["availableToLay"]:
@@ -307,6 +317,8 @@ class TwoStepsJsonSpider(scrapy.Spider):
                     )
                 item["data_dict"] = self.events
                 item["pipeline_type"] = self.pipeline_type
+                if self.debug:
+                    print(f"updating {len(item['data_dict'])} items data_dict")
                 yield item
                 if time.time() - self.start_time > self.time_between_runs*self.max_number_of_runs:
                     raise CloseSpider('Timeout reached')
@@ -316,8 +328,8 @@ class TwoStepsJsonSpider(scrapy.Spider):
                         time.sleep(self.time_between_runs)
                     except KeyboardInterrupt:
                         raise CloseSpider('KeyboardInterrupt')
-                if "exchange_tables" in self.pipeline_type:
-                    self.pipeline_type.remove("exchange_tables")
+                # if "exchange_tables" in self.pipeline_type:
+                #     self.pipeline_type.remove("exchange_tables")
 
     def closed(self, reason):
         print("exiting", reason)

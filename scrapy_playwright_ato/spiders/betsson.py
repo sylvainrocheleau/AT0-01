@@ -28,7 +28,7 @@ class WebsocketsSpider(Spider):
                 # self.match_filter = {"type": "bookie_and_comp", "params": ["Betsson", "SegundaDivisionEspanola"]}
 
                 self.competitions = bookie_config(bookie=["Betsson"])
-                self.match_filter = {"type": "bookie_id", "params": ["Betsson"]}
+                self.match_filter = {"type": "bookie_id", "params": ["Betsson", 2]}
                 print(self.competitions)
         except:
             # TODO: change the time to smaller time range
@@ -38,7 +38,7 @@ class WebsocketsSpider(Spider):
             else:
                 print("PROCESSING COMPETITIONS WITH HTTP ERRORS between 4AM and midnight UTC")
                 self.competitions = bookie_config(bookie=["Betsson", "http_errors"])
-            self.match_filter = {"type": "bookie_id", "params": ["Betsson"]}
+            self.match_filter = {"type": "bookie_id", "params": ["Betsson", 2]}
             self.debug = False
     name = "Betsson"
     start_urls = ["data:,"]
@@ -55,7 +55,7 @@ class WebsocketsSpider(Spider):
     all_competitions = {x[1]: {"competition_name_es": x[2], "competition_url_id": x[0]} for x in all_competitions if
                         x[4] == "Betsson"}
     match_filter_enabled = True
-    v2 = True
+    v2 = False
     random_number = randint(9361, 145000, 1)
     rid = datetime.datetime.now().timestamp()
     rid = str(int(rid)) + str(random_number[0])

@@ -49,16 +49,16 @@ class TwoStepsSpider(scrapy.Spider):
                 # Filter by bookie that have errors
                 # competitions = bookie_config(bookie=["Bwin", "http_errors"])
                 # Filter by bookie
-                # competitions = bookie_config(bookie=["Bet777"])
+                competitions = bookie_config(bookie=["1XBet"])
                 # Filter by competition
-                competitions = [x for x in bookie_config(bookie=["all_bookies"]) if x["competition_id"] == "Partidosamistosos"]
-                # Filter by boookie and competition
-                # competitions = [x for x in bookie_config(bookie=["888Sport"]) if x["competition_id"] == "MajorLeagueSoccerUSA"]
+                # competitions = [x for x in bookie_config(bookie=["all_bookies"]) if x["competition_id"] == "Partidosamistosos"]
+                # Filter by bookie and competition
+                competitions = [x for x in bookie_config(bookie=["AupaBet"]) if x["competition_id"] == "Partidosamistosos"]
 
         except Exception as e:
             if (
-                0 <= Helpers().get_time_now("UTC").hour < 2
-                or 10 <= Helpers().get_time_now("UTC").hour < 12
+                0 <= Helpers().get_time_now("UTC").hour < 1
+                or 10 <= Helpers().get_time_now("UTC").hour < 11
             ):
                 print("PROCESSING ALL COMPETITIONS")
                 competitions = bookie_config(bookie=["all_bookies"]) #v2_competitions_url
@@ -78,8 +78,8 @@ class TwoStepsSpider(scrapy.Spider):
                 if data["scraping_tool"] == "playwright":
                     self.close_playwright = True
                 url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="competition", data=data)
-                if self.debug:
-                    print("url to scrape", url, "dont_filter", dont_filter, "meta_request", meta_request)
+                # if self.debug:
+                #     print("url to scrape", url, "dont_filter", dont_filter, "meta_request", meta_request)
                 yield scrapy.Request(
                     dont_filter=dont_filter,
                     url=url,
@@ -224,7 +224,13 @@ class TwoStepsSpider(scrapy.Spider):
             url = request.url
             status = 501
             print("TimeoutError on %s", request.url)
-        elif self.close_playwright is True and any(s in response_playwright for s in ["Lo sentimos", "No hay apuestas disponibles"]):
+        elif (
+            self.close_playwright is True
+            and any(s in response_playwright for s in [
+            "Lo sentimos", "No hay apuestas disponibles", "Ningún evento", " no hay eventos disponibles"
+        ]
+                    )
+        ):
             request = failure.request
             url = request.url
             status = 1500

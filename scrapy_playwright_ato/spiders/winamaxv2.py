@@ -27,39 +27,43 @@ class TwoStepsSpider(scrapy.Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 spider.debug = True
+                debug = True
                 if spider.parser == "comp":
                     print("PROCESSING COMPETITIONS DEBUG MODE")
-                    spider.competitions = [x for x in bookie_config(bookie=["WinaMax"]) if x["competition_id"] == "FIFAClubWorldCup"]
-                    # spider.competitions = bookie_config(bookie=["WinaMax"])
-                else:
-                    print("PROCESSING MATCHES DEBUG MODE")
-                    spider.match_filter = {"type": "bookie_and_comp", "params": ["WinaMax", "FIFAClubWorldCup"]}
-                    # spider.match_filter = {"type": "bookie_id", "params": ["WinaMax"]}
-                    # spider.match_filter = {"type": "match_url", "params": [
-                    #     "https://www.winamax.es/apuestas-deportivas/match/56690703"]}
-        except:
-            spider.debug = False
-            if spider.parser == "comp":
-                # TODO: chnage the time when ready
-                if 0 <= Helpers().get_time_now("UTC").hour < 24:
-                    print("PROCESSING ALL COMPETITIONS between and midnight and 24AM UTC")
+                    # spider.competitions = [x for x in bookie_config(bookie=["WinaMax"]) if x["competition_id"] == "FIFAClubWorldCup"]
                     spider.competitions = bookie_config(bookie=["WinaMax"])
                 else:
-                    print("PROCESSING COMPETITIONS WITH HTTP ERRORS between 4AM and midnight UTC")
+                    print("PROCESSING MATCHES DEBUG MODE")
+                    # spider.match_filter = {"type": "bookie_and_comp", "params": ["WinaMax", "SerieABrasil"]}
+                    spider.match_filter = {"type": "bookie_id", "params": ["WinaMax", 1]}
+                    # spider.match_filter = {"type": "match_url_id", "params": [
+                    #     "https://www.winamax.es/apuestas-deportivas/match/58052645"]}
+        except:
+            spider.debug = False
+            debug = False
+            if spider.parser == "comp":
+                if (
+                    0 <= Helpers().get_time_now("UTC").hour < 1
+                    or 10 <= Helpers().get_time_now("UTC").hour < 11
+                ):
+                    print("PROCESSING ALL COMPETITIONS")
+                    spider.competitions = bookie_config(bookie=["WinaMax"])
+                else:
+                    print("PROCESSING COMPETITIONS WITH HTTP ERRORS")
                     spider.competitions = bookie_config(bookie=["WinaMax", "http_errors"])
             else:
                 print("PROCESSING ALL MATCHES")
-                spider.match_filter = {"type": "bookie_id", "params": ["WinaMax"]}
+                spider.match_filter = {"type": "bookie_id", "params": ["WinaMax", 1]}
         return spider
-
+    debug = False
     name = "WinaMaxv2"
     proxy_ip = str
     user_agent_hash = int
     custom_settings = get_custom_playwright_settings(browser="Chrome", rotate_headers=False)
     custom_settings.update({
-        "CONCURRENT_REQUESTS_PER_DOMAIN": 2,
+        "CONCURRENT_REQUESTS_PER_DOMAIN": 1,
         "HTTPCACHE_ENABLED": False,
-        "PLAYWRIGHT_MAX_CONTEXTS": 2,
+        "PLAYWRIGHT_MAX_CONTEXTS": 1,
     })
 
     def should_block_request(self, request):
@@ -300,6 +304,9 @@ class TwoStepsSpider(scrapy.Spider):
         try:
             while (datetime.datetime.now() < self.custom_timeout[competition_url]
             ):
+                if page.is_closed():
+                    print(f"Page is closed, breaking loop for {competition_url}")
+                    break
                 if len(self.match_infos[competition_url]) > 0:
                     print(
                         f"Exiting before time out {len(self.match_infos[competition_url])} matches for {competition_url}")
@@ -367,7 +374,7 @@ class TwoStepsSpider(scrapy.Spider):
                         },
                     ]
                 }
-                item["pipeline_type"] = self.pipeline_type
+                item["pipeline_type"] = ["match_urls"]
                 yield item
                 error = f"{bookie_id} {competition_id} comp has no new match "
                 Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
@@ -383,8 +390,7 @@ class TwoStepsSpider(scrapy.Spider):
         home_team = response.meta.get("home_team")
         away_team = response.meta.get("away_team")
         bookie_id = response.meta.get("bookie_id")
-        # competition = response.meta.get("competition")
-        # start_date = response.meta.get("start_date")
+        web_url = response.meta.get("web_url")
         match_url = response.meta.get("url")
         # competition_url = response.meta.get("competition_url")
         self.found_no_odds_count.update({match_url: 0})
@@ -460,6 +466,9 @@ class TwoStepsSpider(scrapy.Spider):
         )
         try:
             while datetime.datetime.now() < self.custom_timeout[match_url]:
+                if page.is_closed():
+                    print(f"Page is closed, breaking loop for {match_url}")
+                    break
                 if len(self.odds[match_url]) > 0:
                     print(f"Exiting before time out {len(self.odds[match_url])} odds for {match_url}")
                     break
@@ -489,18 +498,46 @@ class TwoStepsSpider(scrapy.Spider):
                         )
                     }
                 )
-
-                item["data_dict"] = {
-                    "match_id": match_id,
-                    "bookie_id": bookie_id,
-                    "odds": odds,
-                    "updated_date": Helpers().get_time_now(country="UTC"),
-                    "web_url": match_url,
-                    "http_status": response.status,
-                    "match_url_id": match_url,
-                }
-                item["pipeline_type"] = ["match_odds"]
+                if not odds:
+                    item["data_dict"] = {
+                        "match_infos": [
+                            {
+                                "match_url_id": match_url,
+                                "http_status": 1600,  # No odds found
+                                # "updated_date": Helpers().get_time_now("UTC")
+                            },
+                        ]
+                    }
+                    item["pipeline_type"] = ["error_on_match_url"]
+                else:
+                    item["data_dict"] = {
+                        "match_id": match_id,
+                        "bookie_id": bookie_id,
+                        "odds": odds,
+                        "updated_date": Helpers().get_time_now(country="UTC"),
+                        "web_url": web_url,
+                        "http_status": response.status,
+                        "match_url_id": match_url,
+                    }
+                    if response.meta.get("queue_dutcher") is True:
+                        self.pipeline_type = ["match_odds", "queue_dutcher"]
+                    else:
+                        self.pipeline_type = ["match_odds"]
+                    item["pipeline_type"] = self.pipeline_type
                 yield item
+            else:
+                item["data_dict"] = {
+                    "match_infos": [
+                        {
+                            "match_url_id": match_url,
+                            "http_status": 1600,  # No odds found
+                            # "updated_date": Helpers().get_time_now("UTC")
+                        },
+                    ]
+                }
+                item["pipeline_type"] = ["error_on_match_url"]
+                yield item
+
         except Exception as e:
             pass
         finally:
@@ -510,9 +547,6 @@ class TwoStepsSpider(scrapy.Spider):
                 print(f"Closed page and context after parse_match with {len(self.odds[match_url])} odds for {match_url}")
             except Error as e:
                 pass
-
-
-
 
     def raw_html(self, response):
         print("Headers", response.headers)

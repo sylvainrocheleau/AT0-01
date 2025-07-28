@@ -170,12 +170,12 @@ class TwoStepsSpider(scrapy.Spider):
                     ),
                     PageMethod(
                         method="click",
-                        selector="//*[text()='GOLES TOTALES']",
+                        selector="//*[normalize-space()='GOLES TOTALES']",
                         # timeout=40000
                     ),
                     PageMethod(
                         method="click",
-                        selector="//*[text()='MARCADOR EXACTO']",
+                        selector="//*[normalize-space()='MARCADOR EXACTO']",
                         # timeout=40000
                     ),
                 ],

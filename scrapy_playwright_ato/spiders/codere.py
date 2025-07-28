@@ -14,11 +14,18 @@ from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeo
 from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError, TimeoutError
 from ..items import ScrapersItem
-from ..settings import get_custom_playwright_settings, soltia_user_name, soltia_password
+from ..settings import get_custom_playwright_settings, soltia_user_name, soltia_password, LOCAL_USERS
 from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables
 
 
 class TwoStepsSpider(scrapy.Spider):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            if os.environ["USER"] in LOCAL_USERS:
+                self.debug = True
+        except:
+            self.debug = False
     name = "Codere"
     mode = ""
     match_url = str
@@ -30,14 +37,15 @@ class TwoStepsSpider(scrapy.Spider):
 
     def start_requests(self):
         context_infos = get_context_infos(bookie_name=self.name)
-        self.context_infos = [x for x in context_infos if x["proxy_ip"] not in [] and x["cookies"] is not None]
+        # self.context_infos = [x for x in context_infos if x["proxy_ip"] not in [] and x["cookies"] is not None]
+        self.context_infos = [x for x in context_infos]
         for data in bookie_config(self.name):
             if len(data["url"]) < 5:
                 continue
             context_info = random.choice(self.context_infos)
             self.proxy_ip = context_info["proxy_ip"]
             self.comp_url=data["url"]
-            self.cookies = json.loads(context_info["cookies"])
+            # self.cookies = json.loads(context_info["cookies"])
             try:
                 yield scrapy.Request(
                     url=data["url"],
@@ -61,9 +69,9 @@ class TwoStepsSpider(scrapy.Spider):
                                 "username": soltia_user_name,
                                 "password": soltia_password,
                             },
-                            "storage_state" : {
-                                "cookies": json.loads(context_info["cookies"])
-                            },
+                            # "storage_state" : {
+                            #     "cookies": json.loads(context_info["cookies"])
+                            # },
                         },
                         playwright_accept_request_predicate = {
                             'activate': True,
@@ -115,7 +123,7 @@ class TwoStepsSpider(scrapy.Spider):
             context_info = random.choice(self.context_infos)
             self.match_url = match_info["url"]
             self.proxy_ip = context_info["proxy_ip"]
-            self.cookies = json.loads(context_info["cookies"])
+            # self.cookies = json.loads(context_info["cookies"])
             params = dict(
                 sport=response.meta.get("sport"),
                 competition=response.meta.get("competition"),
@@ -138,9 +146,9 @@ class TwoStepsSpider(scrapy.Spider):
                         "username": soltia_user_name,
                         "password": soltia_password,
                     },
-                    "storage_state": {
-                        "cookies": json.loads(context_info["cookies"])
-                    },
+                    # "storage_state": {
+                    #     "cookies": json.loads(context_info["cookies"])
+                    # },
                 },
                 playwright_accept_request_predicate={
                     'activate': True,
@@ -218,11 +226,11 @@ class TwoStepsSpider(scrapy.Spider):
         time.sleep(15)
         await page.close()
 
-        print("Cookies sent: ", response.request.headers.get("Cookie"))
-        print("Response cookies: ", response.headers.getlist("Set-Cookie"))
+        # print("Cookies sent: ", response.request.headers.get("Cookie"))
+        # print("Response cookies: ", response.headers.getlist("Set-Cookie"))
         # print("Page cookies: ", storage_state["cookies"])
         print("Response.headers: ", response.headers)
-        print("Cookie from db: ", self.cookies)
+        # print("Cookie from db: ", self.cookies)
 
     async def errback(self, failure):
         item = ScrapersItem()
@@ -271,12 +279,9 @@ class TwoStepsSpider(scrapy.Spider):
         yield item
 
     def closed(self, reason):
-        # try:
-        #     if os.environ.get("USER") == "sylvain":
-        #         pass
-        # except Exception as e:
-        #     requests.post(
-        #         "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
-        requests.post(
-            "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
+        if self.debug:
+            pass
+        else:
+            requests.post(
+                "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
 
