@@ -5,6 +5,7 @@ import datetime
 import mysql.connector
 import traceback
 import sys
+import ast
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 
 
@@ -97,13 +98,22 @@ def get_cookies(test_mode, headless, pause_time, filters):
         }
     elif test_mode is False:
         query_bookies = """
-        SELECT bookie_id, bookie_url, use_cookies
+        SELECT bookie_id, bookie_url, use_cookies, burnt_ips
         FROM ATO_production.V2_Bookies
         """
         cursor = connection.cursor()
         cursor.execute(query_bookies)
         bookies_infos = cursor.fetchall()
-        bookies_infos = [{"bookie_name": x[0], "url": x[1], "get_cookies": bool(x[2])} for x in bookies_infos]
+        bookies_infos = [
+            {
+                "bookie_name": x[0],
+                "url": x[1],
+                "get_cookies": bool(x[2]),
+                "burnt_ips": ast.literal_eval(x[3]) if x[3] and x[3] != 'None' else [],
+                "deleted_ips": [],
+            }
+            for x in bookies_infos
+        ]
         if filters["bookie_name"] != "all_bookies":
             bookies_infos = [x for x in bookies_infos if x["bookie_name"] == filters["bookie_name"]]
         if filters["only_cookies"] == True:
@@ -114,6 +124,26 @@ def get_cookies(test_mode, headless, pause_time, filters):
             for headers_per_browser in list_of_headers_per_browsers:
                 for proxy_ip in list_of_proxies:
                     for bookie_info in bookies_infos:
+                        if proxy_ip in bookie_info["burnt_ips"]:
+                            if proxy_ip in bookie_info["deleted_ips"]:
+                                print(f"Skipping burnt IP {proxy_ip} for bookie {bookie_info['bookie_name']}")
+                                continue
+                            print(f"Deleting burnt IP {proxy_ip} for bookie {bookie_info['bookie_name']}")
+
+                            try:
+                                delete_query = """
+                                               DELETE
+                                               FROM ATO_production.V2_Cookies
+                                               WHERE bookie = %s AND proxy_ip = %s
+                                               """
+                                cursor = connection.cursor()
+                                cursor.execute(delete_query, (bookie_info["bookie_name"], proxy_ip))
+                                connection.commit()
+                                bookie_info["deleted_ips"].append(proxy_ip)
+                            except Exception as e:
+                                print(f"Error deleting from V2_Cookies: {e}")
+                                connection.rollback()
+                            continue
                         bookie_name = bookie_info["bookie_name"]
                         bookie_url = bookie_info["url"]
                         user_agent_hash = int(hashlib.md5(
@@ -139,13 +169,14 @@ def get_cookies(test_mode, headless, pause_time, filters):
 
         if value["get_cookies"] == True:
             with sync_playwright() as pw:
+                proxy_settings = {
+                    "server": f"http://{proxy_ip}:58542/",
+                    "username": soltia_user_name,
+                    "password": soltia_password,
+                }
                 browser = pw.chromium.launch(
                     headless=headless,
-                    proxy={
-                        "server": "http://"+proxy_ip+":58542/",
-                        "username": soltia_user_name,
-                        "password": soltia_password,
-                    },
+                    proxy=proxy_settings,
                 )
                 # # To save cookies to a file first extract them from the browser context:
                 context = browser.new_context(
@@ -297,8 +328,8 @@ def test(filters):
     print(bookies_infos)
 
 if __name__ == "__main__":
-    get_cookies(test_mode=False, headless=True, pause_time=5, filters={"bookie_name": "DaznBet", "only_cookies": True})
-    # get_cookies(test_mode=False, headless=True, pause_time=5, filters={"bookie_name": "all_bookies", "only_cookies": True})
+    # get_cookies(test_mode=False, headless=True, pause_time=5, filters={"bookie_name": "Bwin", "1XBet": False})
+    get_cookies(test_mode=False, headless=True, pause_time=5, filters={"bookie_name": "all_bookies", "only_cookies": True})
     # test(filters={"bookie_name": "all_bookies", "only_cookies": True})
     # use_cookies()
 

@@ -3,15 +3,13 @@ import datetime
 import traceback
 import psutil
 import sys
-import mysql.connector
+# import mysql.connector
 from script_utilities import Connect, Helpers
 
 def update_dutcher():
     try:
         connection = Connect().to_db(db="ATO_production", table=None)
         cursor = connection.cursor()
-
-        # Récupérer tous les match_ids en une seule requête
         query = "SELECT vm.match_id FROM ATO_production.V2_Matches vm WHERE vm.queue_dutcher = 1 LIMIT 200"
         cursor.execute(query)
         match_ids = [result[0] for result in cursor.fetchall()]
@@ -21,7 +19,10 @@ def update_dutcher():
             print("No matches to process")
             return
 
-        # Préparer les requêtes SQL
+        placeholders = ",".join(["%s"] * len(match_ids))
+        query_delete_dutcher = f"DELETE FROM ATO_production.V2_Dutcher WHERE match_id IN ({placeholders})"
+
+        # Prepare the query to update or insert into V2_Dutcher
         query_update_dutcher = """
             REPLACE INTO ATO_production.V2_Dutcher (
                 bet_id, match_id, rating_qualifying_bets, rating_free_bets, rating_refund_bets,
@@ -58,11 +59,7 @@ def update_dutcher():
                     b2.bookie_id AS bookie_2,
                     vmu1.web_url AS url_1,
                     vmu2.web_url AS url_2,
-                    NOW() AS updated_date,
-                    ROW_NUMBER() OVER (
-                        PARTITION BY vmo1.match_id, vmo1.market, vmo1.result, vmo2.result
-                        ORDER BY vmu1.web_url, vmu2.web_url
-                    ) AS RowNum
+                    NOW() AS updated_date
                 FROM
                     ATO_production.V2_Matches_Odds vmo1
                 JOIN ATO_production.V2_Matches_Odds vmo2
@@ -103,13 +100,14 @@ def update_dutcher():
             SET queue_dutcher = 0
             WHERE match_id IN (%s)
         """ % (",".join(["%s"] * len(match_ids)))
-
-        # Exécuter les requêtes en une seule transaction
+        print("Executing queries...")
+        cursor.execute(query_delete_dutcher, match_ids)
+        print(f"Deleted existing dutcher {cursor.rowcount} records.")
         cursor.execute(query_update_dutcher, match_ids)
+        print(f"Inserted/updated dutcher {cursor.rowcount} records.")
         cursor.execute(query_update_queue, match_ids)
+        print(f"Updated queue_dutcher for {cursor.rowcount} matches.")
         connection.commit()
-
-        print(f"Processed {len(match_ids)} matches")
 
     except Exception as e:
         print(traceback.format_exc())

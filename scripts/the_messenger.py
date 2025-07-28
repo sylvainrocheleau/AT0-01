@@ -1,8 +1,3 @@
-# This script will be used to send html emails based reports extracted from the database.
-# We are going to have numerous function to handle different tasks.
-# One function will be used to format the email body.
-# Many functions will be used to extract data from the database. Each function responsible for a specific part of the report.
-# Lastly, one function will be used to send the email and will allow to enter many email addresses.
 import smtplib
 import traceback
 import locale
@@ -11,6 +6,9 @@ import os
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from script_utilities import Connect
+
+
+# check this out to make tables https://posit-dev.github.io/gt-extras/articles/intro.html
 
 class Messenger():
     def __init__(self):
@@ -116,10 +114,11 @@ class Messenger():
                 self.body += """<h3>Tenis</h3>"""
                 for item in paragraph["content"]["3"]:
                     self.body += item
+        if paragraph["from"] == "dutcher_most_recent_and_oldest_updated_date":
+            self.body += paragraph["content"]
 
     def count_matches_id_to_reviewd(self):
         print("Generating report on matches to be reviewed")
-        # In the table ATO_production.Dash_Teams_To_Update, count the number of row that "to_be_reviewed" in the colmumn "status"
         query = """
         SELECT COUNT(*) as count FROM ATO_production.Dash_Teams_To_Update
         WHERE status = 'to_be_reviewed'
@@ -143,21 +142,19 @@ class Messenger():
         count = result[0] if result else 0
         paragraph["content"].append(f"<li>Hay {count} equipos que tienen el estado to_be_reviewed en Dash_Teams_From_Betfair</li>")
 
-        # In the table ATO_production.ATO_production.Dash_Teams_From_Betfair, count the number of row that "unconfirmed" in the colmumn "status"
         query = """
         SELECT COUNT(*) as count FROM ATO_production.Dash_Teams_From_Betfair
-        WHERE status = 'unconfirmed'
+        WHERE status = 'unmatched' and update_date > NOW() - INTERVAL 7 day
         """
         self.cursor.execute(query)
         result = self.cursor.fetchone()
         count = result[0] if result else 0
-        paragraph["content"].append(f"<li>Hay {count} equipos que tienen el estado unconfirmed en Dash_Teams_From_Betfair</li>")
+        paragraph["content"].append(f"<li>Hay {count} equipos que tienen el estado unmatched en Dash_Teams_From_Betfair</li>")
 
         self.add_to_body(paragraph)
 
     def report_on_competitions_01(self):
         print("Generating report on competitions status with TENNIS FILTER ON")
-        # select the view ATO_production.Dash_Competitions_and_MatchUrlCounts_per_Bookie
         query = """
         SELECT * FROM ATO_production.Dash_Competitions_and_MatchUrlCounts_per_Bookie
         """
@@ -172,7 +169,7 @@ class Messenger():
             bookie_id = row["bookie_id"]
             for key, value in row.items():
                 if any(sub in key for sub in ["ATP", "Challenger", "Exhibition", "GranSlam", "BillieJeanKingCup", "DavisCup", "UnitedCup"]):
-                    # Skip keys that are not related to ATP or Challenger
+                    # Skip keys that are not related to Tennis
                     continue
                 if "_status" in key:
                     if value == 301:
@@ -230,6 +227,43 @@ class Messenger():
 
         self.add_to_body(paragraph)
 
+    def dutcher_most_recent_and_oldest_updated_date(self):
+        print("Generating report on dutcher first & last updated dates")
+        oldest_query = """
+            SELECT updated_date, match_id
+FROM        ATO_production.V2_Dutcher
+            ORDER BY updated_date ASC
+            LIMIT 1;
+        """
+        most_recent_query = """
+            SELECT updated_date, match_id
+            FROM ATO_production.V2_Dutcher
+            ORDER BY updated_date DESC
+            LIMIT 1;
+            """
+        self.cursor.execute(oldest_query)
+        oldest_result = self.cursor.fetchone()
+        self.cursor.execute(most_recent_query)
+        most_recent_result = self.cursor.fetchone()
+        paragraph = {}
+        paragraph["from"] = "dutcher_most_recent_and_oldest_updated_date"
+        paragraph["title"] = "<h2>Fecha de actualización más antigua y más reciente de Dutcher</h2>"
+        if oldest_result:
+            oldest_date = oldest_result[0]
+            oldest_match_id = oldest_result[1]
+            paragraph["content"] = (f"<li>Más antigua de Dutcher es {oldest_date.strftime('%Y-%m-%d %H:%M')} "
+                                    f"UTC para match_id {oldest_match_id}.</li>")
+        else:
+            paragraph["content"] = "<p>No se encontraron registros en Dutcher.</p>"
+        if most_recent_result:
+            most_recent_date = most_recent_result[0]
+            most_recent_match_id = most_recent_result[1]
+            paragraph["content"] += (f"<li>Más reciente de Dutcher es {most_recent_date.strftime('%Y-%m-%d %H:%M')} "
+                                     f"UTC para match_id {most_recent_match_id}.</li>")
+        else:
+            paragraph["content"] += "<p>No se encontraron registros en Dutcher.</p>"
+        self.add_to_body(paragraph)
+
 
 if __name__ == "__main__":
     try:
@@ -254,6 +288,7 @@ if __name__ == "__main__":
     Messenger.count_matches_id_to_reviewd()
     Messenger.report_on_competitions_01()
     Messenger.active_competitions()
+    Messenger.dutcher_most_recent_and_oldest_updated_date()
     if debug:
         recipients = "info@sylvainrocheleau.com"
     else:

@@ -20,10 +20,10 @@ TABLES = [
     {'name': 'V2_Matches_Odds', 'key': ['bet_id', 'bookie_id']},
     {'name':'V2_Matches_Urls', 'key': ['match_url_id']},
     {'name': 'V2_Matches_Urls_No_Ids', 'key': 'match_url_id'},
-    {'name': 'V2_Dutcher', 'key': ['bet_id', 'bookie_id', 'bookie_2']},
-    {'name': 'V2_Oddsmatcher', 'key': ['bet_id', 'lay_odds', 'bookie_id']},
+    # {'name': 'V2_Dutcher', 'key': ['bet_id', 'bookie_id', 'bookie_2']},
+    # {'name': 'V2_Oddsmatcher', 'key': ['bet_id', 'lay_odds', 'bookie_id']},
     {'name': 'V2_Sports', 'key': ['sport_id']},
-    {'name':'V2_Teams', 'key': ['team_id']},
+    # {'name':'V2_Teams', 'key': ['team_id']},
 ]
 
 SQL_PORT = 3306
@@ -128,6 +128,8 @@ def sync_table(table_info):
     query = f"SELECT * FROM {table}"
 
     try:
+        # Ensure the connection is alive before using it
+        remote_conn.ping(reconnect=True, attempts=3, delay=5)
         df = pd.read_sql(query, remote_conn)
     except Exception as e:
         print(traceback.format_exc())

@@ -15,8 +15,8 @@ class Connect():
         conn_params = {
             'user': SQL_USER,
             'password': SQL_PWD,
-            # 'host': "127.0.0.1",
-            'host': "164.92.191.102",
+            'host': "127.0.0.1",
+            # 'host': "164.92.191.102",
             'port': 3306,
             'database': db,
         }
@@ -199,14 +199,14 @@ class CreateViews:
                     'CREATE OR REPLACE VIEW ATO_production.Dash_Competitions_and_MatchUrlCounts_per_Bookie AS SELECT b.bookie_id ',
                     GROUP_CONCAT(
                         CONCAT(
-                            ', (SELECT cu.http_status FROM ATO_production.V2_Competitions_Urls cu WHERE cu.bookie_id = b.bookie_id AND cu.competition_id = ''', c.competition_id, ''' LIMIT 1) AS `', c.competition_id, '_status`',
+                            ', (SELECT MIN(cu.http_status) FROM ATO_production.V2_Competitions_Urls cu WHERE cu.bookie_id = b.bookie_id AND cu.competition_id = ''', c.competition_id, ''' LIMIT 1) AS `', c.competition_id, '_status`',
                             ', (SELECT COUNT(DISTINCT mu.match_url_id) FROM ATO_production.V2_Matches_Urls mu JOIN ATO_production.V2_Matches m ON mu.match_id = m.match_id WHERE mu.bookie_id = b.bookie_id AND m.competition_id = ''', c.competition_id, ''') AS `', c.competition_id, '_count`',
                             ', (SELECT cu.competition_url_id FROM ATO_production.V2_Competitions_Urls cu WHERE cu.bookie_id = b.bookie_id AND cu.competition_id = ''', c.competition_id, ''' LIMIT 1) AS `', c.competition_id, '_url`'
                         )
                         ORDER BY c.competition_id
                         SEPARATOR ''
                     ),
-                    ' FROM ATO_production.V2_Bookies b WHERE b.V2_ready = 1 AND b.bookie_id NOT IN (''BetfairExchange'', ''AllSportAPI'');'
+                    ' FROM ATO_production.V2_Bookies b WHERE b.V2_ready = 1 AND b.bookie_id NOT IN (''AllSportAPI'');'
                 ) AS view_sql
                 FROM ATO_production.V2_Competitions c
                 # WHERE c.start_date <= NOW() AND c.end_date >= NOW();
