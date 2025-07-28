@@ -52,3 +52,9 @@ Liste de bookies à ajouter ppour le tennis:
 - RetaBet
 - WilliamHill
 - ZeBet : Erreur 403 sur lien de la competition(à revoir)
+- EnRacha: Fait(to be reviewed)
+- JockerBet
+- LeoVegas
+- Paston
+- WinaMax
+- YaassCasino
