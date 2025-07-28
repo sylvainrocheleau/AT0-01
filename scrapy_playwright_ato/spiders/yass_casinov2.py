@@ -19,17 +19,17 @@ class OneStepJsonSpider(scrapy.Spider):
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
                 print("PROCESSING IN DEBUG MODE")
-                self.competitions = [x for x in bookie_config(bookie=["YaassCasino"]) if x["competition_id"] == "LigaACB"]
-                # self.competitions = bookie_config(bookie=["YaassCasino"])
+                # self.competitions = [x for x in bookie_config(bookie=["YaassCasino"]) if x["competition_id"] == "Partidosamistosos"]
+                self.competitions = bookie_config(bookie=["YaassCasino"])
 
-                self.match_filter = {"type": "bookie_and_comp", "params": ["YaassCasino", "LigaACB"]}
-                # self.match_filter = {"type": "bookie_id", "params": ["YaassCasino"]}
-                # self.match_filter = {"type": "match_url", "params": [
-                #     "https://www.winamax.es/apuestas-deportivas/match/56690703"]}
+                # self.match_filter = {"type": "bookie_and_comp", "params": ["YaassCasino", "UEFAConferenceLeague"]}
+                self.match_filter = {"type": "bookie_id", "params": ["YaassCasino", 1]}
+                # self.match_filter = {"type": "match_url_id", "params": [
+                #     "https://www.yaasscasino.es/apuestas/event/9f6c9150-219e-4cca-b54c-e03a0f96765e"]}
         except:
             self.debug = False
             self.competitions = bookie_config(bookie=["YaassCasino"])
-            self.match_filter = {"type": "bookie_id", "params": ["YaassCasino"]}
+            self.match_filter = {"type": "bookie_id", "params": ["YaassCasino", 1]}
 
     name = "YaassCasinov2"
     custom_settings = {
@@ -48,7 +48,6 @@ class OneStepJsonSpider(scrapy.Spider):
     all_competitions = {x[1]: {"competition_name_es": x[2], "competition_url_id": x[0]} for x in all_competitions if
                         x[4] == "YaassCasino"}
     match_filter_enabled = True
-    v2 = True
     match_found = 0
     header = {
         'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:132.0) Gecko/20100101 Firefox/132.0',
@@ -84,7 +83,7 @@ class OneStepJsonSpider(scrapy.Spider):
                     'skipSummary': True,
                     'skipTournament': False,
                     'onlyPlayerMarkets': False,
-                    'first': 30,
+                    'first': 100,
                     'status': 'All',
                     'tournamentsId': [
                         competition_id,
@@ -210,6 +209,13 @@ class OneStepJsonSpider(scrapy.Spider):
 
     def parse_match(self, response):
         item = ScrapersItem()
+        matches_details_and_urls = Helpers().matches_details_and_urls(
+            filter=self.match_filter_enabled,
+            filter_data=self.match_filter
+        )
+        matches_details_and_urls = {k: [v for v in lst if v['to_delete'] != 1] for k, lst in
+                                    matches_details_and_urls.items() if
+                                    any(v['to_delete'] != 1 for v in lst)}
         match_infos = parse_competition(
             response=response,
             bookie_id="YaassCasino",
@@ -227,8 +233,8 @@ class OneStepJsonSpider(scrapy.Spider):
                     bookie_id=response.meta.get("bookie_id"),
                     debug=self.debug
                 )
-                if self.debug:
-                    print("match_infos", match_infos)
+                # if self.debug:
+                #     print("match_infos", match_infos)
                 if response.meta.get("competition_id") in self.map_matches.keys():
                     item["data_dict"] = {
                         "map_matches": self.map_matches[response.meta.get("competition_id")],
@@ -269,6 +275,7 @@ class OneStepJsonSpider(scrapy.Spider):
             print(traceback.format_exc())
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
 
+
         jsonresponse = json.loads(response.text)
         for key, value in jsonresponse["data"]["currentOffer"].items():
             if key == "nodes":
@@ -298,8 +305,6 @@ class OneStepJsonSpider(scrapy.Spider):
 
                                             odds.append({"Market": market_name, "Result": result, "Odds": odd })
 
-
-
                             away_team_normalised = next((team['away_team_normalized'] for team in match_infos
                                   if team['away_team'] == away_team and len(team['match_id']) > 0), None)
                             home_team_normalised = next((team['home_team_normalized'] for team in match_infos
@@ -311,6 +316,19 @@ class OneStepJsonSpider(scrapy.Spider):
                             match_url_id = next((team['url'] for team in match_infos
                                             if team['home_team'] == home_team and team['away_team'] == away_team), None)
 
+                            if match_url_id not in [match['match_url_id'] for match in matches_details_and_urls.values() for match in match]:
+                                if self.debug:
+                                    print("match_url_id not found in matches_details_and_urls", match_url_id, match_id)
+                                continue
+                            if match_id not in [match['match_id'] for match in matches_details_and_urls.values() for match in match]:
+                                if self.debug:
+                                    print("match_id not found in matches_details_and_urls", match_url_id, match_id)
+                                continue
+                            else:
+                                if self.debug:
+                                    print("Match found in matches_details_and_urls", match_url_id, match_id)
+                                    # print("entry_02", entry_02)
+                                    # print("entry_02[markets", entry_02["markets"])
                             if away_team_normalised is not None and home_team_normalised is not None:
                                 odds = Helpers().build_ids(
                                     id_type="bet_id",
@@ -324,29 +342,40 @@ class OneStepJsonSpider(scrapy.Spider):
                                         )
                                     }
                                 )
-                                item["data_dict"] = {
-                                    "match_id": match_id,
-                                    "bookie_id": response.meta.get("bookie_id"),
-                                    "odds": odds,
-                                    "updated_date": Helpers().get_time_now(country="UTC"),
-                                    "web_url": web_url,
-                                    "http_status": response.status,
-                                    "match_url_id": match_url_id,
-                                }
+                                if not odds:
+                                    item["data_dict"] = {
+                                        "match_infos": [
+                                            {
+                                                "match_url_id": match_url_id,
+                                                "http_status": 1600,  # No odds found
+                                                # "updated_date": Helpers().get_time_now("UTC")
+                                            },
+                                        ]
+                                    }
+                                    item["pipeline_type"] = ["error_on_match_url"]
+                                else:
+                                    item["data_dict"] = {
+                                        "match_id": match_id,
+                                        "bookie_id": response.meta.get("bookie_id"),
+                                        "odds": odds,
+                                        "updated_date": Helpers().get_time_now(country="UTC"),
+                                        "web_url": web_url,
+                                        "http_status": response.status,
+                                        "match_url_id": match_url_id,
+                                    }
+                                    item["pipeline_type"] = ["match_odds"]
+                                if "data_dict" in item:
+                                    yield item
                             else:
                                 if self.debug:
                                     print("No match found for teams", home_team, away_team)
-
-                            item["pipeline_type"] = ["match_odds"]
-                            if "data_dict" in item:
-                                yield item
 
     def raw_html(self, response):
         try:
             print("### TEST OUTPUT")
             print("Headers", response.headers)
             # print(response.text)
-            print("Proxy_ip", self.proxy_ip)
+            # print("Proxy_ip", self.proxy_ip)
             parent = os.path.dirname(os.getcwd())
             with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/" + self.name + "_response" + ".txt", "w") as f:
                 f.write(response.text) # response.meta["playwright_page"]

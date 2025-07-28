@@ -66,8 +66,8 @@ def restart_remote_conn() :
         remote_conn = None
 
 # Back up the database
-def dump_database(conn_params, output_dir="db_backups"):
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+def dump_database(conn_params, output_dir="../archives/db_backups"):
+    timestamp = datetime.now().strftime("%Y%m%d")
     filename = f"{conn_params['database']}_backup_{timestamp}.sql"
     filepath = os.path.join(output_dir, filename)
 

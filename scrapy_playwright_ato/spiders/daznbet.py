@@ -50,8 +50,8 @@ class TwoStepsSpider(scrapy.Spider):
             self.user_agent_hash = context_info["user_agent_hash"]
             try:
                 yield scrapy.Request(
-                    # url=data["url"].replace("https://www.daznbet.es/es-es/deportes/", "https://sb-pp-esfe.daznbet.es/"),
-                    url=data["url"],
+                    url=data["url"].replace("https://www.daznbet.es/es-es/deportes/", "https://sb-pp-esfe.daznbet.es/"),
+                    # url=data["url"],
                     callback=self.match_requests,
                     meta=dict(
                         sport= data["sport"],
@@ -170,12 +170,12 @@ class TwoStepsSpider(scrapy.Spider):
                     ),
                     PageMethod(
                         method="click",
-                        selector="//*[text()='GOLES TOTALES']",
+                        selector="//*[normalize-space()='GOLES TOTALES']",
                         # timeout=40000
                     ),
                     PageMethod(
                         method="click",
-                        selector="//*[text()='MARCADOR EXACTO']",
+                        selector="//*[normalize-space()='MARCADOR EXACTO']",
                         # timeout=40000
                     ),
                 ],

@@ -9,21 +9,27 @@ def get_comps_for_bookie():
     print(competitions)
 
 def teams_and_dates_from_response():
+    from scrapy.http import HtmlResponse
     from parsing_logic import parse_competition
     from utilities import Helpers
     from parsel import Selector
 
     # VARIABLES TO CHANGE
-    bookie_id = str(input("enter bookie_id "))
-    competition_id = str(input("enter competition_id "))
-    sport_id = str(input("enter sport_id "))
-    normalize = bool(input("normalize team names? (True/False) "))
+    # bookie_id = str(input("enter bookie_id "))
+    # competition_id = str(input("enter competition_id "))
+    # sport_id = str(input("enter sport_id "))
+    # normalize = bool(input("normalize team names? (True/False) "))
+    bookie_id = "BetWay"
+    competition_id = 'Partidosamistosos'
+    sport_id = "1"
+    normalize = False
     # END VARIABLES TO CHANGE
 
     map_matches_urls = []
     try:
         with open('comp_spider_01_response.txt') as f:
-            response = Selector(text=f.read())
+            # response = Selector(text=f.read())
+            response = f.read()
         match_infos = parse_competition(response=response, bookie_id=bookie_id, competition_id=competition_id,
                                         competition_url_id="", sport_id=sport_id, map_matches_urls=map_matches_urls,
                                         debug=True)
@@ -83,23 +89,30 @@ def check_list_of_markets():
     sport_id = str(input("enter sport_id "))
     # END VARIABLES TO CHANGE
     print("List of markets for bookie_id", list_of_markets_V2[bookie_id][sport_id])
+
 def get_matches_details_and_urls():
     from utilities import Helpers
-    match_filter_enabled = True
-    # match_filter = {"type": "bookie_and_comp", "params": ["Bwin", "LigaACB"]}
-    match_filter = {"type": "match_url_id", "params":
-        ["https://www.zebet.es/es/event/40h73-paris_sg_botafogo_rj"]}
+    match_filter_enabled = False
+    match_filter  = {}
+    # match_filter = {"type": "bookie_and_comp", "params": ["Sportium", "UEFAConferenceLeague"]}
+    # match_filter = {"type": "bookie_id", "params": ["Sportium", 1]}
+    # match_filter = {"type": "match_url_id", "params": [
+    #     "https://www.sportium.es/apuestas/sports/soccer/events/17030632"]}
 
     matches_details_and_urls = Helpers().matches_details_and_urls(
             filter=match_filter_enabled,
             filter_data=match_filter
         )
+    matches_details_and_urls = {k: [v for v in lst if v['to_delete'] != 1] for k, lst in
+                                matches_details_and_urls.items() if
+                                any(v['to_delete'] != 1 for v in lst)}
+    print(len(matches_details_and_urls))
     print(matches_details_and_urls)
     return None
 
 if __name__ == "__main__":
     # check_list_of_markets()
     # get_comps_for_bookie()
-    # teams_and_dates_from_response()
+    teams_and_dates_from_response()
     # get_odds_from_response()
-    get_matches_details_and_urls()
+    # get_matches_details_and_urls()

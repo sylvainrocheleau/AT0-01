@@ -47,23 +47,29 @@ class TwoStepsSpider(scrapy.Spider):
                 # No filters
                 # competitions = bookie_config(bookie=["all_bookies"])
                 # Filter by bookie that have errors
-                # competitions = bookie_config(bookie=["ZeBet", "http_errors"])
+                # competitions = bookie_config(bookie=["Bwin", "http_errors"])
+                # Filter by bookie
+                competitions = bookie_config(bookie=["1XBet"])
                 # Filter by competition
                 # competitions = [x for x in bookie_config(bookie=["all_bookies"]) if x["competition_id"] == "AmistososdeEliteClub"]
                 # Filter by boookie and competition
                 competitions = [x for x in bookie_config(bookie=["EnRacha"]) if x["competition_id"] == "ATP"]
 
         except Exception as e:
-            if 0 <= Helpers().get_time_now("UTC").hour < 4:
-                print("PROCESSING ALL COMPETITIONS between and midnight and 4AM UTC")
+            if (
+                0 <= Helpers().get_time_now("UTC").hour < 1
+                or 10 <= Helpers().get_time_now("UTC").hour < 11
+            ):
+                print("PROCESSING ALL COMPETITIONS")
                 competitions = bookie_config(bookie=["all_bookies"]) #v2_competitions_url
             else:
-                print("PROCESSING COMPETITIONS WITH HTTP ERRORS between 4AM and midnight UTC")
+                print("PROCESSING COMPETITIONS WITH HTTP ERRORS")
                 competitions = bookie_config(bookie=["all_bookies", "http_errors"])
+
 
         competitions = [x for x in competitions if x["scraping_tool"] in self.allowed_scraping_tools]
         if self.debug:
-            print("competitions to scrape", competitions)
+            print("competitions to scrape", [x["competition_id"] for x in competitions])
         for data in competitions:
             try:
                 if data["scraping_tool"] in ["requests", "playwright", "zyte_proxy_mode", "zyte_api"]:
@@ -72,8 +78,8 @@ class TwoStepsSpider(scrapy.Spider):
                 if data["scraping_tool"] == "playwright":
                     self.close_playwright = True
                 url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="competition", data=data)
-                if self.debug:
-                    print("url to scrape", url, "dont_filter", dont_filter, "meta_request", meta_request)
+                # if self.debug:
+                #     print("url to scrape", url, "dont_filter", dont_filter, "meta_request", meta_request)
                 yield scrapy.Request(
                     dont_filter=dont_filter,
                     url=url,
@@ -109,6 +115,8 @@ class TwoStepsSpider(scrapy.Spider):
             map_matches_urls=self.map_matches_urls,
             debug=self.debug
         )
+        if self.debug:
+            print("match_infos", match_infos)
 
         try:
             if len(match_infos) > 0:
@@ -190,7 +198,17 @@ class TwoStepsSpider(scrapy.Spider):
         except Exception as e:
             Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
 
+        try:
+            if self.close_playwright is True:
+                page = failure.request.meta["playwright_page"]
+                response_playwright = await page.content()
+        except KeyError:
+            if self.debug:
+                print("No playwright page in failure request meta")
+            page = None
+
         if failure.check(HttpError):
+            #TODO: check this status instead failure.value.response.status if failure.value.response else 'No response'
             response = failure.value.response
             status = response.status
             url = response.url
@@ -206,6 +224,17 @@ class TwoStepsSpider(scrapy.Spider):
             url = request.url
             status = 501
             print("TimeoutError on %s", request.url)
+        elif (
+            self.close_playwright is True
+            and any(s in response_playwright for s in [
+            "Lo sentimos", "No hay apuestas disponibles", "Ningún evento", " no hay eventos disponibles"
+        ]
+                    )
+        ):
+            request = failure.request
+            url = request.url
+            status = 1500
+            print("No match error from sorry message", request.url)
         else:
             try:
                 request = failure.request

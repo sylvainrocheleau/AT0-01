@@ -24,25 +24,27 @@ class WebsocketsSpider(Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                # self.competitions = [x for x in bookie_config(bookie=["Versus"]) if x["competition_id"] == "FIFAClubWorldCup"]
-                # self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", "FIFAClubWorldCup"]}
+                self.competitions = [x for x in bookie_config(bookie=["Versus"]) if x["competition_id"] == "UEFAConferenceLeague"]
+                self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", "UEFAConferenceLeague"]}
 
                 # self.match_filter = {"type": "match_url_id", "params": [
-                #     "https://href.li/?https://www.versus.es/apuestas/sports/soccer/events/21246405"]}
+                #     "https://www.versus.es/apuestas/sports/soccer/events/21377160"]}
 
-                self.competitions = bookie_config(bookie=["Versus"])
-                self.match_filter = {"type": "bookie_id", "params": ["Versus", 2]}
+                # self.competitions = bookie_config(bookie=["Versus"])
+                # self.match_filter = {"type": "bookie_id", "params": ["Versus", 1]}
         except:
-            # TODO: change the time to smaller time range
-            if 0 <= Helpers().get_time_now("UTC").hour <= 24:
+            if (
+                0 <= Helpers().get_time_now("UTC").hour < 1
+                or 10 <= Helpers().get_time_now("UTC").hour < 11
+            ):
                 print("PROCESSING ALL COMPETITIONS")
-                self.competitions = bookie_config(bookie=["Versus"])
+                self.competitions = bookie_config(bookie=["Versus"])  # v2_competitions_url
             else:
-                print("PROCESSING COMPETITIONS")
+                print("PROCESSING COMPETITIONS WITH HTTP ERRORS")
                 self.competitions = bookie_config(bookie=["Versus", "http_errors"])
-            self.match_filter = {"type": "bookie_id", "params": ["Versus", 2]}
+            self.match_filter = {"type": "bookie_id", "params": ["Versus",1]}
             self.debug = False
-    name = "Versus"
+    name = "Versusv2"
     start_urls = ["data:,"]
     custom_settings = {"TWISTED_REACTOR": "twisted.internet.asyncioreactor.AsyncioSelectorReactor"}
     context_infos = get_context_infos(bookie_name="Versus")
@@ -56,7 +58,6 @@ class WebsocketsSpider(Spider):
     all_competitions = Helpers().load_competitions_urls_and_sports()
     all_competitions = {x[1]: {"competition_name_es": x[2], "competition_url_id": x[0] } for x in all_competitions if x[4] == "Versus"}
     match_filter_enabled = True
-    v2 = False
 
     async def keep_alive(self, interval=5):
         while True:
@@ -145,7 +146,7 @@ destination:/api/events/{match_id}
 
                 match_infos = parse_competition(
                     response=matches_details,
-                    bookie_id=self.name,
+                    bookie_id="Versus",
                     competition_id=competition["competition_id"],
                     competition_url_id=competition["competition_url_id"],
                     sport_id=competition["sport_id"],
@@ -168,7 +169,7 @@ destination:/api/events/{match_id}
                                 "comp_infos": [
                                     {
                                         "competition_url_id": competition["competition_url_id"],
-                                        "http_status": 200,
+                                        "http_status": response.status,
                                         "updated_date": Helpers().get_time_now("UTC")
                                     },
                                 ]
@@ -188,7 +189,7 @@ destination:/api/events/{match_id}
                             "comp_infos": [
                                 {
                                     "competition_url_id": competition["competition_url_id"],
-                                    "http_status": 200,
+                                    "http_status": response.status,
                                     "updated_date": Helpers().get_time_now("UTC")
                                 },
                             ]
@@ -300,36 +301,30 @@ destination:/api/markets/multi
                                 debug=self.debug
                             )
                             item = ScrapersItem()
-                            item["Home_Team"] = data["home_team"]
-                            item["Away_Team"] = data["away_team"]
-                            item["Bets"] = normalize_odds_variables(odds, data["sport_id"], data["home_team"], data["away_team"])
-                            item["extraction_time_utc"] = datetime.datetime.utcnow()
-                            if data["sport_id"] == "1":
-                                sport = "Football"
-                            elif data["sport_id"] == "2":
-                                sport = "Basketball"
-                            item["Sport"] = sport
-                            item["Competition"] = self.all_competitions[data["competition_id"]]["competition_name_es"]
-                            item["Date"] = data['date']
-                            item["Match_Url"] = data["match_url_id"]
-                            item["Competition_Url"] = self.all_competitions[data["competition_id"]]["competition_url_id"]
-                            item["pipeline_type"] = ["v1"]
-                            if len(item["Bets"]) > 0:
-                                yield item
-                            if self.v2:
-                                item = ScrapersItem()
-                                odds = Helpers().build_ids(
-                                    id_type="bet_id",
-                                    data={
-                                        "match_id": data["match_id"],
-                                        "odds": normalize_odds_variables(
-                                            odds,
-                                            data["sport_id"],
-                                            data["home_team"],
-                                            data["away_team"],
-                                        )
-                                    }
-                                )
+                            odds = Helpers().build_ids(
+                                id_type="bet_id",
+                                data={
+                                    "match_id": data["match_id"],
+                                    "odds": normalize_odds_variables(
+                                        odds,
+                                        data["sport_id"],
+                                        data["home_team"],
+                                        data["away_team"],
+                                    )
+                                }
+                            )
+                            if not odds:
+                                item["data_dict"] = {
+                                    "match_infos": [
+                                        {
+                                            "match_url_id": data["match_url_id"],
+                                            "http_status": 1600,  # No odds found
+                                            # "updated_date": Helpers().get_time_now("UTC")
+                                        },
+                                    ]
+                                }
+                                item["pipeline_type"] = ["error_on_match_url"]
+                            else:
                                 item["data_dict"] = {
                                     "match_id": data["match_id"],
                                     "bookie_id": data["bookie_id"],
@@ -339,10 +334,20 @@ destination:/api/markets/multi
                                     "http_status": response.status,
                                     "match_url_id": data["match_url_id"],
                                 }
-
                                 item["pipeline_type"] = ["match_odds"]
-                                yield item
+                            yield item
                     else:
+                        item["data_dict"] = {
+                            "match_infos": [
+                                {
+                                    "match_url_id": data["match_url_id"],
+                                    "http_status": 1600,  # No odds found
+                                    # "updated_date": Helpers().get_time_now("UTC")
+                                },
+                            ]
+                        }
+                        item["pipeline_type"] = ["error_on_match_url"]
+                        yield item
                         print("match_market_ids is", type(match_market_ids))
                         print("match_market_ids length", len(match_market_ids))
                         print("match_market_ids keys", match_market_ids.keys())
@@ -359,11 +364,8 @@ destination:/api/markets/multi
 
     def closed(self, reason):
         if self.debug:
-            print(f"Spider {self.name} closed with reason: {reason}")
+            print(f"Spider closed with reason: {reason}")
             pass
-        else:
-            requests.post(
-            "https://data.againsttheodds.es/Zyte.php?bookie=" + self.name + "&project_id=643480")
 
     def start_requests(self):
         try:
