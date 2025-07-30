@@ -54,6 +54,7 @@ class MetaSpider(scrapy.Spider):
 
     def get_schedule(self):
         if self.debug:
+            frequency_group = None
             matches_details_and_urls_from_db = Helpers().matches_details_and_urls(
                 filter=self.match_filter_enabled,
                 filter_data=self.match_filter
@@ -69,7 +70,7 @@ class MetaSpider(scrapy.Spider):
                 )
                 if matches  # Only include if matches is not empty
             }
-            return matches_details_and_urls, len(matches_details_and_urls)
+            return matches_details_and_urls, len(matches_details_and_urls), frequency_group
 
         matches_details_and_urls: dict[str, list] = {}
         frequency_group = str

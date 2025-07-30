@@ -56,7 +56,7 @@ Liste de bookies à ajouter ppour le tennis:
 - ZeBet : Erreur 403 sur lien de la competition(à revoir)
 - EnRacha: Fait
 - JockerBet: a revoir
-- LeoVegas: match_spider
+- LeoVegas: FAIT
 - Paston
 - WinaMax
 - YaassCasino
