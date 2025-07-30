@@ -49,11 +49,11 @@ class TwoStepsSpider(scrapy.Spider):
                 # Filter by bookie that have errors
                 # competitions = bookie_config(bookie=["Bwin", "http_errors"])
                 # Filter by bookie
-                competitions = bookie_config(bookie=["1XBet"])
+                # competitions = bookie_config(bookie=["1XBet"])
                 # Filter by competition
                 # competitions = [x for x in bookie_config(bookie=["all_bookies"]) if x["competition_id"] == "AmistososdeEliteClub"]
                 # Filter by boookie and competition
-                competitions = [x for x in bookie_config(bookie=["EnRacha"]) if x["competition_id"] == "ATP"]
+                competitions = [x for x in bookie_config(bookie=["LeoVegas"]) if x["competition_id"] == "ATP"]
 
         except Exception as e:
             if (

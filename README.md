@@ -22,6 +22,8 @@
    * Ajouter la compétition dans la BD locale en suivant les directives de [Add or update competitions urls](https://docs.google.com/document/d/1btxYAmFdTrhuHYIDWfrwl2DV_G3_HD1DXYhBupCqMlk/edit?tab=t.0#bookmark=id.43abmljpfumc)
    *
 3. Faire tourner le script de synchronistation de BD
+4. Exécuter le fichier [the_janitor.py](scripts/the_janitor.py) pour pouvoir supprimer les matchs qui ne sont plus d'actualité
+5. Faire tourner AllSportAPI (scrapy crawl AllSportAPI) pour effectuer une mise à jour des matchs dans la BD
 4. Faire tourner comp_spider_01 pour s'assurer que les noms de match sont sauvegardés dans V2_Matches_Urls
 5. Vérifier que les noms d'équipe sont normalisés dans V2_Team_Names
 6. Si aucune équipe est normalisée, aller dans Dash_Teams_to_update et filter par bookie et compétition
@@ -52,9 +54,9 @@ Liste de bookies à ajouter ppour le tennis:
 - RetaBet
 - WilliamHill
 - ZeBet : Erreur 403 sur lien de la competition(à revoir)
-- EnRacha: Fait(to be reviewed)
-- JockerBet
-- LeoVegas
+- EnRacha: Fait
+- JockerBet: a revoir
+- LeoVegas: match_spider
 - Paston
 - WinaMax
 - YaassCasino

@@ -244,14 +244,14 @@ def select_next_match_date():
         return None
 
 if __name__ == "__main__":
-    stop_hanging_spiders()
-    select_next_match_date()
+    # stop_hanging_spiders()
+    # select_next_match_date()
     delete_old_matches()
-    delete_old_matches_with_no_id()
-    delete_old_dutcher_entries()
-    delete_matches_odds_with_bad_http_status()
-    delete_old_cookies()
-    delete_old_logs()
+    # delete_old_matches_with_no_id()
+    # delete_old_dutcher_entries()
+    # delete_matches_odds_with_bad_http_status()
+    # delete_old_cookies()
+    # delete_old_logs()
 
     process_all_the_time = False
     if datetime.datetime.now().minute == 0 or process_all_the_time:

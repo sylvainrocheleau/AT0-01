@@ -31,17 +31,17 @@ class MetaSpider(scrapy.Spider):
         if os.environ["USER"] in LOCAL_USERS:
             # custom_settings["PLAYWRIGHT_MAX_CONTEXTS"] = 10
             # custom_settings["CONCURRENT_REQUESTS"] = 50
-            debug = False
-            match_filter_enabled = False
-            scraping_group = [2]
+            debug = True
+            match_filter_enabled = True
+            scraping_group = [1,2,3,4]
 
             # FILTER OPTIONS
             # match_filter = {}
             # match_filter = {"type": "bookie_id", "params":["Paf", 0]}
-            # match_filter = {"type": "bookie_and_comp", "params": ["1XBet", "UEFAConferenceLeague"]}
+            match_filter = {"type": "bookie_and_comp", "params": ["LeoVegas", "ATP"]}
             # match_filter = {"type": "comp", "params":["MajorLeagueSoccerUSA"]}
-            match_filter = {"type": "match_url_id",
-                            "params":["https://sports.bwin.es/es/sports/eventos/fk-rabotnicki-skopje-torpedo-belaz-zhodino-2:7638098"]}
+            # match_filter = {"type": "match_url_id",
+            #                 "params":["https://sports.bwin.es/es/sports/eventos/fk-rabotnicki-skopje-torpedo-belaz-zhodino-2:7638098"]}
     except:
         match_filter_enabled = False
         match_filter = {}

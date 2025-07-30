@@ -28,7 +28,7 @@ class MetaSpider(scrapy.Spider):
             match_filter = {}
             # FILTER OPTIONS
             # match_filter = {"type": "bookie_id", "params":["EnRacha"]}
-            match_filter = {"type": "bookie_and_comp", "params": ["EnRacha", "ATP"]}
+            match_filter = {"type": "bookie_and_comp", "params": ["JokerBet", "ATP"]}
             # match_filter = {"type": "comp", "params":["LaLigaEspanola"]}
             # match_filter = {"type": "match_url_id", "params":["https://www.zebet.es/es/event/74j73-real_oviedo_mirandes"]}
     except:
