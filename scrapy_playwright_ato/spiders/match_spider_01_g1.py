@@ -38,7 +38,7 @@ class MetaSpider(scrapy.Spider):
             # FILTER OPTIONS
             # match_filter = {}
             # match_filter = {"type": "bookie_id", "params":["Paf", 0]}
-            match_filter = {"type": "bookie_and_comp", "params": ["Paston", "ATP"]}
+            match_filter = {"type": "bookie_and_comp", "params": ["JokerBet", "ATP"]}
             # match_filter = {"type": "comp", "params":["MajorLeagueSoccerUSA"]}
             # match_filter = {"type": "match_url_id",
             #                 "params":["https://sports.bwin.es/es/sports/eventos/fk-rabotnicki-skopje-torpedo-belaz-zhodino-2:7638098"]}
