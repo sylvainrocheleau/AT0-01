@@ -53,7 +53,7 @@ class TwoStepsSpider(scrapy.Spider):
                 # Filter by competition
                 # competitions = [x for x in bookie_config(bookie=["all_bookies"]) if x["competition_id"] == "AmistososdeEliteClub"]
                 # Filter by boookie and competition
-                competitions = [x for x in bookie_config(bookie=["LeoVegas"]) if x["competition_id"] == "ATP"]
+                competitions = [x for x in bookie_config(bookie=["Paston"]) if x["competition_id"] == "ATP"]
 
         except Exception as e:
             if (
@@ -78,8 +78,8 @@ class TwoStepsSpider(scrapy.Spider):
                 if data["scraping_tool"] == "playwright":
                     self.close_playwright = True
                 url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="competition", data=data)
-                # if self.debug:
-                #     print("url to scrape", url, "dont_filter", dont_filter, "meta_request", meta_request)
+                if self.debug:
+                    print("url to scrape", url, "dont_filter", dont_filter, "meta_request", meta_request)
                 yield scrapy.Request(
                     dont_filter=dont_filter,
                     url=url,
@@ -181,7 +181,7 @@ class TwoStepsSpider(scrapy.Spider):
         print("### errback triggered")
         # print("proxy", failure.request.meta["proxy_ip"])
         # print("user_agent", failure.request.meta["user_agent"])
-        # print("failure.request.url", failure.request.url)
+        print("failure.request.url", failure.request.url)
         # print("failure.value.response.url", failure.value.response.url)
         # print("failure.value.response.status", failure.value.response.status)
         # print("failure", failure.request.meta["bookie_id"])
@@ -205,7 +205,7 @@ class TwoStepsSpider(scrapy.Spider):
         except KeyError:
             if self.debug:
                 print("No playwright page in failure request meta")
-            page = None
+            response_playwright = "None"
 
         if failure.check(HttpError):
             #TODO: check this status instead failure.value.response.status if failure.value.response else 'No response'

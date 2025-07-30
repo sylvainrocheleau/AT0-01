@@ -199,7 +199,7 @@ def sync_all_tables():
         sync_table(table)
 
 if __name__ == "__main__":
-    dump_database(local_conn_params)
+    # dump_database(local_conn_params)
     drop_local_tables()
     clone_table_structures()
     sync_all_tables()
