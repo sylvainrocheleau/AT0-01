@@ -47,13 +47,13 @@ class TwoStepsSpider(scrapy.Spider):
                 # No filters
                 # competitions = bookie_config(bookie=["all_bookies"])
                 # Filter by bookie that have errors
-                # competitions = bookie_config(bookie=["Bwin", "http_errors"])
+                # competitions = bookie_config(bookie=["1XBet", "http_errors"])
                 # Filter by bookie
-                competitions = bookie_config(bookie=["1XBet"])
+                # competitions = bookie_config(bookie=["1XBet"])
                 # Filter by competition
                 # competitions = [x for x in bookie_config(bookie=["all_bookies"]) if x["competition_id"] == "Partidosamistosos"]
                 # Filter by bookie and competition
-                competitions = [x for x in bookie_config(bookie=["AupaBet"]) if x["competition_id"] == "Partidosamistosos"]
+                competitions = [x for x in bookie_config(bookie=["BetWay"]) if x["competition_id"] == "Partidosamistosos"]
 
         except Exception as e:
             if (
@@ -179,7 +179,7 @@ class TwoStepsSpider(scrapy.Spider):
     async def errback(self, failure):
         item = ScrapersItem()
         print("### errback triggered")
-        # print("proxy", failure.request.meta["proxy_ip"])
+        print("proxy", failure.request.meta["proxy_ip"])
         # print("user_agent", failure.request.meta["user_agent"])
         # print("failure.request.url", failure.request.url)
         # print("failure.value.response.url", failure.value.response.url)
@@ -199,13 +199,13 @@ class TwoStepsSpider(scrapy.Spider):
             Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
 
         try:
-            if self.close_playwright is True:
+            if self.close_playwright:
                 page = failure.request.meta["playwright_page"]
                 response_playwright = await page.content()
         except KeyError:
             if self.debug:
                 print("No playwright page in failure request meta")
-            page = None
+            response_playwright = "None"
 
         if failure.check(HttpError):
             #TODO: check this status instead failure.value.response.status if failure.value.response else 'No response'
@@ -227,7 +227,7 @@ class TwoStepsSpider(scrapy.Spider):
         elif (
             self.close_playwright is True
             and any(s in response_playwright for s in [
-            "Lo sentimos", "No hay apuestas disponibles", "Ningún evento", " no hay eventos disponibles"
+            "Lo sentimos", "No hay apuestas disponibles", "Ningún evento", "no hay eventos"
         ]
                     )
         ):

@@ -325,6 +325,13 @@ def bookie_config(bookie):
                 comps_with_errors = False
         except IndexError:
             comps_with_errors = False
+        try:
+            if bookie[1] == "only_active":
+                only_active = True
+            else:
+                only_active = False
+        except IndexError:
+            only_active = False
         connection = Connect().to_db(db="ATO_production", table=None)
         now = Helpers().get_time_now("UTC")
         # seven_days_ago = now - datetime.timedelta(days=7)
@@ -359,7 +366,7 @@ def bookie_config(bookie):
                         ORDER BY vc.competition_id
                     """
             cursor.execute(query)
-        elif bookie[0] == "AllSportAPI":
+        elif bookie[0] == "AllSportAPI" and only_active is False:
             query = """
                 SELECT vcu.competition_url_id, vc.competition_id, vc.sport_id,
                 vb.scraping_tool, vb.render_js, vb.use_cookies, vb.bookie_id
@@ -369,7 +376,18 @@ def bookie_config(bookie):
                 WHERE vcu.bookie_id = %s
                 ORDER BY vc.competition_id
             """
-            cursor.execute(query, (bookie[0],)) # ,
+            cursor.execute(query, (bookie[0],))
+        elif bookie[0] == "AllSportAPI" and only_active is True:
+            query = """
+                SELECT vcu.competition_url_id, vc.competition_id, vc.sport_id,
+                vb.scraping_tool, vb.render_js, vb.use_cookies, vb.bookie_id
+                FROM V2_Competitions vc
+                INNER JOIN V2_Competitions_Urls vcu ON vc.competition_id = vcu.competition_id
+                INNER JOIN V2_Bookies vb ON vcu.bookie_id = vb.bookie_id
+                WHERE vcu.bookie_id = %s AND vc.active = 1
+                ORDER BY vc.competition_id
+            """
+            cursor.execute(query, (bookie[0],))
         else:
             if comps_with_errors is False:
                 query = """
@@ -441,7 +459,7 @@ def bookie_config(bookie):
             if os.environ["USER"] in LOCAL_USERS:
                 # data = data.iloc[0:1]
                 data = data
-                data = data.loc[data["competition"] == "UEFA Europa League - Eliminatorias"] # CONMEBOL - Copa Libertadores
+                data = data.loc[data["competition"] == "FA Cup Inglesa"] # CONMEBOL - Copa Libertadores
                 # FOOTBALL: UEFA Champions League, Serie A Italiana, Premier League Inglesa, La Liga Española, Bundesliga Alemana, Eurocopa 2024,
                 #           Argentina - Primera división, España - Segunda división
                 # Basketball: NBA, Liga ACB
@@ -1289,6 +1307,6 @@ if __name__ == "__main__":
     try:
         if os.environ["USER"] in LOCAL_USERS:
             SYSTEM_VERSION = "V1"
-            print(bookie_config("1XBet"))
+            print(bookie_config("BetWay"))
     except:
         pass

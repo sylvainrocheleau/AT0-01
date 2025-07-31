@@ -8,7 +8,7 @@ def get_comps_for_bookie():
     competitions = [x for x in bookie_config(bookie=[bookie_id])]
     print(competitions)
 
-def teams_and_dates_from_response():
+def teams_and_dates_from_response(bookie_id, competition_id, sport_id, normalize=False):
     from scrapy.http import HtmlResponse
     from parsing_logic import parse_competition
     from utilities import Helpers
@@ -19,17 +19,17 @@ def teams_and_dates_from_response():
     # competition_id = str(input("enter competition_id "))
     # sport_id = str(input("enter sport_id "))
     # normalize = bool(input("normalize team names? (True/False) "))
-    bookie_id = "BetWay"
-    competition_id = 'Partidosamistosos'
-    sport_id = "1"
-    normalize = False
+    # bookie_id = "KirolBet"
+    # competition_id = 'UEFAConferenceLeague'
+    # sport_id = "1"
+    # normalize = False
     # END VARIABLES TO CHANGE
 
     map_matches_urls = []
     try:
         with open('comp_spider_01_response.txt') as f:
-            # response = Selector(text=f.read())
-            response = f.read()
+            response = Selector(text=f.read())
+            # response = f.read()
         match_infos = parse_competition(response=response, bookie_id=bookie_id, competition_id=competition_id,
                                         competition_url_id="", sport_id=sport_id, map_matches_urls=map_matches_urls,
                                         debug=True)
@@ -92,12 +92,12 @@ def check_list_of_markets():
 
 def get_matches_details_and_urls():
     from utilities import Helpers
-    match_filter_enabled = False
+    match_filter_enabled = True
     match_filter  = {}
     # match_filter = {"type": "bookie_and_comp", "params": ["Sportium", "UEFAConferenceLeague"]}
     # match_filter = {"type": "bookie_id", "params": ["Sportium", 1]}
-    # match_filter = {"type": "match_url_id", "params": [
-    #     "https://www.sportium.es/apuestas/sports/soccer/events/17030632"]}
+    match_filter = {"type": "match_url_id", "params": [
+        "https://1xbet.es/es/line/football/118587-uefa-champions-league/639462687-zrinjski-slovan-bratislava"]}
 
     matches_details_and_urls = Helpers().matches_details_and_urls(
             filter=match_filter_enabled,
@@ -113,6 +113,6 @@ def get_matches_details_and_urls():
 if __name__ == "__main__":
     # check_list_of_markets()
     # get_comps_for_bookie()
-    teams_and_dates_from_response()
+    # teams_and_dates_from_response(bookie_id='1XBet', competition_id='NorthAmericanLeaguesCup', sport_id='1', normalize=True)
     # get_odds_from_response()
-    # get_matches_details_and_urls()
+    get_matches_details_and_urls()

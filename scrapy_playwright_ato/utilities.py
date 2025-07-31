@@ -1062,8 +1062,8 @@ class Helpers():
             if data["bookie_id"] == "1XBet":
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
-                        method="wait_for_timeout",
-                        timeout=5000,
+                        method="wait_for_selector",
+                        selector="//ul[contains(@class, 'dashboard-games')]",
                     ),
                 ],
                 }
@@ -1250,13 +1250,15 @@ class Helpers():
                 meta_request.update(
                     {
                         "proxy_ip": data["proxy_ip"],
-                        # "user_agent": data["user_agent"],
+                        "user_agent": data["user_agent"],
                         "playwright": True,
                         "playwright_include_page": True,
                         "playwright_context": data["match_url_id"],
                         "playwright_context_kwargs":
                             {
                                 "user_agent": data["user_agent"],
+                                "timezone_id": "Europe/Madrid",
+                                "locale": "es-ES",
                                 "java_script_enabled": bool(data["render_js"]),
                                 "ignore_https_errors": True,
                                 "proxy": {
@@ -1265,6 +1267,11 @@ class Helpers():
                                     "password": soltia_password,
                                 },
                             },
+                        "extra_http_headers": {
+                            "Accept-Language": "es-ES,es;q=0.9,en;q=0.8",
+                            "Referer": "https://google.com",
+                            "DNT": "1",
+                        },
                         "playwright_accept_request_predicate":
                             {
                                 'activate': True,
@@ -1281,11 +1288,22 @@ class Helpers():
             if data["bookie_id"] == "1XBet":
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
+                        method="add_init_script",
+                        script="Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
+                    ),
+                    PageMethod(
                         method="wait_for_selector",
                         selector="//div[@class='game-markets__groups']",
                     )
                 ],
                 }
+                )
+                meta_request["playwright_context_kwargs"].update(
+                    {"viewport": {
+                        "width": 1920,
+                        "height": 3200,
+                    },
+                    }
                 )
             elif data["bookie_id"] == "AdmiralBet":
                 if data["sport_id"] == "1":
@@ -1539,6 +1557,10 @@ class Helpers():
                         method="wait_for_selector",
                         selector="//div[@class='bg coupon-row']",
                     ),
+                    PageMethod(
+                        method= 'wait_for_timeout',
+                        timeout=30000
+                    )
                 ],
                 }
                 )

@@ -6,6 +6,7 @@ import datetime
 import ast
 import os
 import json
+import dateparser
 from urllib.parse import urlparse, urlunparse
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 from scrapy_playwright.page import PageMethod
@@ -69,7 +70,7 @@ class TwoStepsSpider(scrapy.Spider):
                             playwright_page_methods=[
                                 PageMethod(
                                     method="wait_for_selector",
-                                    selector="//section[@data-testid='event-table-section']",
+                                    selector="//div[@data-testid='table-sectionGroup']",
                                 ),
                             ],
                     ),
@@ -81,18 +82,23 @@ class TwoStepsSpider(scrapy.Spider):
 
     async def match_requests(self,response):
         page = response.meta["playwright_page"]
-        matches = response.text.split("<script type=\"application/ld+json\" data-testid=\"ldjson-events\">")[1]
-        matches = matches.split("</script>")[0]
-        matches = ast.literal_eval(matches)
-        # print(matches)
+        await page.close()
+        # print("closing context for comp", response.meta.get("competition"))
+        await page.context.close()
         match_infos = []
-        if '@graph' in matches:
+        try:
+            matches = response.text.split("{\"@graph\":[")[1]
+            matches = "{\"@graph\":[" + matches.split("</script>")[0]
+            matches = ast.literal_eval(matches)
+
             for match in matches['@graph']:
-                home_team = match['homeTeam']
-                away_team = match['awayTeam']
-                date = datetime.datetime.fromisoformat(match['startDate'].replace('Z', '+00:00')).replace(tzinfo=None)
-                url = urlparse(match['url'])
-                url = urlunparse(url._replace(query=''))
+                home_team = match["homeTeam"]
+                away_team = match["awayTeam"]
+                date = dateparser.parse(''.join(match["startDate"]))
+                if "https://betway.es" not in match["url"]:
+                    url = "https://betway.es" + match["url"]
+                else:
+                    url = match["url"]
                 web_url = url
                 match_info = {
                     'home_team': home_team,
@@ -102,11 +108,9 @@ class TwoStepsSpider(scrapy.Spider):
                     'web_url': web_url
                 }
                 match_infos.append(match_info)
-        print("match_infos", match_infos)
-        # print("Closing page for comp", response.meta.get("competition"))
-        await page.close()
-        # print("closing context for comp", response.meta.get("competition"))
-        await page.context.close()
+        except Exception as e:
+            print("Error parsing match data:", e)
+
 
         for match_info in match_infos:
             context_info = random.choice([x for x in self.context_infos if x["cookies"] is not None])

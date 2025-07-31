@@ -24,12 +24,12 @@ class WebsocketsSpider(Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                # self.competitions = [x for x in bookie_config(bookie=["Sportium"]) if x["competition_id"] == "Argentina-PrimeraDivision"]
-                # self.match_filter = {"type": "bookie_and_comp", "params": ["Sportium", "FIFAClubWorldCup"]}
+                self.competitions = [x for x in bookie_config(bookie=["Sportium"]) if x["competition_id"] == "UEFAChampionsLeague"]
+                self.match_filter = {"type": "bookie_and_comp", "params": ["Sportium", "UEFAChampionsLeague"]}
 
 
-                self.competitions = bookie_config(bookie=["Sportium"])
-                self.match_filter = {"type": "bookie_id", "params": ["Sportium", 1]}
+                # self.competitions = bookie_config(bookie=["Sportium"])
+                # self.match_filter = {"type": "bookie_id", "params": ["Sportium", 1]}
                 # https://href.li/?https://www.sportium.es/apuestas/sports/soccer/events/16931943
                 # self.match_filter = {"type": "match_url_id", "params": [
                 #     "https://www.sportium.es/apuestas/sports/soccer/events/16997048"]}
@@ -59,7 +59,7 @@ class WebsocketsSpider(Spider):
     all_competitions = Helpers().load_competitions_urls_and_sports()
     all_competitions = {x[1]: {"competition_name_es": x[2], "competition_url_id": x[0] } for x in all_competitions if x[4] == "Sportium"}
     match_filter_enabled = True
-    v2 = True
+    # v2 = True
 
     async def keep_alive(self, interval=5):
         while True:

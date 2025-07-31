@@ -11,6 +11,20 @@ from scrapy_playwright_ato.utilities import Connect, Helpers
 from scrapy_playwright_ato.settings import LOCAL_USERS
 
 
+def safe_executemany(cursor, query, data, retries=3, delay=2):
+    import time
+    import mysql.connector
+    for attempt in range(retries):
+        try:
+            cursor.executemany(query, data)
+            return
+        except mysql.connector.errors.InternalError as e:
+            if e.errno == 1213:  # Deadlock
+                print(f"Deadlock detected, retrying ({attempt + 1}/{retries})...")
+                time.sleep(delay)
+            else:
+                raise
+    raise Exception("Max retries reached due to deadlock.")
 
 class ScrapersPipeline:
     def __init__(self):
@@ -45,6 +59,8 @@ class ScrapersPipeline:
             # If ping fails or connection is None, establish a new one.
             print("Database connection lost. Reconnecting...")
             self._connect_db()
+
+
 
     def open_spider(self, spider):
         """Initialize database connection when the spider starts."""
@@ -93,7 +109,8 @@ class ScrapersPipeline:
                 """
                 # Create a new list of tuples with the last element removed for insertion
                 odds_to_insert = [item[:-1] for item in self.match_odds_buffer]
-                self.cursor.executemany(query_insert_match_odds, odds_to_insert)
+                safe_executemany(self.cursor, query_insert_match_odds, odds_to_insert)
+                # self.cursor.executemany(query_insert_match_odds, odds_to_insert)
 
             if self.match_urls_update_buffer:
                 unique_updates = list(set(self.match_urls_update_buffer))
@@ -102,7 +119,8 @@ class ScrapersPipeline:
                     SET updated_date = %s, http_status = %s
                     WHERE match_url_id = %s
                 """
-                self.cursor.executemany(query_update_match_urls, unique_updates)
+                # self.cursor.executemany(query_update_match_urls, unique_updates)
+                safe_executemany(self.cursor, query_update_match_urls, unique_updates)
 
             self.connection.commit()
             print(f"Flushed {len(self.match_odds_buffer)} odds and {len(self.match_urls_update_buffer)} URL updates.")
@@ -305,7 +323,8 @@ class ScrapersPipeline:
 
                 print("create_match_urls", create_match_urls)
                 print("create_match_urls_with_no_ids", create_match_urls_with_no_ids)
-                cursor.executemany(query_create_match_urls, create_match_urls)
+                # cursor.executemany(query_create_match_urls, create_match_urls)
+                safe_executemany(cursor, query_create_match_urls, create_match_urls)
                 connection.commit()
 
                 # TODO add competiton_id
@@ -315,7 +334,8 @@ class ScrapersPipeline:
                     away_team, away_team_normalized, away_team_status, date)
                     VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """
-                cursor.executemany(query_create_match_urls_with_no_ids, create_match_urls_with_no_ids)
+                # cursor.executemany(query_create_match_urls_with_no_ids, create_match_urls_with_no_ids)
+                safe_executemany(cursor, query_create_match_urls_with_no_ids, create_match_urls_with_no_ids)
                 connection.commit()
 
                 # From the list create_match_urls_with_no_ids extract the match_url_id (index 1)
@@ -446,8 +466,6 @@ class ScrapersPipeline:
                     pass
 
         if "pipeline_type" in item.keys() and "teams" in item["pipeline_type"]:
-            # TODO: update V2_Competitons with updated date and status
-            # print("INSERTING teams in V2_Teams")
             start_time = datetime.datetime.now()
             competition_id = None
             batch_insert_teams = []
@@ -459,9 +477,10 @@ class ScrapersPipeline:
                 query_insert_teams = """
                     INSERT INTO ATO_production.V2_Teams
                     (team_id, bookie_id, competition_id, sport_id, bookie_team_name, normalized_team_name,
-                    normalized_short_name, status, source, numerical_team_id, update_date)
-                    VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    ON DUPLICATE KEY UPDATE numerical_team_id = VALUES(numerical_team_id), update_date = VALUES(update_date)
+                    normalized_short_name, country, status, source, numerical_team_id, update_date)
+                    VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    ON DUPLICATE KEY UPDATE numerical_team_id = VALUES(numerical_team_id), update_date = VALUES(update_date),
+                        country = VALUES(country)
                 """
                 for key, value in item["data_dict"].items():
                     values_home_team = (
@@ -479,6 +498,7 @@ class ScrapersPipeline:
                         value["home_team"],
                         value["home_team"],
                         value["home_team_short_name"],
+                        value["home_team_country"],
                         "confirmed",
                         value["bookie_id"],
                         value["home_team_id"],
@@ -500,6 +520,7 @@ class ScrapersPipeline:
                         value["away_team"],
                         value["away_team"],
                         value["away_team_short_name"],
+                        value["away_team_country"],
                         "confirmed",
                         value["bookie_id"],
                         value["away_team_id"],
@@ -509,7 +530,8 @@ class ScrapersPipeline:
                 batch_insert_teams = list(set(batch_insert_teams))
                 # if self.debug:
                 #     print("List of teams to be inserted", [x[0] for x in batch_insert_teams])
-                cursor.executemany(query_insert_teams, batch_insert_teams)
+                # cursor.executemany(query_insert_teams, batch_insert_teams)
+                safe_executemany(cursor, query_insert_teams, batch_insert_teams)
                 connection.commit()
 
             except Exception as e:
@@ -529,6 +551,7 @@ class ScrapersPipeline:
                 start_time = datetime.datetime.now()
                 competition_id = None
                 updated_matches_count = 0
+                list_of_matches = []
                 try:
                     connection = Connect().to_db(db="ATO_production", table=None)
                     cursor = connection.cursor()
@@ -562,7 +585,7 @@ class ScrapersPipeline:
                         INSERT INTO ATO_production.V2_Matches
                         (match_id, home_team, away_team, date, date_es, sport_id, competition_id)
                         VALUES(%s, %s, %s, %s, %s, %s, %s)
-                        ON DUPLICATE KEY UPDATE date = %s, date_es = %s
+                        ON DUPLICATE KEY UPDATE date = VALUES(date), date_es = VALUES(date_es)
                     """
                     for key, value in item["data_dict"].items():
                         values = (
@@ -573,10 +596,10 @@ class ScrapersPipeline:
                             value["date"].replace(tzinfo=pytz.UTC).astimezone(spain), #es
                             value["sport_id"],
                             value["competition_id"],
-                            value["date"].replace(tzinfo=pytz.UTC).replace(microsecond=0),
-                            value["date"].replace(tzinfo=pytz.UTC).astimezone(spain), #es
                         )
-                        cursor.execute(query_insert_matches, values)
+                        list_of_matches.append(values)
+                        # cursor.execute(query_insert_matches, values)
+                        safe_executemany(cursor, query_insert_matches, list_of_matches)
                         updated_matches_count += 1
                     connection.commit()
                 except Exception as e:

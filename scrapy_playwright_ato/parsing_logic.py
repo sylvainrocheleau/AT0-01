@@ -37,40 +37,71 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
     try:
         html_cleaner = re.compile("<.*?>")
         if bookie_id == "1XBet":
-            json_responses = response.text.split("<pre>")[1]
-            json_responses = json_responses.split("</pre>")[0]
-            json_responses = json.loads(json_responses)
-
-            match_infos = []
-            for data_01 in json_responses["Value"]:
-                for key, value in data_01.items():
-                    if isinstance(value, list):
-                        for data_02 in value:
-                            for key_02, value_02 in data_02.items():
-                                if key_02 == "G":
-                                    for match in value_02:
-                                        try:
-                                            url = "https://1xbet.es/line/" + str(
-                                                match["SE"] + "/" + str(match["LI"]) + "-"
-                                                + match["LE"].replace(".", "") + "/" + str(
-                                                    match["CI"]) + "-" + match[
-                                                    "O1E"] + "-" + match["O2E"]).replace(" ", "-")
-                                            home_team = match["O1"]
-                                            away_team = match["O2"]
-                                            date = datetime.datetime.fromtimestamp(match["S"])
-                                            web_url = url
-                                            if url not in map_matches_urls:
-                                                match_info = build_match_infos(url, web_url, home_team, away_team, date,
-                                                                               competition_id, bookie_id, sport_id)
-                                                match_infos.append(match_info)
-                                            else:
-                                                if debug:
-                                                    print("match already in map_matches_urls", home_team, away_team)
-                                        except IndexError:
-                                            continue
-                                        except:
-                                            # print(traceback.format_exc())
-                                            continue
+            try:
+                xpath_results = response.xpath("//li[contains(@class, 'dashboard-games__item')]").extract()
+                match_infos = []
+                for xpath_result in xpath_results:
+                    try:
+                        xpath_result = Selector(xpath_result)
+                        home_team = xpath_result.xpath("//span[contains(@class, 'dashboard-game-info-rival__name')]/text()").extract()[0]
+                        away_team = xpath_result.xpath("//span[contains(@class, 'dashboard-game-info-rival__name')]/text()").extract()[1]
+                        urls = xpath_result.xpath("//a[@href]/@href").extract()
+                        url = max(urls, key=len) if urls else None
+                        url = "https://1xbet.es" + url
+                        web_url = url
+                        date = xpath_result.xpath("//time[contains(@class, 'dashboard-game-info-additional__item')]/text()").extract()[0]
+                        date = dateparser.parse(''.join(date))
+                        if url not in map_matches_urls:
+                            match_info = build_match_infos(
+                                url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id
+                            )
+                            match_infos.append(match_info)
+                        else:
+                            if debug:
+                                print("match already in map_matches_urls", home_team, away_team)
+                    except IndexError as e:
+                        if debug:
+                            print(f"Error on {bookie_id} for {competition_id}")
+                            print(traceback.format_exc())
+                        continue
+            except Exception as e:
+                if debug:
+                    print(traceback.format_exc())
+                Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
+            # json_responses = response.text.split("<pre>")[1]
+            # json_responses = json_responses.split("</pre>")[0]
+            # json_responses = json.loads(json_responses)
+            #
+            # match_infos = []
+            # for data_01 in json_responses["Value"]:
+            #     for key, value in data_01.items():
+            #         if isinstance(value, list):
+            #             for data_02 in value:
+            #                 for key_02, value_02 in data_02.items():
+            #                     if key_02 == "G":
+            #                         for match in value_02:
+            #                             try:
+            #                                 url = "https://1xbet.es/line/es/" + str(
+            #                                     match["SE"] + "/" + str(match["LI"]) + "-"
+            #                                     + match["LE"].replace(".", "") + "/" + str(
+            #                                         match["MG"]) + "-" + match[
+            #                                         "O1E"] + "-" + match["O2E"]).replace(" ", "-")
+            #                                 home_team = match["O1"]
+            #                                 away_team = match["O2"]
+            #                                 date = datetime.datetime.fromtimestamp(match["S"])
+            #                                 web_url = url
+            #                                 if url not in map_matches_urls:
+            #                                     match_info = build_match_infos(url, web_url, home_team, away_team, date,
+            #                                                                    competition_id, bookie_id, sport_id)
+            #                                     match_infos.append(match_info)
+            #                                 else:
+            #                                     if debug:
+            #                                         print("match already in map_matches_urls", home_team, away_team)
+            #                             except IndexError:
+            #                                 continue
+            #                             except:
+            #                                 # print(traceback.format_exc())
+            #                                 continue
         elif bookie_id == "888Sport":
             json_responses = response.text.split("<pre>")[1]
             json_responses = json_responses.split("</pre>")[0]
@@ -128,39 +159,45 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                     except IndexError:
                         pass
         elif bookie_id == "AupaBet":
-            xpath_results = response.xpath("//div[@class='infoEve']").extract()
-            match_infos = []
-            for xpath_result in xpath_results:
-                try:
-                    xpath_result = Selector(xpath_result)
-                    teams = xpath_result.xpath("//span[@class='partido']/a/text()").extract()
-                    if not isinstance(teams, list) and len(teams) < 2:
+            try:
+                xpath_results = response.xpath("//div[@class='infoEve']").extract()
+                match_infos = []
+                for xpath_result in xpath_results:
+                    try:
+                        xpath_result = Selector(xpath_result)
+                        teams = xpath_result.xpath("//span[@class='partido']/a/text()").extract()
+                        if not isinstance(teams, list) or 'vs.' not in str(teams):
+                            if debug:
+                                print("teams is not a list or 'vs.' not in teams", teams)
+                            continue
+                        else:
+                            # if debug:
+                            #     print("teams", teams)
+                            pass
+                        home_team = teams[0].split(" vs. ")[0].strip()
+                        away_team = teams[0].split(" vs. ")[1].strip()
+                        url = xpath_result.xpath("//span[@class='partido']/a/@href").extract()[-1]
+                        url = "https://www.aupabet.es" + url
+                        web_url = url
+                        date = xpath_result.xpath("//time[@class='dateFecha']/@datetime").extract()[0]
+                        date = dateparser.parse(''.join(date))
+                        if url not in map_matches_urls:
+                            match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id)
+                            match_infos.append(match_info)
+                        else:
+                            if debug:
+                                print("match already in map_matches_urls", home_team, away_team)
+                    except IndexError as e:
                         if debug:
-                            print("teams is not a list or has less than 2 elements", teams)
+                            print(f"Error on {bookie_id} for {competition_id}")
+                            print(traceback.format_exc())
+                            print('xpath_result', xpath_result.xpath("//span[@class='partido']/a/@href").extract())
+                            print('teams', teams)
                         continue
-                    else:
-                        if self.debug:
-                            print("teams", teams)
-                    home_team = teams[0].split(" vs. ")[0].strip()
-                    away_team = teams[0].split(" vs. ")[1].strip()
-                    url = xpath_result.xpath("//span[@class='partido']/a/@href").extract()[1]
-                    url = "https://www.aupabet.es" + url
-                    web_url = url
-                    date = xpath_result.xpath("//time[@class='dateFecha']/@datetime").extract()[0]
-                    date = dateparser.parse(''.join(date))
-                    if url not in map_matches_urls:
-                        match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id)
-                        match_infos.append(match_info)
-                    else:
-                        if debug:
-                            print("match already in map_matches_urls", home_team, away_team)
-                except IndexError as e:
-                    if debug:
-                        print(f"Error on {bookie_id} for {competition_id}")
-                        print(traceback.format_exc())
-                        print('xpath_result', xpath_result.xpath("//span[@class='partido']/a/text()"))
-                        print('teams', teams)
-                    continue
+            except Exception as e:
+                if debug:
+                    print(traceback.format_exc())
+                Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
 
         elif bookie_id == "Bet777":
             try:
@@ -270,7 +307,8 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                             match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id)
                             match_infos.append(match_info)
                 except Exception as e:
-                    print(traceback.format_exc())
+                    if debug:
+                        print(traceback.format_exc())
                     Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
 
             if competition_id == 'UEFAConferenceLeague':
@@ -680,7 +718,7 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                     xpath_result = Selector(xpath_result)
                     home_team = xpath_result.xpath("//span[@class='partido']/a/text()").extract()[0].split(" vs. ")[0].strip()
                     away_team = xpath_result.xpath("//span[@class='partido']/a/text()").extract()[0].split(" vs. ")[1].strip()
-                    url = xpath_result.xpath("//span[@class='partido']/a/@href").extract()[1]
+                    url = xpath_result.xpath("//span[@class='partido']/a/@href").extract()[-1]
                     url = "https://apuestas.kirolbet.es" + url
                     web_url = url
                     date = xpath_result.xpath("//time[@class='dateFecha']/@datetime").extract()[0]
@@ -692,6 +730,8 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                         if debug:
                             print("match already in map_matches_urls", home_team, away_team)
                 except IndexError:
+                    if debug:
+                        print(traceback.format_exc())
                     continue
         elif bookie_id == "Luckia":
             match_infos = []
@@ -2741,29 +2781,30 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
 
     elif bookie_id == "MarathonBet":
         try:
-            selection_keys = response.xpath("//@data-selection-key").extract()
-            selection_keys = list(set(selection_keys))
-            odds = []
-            for selection_key in selection_keys:
-                market_and_result = re.sub(r'^.*?@', '', selection_key)
-                market = ''.join(i for i in market_and_result.split(".")[0] if not i.isdigit())
-                result = market_and_result.replace(market_and_result.split(".")[0], "")
-                if market + result in list_of_markets and result[1:] not in [x["Result"] for x in odds]:
-                    if sport_id == "2":
-                        result_switch = result[1:]
-                    elif result == ".HB_H" or result == ".3" or result == ".2":
-                        result_switch = ".HB_AWAY"
-                    elif result == ".HB_A" or result == ".1":
-                        result_switch = ".HB_H"
-                    else:
-                        result_switch = result[1:]
-                    odds.append(
-                        {"Market": market,
-                         "Result": result_switch,
-                         "Odds":
-                             response.xpath("//span[@data-selection-key=\"" + selection_key + "\"]/text()").extract()[0]
-                         }
-                    )
+            if response.url == response.meta.get("url"):
+                selection_keys = response.xpath("//@data-selection-key").extract()
+                selection_keys = list(set(selection_keys))
+                odds = []
+                for selection_key in selection_keys:
+                    market_and_result = re.sub(r'^.*?@', '', selection_key)
+                    market = ''.join(i for i in market_and_result.split(".")[0] if not i.isdigit())
+                    result = market_and_result.replace(market_and_result.split(".")[0], "")
+                    if market + result in list_of_markets and result[1:] not in [x["Result"] for x in odds]:
+                        if sport_id == "2":
+                            result_switch = result[1:]
+                        elif result == ".HB_H" or result == ".3" or result == ".2":
+                            result_switch = ".HB_AWAY"
+                        elif result == ".HB_A" or result == ".1":
+                            result_switch = ".HB_H"
+                        else:
+                            result_switch = result[1:]
+                        odds.append(
+                            {"Market": market,
+                             "Result": result_switch,
+                             "Odds":
+                                 response.xpath("//span[@data-selection-key=\"" + selection_key + "\"]/text()").extract()[0]
+                             }
+                        )
         except Exception as e:
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
     elif bookie_id == "OlyBet":

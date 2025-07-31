@@ -3,12 +3,12 @@ import scrapy
 import datetime
 import time
 import os
-import requests
+# import requests
 import asyncio
 import dateparser
 import json_repair
 import traceback
-from playwright.sync_api import Error, sync_playwright, TimeoutError as PlaywrightTimeoutError
+from playwright.sync_api import Error, TimeoutError as PlaywrightTimeoutError
 from scrapy_playwright.page import PageMethod
 from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError, TimeoutError
@@ -26,11 +26,11 @@ class TwoStepsSpider(scrapy.Spider):
         spider.parser = kwargs.get('parser', '')
         try:
             if os.environ["USER"] in LOCAL_USERS:
-                spider.debug = True
-                debug = True
+                spider.debug = False
+                debug = False
                 if spider.parser == "comp":
                     print("PROCESSING COMPETITIONS DEBUG MODE")
-                    # spider.competitions = [x for x in bookie_config(bookie=["WinaMax"]) if x["competition_id"] == "FIFAClubWorldCup"]
+                    spider.competitions = [x for x in bookie_config(bookie=["WinaMax"]) if x["competition_id"] == "UEFAChampionsLeague"]
                     spider.competitions = bookie_config(bookie=["WinaMax"])
                 else:
                     print("PROCESSING MATCHES DEBUG MODE")
@@ -61,9 +61,9 @@ class TwoStepsSpider(scrapy.Spider):
     user_agent_hash = int
     custom_settings = get_custom_playwright_settings(browser="Chrome", rotate_headers=False)
     custom_settings.update({
-        "CONCURRENT_REQUESTS_PER_DOMAIN": 1,
+        "CONCURRENT_REQUESTS_PER_DOMAIN": 2,
         "HTTPCACHE_ENABLED": False,
-        "PLAYWRIGHT_MAX_CONTEXTS": 1,
+        "PLAYWRIGHT_MAX_CONTEXTS": 2,
     })
 
     def should_block_request(self, request):
@@ -97,6 +97,68 @@ class TwoStepsSpider(scrapy.Spider):
             map_matches.update({match[6]: [match[0]]})
     map_matches_urls = [x[0] for x in Helpers().load_matches_urls(name)]
     match_filter_enabled = True
+    frequency_groups = ['A']
+    frequency_group_being_processed = ''
+    lenght_of_matches_details_and_urls = 1
+
+    def get_schedule(self):
+        if self.debug:
+            frequency_group = None
+            matches_details_and_urls_from_db = Helpers().matches_details_and_urls(
+                filter=self.match_filter_enabled,
+                filter_data=self.match_filter
+            )
+            matches_details_and_urls = {
+                key: matches
+                for key, matches in (
+                    (key, [match for match in value
+                           # if match['scraping_tool'] in self.allowed_scraping_tools
+                           # and match['scraping_group'] in self.scraping_group
+                           # and match['frequency_group'] == self.frequency_groups[-1]
+                           ]
+                     )
+                    for key, value in matches_details_and_urls_from_db.items()
+                )
+                if matches  # Only include if matches is not empty
+            }
+            return matches_details_and_urls, len(matches_details_and_urls), frequency_group
+        else:
+            matches_details_and_urls: dict[str, list] = {}
+            frequency_group = str
+            while len(matches_details_and_urls) < 1 and 'F' not in self.frequency_groups:
+                frequency_group = self.frequency_groups[-1]
+                if frequency_group == self.frequency_group_being_processed:
+                    next_letter = chr(ord(max(self.frequency_groups)) + 1)
+                    self.frequency_groups.append(next_letter)
+                    frequency_group = self.frequency_groups[-1]
+                matches_details_and_urls_from_db = Helpers().matches_details_and_urls(
+                    filter=self.match_filter_enabled,
+                    filter_data=self.match_filter
+                )
+                matches_details_and_urls = {
+                    key: matches
+                    for key, matches in (
+                        (key, [match for match in value
+                               # if match['scraping_tool'] in self.allowed_scraping_tools
+                               # and match['scraping_group'] in self.scraping_group
+                               if match['frequency_group'] == frequency_group
+                               ]
+                         )
+                        for key, value in matches_details_and_urls_from_db.items()
+                    )
+                    if matches  # Only include if matches is not empty
+                }
+
+                print(f"frequency group from function {frequency_group}: {len(matches_details_and_urls)}")
+                if self.frequency_groups[-1] != 'A' and self.frequency_group_being_processed != 'A':
+                    self.frequency_groups.append('A')
+                elif self.frequency_groups[-1] != 'B' and self.frequency_group_being_processed != 'B':
+                    self.frequency_groups.append('B')
+                else:
+                    next_letter = chr(ord(max(self.frequency_groups)) + 1)
+                    self.frequency_groups.append(next_letter)
+
+            return matches_details_and_urls, len(matches_details_and_urls), frequency_group
 
     def start_requests(self):
         if self.debug:
@@ -106,7 +168,6 @@ class TwoStepsSpider(scrapy.Spider):
         context_infos = get_context_infos(bookie_name="WinaMax")
         self.context_infos = [x for x in context_infos if x["proxy_ip"]]
         if self.parser == "comp":
-
             for data in self.competitions:
                 context_info = random.choice([x for x in self.context_infos])
                 self.proxy_ip = context_info["proxy_ip"]
@@ -148,62 +209,80 @@ class TwoStepsSpider(scrapy.Spider):
                 except PlaywrightTimeoutError:
                     continue
         else:
-            matches_details_and_urls = Helpers().matches_details_and_urls(
-                filter=self.match_filter_enabled,
-                filter_data=self.match_filter
-            )
-            matches_details_and_urls = {k: [v for v in lst if v['to_delete'] != 1] for k, lst in
-                                        matches_details_and_urls.items() if any(v['to_delete'] != 1 for v in lst)}
+            count_of_matches_details_and_urls = 0
+            matches_details_and_urls, self.lenght_of_matches_details_and_urls, frequency_group = self.get_schedule()
+            print("First Matches details and URLs lenght:", self.lenght_of_matches_details_and_urls)
+            while count_of_matches_details_and_urls == 0:
+                self.frequency_group_being_processed = frequency_group
+                print(f"freq start requests for {frequency_group} out of {self.frequency_groups} "
+                      f"with {self.lenght_of_matches_details_and_urls} matches")
 
-            for key, value in matches_details_and_urls.items():
-                for data in value:
-                    context_info = random.choice([x for x in self.context_infos])
-                    self.proxy_ip = context_info["proxy_ip"]
-                    params = dict(
-                        match_id=data["match_id"],
-                        sport_id=data["sport_id"],
-                        competition_id=data["competition_id"],
-                        home_team=data["home_team"],
-                        away_team=data["away_team"],
-                        url=data["match_url_id"],
-                        web_url=data["web_url"],
-                        bookie_id=data["bookie_id"],
-                        date=data["date"],
-                        scraping_tool=data["scraping_tool"],
-                        dutcher=False,
-                        playwright=True,
-                        playwright_include_page=True,
-                        playwright_context=data["match_url_id"],
-                        playwright_context_kwargs={
-                            "user_agent": context_info["user_agent"],
-                            "java_script_enabled": True,
-                            "ignore_https_errors": True,
-                            "proxy": {
-                                "server": "http://" + context_info["proxy_ip"] + ":58542/",
-                                "username": soltia_user_name,
-                                "password": soltia_password,
-                            },
-                        },
-                        playwright_accept_request_predicate=self.should_block_request,
-                        playwright_page_methods=[
-                            PageMethod(
-                                method="wait_for_selector",
-                                selector="head",
-                                state="attached",
-                            ),
-                        ]
-                    )
-
-                    # if "https://www.winamax.es/apuestas-deportivas/match/51103775" == match_info["url"]:
-                    try:
-                        yield scrapy.Request(
+                for key, value in matches_details_and_urls.items():
+                    count_of_matches_details_and_urls += 1
+                    for data in value:
+                        context_info = random.choice([x for x in self.context_infos])
+                        self.proxy_ip = context_info["proxy_ip"]
+                        params = dict(
+                            match_id=data["match_id"],
+                            sport_id=data["sport_id"],
+                            competition_id=data["competition_id"],
+                            home_team=data["home_team"],
+                            away_team=data["away_team"],
                             url=data["match_url_id"],
-                            callback=self.parse_match if self.debug else self.parse_match,
-                            meta=params,
-                            errback=self.errback,
+                            web_url=data["web_url"],
+                            bookie_id=data["bookie_id"],
+                            date=data["date"],
+                            scraping_tool=data["scraping_tool"],
+                            dutcher=False,
+                            playwright=True,
+                            playwright_include_page=True,
+                            playwright_context=data["match_url_id"],
+                            playwright_context_kwargs={
+                                "user_agent": context_info["user_agent"],
+                                "java_script_enabled": True,
+                                "ignore_https_errors": True,
+                                "proxy": {
+                                    "server": "http://" + context_info["proxy_ip"] + ":58542/",
+                                    "username": soltia_user_name,
+                                    "password": soltia_password,
+                                },
+                            },
+                            playwright_accept_request_predicate=self.should_block_request,
+                            playwright_page_methods=[
+                                PageMethod(
+                                    method="wait_for_selector",
+                                    selector="head",
+                                    state="attached",
+                                ),
+                            ]
                         )
-                    except PlaywrightTimeoutError:
-                        continue
+
+                        # if "https://www.winamax.es/apuestas-deportivas/match/51103775" == match_info["url"]:
+                        try:
+                            yield scrapy.Request(
+                                url=data["match_url_id"],
+                                callback=self.parse_match if self.debug else self.parse_match,
+                                meta=params,
+                                errback=self.errback,
+                            )
+                        except PlaywrightTimeoutError:
+                            continue
+                if (
+                    not self.debug
+                    and count_of_matches_details_and_urls == self.lenght_of_matches_details_and_urls
+                    and 'F' not in self.frequency_groups
+
+                ):
+                    count_of_matches_details_and_urls = 0
+                    matches_details_and_urls, self.lenght_of_matches_details_and_urls, frequency_group = self.get_schedule()
+                    print("updated frequency groups:", self.frequency_groups)
+                    print("updated matches details and URLs lenght:", self.lenght_of_matches_details_and_urls)
+                else:
+                    print("No more matches to process or reached the end of frequency groups.")
+                    print("debug mode:", self.debug)
+                    print("count_of_matches_details_and_urls:", count_of_matches_details_and_urls)
+                    print("lenght_of_matches_details_and_urls:", self.lenght_of_matches_details_and_urls)
+                    break
 
     async def match_requests(self,response):
         item = ScrapersItem()
