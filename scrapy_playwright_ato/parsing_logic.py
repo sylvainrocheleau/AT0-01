@@ -7,7 +7,7 @@ from parsel import Selector
 from scrapy_playwright_ato.utilities import Helpers
 from urllib.parse import urlparse, urlunparse
 
-# comment # 2 SR
+# comment S
 
 def build_match_infos(
     url: str, web_url: str, home_team: str, away_team: str, date: datetime,
