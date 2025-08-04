@@ -98,8 +98,8 @@ list_of_markets_V2 = {
           ],
     "2": ["Ganador del partido (incl. prórroga)"] +
          ["Menos/más " + str(x) +" puntos (incl. prórroga)" for x in basketball_intervals],
-    "3": ["¿Quién ganará el partido?"] + [
-                "¿Más o menos " + str(x) + ".5 juegos ?" for x in tennis_intervals
+    "3": ["Ganador del partido"] + [
+                "Menos/Más " + str(x) + " juegos" for x in tennis_intervals
             ],
 },
 "RetaBet": {
@@ -196,7 +196,7 @@ list_of_markets_V2 = {
 "Bet777": {
     "1": ["Resultado del Partido", "Total de goles", "Marcador correcto"],
     "2": ["Ganador del Partido", "Total de puntos"],
-    "3": ["Cuotas del partido", "Total de juegos"],
+    "3": ["Ganador del Partido", "Total de juegos"],
 },
 "Sportium": {
     "1": ["Ganador (1X2)", "Goles Totales - Más/Menos", "Marcador Exacto", ],
@@ -215,7 +215,7 @@ list_of_markets_V2 = {
 "WinaMax": {
     "1": ["Match_Result", "Resultado", "Resultado exacto", "Número total de goles"], #"Match_Result" was added tur to confusion with "Resultado"
     "2": ["Ganador", "Número total de puntos"],
-    "3": ["Cuotas del partido", "Total de juegos"],
+    "3": ["Ganador", "Total juegos"],
 },
 "EfBet": {
     "1": [

@@ -1,7 +1,6 @@
 import os
 import sys
 import subprocess
-import traceback
 
 import  pandas as pd
 from datetime import datetime
@@ -17,8 +16,8 @@ TABLES = [
     {'name': 'V2_Cookies', 'key': ['user_agent_hash']},
     {'name': 'V2_Exchanges', 'key': ['bet_id', 'lay_odds']},
     {'name': 'V2_Matches', 'key': ['match_id']},
-    {'name': 'V2_Matches_Odds', 'key': ['bet_id', 'bookie_id']},
     {'name':'V2_Matches_Urls', 'key': ['match_url_id']},
+    {'name': 'V2_Matches_Odds', 'key': ['bet_id', 'bookie_id']},
     {'name': 'V2_Matches_Urls_No_Ids', 'key': 'match_url_id'},
     {'name': 'V2_Dutcher', 'key': ['bet_id', 'bookie_id', 'bookie_2']},
     {'name': 'V2_Oddsmatcher', 'key': ['bet_id', 'lay_odds', 'bookie_id']},
@@ -51,6 +50,20 @@ try:
 except Exception as e:
     print(f"Error connecting to MariaDB Platform: {e}")
     sys.exit(1)
+
+# Reconnect to remote database, useful in case where the connexion is lost during the execution of the script
+def restart_remote_conn() :
+    global  remote_conn
+    try:
+        remote_conn.close()
+    except:
+        pass
+    try:
+        remote_conn = mysql.connector.connect(**remote_conn_params)
+        print("***Connection successfully restored.***")
+    except Exception as e:
+        print(f"!!! Failed to reconnect : {e}!!!")
+        remote_conn = None
 
 # Back up the database
 def dump_database(conn_params, output_dir="../archives/db_backups"):
@@ -128,13 +141,21 @@ def sync_table(table_info):
     query = f"SELECT * FROM {table}"
 
     try:
-        # Ensure the connection is alive before using it
-        remote_conn.ping(reconnect=True, attempts=3, delay=5)
+        if remote_conn is None or not  remote_conn.is_connected():
+            raise  Exception("Invalid remote connexion.")
         df = pd.read_sql(query, remote_conn)
     except Exception as e:
-        print(traceback.format_exc())
         print(f"[{table}] Failed to fetch from remote: {e}")
-        return
+        print(f"[{table}] Trying to reconnect...")
+        restart_remote_conn()
+        if remote_conn is None:
+            print(f"[{table}] Failed to reconnect...")
+            return
+        try:
+            df = pd.read_sql(query, remote_conn)
+        except Exception as e:
+            print(f"[{table}] Failed to fetch from remote after reconnection: {e}")
+            return
 
     if df.empty:
         print(f"[{table}] No rows to sync.")
@@ -178,7 +199,7 @@ def sync_all_tables():
         sync_table(table)
 
 if __name__ == "__main__":
-    dump_database(remote_conn_params)
+    # dump_database(local_conn_params)
     drop_local_tables()
     clone_table_structures()
     sync_all_tables()

@@ -40,6 +40,7 @@ class TwoStepsSpider(scrapy.Spider):
             try:
                 yield scrapy.Request(
                     url=data["url"],
+                    #callback=self.match_requests,
                     callback=self.match_requests,
                     errback=self.errback,
                     meta=dict(
@@ -109,6 +110,7 @@ class TwoStepsSpider(scrapy.Spider):
 
         await page.close()
         await page.context.close()
+        #print("Match_infos", match_infos)
 
         for match_info in match_infos:
             context_info = random.choice(self.context_infos)

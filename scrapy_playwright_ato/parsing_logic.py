@@ -7,10 +7,7 @@ from parsel import Selector
 from scrapy_playwright_ato.utilities import Helpers
 from urllib.parse import urlparse, urlunparse
 
-def remove_query_params(url):
-    parsed = urlparse(url)
-    url_no_params = urlunparse(parsed._replace(query=""))
-    return str(url_no_params)
+# comment # 2 SR
 
 def build_match_infos(
     url: str, web_url: str, home_team: str, away_team: str, date: datetime,
@@ -1155,7 +1152,7 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                                 if url not in map_matches_urls and home_team is not None:
                                     match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id,
                                                                    bookie_id, sport_id)
-                                    # print("match_info for WinaMax", match_info)
+                                    print("match_info for WinaMax", match_info)
                                     match_infos.append(match_info)
                                 else:
                                     if debug:
@@ -1575,7 +1572,7 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
     elif bookie_id == "Bet777":
         try:
             html_cleaner = re.compile("<.*?>")
-            if sport_id == "1" or sport_id == "2":
+            if sport_id == "1" or sport_id == "2" or sport_id == "3":
                 selection_keys = response.xpath("//div[@class='mx-0']").extract()
                 odds = []
                 for selection_key in selection_keys:
@@ -2701,6 +2698,48 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
 
 
             elif sport_id == "2":
+                selection_keys = response.xpath("//div[@class=\"lp-offers__item lp-offer offer-type\"]").extract()
+                selection_keys = list(dict.fromkeys(selection_keys))
+                odds = []
+
+                for selection_key in selection_keys:
+                    selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t","")
+                    clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
+                    clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
+                    for selection_key02 in clean_selection_keys:
+                        if clean_selection_keys[0] in list_of_markets:
+                            market = clean_selection_keys[0]
+
+                        else:
+                            market = "empty"
+                            result = "empty"
+                            odd = "empty"
+                        if (
+                            re.search('[a-zA-Z]', selection_key02) is not None
+                            or "2" == selection_key02
+                            or "1" == selection_key02
+                            and market in list_of_markets
+                        ):
+                            result = selection_key02
+                        elif (
+                            re.search("[a-zA-Z]", selection_key02) is None
+                            and "," in selection_key02
+                            and market in list_of_markets
+                        ):
+                            odd = selection_key02
+                        try:
+                            if (
+                                market in list_of_markets
+                                and result != "empty"
+                                and odd != "empty"
+                            ):
+                                odds.append({"Market": market, "Result": result, "Odds": odd})
+                                result = "empty"
+                                odd = "empty"
+                        except UnboundLocalError:
+                            pass
+
+            elif sport_id == "3":
                 selection_keys = response.xpath("//div[@class=\"lp-offers__item lp-offer offer-type\"]").extract()
                 selection_keys = list(dict.fromkeys(selection_keys))
                 odds = []
