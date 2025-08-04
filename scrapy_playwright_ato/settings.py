@@ -11,7 +11,7 @@ SPIDER_MODULES = ["scrapy_playwright_ato.spiders"]
 NEWSPIDER_MODULE = "scrapy_playwright_ato.spiders"
 ROBOTSTXT_OBEY = False
 TELNETCONSOLE_ENABLED = False
-ZYTE_UNITS = 3
+ZYTE_UNITS = 4
 CONCURRENT_REQUESTS = math.floor(ZYTE_UNITS*2)
 CONCURRENT_REQUESTS_PER_DOMAIN = 2
 CONCURRENT_ITEMS = 1500
@@ -47,9 +47,11 @@ ALL_SPORTS_API_KEY = "2b8a801f7dmshabee8de6884c434p14d1dfjsnd5a9a6bb9c3f"
 SQL_USER = "spider_rw_03"
 SQL_PWD = "43&trdGhqLlM"
 list_of_proxies = [
-    "115.124.36.119", "185.106.126.109", "185.107.152.14", "185.119.48.24", "185.119.49.69",
-    "185.159.43.180", "185.166.172.76", "185.212.86.69", "194.38.59.88", "46.226.144.182"
+    "115.124.36.119", "185.106.126.109", "185.107.152.14", "185.105.15.160", "85.115.193.157",
+    "185.159.43.180", "185.166.172.76", "194.38.59.88", "185.118.52.126", "212.80.210.193"
 ]
+
+# replaced proxies: 46.226.144.182, 185.119.48.24, 185.212.86.69, 185.119.49.69
 soltia_user_name = "pY33k6KH6t"
 soltia_password = "eLHvfC5BZq"
 proxy_prefix_http = "http://pY33k6KH6t:eLHvfC5BZq@"

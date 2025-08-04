@@ -44,15 +44,26 @@ class APISpider(scrapy.Spider):
             if os.environ["USER"] in LOCAL_USERS:
                 # No filters
                 # list_of_competitions = bookie_config(bookie=["AllSportAPI"])
+                # Filter by active competitions
+                # list_of_competitions = [x for x in bookie_config(bookie=["AllSportAPI", "only_active"])]
                 # Filter by competition
-                list_of_competitions = [x for x in bookie_config(bookie=["AllSportAPI"]) if x["competition_id"] == "ATP"]
+                list_of_competitions = [x for x in bookie_config(bookie=["AllSportAPI"])
+                                        if x["competition_id"] == "UEFAEuropaLeague"]
                 # if self.debug:
                 #     print("list of competitions", list_of_competitions)
                 pass
             else:
                 list_of_competitions = bookie_config(bookie=["AllSportAPI"])
         except:
-            list_of_competitions = bookie_config(bookie=["AllSportAPI"])
+            if (
+                0 <= Helpers().get_time_now("UTC").hour < 1
+                # or 10 <= Helpers().get_time_now("UTC").hour < 11
+            ):
+                print("PROCESSING ALL COMPETITIONS")
+                list_of_competitions = bookie_config(bookie=["AllSportAPI"])
+            else:
+                print("PROCESSING ONLY ACTIVE COMPETITIONS")
+                list_of_competitions = [x for x in bookie_config(bookie=["AllSportAPI", "only_active"])]
         # self.data_dict = {}
 
         for data in list_of_competitions:
@@ -155,6 +166,14 @@ class APISpider(scrapy.Spider):
                             away_team_short_name = data["awayTeam"]["shortName"]
                         except KeyError:
                             away_team_short_name = data["awayTeam"]["name"]
+                        try:
+                            home_team_country = data["homeTeam"]["country"]["name"]
+                        except KeyError:
+                            home_team_country = None
+                        try:
+                            away_team_country = data["awayTeam"]["country"]["name"]
+                        except KeyError:
+                            away_team_country = None
                         match_id = Helpers().build_ids(
                                 id_type="match_id",
                                 data=
@@ -163,7 +182,8 @@ class APISpider(scrapy.Spider):
                                     "teams": [data["homeTeam"]["name"], data["awayTeam"]["name"]]
                                 }
                             )
-                        print(f"comp: {response.meta.get('competition_id')} match_id {match_id} for {data['homeTeam']['name']} vs {data['awayTeam']['name']} "
+                        print(f"comp: {response.meta.get('competition_id')} match_id {match_id} "
+                              f"for {data['homeTeam']['name']} vs {data['awayTeam']['name']} "
                               f"computed date {date} original date {data['startTimestamp']}")
                         self.data_dict[competition_id][data["id"]] = {
                             "bookie_id": self.name,
@@ -174,9 +194,11 @@ class APISpider(scrapy.Spider):
                             "home_team": data["homeTeam"]["name"],
                             "home_team_id": data["homeTeam"]["id"],
                             "home_team_short_name": home_team_short_name,
+                            "home_team_country": home_team_country,
                             "away_team": data["awayTeam"]["name"],
                             "away_team_id": data["awayTeam"]["id"],
                             "away_team_short_name": away_team_short_name,
+                            "away_team_country": away_team_country,
                             "date": date,
                         }
                         # if self.debug:

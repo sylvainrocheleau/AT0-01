@@ -47,13 +47,13 @@ class TwoStepsSpider(scrapy.Spider):
                 # No filters
                 # competitions = bookie_config(bookie=["all_bookies"])
                 # Filter by bookie that have errors
-                # competitions = bookie_config(bookie=["Bwin", "http_errors"])
+                # competitions = bookie_config(bookie=["1XBet", "http_errors"])
                 # Filter by bookie
-                # competitions = bookie_config(bookie=["1XBet"])
+                competitions = bookie_config(bookie=["Bwin"])
                 # Filter by competition
-                # competitions = [x for x in bookie_config(bookie=["all_bookies"]) if x["competition_id"] == "AmistososdeEliteClub"]
-                # Filter by boookie and competition
-                competitions = [x for x in bookie_config(bookie=["KirolBet"]) if x["competition_id"] == "ATP"]
+                # competitions = [x for x in bookie_config(bookie=["all_bookies"]) if x["competition_id"] == "Partidosamistosos"]
+                # Filter by bookie and competition
+                # competitions = [x for x in bookie_config(bookie=["Bwin"]) if x["competition_id"] == "NorthAmericanLeaguesCup"]
 
         except Exception as e:
             if (
@@ -78,8 +78,8 @@ class TwoStepsSpider(scrapy.Spider):
                 if data["scraping_tool"] == "playwright":
                     self.close_playwright = True
                 url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="competition", data=data)
-                if self.debug:
-                    print("url to scrape", url, "dont_filter", dont_filter, "meta_request", meta_request)
+                # if self.debug:
+                #     print("url to scrape", url, "dont_filter", dont_filter, "meta_request", meta_request)
                 yield scrapy.Request(
                     dont_filter=dont_filter,
                     url=url,
@@ -179,9 +179,9 @@ class TwoStepsSpider(scrapy.Spider):
     async def errback(self, failure):
         item = ScrapersItem()
         print("### errback triggered")
-        # print("proxy", failure.request.meta["proxy_ip"])
+        print("proxy", failure.request.meta["proxy_ip"])
         # print("user_agent", failure.request.meta["user_agent"])
-        print("failure.request.url", failure.request.url)
+        # print("failure.request.url", failure.request.url)
         # print("failure.value.response.url", failure.value.response.url)
         # print("failure.value.response.status", failure.value.response.status)
         # print("failure", failure.request.meta["bookie_id"])
@@ -199,7 +199,7 @@ class TwoStepsSpider(scrapy.Spider):
             Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
 
         try:
-            if self.close_playwright is True:
+            if self.close_playwright:
                 page = failure.request.meta["playwright_page"]
                 response_playwright = await page.content()
         except KeyError:
@@ -227,7 +227,8 @@ class TwoStepsSpider(scrapy.Spider):
         elif (
             self.close_playwright is True
             and any(s in response_playwright for s in [
-            "Lo sentimos", "No hay apuestas disponibles", "Ningún evento", " no hay eventos disponibles"
+            "Lo sentimos", "No hay apuestas disponibles", "Ningún evento", "no hay eventos", "Página en mantenimiento",
+            "No hay resultados",
         ]
                     )
         ):

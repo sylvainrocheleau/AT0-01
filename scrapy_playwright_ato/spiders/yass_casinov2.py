@@ -19,17 +19,17 @@ class OneStepJsonSpider(scrapy.Spider):
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
                 print("PROCESSING IN DEBUG MODE")
-                # self.competitions = [x for x in bookie_config(bookie=["YaassCasino"]) if x["competition_id"] == "Partidosamistosos"]
-                self.competitions = bookie_config(bookie=["YaassCasino"])
+                self.competitions = [x for x in bookie_config(bookie=["YaassCasino"]) if x["competition_id"] == "Partidosamistosos"]
+                # self.competitions = bookie_config(bookie=["YaassCasino"])
 
                 # self.match_filter = {"type": "bookie_and_comp", "params": ["YaassCasino", "UEFAConferenceLeague"]}
-                self.match_filter = {"type": "bookie_id", "params": ["YaassCasino", 1]}
+                self.match_filter = {"type": "bookie_id", "params": ["YaassCasino", 2]}
                 # self.match_filter = {"type": "match_url_id", "params": [
-                #     "https://www.yaasscasino.es/apuestas/event/9f6c9150-219e-4cca-b54c-e03a0f96765e"]}
+                #     "https://www.yaasscasino.es/apuestas/event/70dab40d-99d3-4bfa-a8ee-dd0f31a4a4d9"]}
         except:
             self.debug = False
             self.competitions = bookie_config(bookie=["YaassCasino"])
-            self.match_filter = {"type": "bookie_id", "params": ["YaassCasino", 1]}
+            self.match_filter = {"type": "bookie_id", "params": ["YaassCasino", 2]}
 
     name = "YaassCasinov2"
     custom_settings = {
@@ -211,7 +211,8 @@ class OneStepJsonSpider(scrapy.Spider):
         item = ScrapersItem()
         matches_details_and_urls = Helpers().matches_details_and_urls(
             filter=self.match_filter_enabled,
-            filter_data=self.match_filter
+            # filter_data=self.match_filter
+            filter_data={"type": "bookie_and_comp", "params": ["YaassCasino", response.meta.get("competition_id")]},
         )
         matches_details_and_urls = {k: [v for v in lst if v['to_delete'] != 1] for k, lst in
                                     matches_details_and_urls.items() if
@@ -275,7 +276,7 @@ class OneStepJsonSpider(scrapy.Spider):
             print(traceback.format_exc())
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
 
-
+        yaass_list_match_url_ids = []
         jsonresponse = json.loads(response.text)
         for key, value in jsonresponse["data"]["currentOffer"].items():
             if key == "nodes":
@@ -315,7 +316,7 @@ class OneStepJsonSpider(scrapy.Spider):
                                              if team['home_team'] == home_team and team['away_team'] == away_team), None)
                             match_url_id = next((team['url'] for team in match_infos
                                             if team['home_team'] == home_team and team['away_team'] == away_team), None)
-
+                            yaass_list_match_url_ids.append(match_url_id)
                             if match_url_id not in [match['match_url_id'] for match in matches_details_and_urls.values() for match in match]:
                                 if self.debug:
                                     print("match_url_id not found in matches_details_and_urls", match_url_id, match_id)
@@ -369,6 +370,30 @@ class OneStepJsonSpider(scrapy.Spider):
                             else:
                                 if self.debug:
                                     print("No match found for teams", home_team, away_team)
+
+        missing_match_url_ids = [
+            match['match_url_id']
+            for match_list in matches_details_and_urls.values()
+            for match in match_list
+            if match['match_url_id'] not in yaass_list_match_url_ids
+        ]
+        if self.debug:
+            print(f"Missing match URL IDs: for competition {response.meta.get('competition_id')}")
+            print(missing_match_url_ids)
+        for match_url_id in missing_match_url_ids:
+            item["data_dict"] = {
+                "match_infos": [
+                    {
+                        "match_url_id": match_url_id,
+                        "http_status": 1600,  # No odds found
+                        # "updated_date": Helpers().get_time_now("UTC")
+                    },
+                ]
+            }
+            print(f"setting {match_url_id} to 1600")
+            item["pipeline_type"] = ["error_on_match_url"]
+            if "data_dict" in item:
+                yield item
 
     def raw_html(self, response):
         try:

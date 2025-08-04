@@ -1,14 +1,22 @@
-from scrapy_playwright_ato.utilities import Helpers
+from utilities import Helpers
 
-map_matches = {}
+# competitions = Helpers().load_competitions()
+#
+# def add_bigrams(names):
+#     variants = set(names)
+#     for name in names:
+#         words = name.split()
+#         for i in range(len(words) - 1):
+#             bigram = f"{words[i]} {words[i+1]}"
+#             variants.add(bigram)
+#     return list(variants)
+#
+# competitions_names_and_variants = {}
+# for x in competitions:
+#     if x[3] == "3":
+#         base_names = list({x[1], x[2]})
+#         competitions_names_and_variants[x[0]] = add_bigrams(base_names)
+#
+# print(competitions_names_and_variants)
 
-for match in Helpers().load_matches():
-    try:
-        map_matches[match[6]].append(match[0])
-    except KeyError:
-        map_matches.update({match[6]: [match[0]]})
-map_matches_urls = [x[0] for x in Helpers().load_matches_urls("LeoVegas")]
-
-print("Match url: ", map_matches_urls)
-
-print("Map matches key: ", map_matches.keys())
+print(Helpers().load_competiton_names_and_variants(sport_id="3"))

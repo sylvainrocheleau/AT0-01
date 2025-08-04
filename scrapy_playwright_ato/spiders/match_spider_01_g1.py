@@ -1,4 +1,6 @@
 import random
+from math import frexp
+
 import scrapy
 import os
 import traceback
@@ -21,7 +23,7 @@ class MetaSpider(scrapy.Spider):
         scraping_id = name.replace("match_spider_01_g", "")
         scraping_group = [int(scraping_id)]
         custom_settings = get_custom_playwright_settings(browser="Chrome", rotate_headers=False)
-        custom_settings["PLAYWRIGHT_MAX_CONTEXTS"] = 3
+        # custom_settings["PLAYWRIGHT_MAX_CONTEXTS"] = 3
 
     elif name == "match_spider_01_zyte_api":
         settings_used = "USING ZYTE API SETTINGS"
@@ -37,11 +39,11 @@ class MetaSpider(scrapy.Spider):
 
             # FILTER OPTIONS
             # match_filter = {}
-            # match_filter = {"type": "bookie_id", "params":["Paf", 0]}
-            match_filter = {"type": "bookie_and_comp", "params": ["KirolBet", "ATP"]}
+            match_filter = {"type": "bookie_id", "params":["MarathonBet", 1]}
+            # match_filter = {"type": "bookie_and_comp", "params": ["1XBet", "UEFAConferenceLeague"]}
             # match_filter = {"type": "comp", "params":["MajorLeagueSoccerUSA"]}
             # match_filter = {"type": "match_url_id",
-            #                 "params":["https://sports.bwin.es/es/sports/eventos/fk-rabotnicki-skopje-torpedo-belaz-zhodino-2:7638098"]}
+            #                 "params":["https://www.marathonbet.es/es/betting/Football/Friendly+Tournaments/Clubs/Category+2/Leagues+Cup/Canada+%26+USA/Group+Stage/Monterrey+vs+FC+Cincinnati+-+23951540"]}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -64,46 +66,52 @@ class MetaSpider(scrapy.Spider):
                 for key, matches in (
                     (key, [match for match in value
                            if match['scraping_tool'] in self.allowed_scraping_tools
-                           and match['scraping_group'] in self.scraping_group
-                           and match['frequency_group'] == self.frequency_groups[-1]])
+                           # and match['scraping_group'] in self.scraping_group
+                           # and match['frequency_group'] == self.frequency_groups[-1]
+                           ]
+                     )
                     for key, value in matches_details_and_urls_from_db.items()
                 )
                 if matches  # Only include if matches is not empty
             }
             return matches_details_and_urls, len(matches_details_and_urls), frequency_group
-
-        matches_details_and_urls: dict[str, list] = {}
-        frequency_group = str
-        while len(matches_details_and_urls) < 1 and 'F' not in self.frequency_groups:
-            frequency_group = self.frequency_groups[-1]
-            if frequency_group == self.frequency_group_being_processed:
-                next_letter = chr(ord(max(self.frequency_groups)) + 1)
-                self.frequency_groups.append(next_letter)
+        else:
+            matches_details_and_urls: dict[str, list] = {}
+            frequency_group = str
+            while len(matches_details_and_urls) < 1 and 'F' not in self.frequency_groups:
                 frequency_group = self.frequency_groups[-1]
-            matches_details_and_urls_from_db = Helpers().matches_details_and_urls(
-                filter=self.match_filter_enabled,
-                filter_data=self.match_filter
-            )
-            matches_details_and_urls = {
-                key: matches
-                for key, matches in (
-                    (key, [match for match in value
-                           if match['scraping_tool'] in self.allowed_scraping_tools
-                           and match['scraping_group'] in self.scraping_group
-                           and match['frequency_group'] == frequency_group])
-                    for key, value in matches_details_and_urls_from_db.items()
+                if frequency_group == self.frequency_group_being_processed:
+                    next_letter = chr(ord(max(self.frequency_groups)) + 1)
+                    self.frequency_groups.append(next_letter)
+                    frequency_group = self.frequency_groups[-1]
+                matches_details_and_urls_from_db = Helpers().matches_details_and_urls(
+                    filter=self.match_filter_enabled,
+                    filter_data=self.match_filter
                 )
-                if matches  # Only include if matches is not empty
-            }
+                matches_details_and_urls = {
+                    key: matches
+                    for key, matches in (
+                        (key, [match for match in value
+                               if match['scraping_tool'] in self.allowed_scraping_tools
+                               and match['scraping_group'] in self.scraping_group
+                               and match['frequency_group'] == frequency_group
+                               ]
+                         )
+                        for key, value in matches_details_and_urls_from_db.items()
+                    )
+                    if matches  # Only include if matches is not empty
+                }
 
-            print(f"frequency group from function {frequency_group}: {len(matches_details_and_urls)}")
-            if self.frequency_groups[-1] != 'A' and self.frequency_group_being_processed != 'A':
-                self.frequency_groups.append('A')
-            else:
-                next_letter = chr(ord(max(self.frequency_groups)) + 1)
-                self.frequency_groups.append(next_letter)
+                print(f"frequency group from function {frequency_group}: {len(matches_details_and_urls)}")
+                if self.frequency_groups[-1] != 'A' and self.frequency_group_being_processed != 'A':
+                    self.frequency_groups.append('A')
+                # elif self.frequency_groups[-1] != 'B' and self.frequency_group_being_processed != 'B':
+                #     self.frequency_groups.append('B')
+                else:
+                    next_letter = chr(ord(max(self.frequency_groups)) + 1)
+                    self.frequency_groups.append(next_letter)
 
-        return matches_details_and_urls, len(matches_details_and_urls), frequency_group
+            return matches_details_and_urls, len(matches_details_and_urls), frequency_group
 
     def start_requests(self):
         print(self.settings_used)
@@ -113,7 +121,7 @@ class MetaSpider(scrapy.Spider):
         print("First Matches details and URLs lenght:", self.lenght_of_matches_details_and_urls)
         while count_of_matches_details_and_urls == 0:
             self.frequency_group_being_processed = frequency_group
-            print(f"start requests for {frequency_group} out of {self.frequency_groups} "
+            print(f"freq start requests for {frequency_group} out of {self.frequency_groups} "
                   f"with {self.lenght_of_matches_details_and_urls} matches")
             for key, value in matches_details_and_urls.items():
                 count_of_matches_details_and_urls += 1
@@ -128,6 +136,8 @@ class MetaSpider(scrapy.Spider):
                         if data["scraping_tool"] == "playwright":
                             self.close_playwright = True
                         url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="match", data=data)
+                        if self.debug:
+                            print("Meta request:", meta_request)
                         dutcher_counter += 1
                         if dutcher_counter == len(value) and 'match_spider_01' in self.name :
                             meta_request["queue_dutcher"] = True
@@ -150,9 +160,10 @@ class MetaSpider(scrapy.Spider):
                         Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
 
             if (
-                count_of_matches_details_and_urls == self.lenght_of_matches_details_and_urls
+                not self.debug
+                and count_of_matches_details_and_urls == self.lenght_of_matches_details_and_urls
                 and 'F' not in self.frequency_groups
-                and not self.debug
+
             ):
                 count_of_matches_details_and_urls = 0
                 matches_details_and_urls, self.lenght_of_matches_details_and_urls, frequency_group = self.get_schedule()
@@ -163,6 +174,7 @@ class MetaSpider(scrapy.Spider):
                 break
 
     async def parse_match(self, response):
+
         item = ScrapersItem()
         if response.meta.get("scraping_tool") == "playwright":
             try:
@@ -173,6 +185,13 @@ class MetaSpider(scrapy.Spider):
                 print("Error closing playwright page/context:", e)
                 Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
                 pass
+        if self.debug:
+            # print proxy_ip and user agent used
+            print("working proxy_ip", response.meta.get("proxy_ip"))
+            print("working user_agent", response.meta.get("user_agent"))
+            # save proxy_ip, user_agent plus a third value "working"  to a csv file called proxy_ip_user_agent.csv
+            with open("proxy_ip_user_agent.csv", "a") as f:
+                f.write(f"{response.meta.get('proxy_ip')};{response.meta.get('user_agent')};working\n")
 
         odds = parse_match_logic(
             bookie_id=response.meta.get("bookie_id"),
@@ -236,9 +255,14 @@ class MetaSpider(scrapy.Spider):
     async def errback(self, failure):
         item = ScrapersItem()
         print("### err back triggered")
-        # print("proxy_ip", failure.request.meta["proxy_ip"])
-        # print("failure", failure)
-        # print("user_agent", failure.request.meta["user_agent"])
+        if self.debug:
+            print("failed proxy_ip", failure.request.meta["proxy_ip"])
+            # print("failure", failure)
+            print("failed user_agent", failure.request.meta["user_agent"])
+            # save proxy_ip, user_agent plus a third value "failed"  to a csv file called proxy_ip_user_agent.csv
+            with open("proxy_ip_user_agent.csv", "a") as f:
+                f.write(f"{failure.request.meta.get('proxy_ip')};{failure.request.meta.get('user_agent')};failed\n")
+        # print("failure.request.meta", failure.request.meta)
         # print("failure.request.url", failure.request.url)
         # print("failure.value.response.url", failure.value.response.url)
         # print("failure", failure.request.meta["bookie_id"])
@@ -287,6 +311,7 @@ class MetaSpider(scrapy.Spider):
         try:
             item["data_dict"] = {
                 "match_infos": [
+                    # TODO url should be the original url, not the one from the response
                     {
                         "match_url_id": url,
                         "http_status": status,
@@ -302,7 +327,10 @@ class MetaSpider(scrapy.Spider):
             Helpers().insert_log(level="CRITICAL", type="CODE", error=error, message=traceback.format_exc())
 
         try:
-            if self.close_playwright is True : # and "playwright_page" in failure.request.meta
+            # TODO find a way to close the page and context only if they were opened by playwright
+            # if "playwright_page" in failure.request.meta:
+
+            if self.close_playwright : # and "playwright_page" in failure.request.meta
                 page = failure.request.meta["playwright_page"]
                 print("Closing page on error")
                 await page.close()

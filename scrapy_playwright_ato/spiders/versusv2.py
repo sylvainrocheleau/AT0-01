@@ -24,14 +24,14 @@ class WebsocketsSpider(Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                self.competitions = [x for x in bookie_config(bookie=["Versus"]) if x["competition_id"] == "UEFAConferenceLeague"]
-                self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", "UEFAConferenceLeague"]}
+                # self.competitions = [x for x in bookie_config(bookie=["Versus"]) if x["competition_id"] == "UEFAChampionsLeague"]
+                # self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", "UEFAChampionsLeague"]}
 
                 # self.match_filter = {"type": "match_url_id", "params": [
                 #     "https://www.versus.es/apuestas/sports/soccer/events/21377160"]}
 
-                # self.competitions = bookie_config(bookie=["Versus"])
-                # self.match_filter = {"type": "bookie_id", "params": ["Versus", 1]}
+                self.competitions = bookie_config(bookie=["Versus"])
+                self.match_filter = {"type": "bookie_id", "params": ["Versus", 1]}
         except:
             if (
                 0 <= Helpers().get_time_now("UTC").hour < 1
@@ -116,8 +116,9 @@ destination:/api/eventgroups/{competition_id}-all-match-events
                 except Exception as e:
                     continue
                 try:
+                    print("match_ids", match_ids)
                     match_ids = [event['id'] for group in match_ids['groups'] for event in group['events']]
-                    # print("match_ids", match_ids)
+
                 except KeyError:
                     print(f"error in match_ids for {competition['competition_id']} - {competition['competition_url_id']}")
                     match_ids = []
