@@ -783,7 +783,7 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                     except Exception as e:
                         continue
         elif bookie_id == "KirolBet":
-            # Ajout de comment 3
+            # Ajout de comment 4
             xpath_results = response.xpath("//div[@class='infoEve']").extract()
             match_infos = []
             for xpath_result in xpath_results:
