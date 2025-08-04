@@ -266,6 +266,7 @@ FROM        ATO_production.V2_Dutcher
 
 
 if __name__ == "__main__":
+    # TODO: add acheck on return characters in comp urls and badly spelled team status
     try:
         if os.environ["USER"] in ["sylvain","rickiel"]:
             debug = True

@@ -7,35 +7,29 @@ from twisted.internet.error import DNSLookupError, TimeoutError, TCPTimedOutErro
 from ..items import ScrapersItem
 from ..settings import get_custom_playwright_settings, get_custom_settings_for_zyte_api, LOCAL_USERS
 from ..bookies_configurations import get_context_infos, bookie_config
-from ..parsing_logic import parse_competition
+from ..parsing_logic import parse_sport
 from ..utilities import Helpers
 
-# Voir ceci pour mieux logger Playwright:
-# https://substack.thewebscraping.club/p/advanced-logging-in-playwright?publication_id=1023328&post_id=154490033&isFreemail=true&r=bffc4&triedRedirect=true
 
 class TwoStepsSpider(scrapy.Spider):
-    name = "comp_spider_01"
-    if name == "comp_spider_01":
+    name = "sport_spider_01"
+    if name == "sport_spider_01":
         settings_used = "USING PLAYWRIGHT SETTINGS"
         custom_settings = get_custom_playwright_settings(browser="Chrome", rotate_headers=False)
         allowed_scraping_tools = ["playwright", "scrape_ops", "requests", "zyte_proxy_mode"]
-    elif name == "comp_spider_01_zyte_api":
+    elif name == "sport_spider_01_zyte_api":
         settings_used = "USING ZYTE API SETTINGS"
         custom_settings = get_custom_settings_for_zyte_api()
         allowed_scraping_tools = ["zyte_api"]
     debug = False
-    match_url = str
+    # match_url = str
     comp_url = str
     proxy_ip = str
-    pipeline_type = ["match_urls"]
+    pipeline_type = ["tournaments_urls"]
     user_agent_hash = int
+    # TODO: map tournaments to exclude old tournaments
     map_matches = {}
-    for match in Helpers().load_matches():
-        try:
-            map_matches[match[6]].append(match[0])
-        except KeyError:
-            map_matches.update({match[6]: [match[0]]})
-    map_matches_urls = [x[0] for x in Helpers().load_matches_urls(name)]
+    competiton_names_and_variants = Helpers().load_competiton_names_and_variants(sport_id="3")
     close_playwright = False
 
     def start_requests(self):
@@ -49,11 +43,19 @@ class TwoStepsSpider(scrapy.Spider):
                 # Filter by bookie that have errors
                 # competitions = bookie_config(bookie=["1XBet", "http_errors"])
                 # Filter by bookie
-                competitions = bookie_config(bookie=["Bwin"])
+                sport_pages = bookie_config(
+                    bookie={
+                        "name": "Bet777",
+                        "http_errors": False,
+                        "output": "tournaments", # "output" can be "tournaments" or "competitions",
+                    }
+                )
                 # Filter by competition
                 # competitions = [x for x in bookie_config(bookie=["all_bookies"]) if x["competition_id"] == "Partidosamistosos"]
                 # Filter by bookie and competition
                 # competitions = [x for x in bookie_config(bookie=["Bwin"]) if x["competition_id"] == "NorthAmericanLeaguesCup"]
+            else:
+                sport_pages = []
 
         except Exception as e:
             if (
@@ -61,25 +63,37 @@ class TwoStepsSpider(scrapy.Spider):
                 or 10 <= Helpers().get_time_now("UTC").hour < 11
             ):
                 print("PROCESSING ALL COMPETITIONS")
-                competitions = bookie_config(bookie=["all_bookies"]) #v2_competitions_url
+                sport_pages = bookie_config(
+                    bookie={
+                        "name": "all_bookies",
+                        "http_errors": False,
+                        "output": "tournaments",  # "output" can be "tournaments" or "competitions",
+                    }
+                )
             else:
                 print("PROCESSING COMPETITIONS WITH HTTP ERRORS")
-                competitions = bookie_config(bookie=["all_bookies", "http_errors"])
+                sport_pages = bookie_config(
+                    bookie={
+                        "name": "all_bookies",
+                        "http_errors": True,
+                        "output": "tournaments",  # "output" can be "tournaments" or "competitions",
+                    }
+                )
 
 
-        competitions = [x for x in competitions if x["scraping_tool"] in self.allowed_scraping_tools]
+        sport_pages = [x for x in sport_pages if x["scraping_tool"] in self.allowed_scraping_tools]
         if self.debug:
-            print("competitions to scrape", [x["competition_id"] for x in competitions])
-        for data in competitions:
+            print("sport_url_id to scrape", [x["sport_url_id"] for x in sport_pages])
+        for data in sport_pages:
             try:
                 if data["scraping_tool"] in ["requests", "playwright", "zyte_proxy_mode", "zyte_api"]:
                     context_info = random.choice([x for x in context_infos if x["bookie_id"] == data["bookie_id"]])
                     data.update(context_info)
                 if data["scraping_tool"] == "playwright":
                     self.close_playwright = True
-                url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="competition", data=data)
-                # if self.debug:
-                #     print("url to scrape", url, "dont_filter", dont_filter, "meta_request", meta_request)
+                url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="sport", data=data)
+                if self.debug:
+                    print("url to scrape", url, "dont_filter", dont_filter, "meta_request", meta_request)
                 yield scrapy.Request(
                     dont_filter=dont_filter,
                     url=url,
@@ -106,61 +120,35 @@ class TwoStepsSpider(scrapy.Spider):
                 Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
                 pass
 
-        match_infos = parse_competition(
+        tournaments_infos = parse_sport(
             response=response,
             bookie_id=response.meta.get("bookie_id"),
-            competition_id=response.meta.get("competition_id"),
-            competition_url_id=response.meta.get("competition_url_id"),
             sport_id=response.meta.get("sport_id"),
-            map_matches_urls=self.map_matches_urls,
+            competiton_names_and_variants=self.competiton_names_and_variants,
             debug=self.debug
         )
         if self.debug:
             print("match_infos", match_infos)
 
         try:
-            if len(match_infos) > 0:
-                match_infos = Helpers().normalize_team_names(
-                    match_infos=match_infos,
-                    competition_id=response.meta.get("competition_id"),
-                    bookie_id=response.meta.get("bookie_id"),
-                    debug=self.debug
-                )
-
-                if response.meta.get("competition_id") in self.map_matches.keys():
-                    item["data_dict"] = {
-                        "map_matches": self.map_matches[response.meta.get("competition_id")],
-                        "match_infos": match_infos,
-                        "comp_infos": [
-                            {
-                                "competition_url_id": response.meta.get("competition_url_id"),
-                                "http_status": response.status,
-                                "updated_date": Helpers().get_time_now("UTC")
-                            },
-                        ]
-                    }
-                    item["pipeline_type"] = self.pipeline_type
-                    yield item
-                else:
-                    error = f"{response.meta.get('bookie_id')} {response.meta.get('competition_id')} comp_id not in map_matches "
-                    if self.debug:
-                        print(error)
-                    Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
-            else:
+            if len(tournaments_infos) > 0:
                 item["data_dict"] = {
-                    "map_matches": [],
-                    "match_infos": match_infos,
-                    "comp_infos": [
+                    "tournaments_infos": tournaments_infos,
+                    "sport_infos": [
                         {
-                            "competition_url_id": response.meta.get("competition_url_id"),
+                            "sport_url_id": response.meta.get("sport_url_id"),
                             "http_status": response.status,
                             "updated_date": Helpers().get_time_now("UTC")
                         },
                     ]
                 }
                 item["pipeline_type"] = self.pipeline_type
+                print(item)
                 yield item
-                error = f"{response.meta.get('bookie_id')} {response.meta.get('competition_id')} comp has no new match "
+            else:
+                error = f"{response.meta.get('bookie_id')} {response.meta.get('sport_url_id')} no tournaments found"
+                if self.debug:
+                    print(error)
                 Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
 
         except Exception as e:

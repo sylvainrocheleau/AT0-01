@@ -39,11 +39,11 @@ class MetaSpider(scrapy.Spider):
 
             # FILTER OPTIONS
             # match_filter = {}
-            # match_filter = {"type": "bookie_id", "params":["MarathonBet", 1]}
+            match_filter = {"type": "bookie_id", "params":["MarathonBet", 1]}
             # match_filter = {"type": "bookie_and_comp", "params": ["1XBet", "UEFAConferenceLeague"]}
             # match_filter = {"type": "comp", "params":["MajorLeagueSoccerUSA"]}
-            match_filter = {"type": "match_url_id",
-                            "params":["https://www.marathonbet.es/es/betting/Football/Friendly+Tournaments/Clubs/Category+2/Leagues+Cup/Canada+%26+USA/Group+Stage/Monterrey+vs+FC+Cincinnati+-+23951540"]}
+            # match_filter = {"type": "match_url_id",
+            #                 "params":["https://www.marathonbet.es/es/betting/Football/Friendly+Tournaments/Clubs/Category+2/Leagues+Cup/Canada+%26+USA/Group+Stage/Monterrey+vs+FC+Cincinnati+-+23951540"]}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -311,6 +311,7 @@ class MetaSpider(scrapy.Spider):
         try:
             item["data_dict"] = {
                 "match_infos": [
+                    # TODO url should be the original url, not the one from the response
                     {
                         "match_url_id": url,
                         "http_status": status,
@@ -326,6 +327,9 @@ class MetaSpider(scrapy.Spider):
             Helpers().insert_log(level="CRITICAL", type="CODE", error=error, message=traceback.format_exc())
 
         try:
+            # TODO find a way to close the page and context only if they were opened by playwright
+            # if "playwright_page" in failure.request.meta:
+
             if self.close_playwright : # and "playwright_page" in failure.request.meta
                 page = failure.request.meta["playwright_page"]
                 print("Closing page on error")

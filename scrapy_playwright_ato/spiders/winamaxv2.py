@@ -152,8 +152,8 @@ class TwoStepsSpider(scrapy.Spider):
                 print(f"frequency group from function {frequency_group}: {len(matches_details_and_urls)}")
                 if self.frequency_groups[-1] != 'A' and self.frequency_group_being_processed != 'A':
                     self.frequency_groups.append('A')
-                elif self.frequency_groups[-1] != 'B' and self.frequency_group_being_processed != 'B':
-                    self.frequency_groups.append('B')
+                # elif self.frequency_groups[-1] != 'B' and self.frequency_group_being_processed != 'B':
+                #     self.frequency_groups.append('B')
                 else:
                     next_letter = chr(ord(max(self.frequency_groups)) + 1)
                     self.frequency_groups.append(next_letter)
@@ -395,13 +395,23 @@ class TwoStepsSpider(scrapy.Spider):
                     await asyncio.sleep(5)
                 if len(self.match_infos[competition_url]) == 0:
                     print(f"First reloading for {competition_url}")
-                    await page.reload()
+                    try:
+                        await page.reload()
+                    except Error as e:
+                        print(f"Page crashed during reload for {competition_url}: {e}")
+                        Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
+                        break  # Exit the loop if the page crashed
                 if len(self.match_infos[competition_url]) == 0:
                     print(f"Waiting for 15 seconds for {competition_url}")
                     await asyncio.sleep(15)
                 if len(self.match_infos[competition_url]) == 0:
                     print(f"Second reload for {competition_url}")
-                    await page.reload()
+                    try:
+                        await page.reload()
+                    except Error as e:
+                        print(f"Page crashed during reload for {competition_url}: {e}")
+                        Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
+                        break  # Exit the loop if the page crashed
         except Exception as e:
             print(traceback.format_exc())
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
@@ -556,13 +566,33 @@ class TwoStepsSpider(scrapy.Spider):
                     await asyncio.sleep(5)
                 if len(self.odds[match_url]) == 0:
                     print(f"First reloading for {match_url}")
-                    await page.reload()
+                    try:
+                        await page.reload()
+                    except Error as e:
+                        print(f"Page crashed during reload for {match_url}: {e}")
+                        Helpers().insert_log(
+                            level="ERROR",
+                            type="PLAYWRIGHT",
+                            error=f"Page crashed during reload for {match_url}",
+                            message=str(e)
+                        )
+                        break  # Exit the loop if the page crashed
                 if len(self.odds[match_url]) == 0:
                     print(f"Waiting for 15 seconds for {match_url}")
                     await asyncio.sleep(15)
                 if len(self.odds[match_url]) == 0:
                     print(f"Second reload for {match_url}")
-                    await page.reload()
+                    try:
+                        await page.reload()
+                    except Error as e:
+                        print(f"Page crashed during reload for {match_url}: {e}")
+                        Helpers().insert_log(
+                            level="ERROR",
+                            type="PLAYWRIGHT",
+                            error=f"Page crashed during reload for {match_url}",
+                            message=str(e)
+                        )
+                        break  # Exit the loop if the page crashed
 
             if len(self.odds[match_url]) > 0:
                 odds = Helpers().build_ids(

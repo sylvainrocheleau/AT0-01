@@ -8,6 +8,16 @@ def get_comps_for_bookie():
     competitions = [x for x in bookie_config(bookie=[bookie_id])]
     print(competitions)
 
+def get_sports_pages(bookie_id=None, http_errors=False, output="tournaments"):
+    from bookies_configurations import bookie_config
+    sport_page = bookie_config(
+        bookie={
+            "name": bookie_id,
+            "http_errors": http_errors,
+            "output": output,  # "output" can be "tournaments" or "competitions",
+        }
+    )
+    print(sport_page)
 def teams_and_dates_from_response(bookie_id, competition_id, sport_id, normalize=False):
     from scrapy.http import HtmlResponse
     from parsing_logic import parse_competition
@@ -94,10 +104,11 @@ def get_matches_details_and_urls():
     from utilities import Helpers
     match_filter_enabled = True
     match_filter  = {}
-    # match_filter = {"type": "bookie_and_comp", "params": ["Sportium", "UEFAConferenceLeague"]}
+    match_filter = {"type": "bookie_and_comp", "params": ["YaassCasino", "Partidosamistosos"]}
     # match_filter = {"type": "bookie_id", "params": ["Sportium", 1]}
-    match_filter = {"type": "match_url_id", "params": [
-        "https://1xbet.es/es/line/football/118587-uefa-champions-league/639462687-zrinjski-slovan-bratislava"]}
+    # match_filter = {"type": "match_url_id", "params": [
+    #     "https://www.yaasscasino.es/apuestas/event/70dab40d-99d3-4bfa-a8ee-dd0f31a4a4d9"]}
+    # match_filter = {"type": "bookie_id", "params": ["YaassCasino", 2]}
 
     matches_details_and_urls = Helpers().matches_details_and_urls(
             filter=match_filter_enabled,
@@ -110,9 +121,34 @@ def get_matches_details_and_urls():
     print(matches_details_and_urls)
     return None
 
+def get_tournaments_from_sport_page(bookie_id, sport_id, debug):
+    from utilities import Helpers
+    from parsing_logic import parse_sport
+    from parsel import Selector
+
+    competiton_names_and_variants = Helpers().load_competiton_names_and_variants(sport_id=sport_id)
+    try:
+        with open('sport_spider_01_response.txt') as f:
+            response = Selector(text=f.read())
+    except FileNotFoundError:
+        print("File 'sport_spider_01_response.txt' not found. Please provide a valid response file.")
+        return []
+    tournaments = parse_sport(
+        response=response,
+        bookie_id=bookie_id,
+        sport_id=sport_id,
+        competiton_names_and_variants=competiton_names_and_variants,
+        debug=debug
+    )
+    print(tournaments)
+    return None
+
+
 if __name__ == "__main__":
     # check_list_of_markets()
     # get_comps_for_bookie()
-    # teams_and_dates_from_response(bookie_id='1XBet', competition_id='NorthAmericanLeaguesCup', sport_id='1', normalize=True)
+    # teams_and_dates_from_response(bookie_id='Bet777', competition_id='NorthAmericanLeaguesCup', sport_id='3', normalize=False)
     # get_odds_from_response()
-    get_matches_details_and_urls()
+    # get_matches_details_and_urls()
+    # get_sports_pages()
+    get_tournaments_from_sport_page(bookie_id="Bet777", sport_id="3", debug=True)

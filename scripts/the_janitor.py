@@ -161,6 +161,25 @@ def delete_matches_odds_with_bad_http_status():
         print("Error deleting matches odds with bad HTTP status:", e)
         Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
 
+def delete_matches_urls_with_bad_http_status():
+    try:
+        from script_utilities import Connect
+        connection = Connect().to_db(db="ATO_production", table=None)
+        cursor = connection.cursor()
+        query = """
+            DELETE FROM ATO_production.V2_Matches_Urls
+            WHERE http_status IN (301, 404)
+        """
+        cursor.execute(query)
+        deleted_count = cursor.rowcount
+        connection.commit()
+        cursor.close()
+        connection.close()
+        print(f"{deleted_count} matches URLs with 301 or 404 status deleted successfully")
+    except Exception as e:
+        print("Error deleting matches URLs with 301 or 404 HTTP status:", e)
+        Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
+
 def delete_old_dutcher_entries():
     try:
         from script_utilities import Connect, Helpers
@@ -250,6 +269,7 @@ if __name__ == "__main__":
     delete_old_matches_with_no_id()
     delete_old_dutcher_entries()
     delete_matches_odds_with_bad_http_status()
+    delete_matches_urls_with_bad_http_status()
     delete_old_cookies()
     delete_old_logs()
 

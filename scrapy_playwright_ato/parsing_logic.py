@@ -33,6 +33,81 @@ def build_match_infos(
     }
     return match_info
 
+def parse_sport(response, bookie_id, sport_id, competiton_names_and_variants, debug):
+    html_cleaner = re.compile("<.*?>")
+    tournaments_info = []
+    try:
+        if bookie_id == "1XBet":
+            pass
+        elif bookie_id == "888Sport":
+            pass
+        elif bookie_id == "AdmiralBet":
+            pass
+        elif bookie_id == "AupaBet":
+            pass
+        elif bookie_id == "Bet777":
+            xpath_results = response.xpath("//a[contains(@class, 'content-between')]").extract()
+            for xpath_result in xpath_results:
+                xpath_result = Selector(xpath_result)
+                try:
+                    tournament_name = xpath_result.xpath("//span[@class='truncate flex-grow w-full']/text()").extract()[0].strip()
+                    tournaments_found = []
+                    for comp_id, variants in competiton_names_and_variants.items():
+                        for variant in variants:
+                            if any(variant in tournament_name for variant in variants):
+                                tournaments_found.append((comp_id, variant))
+
+                    if tournaments_found:
+                        # Pick the comp_id with the longest matching variant (most specific)
+                        competition_id = max(tournaments_found, key=lambda x: len(x[1]))[0]
+                        url = xpath_result.xpath("//a[@href]/@href").extract()[0]
+                        url = "https://www.bet777.es" + url
+                        print(tournament_name, '>', competition_id, '>', url)
+                        tournaments_info.append(
+                            {
+                                'competition_url_id': url,
+                                'competition_id': competition_id,
+                                'bookie_id': bookie_id,
+                            }
+                        )
+
+
+                except IndexError as e:
+                    continue
+
+        elif bookie_id == "BetfairSportsbook":
+            pass
+        elif bookie_id == "Betsson":
+            pass
+        elif bookie_id == "BetWay":
+            pass
+        elif bookie_id == "Bwin":
+            pass
+        elif bookie_id == "CasinoBarcelona":
+            pass
+        elif bookie_id == "CasinoGranMadrid":
+            pass
+        elif bookie_id == "Casumo":
+            pass
+        elif bookie_id == "Codere":
+            pass
+        elif bookie_id == "DaznBet":
+            pass
+        elif bookie_id == "EfBet":
+            pass
+        return tournaments_info
+    except Exception as e:
+        print("GENERAL EXCEPTION ON", bookie_id, "from parse_sport")
+        if debug:
+            print(traceback.format_exc())
+        Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
+        return []
+
+
+
+
+
+
 def parse_competition(response, bookie_id, competition_id, competition_url_id, sport_id, map_matches_urls, debug):
     try:
         html_cleaner = re.compile("<.*?>")
@@ -50,7 +125,7 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                         url = "https://1xbet.es" + url
                         web_url = url
                         date = xpath_result.xpath("//time[contains(@class, 'dashboard-game-info-additional__item')]/text()").extract()[0]
-                        date = dateparser.parse(''.join(date))
+                        date = dateparser.parse(''.join(date), locales=['es'])
                         if url not in map_matches_urls:
                             match_info = build_match_infos(
                                 url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id

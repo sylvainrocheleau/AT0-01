@@ -394,6 +394,10 @@ class ScrapersPipeline:
                     Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}",message=traceback.format_exc())
                     pass
 
+        elif "pipeline_type" in item.keys() and "tournaments_infos" in item["pipeline_type"]:
+            print("Updating V2_Sport_Urls with status and updated_date")
+
+
         elif "pipeline_type" in item.keys() and "error_on_competition_url" in item["pipeline_type"]:
             # print("Updating V2_Competitions_Urls with status only on error")
             start_time = datetime.datetime.now()
@@ -615,44 +619,6 @@ class ScrapersPipeline:
                     except:
                         pass
 
-            # if "pipeline_type" in item.keys() and "delete_matches" in item["pipeline_type"]:
-            #     # print("DELETING matches from V2_Matches")
-            #     start_time = datetime.datetime.now()
-            #     try:
-            #         connection = Connect().to_db(db="ATO_production", table=None)
-            #         cursor = connection.cursor()
-            #         query_find_old_matches = """
-            #             SELECT vss.match_id
-            #             FROM ATO_production.V2_Scraping_Schedules vss
-            #             WHERE vss.to_delete = 1
-            #         """
-            #         query_delete_matches = """
-            #             DELETE FROM ATO_production.V2_Matches
-            #             WHERE match_id = %s
-            #         """
-            #         cursor.execute(query_find_old_matches)
-            #         old_matches = cursor.fetchall()
-            #         print(f"DELETING {len(old_matches)} matches from V2_Matches")
-            #         print("old_matches", old_matches)
-            #         old_matches = [x[0] for x in old_matches]
-            #         old_matches = list(set(old_matches))
-            #         for match in old_matches:
-            #             print("deleting from pipeline", match)
-            #             cursor.execute(query_delete_matches, (match,))
-            #         connection.commit()
-            #
-            #     except Exception as e:
-            #         if self.debug:
-            #             print(traceback.format_exc())
-            #         Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
-            #     finally:
-            #         try:
-            #             end_time = datetime.datetime.now()
-            #             print("Time taken to delete matches from V2_Matches:", (end_time - start_time).total_seconds())
-            #             cursor.close()
-            #             connection.close()
-            #         except:
-            #             pass
 
         if "pipeline_type" in item.keys() and "exchange_match_odds" in item["pipeline_type"]:
             start_time = datetime.datetime.now()

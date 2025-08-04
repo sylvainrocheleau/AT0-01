@@ -70,8 +70,8 @@ list_of_headers =[
 ]
 
 list_of_proxies = [
-    "115.124.36.119", "185.106.126.109", "185.107.152.14", "185.119.48.24", "185.119.49.69",
-    "185.159.43.180", "185.166.172.76", "185.212.86.69", "194.38.59.88", "46.226.144.182"
+    "115.124.36.119", "185.106.126.109", "185.107.152.14", "185.105.15.160", "85.115.193.157",
+    "185.159.43.180", "185.166.172.76", "194.38.59.88", "185.118.52.126", "212.80.210.193",
 ]
 browser_types = ["Chrome"]
 
@@ -192,6 +192,9 @@ def get_cookies(test_mode, headless, pause_time, filters):
                     print("context cookies", cookies)
                     # page.close()
                     # page.context.close()
+                    if len(cookies) < 1:
+                        print("No cookies found for", bookie_name, "with proxy", proxy_ip)
+                        continue
                     data_to_update = {
                          "bookie": bookie_name,
                          "cookies": json.dumps(cookies),
@@ -328,8 +331,8 @@ def test(filters):
     print(bookies_infos)
 
 if __name__ == "__main__":
-    # get_cookies(test_mode=False, headless=True, pause_time=5, filters={"bookie_name": "Bwin", "1XBet": False})
-    get_cookies(test_mode=False, headless=True, pause_time=5, filters={"bookie_name": "all_bookies", "only_cookies": True})
+    # get_cookies(test_mode=False, headless=False, pause_time=5, filters={"bookie_name": "1XBet", "only_cookies": True})
+    get_cookies(test_mode=False, headless=True, pause_time=5, filters={"bookie_name": "all_bookies", "only_cookies": False})
     # test(filters={"bookie_name": "all_bookies", "only_cookies": True})
     # use_cookies()
 
