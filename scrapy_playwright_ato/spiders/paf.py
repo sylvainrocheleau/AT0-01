@@ -52,7 +52,7 @@ class TwoStepsJsonSpider(scrapy.Spider):
                     # https://eu1.offering-api.kambicdn.com/offering/v2018/pafes/betoffer/event/1021921004.json?lang=es_ES&market=ES
                     url = "https://eu1.offering-api.kambicdn.com/offering/v2018/pafes/betoffer/event/" + str(
                         match["event"]["id"]) + ".json?lang=es_ES&market=ES"
-                    web_url = "https://www.paf.es/betting#/event/" + str(match["event"]["id"])
+                    web_url = "https://www.paf.es/apuestas#/event/ID" + str(match["event"]["id"])
                     date = match["event"]["start"]
                     match_infos.append(
                         {"url": url, "web_url": web_url, "home_team": home_team, "away_team": away_team,

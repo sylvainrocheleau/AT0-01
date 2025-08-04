@@ -4,6 +4,7 @@ import requests
 import datetime
 import os
 import json
+import re
 from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 from scrapy.spidermiddlewares.httperror import HttpError
 from scrapy_playwright.page import PageMethod
@@ -94,7 +95,7 @@ class TwoStepsSpider(scrapy.Spider):
         # competition_id = competition_id.split("champs=")[1].split("&")[0]
 
         match_infos = []
-        url_prefix = "https://1xbet.es/service/LineFeed/GetGameZip?lng=es&isSubGames=true&GroupEvents=true&allEventsGroupSubGames=true&countevents=2500&partner=229&grMode=4&marketType=1&id="
+        # url_prefix = "https://1xbet.es/service/LineFeed/GetGameZip?lng=es&isSubGames=true&GroupEvents=true&allEventsGroupSubGames=true&countevents=2500&partner=229&grMode=4&marketType=1&id="
         for data_01 in json_responses["Value"]:
             for key, value in data_01.items():
                 if isinstance(value, list):
@@ -103,16 +104,15 @@ class TwoStepsSpider(scrapy.Spider):
                             if key_02 == "G":
                                 for match in value_02:
                                     try:
-                                        url = str(match["I"])
-                                        url = url_prefix + url
-                                        home_team = match["O1"]
-                                        away_team = match["O2"]
-                                        date = datetime.datetime.fromtimestamp(match["S"])
-                                        web_url = "https://1xbet.es/line/" + str(
+                                        url = "https://1xbet.es/line/" + str(
                                             match["SE"] + "/" + str(match["LI"]) + "-"
                                             + match["LE"].replace(".", "") + "/" + str(
                                                 match["CI"]) + "-" + match[
                                                 "O1E"] + "-" + match["O2E"]).replace(" ", "-")
+                                        home_team = match["O1"]
+                                        away_team = match["O2"]
+                                        date = datetime.datetime.fromtimestamp(match["S"])
+                                        web_url = url
                                         # if competition_id in web_url:
                                         match_infos.append(
                                             {"url": url, "web_url": web_url, "home_team": home_team,
@@ -124,6 +124,8 @@ class TwoStepsSpider(scrapy.Spider):
                                         continue
 
         for match_info in match_infos:
+            if self.debug:
+                print("### Match info: ", match_info['url'])
             context_info = random.choice(self.context_infos)
             self.proxy_ip = context_info["proxy_ip"]
             params = dict(
@@ -140,8 +142,12 @@ class TwoStepsSpider(scrapy.Spider):
                 playwright_include_page=True,
                 playwright_context=match_info["url"],
                 playwright_context_kwargs={
+                    "viewport": {
+                        "width": 1920,
+                        "height": 3200,
+                    },
                     "user_agent": context_info["user_agent"],
-                    "java_script_enabled": False,
+                    "java_script_enabled": True,
                     "ignore_https_errors": True,
                     "proxy": {
                         "server": "http://"+context_info["proxy_ip"]+":58542/",
@@ -157,8 +163,18 @@ class TwoStepsSpider(scrapy.Spider):
                     # 'position': 1
                 },
             )
-
-            # if "https://1xbet.es/LineFeed/GetGameZip?lng=es&cfview=0&isSubGames=true&GroupEvents=true&allEventsGroupSubGames=true&countevents=250&partner=229&id=231754197" == match_info["url"]:
+            params["playwright_page_methods"] = [
+                # PageMethod("wait_for_load_state", "load"),
+                # PageMethod(
+                #     method="wait_for_function",
+                #     expression="() => document.querySelectorAll(\"div.game-markets__groups\").length >= 20",
+                # ),
+                PageMethod(
+                    method="wait_for_selector",
+                    selector="//div[@class='game-markets__groups']",
+                )
+            ]
+            # if "https://1xbet.es/es/line/football/118587-uefa-champions-league/271427490-servette-viktoria-plzen" == match_info["url"]:
             self.match_url = match_info["url"]
             self.proxy_ip = context_info["proxy_ip"]
             try:
@@ -176,94 +192,72 @@ class TwoStepsSpider(scrapy.Spider):
         page = response.meta["playwright_page"]
         await page.close()
         await page.context.close()
-        json_responses = response.text.split("<pre>")[1]
-        json_responses = json_responses.split("</pre>")[0]
-        json_responses = json.loads(json_responses)
-        json_responses = json_responses["Value"]
-        # print("### Parsing ", response.url)
-        # html_cleaner = re.compile("<.*?>")
         item = ScrapersItem()
-        if "Locales" not in json_responses:
+        html_cleaner = re.compile("<.*?>")
+        odds = []
+        try:
+            selection_keys = response.xpath("//div[@class='game-markets__groups']").extract()
             odds = []
-            for markets in json_responses["GE"]:
-                for market in markets["E"]:
-                    for bet in market:
-                        try:
-                            if (
-                                (bet["T"] == 1 and response.meta.get("sport") == "Football")
-                                or bet["T"] == 401):
-
-                                odds.append(
-                                    {"Market": "Ganador del partido",
-                                     "Result": response.meta.get("home_team"),
-                                     "Odds": bet["C"]
-                                     }
-                                )
-                            elif bet["T"] == 2 and response.meta.get("sport") == "Football":
-                                odds.append(
-                                    {"Market": "Ganador del partido",
-                                     "Result": "Draw",
-                                     "Odds": bet["C"]
-                                     }
-                                )
-                            if (
-                                (bet["T"] == 3 and response.meta.get("sport") == "Football")
-                                or bet["T"] == 402
-                            ):
-                                odds.append(
-                                    {"Market": "Ganador del partido",
-                                     "Result": response.meta.get("away_team"),
-                                     "Odds": bet["C"]
-                                     }
-                                )
-                            elif bet["T"] == 9 and ".5" in str(bet["P"]):
-                                odds.append(
-                                    {"Market": "Mas/menos goles totales",
-                                     "Result": "Más de " + str(bet["P"]),
-                                     "Odds": bet["C"]
-                                     }
-                                )
-                            elif bet["T"] == 10  and ".5" in str(bet["P"]):
-                                odds.append(
-                                    {"Market": "Mas/menos goles totales",
-                                     "Result": "Menos de " + str(bet["P"]),
-                                     "Odds": bet["C"]
-                                     }
-                                )
-
-                                odds.append(
-                                    {"Market": "Mas/menos goles totales",
-                                     "Result": "Menos de " + str(bet["P"]),
-                                     "Odds": bet["C"]
-                                     }
-                                )
-                            elif bet["T"] == 8617:
-                                if "." in str(bet["P"]):
-                                    bet["P"] = str(bet["P"]).replace(".00", " - ")
-                                else:
-                                    bet["P"] = str(bet["P"]) + " - 0"
-                                odds.append(
-                                    {"Market": "Resultado Correcto",
-                                     "Result": bet["P"],
-                                     "Odds": bet["C"]
-                                     }
-                                )
-                        except KeyError as e:
-                            # import traceback
-                            # print(traceback.format_exc())
+            for selection_key in selection_keys:
+                selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t", "")
+                clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
+                clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
+                for selection_key02 in clean_selection_keys:
+                    if clean_selection_keys[0] in response.meta.get("list_of_markets"):
+                        market = clean_selection_keys[0]
+                    else:
+                        market = "empty"
+                        continue
+                    if (
+                        selection_key02 != market
+                        and market in response.meta.get("list_of_markets")
+                        and re.search('[a-zA-Z]', selection_key02) is not None
+                        or "-" in selection_key02
+                    ):
+                        if (
+                            "Más de" in selection_key02 or "Menos de" in selection_key02) and "." not in selection_key02:
                             continue
+                        elif selection_key02 == "G1":
+                            selection_key02 = response.meta.get('home_team')
+                        elif selection_key02 == "G2":
+                            selection_key02 = response.meta.get('away_team')
+                        result = selection_key02
+                        odd = "empty"
 
-            item["Sport"] = response.meta.get("sport")
-            item["Competition"] = response.meta.get("competition")
-            item["Home_Team"] = response.meta.get("home_team")
-            item["Away_Team"] = response.meta.get("away_team")
-            item["Date"] = response.meta.get("start_date")
-            item["Competition_Url"] = response.meta.get("competition_url")
-            item["Match_Url"] = response.meta.get("web_url")
-            item["Bets"] = normalize_odds_variables(odds, item["Sport"], item["Home_Team"], item["Away_Team"])
-            if len(item["Bets"]) > 0:
-                yield item
+                    elif (
+                        re.search("[a-zA-Z]", selection_key02) is None
+                        and "-" not in selection_key02
+                        and ("," in selection_key02 or selection_key02.isdigit())
+                        and market in response.meta.get("list_of_markets")
+                    ):
+                        odd = selection_key02
+                    try:
+                        if (
+                            market in response.meta.get("list_of_markets")
+                            and result != "empty"
+                            and odd != "empty"
+                        ):
+                            odds.append({"Market": market, "Result": result, "Odds": odd})
+                            result = "empty"
+                            odd = "empty"
+                    except UnboundLocalError:
+                        pass
+                    except NameError:
+                        continue
 
+        except Exception as e:
+            print(e)
+
+        item["Sport"] = response.meta.get("sport")
+        item["Competition"] = response.meta.get("competition")
+        item["Home_Team"] = response.meta.get("home_team")
+        item["Away_Team"] = response.meta.get("away_team")
+        item["Date"] = response.meta.get("start_date")
+        item["Competition_Url"] = response.meta.get("competition_url")
+        item["Match_Url"] = response.meta.get("web_url")
+        item["Bets"] = normalize_odds_variables(odds, item["Sport"], item["Home_Team"], item["Away_Team"])
+        if len(item["Bets"]) > 0:
+            yield item
 
     async def raw_html(self, response):
         print("### TEST OUTPUT")
@@ -273,37 +267,27 @@ class TwoStepsSpider(scrapy.Spider):
         await page.context.close()
         # print("JSON", response.json)
         # print(response.text)
-        json_response = response.text.split("<pre>")[1]
-        json_response = json_response.split("</pre>")[0]
-        json_response = json.loads(json_response)
-        print("Proxy_ip", self.proxy_ip)
+
+        # print("Proxy_ip", self.proxy_ip)
         parent = os.path.dirname(os.getcwd())
         with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/" + self.name + "_response" + ".txt", "w") as f:
-            f.write(str(json_response)) # response.meta["playwright_page"]
+            f.write(response.text) # response.meta["playwright_page"]
         # print("custom setting", self.custom_settings)
         # print(response.meta["playwright_page"])
 
-    async def parse_headers(self, response):
-        page = response.meta["playwright_page"]
-        storage_state = await page.context.storage_state()
-        await page.close()
-
-        print("Cookies sent: ", response.request.headers.get("Cookie"))
-        print("Response cookies: ", response.headers.getlist("Set-Cookie"))
-        # print("Page cookies: ", storage_state["cookies"])
-        print("Response.headers: ", response.headers)
-        print("Cookie from db: ", self.cookie_to_send_from_db)
 
     async def errback(self, failure):
         item = ScrapersItem()
-        print("### errback triggered")
-        item["proxy_ip"] = self.proxy_ip
+        print("### errback triggered", failure.value)
+        print(failure.request.meta.get("playwright_context_kwargs", {}).get("proxy", {}).get("server", "no_proxy"))
+        print(failure.request.meta.get("playwright_context_kwargs", {}).get("user_agent", "no_user_agent"))
+        item["proxy_ip"] = failure.request.meta.get("playwright_context_kwargs", {}).get("proxy", {}).get("server", "no_proxy")
         try:
-            item["Competition_Url"] = self.comp_url
+            item["Competition_Url"] = failure.request.meta['competition_url']
         except:
             pass
         try:
-            item["Match_Url"] = self.match_url
+            item["Match_Url"] = failure.request.meta['match_url']
         except:
             pass
         item["extraction_time_utc"] = datetime.datetime.utcnow().replace(second=0, microsecond=0)

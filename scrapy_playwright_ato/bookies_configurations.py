@@ -10,14 +10,14 @@ from difflib import SequenceMatcher
 from scrapy_playwright_ato.settings import LOCAL_USERS
 from scrapy_playwright_ato.utilities import Connect, Helpers
 
-#RB
+# coR
 
 basketball_intervals = np.arange(79.5, 260.5, 1)
 tennis_intervals = np.arange(15.5, 45.5, 1)
 list_of_markets_V2 = {
 "1XBet": {
-    "1": [],
-    "2":[]
+    "1": ["1X2", "Total", "Marcador correcto"],
+    "2":["Victorias del equipo", "Total"]
 },
 "Betsson": {
     "1": ["Correct Score", "Total Goals", "Total Points", "Match Result", "Match Winner"],
@@ -67,11 +67,11 @@ list_of_markets_V2 = {
             ] + [
                 "Total_Points.Over_" + str(x).rstrip(".0") for x in basketball_intervals
             ],
-    "3": ["Match_Result.1", "Match_Result.3", ] + [
-                    "Total_Games.Under_" + str(x).rstrip(".0") for x in tennis_intervals
-                ] + [
-                    "Total_Games.Over_" + str(x).rstrip(".0") for x in tennis_intervals
-                ],
+"3": ["Match_Result.1", "Match_Result.3", ] + [
+                "Total_Games.Under_" + str(x).rstrip(".0") for x in tennis_intervals
+            ] + [
+                "Total_Games.Over_" + str(x).rstrip(".0") for x in tennis_intervals
+            ],
 },
 "ZeBet": {
     "1": ["1-X-2", "Más de / Menos de", "Puntuación exacta"],
@@ -98,8 +98,8 @@ list_of_markets_V2 = {
           ],
     "2": ["Ganador del partido (incl. prórroga)"] +
          ["Menos/más " + str(x) +" puntos (incl. prórroga)" for x in basketball_intervals],
-    "3": ["¿Quién ganará el partido?"] + [
-                "¿Más o menos " + str(x) + ".5 juegos ?" for x in tennis_intervals
+    "3": ["Ganador del partido"] + [
+                "Menos/Más " + str(x) + " juegos" for x in tennis_intervals
             ],
 },
 "RetaBet": {
@@ -115,8 +115,7 @@ list_of_markets_V2 = {
     "3": ["¿Ganador del partido (1-2)?", "¿Cuántos juegos se disputarán en el partido?"],
 },
 "BetWay": {
-    "1": ["1-X-2",  "Goles en total 0.5", "Goles en total 1.5", "Goles en total 2.5", "Goles en total 3.5",
-          "Goles en total 4.5", "Goles en total 5.5", "Goles en total 6.5", "Resultado Exacto"],
+    "1": ["1-X-2",  "Goles en total", "Resultado Exacto"],
     "2": ["Ganador del partido", "Vencedor del partido", "Puntos totales"],
     "3": ["Ganador del Partido", "Juegos en total"],
 },
@@ -197,7 +196,7 @@ list_of_markets_V2 = {
 "Bet777": {
     "1": ["Resultado del Partido", "Total de goles", "Marcador correcto"],
     "2": ["Ganador del Partido", "Total de puntos"],
-    "3": ["Cuotas del partido", "Total de juegos"],
+    "3": ["Ganador del Partido", "Total de juegos"],
 },
 "Sportium": {
     "1": ["Ganador (1X2)", "Goles Totales - Más/Menos", "Marcador Exacto", ],
@@ -216,7 +215,7 @@ list_of_markets_V2 = {
 "WinaMax": {
     "1": ["Match_Result", "Resultado", "Resultado exacto", "Número total de goles"], #"Match_Result" was added tur to confusion with "Resultado"
     "2": ["Ganador", "Número total de puntos"],
-    "3": ["Cuotas del partido", "Total de juegos"],
+    "3": ["Ganador", "Total juegos"],
 },
 "EfBet": {
     "1": [
@@ -235,7 +234,7 @@ list_of_markets_V2 = {
 },
 "YaassCasino": {
     "1": [
-        'Ganador partido', '+/- 2.5 Goles', '+/- 1.5 Goles', '+/- 3.5 Goles',
+        'Ganador (1X2)', 'Ganador partido', '+/- 2.5 Goles', '+/- 1.5 Goles', '+/- 3.5 Goles',
         "+/- 0.5 Goles", "+/- 4.5 Goles", "+/- 5.5 Goles", 'Resultado exacto'
     ],
     "2": ['Ganador Partido (Incl. Prórroga)']+
@@ -319,24 +318,47 @@ def get_context_infos(bookie_name):
 
 def bookie_config(bookie):
     if isinstance(bookie, list):
+        try:
+            if bookie[1] == "http_errors":
+                comps_with_errors = True
+            else:
+                comps_with_errors = False
+        except IndexError:
+            comps_with_errors = False
         connection = Connect().to_db(db="ATO_production", table=None)
         now = Helpers().get_time_now("UTC")
-        seven_days_ago = now - datetime.timedelta(days=7)
+        # seven_days_ago = now - datetime.timedelta(days=7)
         cursor = connection.cursor()
-        if bookie[0] == "all_bookies":
+        if bookie[0] == "all_bookies" and comps_with_errors is False:
+            print("All bookie without errors")
+            # WHERE vc.start_date < %s AND vc.end_date > %s
             query = """
                 SELECT vcu.competition_url_id, vc.competition_id, vc.sport_id,
                 vb.scraping_tool, vb.render_js, vb.use_cookies, vb.bookie_id, vb.v2_ready
                 FROM ATO_production.V2_Competitions vc
                 INNER JOIN ATO_production.V2_Competitions_Urls vcu ON vc.competition_id = vcu.competition_id
                 INNER JOIN ATO_production.V2_Bookies vb ON vcu.bookie_id = vb.bookie_id
-                # WHERE vc.start_date < %s AND vc.end_date > %s
                 WHERE vc.active = 1
                 AND vcu.bookie_id NOT IN ('BetfairExchange', 'AllSportAPI')
                 AND vb.v2_ready = 1
                 ORDER BY vc.competition_id
             """
-            cursor.execute(query, (now, now, ))
+            cursor.execute(query)
+        elif bookie[0] == "all_bookies" and comps_with_errors is True:
+            print("All bookies with errors")
+            query = """
+                        SELECT vcu.competition_url_id, vc.competition_id, vc.sport_id,
+                        vb.scraping_tool, vb.render_js, vb.use_cookies, vb.bookie_id, vb.v2_ready
+                        FROM ATO_production.V2_Competitions vc
+                        INNER JOIN ATO_production.V2_Competitions_Urls vcu ON vc.competition_id = vcu.competition_id
+                        INNER JOIN ATO_production.V2_Bookies vb ON vcu.bookie_id = vb.bookie_id
+                        WHERE vc.active = 1
+                        AND vcu.http_status NOT IN (200, 404, 1500)
+                        AND vcu.bookie_id NOT IN ('BetfairExchange', 'AllSportAPI')
+                        AND vb.v2_ready = 1
+                        ORDER BY vc.competition_id
+                    """
+            cursor.execute(query)
         elif bookie[0] == "AllSportAPI":
             query = """
                 SELECT vcu.competition_url_id, vc.competition_id, vc.sport_id,
@@ -347,19 +369,31 @@ def bookie_config(bookie):
                 WHERE vcu.bookie_id = %s
                 ORDER BY vc.competition_id
             """
-            cursor.execute(query, (bookie[0], )) # ,
+            cursor.execute(query, (bookie[0],)) # ,
         else:
-            query = """
-                SELECT vcu.competition_url_id, vc.competition_id, vc.sport_id,
-                vb.scraping_tool, vb.render_js, vb.use_cookies, vb.bookie_id
-                FROM V2_Competitions vc
-                INNER JOIN V2_Competitions_Urls vcu ON vc.competition_id = vcu.competition_id
-                INNER JOIN V2_Bookies vb ON vcu.bookie_id = vb.bookie_id
-                # WHERE start_date < %s AND end_date > %s
-                WHERE vc.active = 1 AND vcu.bookie_id = %s
-                ORDER BY vc.competition_id
+            if comps_with_errors is False:
+                query = """
+                    SELECT vcu.competition_url_id, vc.competition_id, vc.sport_id,
+                    vb.scraping_tool, vb.render_js, vb.use_cookies, vb.bookie_id
+                    FROM V2_Competitions vc
+                    INNER JOIN V2_Competitions_Urls vcu ON vc.competition_id = vcu.competition_id
+                    INNER JOIN V2_Bookies vb ON vcu.bookie_id = vb.bookie_id
+                    WHERE vc.active = 1 AND vcu.bookie_id = %s
+                    ORDER BY vc.competition_id
+                    """
+                cursor.execute(query, (bookie[0],)) # ,
+            elif comps_with_errors is True:
+                query = """
+                    SELECT vcu.competition_url_id, vc.competition_id, vc.sport_id,
+                    vb.scraping_tool, vb.render_js, vb.use_cookies, vb.bookie_id
+                    FROM V2_Competitions vc
+                    INNER JOIN V2_Competitions_Urls vcu ON vc.competition_id = vcu.competition_id
+                    INNER JOIN V2_Bookies vb ON vcu.bookie_id = vb.bookie_id
+                    WHERE vc.active = 1 AND vcu.bookie_id = %s
+                    AND vcu.http_status NOT IN (200, 404, 1500)
+                    ORDER BY vc.competition_id
                 """
-            cursor.execute(query, (now, now, bookie[0], )) # ,
+                cursor.execute(query, (bookie[0],))
 
         results = cursor.fetchall()
         list_of_competitions = []
@@ -376,6 +410,7 @@ def bookie_config(bookie):
                 }
             )
         connection.close()
+        print("competion list", [x['competition_id'] for x in list_of_competitions])
         return list_of_competitions
 
     else:
@@ -406,7 +441,7 @@ def bookie_config(bookie):
             if os.environ["USER"] in LOCAL_USERS:
                 # data = data.iloc[0:1]
                 data = data
-                data = data.loc[data["competition"] == "LigaACB"] # CONMEBOL - Copa Libertadores
+                data = data.loc[data["competition"] == "UEFA Europa League - Eliminatorias"] # CONMEBOL - Copa Libertadores
                 # FOOTBALL: UEFA Champions League, Serie A Italiana, Premier League Inglesa, La Liga Española, Bundesliga Alemana, Eurocopa 2024,
                 #           Argentina - Primera división, España - Segunda división
                 # Basketball: NBA, Liga ACB
@@ -417,11 +452,11 @@ def bookie_config(bookie):
         for key, value in data.T.to_dict().items():
             # 1XBet
             if "1XBet" == bookie and value["bookie"] == bookie and value["sport"] == "Football":
-                list_of_markets = []
+                list_of_markets = ["1X2", "Total", "Marcador correcto"]
                 value.update({"list_of_markets": list_of_markets})
                 list_of_competitions.append(value)
             elif "1XBet" == bookie and value["bookie"] == bookie and value["sport"] == "Basketball":
-                list_of_markets = []
+                list_of_markets = ["Victorias del equipo", "Total"]
                 value.update({"list_of_markets": list_of_markets})
                 list_of_competitions.append(value)
             elif "1XBet" == bookie and value["bookie"] == bookie and value["sport"] == "Tennis":
@@ -692,8 +727,7 @@ def bookie_config(bookie):
 
             # BetWay
             elif "BetWay" == bookie and value["bookie"] == bookie and value["sport"] == "Football":
-                list_of_markets = ["1-X-2",  "Goles en total 0.5", "Goles en total 1.5", "Goles en total 2.5", "Goles en total 3.5",
-                       "Goles en total 4.5", "Goles en total 5.5", "Goles en total 6.5", "Resultado Exacto"]
+                list_of_markets = ["1-X-2",  "Goles en total", "Resultado Exacto"]
                 value.update({"list_of_markets": list_of_markets})
                 list_of_competitions.append(value)
             elif "BetWay" == bookie and value["bookie"] == bookie and value["sport"] == "Basketball":
@@ -1255,6 +1289,6 @@ if __name__ == "__main__":
     try:
         if os.environ["USER"] in LOCAL_USERS:
             SYSTEM_VERSION = "V1"
-            print(bookie_config("DaznBet"))
+            print(bookie_config("1XBet"))
     except:
         pass

@@ -6,104 +6,162 @@ from logging import raiseExceptions
 import dateparser
 import pytz
 import traceback
+import mysql.connector
 from scrapy_playwright_ato.utilities import Connect, Helpers
 from scrapy_playwright_ato.settings import LOCAL_USERS
 
 
 
 class ScrapersPipeline:
-    # overwrite
-    try:
-        if os.environ["USER"] in LOCAL_USERS:
-            f = open("demo_data.txt", "w")
-            debug = False
-        else:
-            debug = False
-    except:
-        debug = False
-        pass
+    def __init__(self):
+        # Define buffer and batch size
+        self.match_odds_buffer = []
+        self.match_urls_update_buffer = []
+        self.batch_size = 500  # Adjust as needed
+        self.connection = None
+        self.cursor = None
+        try:
+            if os.environ["USER"] in LOCAL_USERS:
+                self.debug = True
+                open("demo_data.txt", "w").close()  # Clear file on start
+            else:
+                self.debug = False
+        except KeyError:
+            self.debug = False
 
-    def process_item(self, item, spider):
-        spain = pytz.timezone("Europe/Madrid")
-        if "pipeline_type" in item.keys() and "match_odds" in item["pipeline_type"]:
-            # print("UPDATING V2_Matches_Odds")
-            start_time = datetime.datetime.now()
-            try:
-                start_connection = datetime.datetime.now()
-                connection = Connect().to_db(db="ATO_production", table=None)
-                cursor = connection.cursor()
-                end_connection = datetime.datetime.now()
-                print("Time taken to connect to db:", (end_connection - start_connection).total_seconds())
+    def _connect_db(self):
+        """Establishes or re-establishes the database connection."""
+        print("Connecting to the database...")
+        self.connection = Connect().to_db(db="ATO_production", table=None)
+        self.cursor = self.connection.cursor()
 
-                query_insert_match_odds = ("""
+    def _ensure_connection(self):
+        """Ensures the database connection is active, reconnecting if necessary."""
+        try:
+            # Use ping() to check connection and reconnect if needed.
+            # This is the idiomatic way and avoids "Unread result found" errors.
+            self.connection.ping(reconnect=True, attempts=3, delay=5)
+        except (mysql.connector.Error, AttributeError):
+            # If ping fails or connection is None, establish a new one.
+            print("Database connection lost. Reconnecting...")
+            self._connect_db()
+
+    def open_spider(self, spider):
+        """Initialize database connection when the spider starts."""
+        self.spider_name = spider.name
+        self._connect_db()
+
+    def close_spider(self, spider):
+        """Flush any remaining items and close the connection when the spider finishes."""
+        print(f"Closing spider {spider.name} and flushing remaining items to the database.")
+        self._flush_match_odds_batch()
+        if self.connection and self.connection.is_connected():
+            self.cursor.close()
+            self.connection.close()
+
+    def _flush_match_odds_batch(self):
+        """Write the buffered items to the database."""
+        if not self.match_odds_buffer and not self.match_urls_update_buffer:
+            return
+
+        start_time = datetime.datetime.now()
+        try:
+            self._ensure_connection()
+
+            if self.match_odds_buffer:
+                # The 10th element (index 9) is match_url_id
+                unique_urls = list(set(item[9] for item in self.match_odds_buffer))
+
+                delete_query = """
+                    DELETE vmo
+                    FROM ATO_production.V2_Matches_Odds AS vmo
+                    JOIN ATO_production.V2_Matches_Urls AS vmu ON vmo.bookie_id = vmu.bookie_id AND vmo.match_id = vmu.match_id
+                    WHERE vmu.match_url_id = %s
+                """
+                deleted_rows_count = 0
+                for url in unique_urls:
+                    self.cursor.execute(delete_query, (url,))
+                    deleted_rows_count += self.cursor.rowcount
+                if self.debug:
+                    print(f"Deleted {deleted_rows_count} old odds entries.")
+
+                query_insert_match_odds = """
                     INSERT INTO ATO_production.V2_Matches_Odds
                     (bet_id, match_id, bookie_id, market, market_binary, result, back_odd, web_url, updated_date)
                     VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    ON DUPLICATE KEY UPDATE back_odd = VALUES(back_odd), updated_date = VALUES(updated_date)
-                    """
-                )
+                    ON DUPLICATE KEY UPDATE back_odd = VALUES(back_odd), web_url = VALUES(web_url), updated_date = VALUES(updated_date)
+                """
+                # Create a new list of tuples with the last element removed for insertion
+                odds_to_insert = [item[:-1] for item in self.match_odds_buffer]
+                self.cursor.executemany(query_insert_match_odds, odds_to_insert)
+
+            if self.match_urls_update_buffer:
+                unique_updates = list(set(self.match_urls_update_buffer))
                 query_update_match_urls = """
                     UPDATE ATO_production.V2_Matches_Urls
                     SET updated_date = %s, http_status = %s
                     WHERE match_url_id = %s
                 """
+                self.cursor.executemany(query_update_match_urls, unique_updates)
 
-                batch_insert_match_odds = []
-                batch_update_match_urls = []
+            self.connection.commit()
+            print(f"Flushed {len(self.match_odds_buffer)} odds and {len(self.match_urls_update_buffer)} URL updates.")
+        except mysql.connector.Error as e:
+            if self.debug:
+                print(f"Database error during flush: {e}")
+                print(traceback.format_exc())
+            Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{self.spider_name} DB_FLUSH_ERROR: {str(e)}",
+                                 message=traceback.format_exc())
+            if self.connection and self.connection.is_connected():
+                self.connection.rollback()
+        except Exception as e:
+            if self.debug:
+                print(traceback.format_exc())
+            Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{self.spider_name} {str(e)}",
+                                 message=traceback.format_exc())
+            self.connection.rollback()
+        finally:
+            self.match_odds_buffer.clear()
+            self.match_urls_update_buffer.clear()
+            end_time = datetime.datetime.now()
+            print(f"Time taken for batch flush: {(end_time - start_time).total_seconds()}s")
 
+    def process_item(self, item, spider):
+        spain = pytz.timezone("Europe/Madrid")
+        if "pipeline_type" in item and "match_odds" in item["pipeline_type"]:
+            try:
+                # Append data to buffers
                 for data in item["data_dict"]["odds"]:
-                    match_id = item["data_dict"]["match_id"]
-                    try:
-                        values_01 = (
-                            data["bet_id"],
-                            item["data_dict"]["match_id"],
-                            item["data_dict"]["bookie_id"],
-                            data["Market"],
-                            data["Market_Binary"],
-                            data["Result"],
-                            data["Odds"],
-                            item["data_dict"]["web_url"],
-                            item["data_dict"]["updated_date"],
-                        )
-                        values_02 = (
-                            item["data_dict"]["updated_date"],
-                            item["data_dict"]["http_status"],
-                            item["data_dict"]["match_url_id"],
-                        )
-                        batch_insert_match_odds.append(values_01)
-                        batch_update_match_urls.append(values_02)
-                    except Exception as e:
-                        if self.debug:
-                            print(traceback.format_exc())
-                        Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
+                    values_odds = (
+                        data["bet_id"],
+                        item["data_dict"]["match_id"],
+                        item["data_dict"]["bookie_id"],
+                        data["Market"],
+                        data["Market_Binary"],
+                        data["Result"],
+                        data["Odds"],
+                        item["data_dict"]["web_url"],
+                        item["data_dict"]["updated_date"],
+                        item["data_dict"]["match_url_id"],
+                    )
+                    self.match_odds_buffer.append(values_odds)
 
-                # if batch_insert_match_odds:
-                #     cursor.executemany(query_insert_match_odds, batch_insert_match_odds)
-                for i, entry in enumerate(batch_insert_match_odds):
-                    try:
-                        cursor.execute(query_insert_match_odds, entry)
-                    except Exception as e:
-                        if self.debug:
-                            print(traceback.format_exc())
-                        Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}",message=traceback.format_exc())
-                        print(f"Error at index {i}: {entry}")
-                        break
-                if batch_update_match_urls:
-                    cursor.executemany(query_update_match_urls, batch_update_match_urls)
-                connection.commit()
+                values_url_update = (
+                    item["data_dict"]["updated_date"],
+                    item["data_dict"]["http_status"],
+                    item["data_dict"]["match_url_id"],
+                )
+                self.match_urls_update_buffer.append(values_url_update)
+
+                # If batch size is reached, flush the buffers
+                if len(self.match_odds_buffer) >= self.batch_size:
+                    self._flush_match_odds_batch()
+
             except Exception as e:
                 if self.debug:
                     print(traceback.format_exc())
-                Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
-                # print(traceback.format_exc())
-            finally:
-                try:
-                    end_time = datetime.datetime.now()
-                    print(f"Time taken to update V2_Matches_Odds for {match_id}:", (end_time - start_time).total_seconds())
-                    cursor.close()
-                    connection.close()
-                except Exception:
-                    pass
+                Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}",
+                                     message=traceback.format_exc())
 
         if "pipeline_type" in item.keys() and "queue_dutcher" in item["pipeline_type"]:
             # print("QUEUEING V2_Dutcher with", item["data_dict"]["match_id"])
@@ -138,6 +196,7 @@ class ScrapersPipeline:
             # TODO if there is a mismatch between UTC and Spain time, we need to report it
             try:
                 print(f"UPDATING V2_Matches_Urls and competitions status ")
+                start_time = datetime.datetime.now()
                 for key, value in item["data_dict"].items():
                     if key == "match_infos":
                         print("new matches", len(value))
@@ -145,7 +204,7 @@ class ScrapersPipeline:
                         print("matches in db", len(value))
                     if key == "comp_infos":
                         print("competition_url_id", value[0]["competition_url_id"])
-                start_time = datetime.datetime.now()
+
                 connection = Connect().to_db(db="ATO_production", table=None)
                 cursor = connection.cursor()
                 create_match_urls = []
@@ -237,9 +296,10 @@ class ScrapersPipeline:
                         )
 
                 query_create_match_urls = ("""
-                    INSERT IGNORE INTO ATO_production.V2_Matches_Urls
+                    INSERT INTO ATO_production.V2_Matches_Urls
                     (match_url_id,match_id, bookie_id, sport_id, web_url)
                     VALUES(%s, %s, %s, %s, %s)
+                    ON DUPLICATE KEY UPDATE match_url_id = VALUES(match_url_id), web_url = VALUES(web_url)
                     """
                 )
 
@@ -258,9 +318,21 @@ class ScrapersPipeline:
                 cursor.executemany(query_create_match_urls_with_no_ids, create_match_urls_with_no_ids)
                 connection.commit()
 
+                # From the list create_match_urls_with_no_ids extract the match_url_id (index 1)
+                match_urls_no_ids = [x[1] for x in create_match_urls_with_no_ids]
+                if match_urls_no_ids:
+                    placeholders = ', '.join(['%s'] * len(match_urls_no_ids))
+                    query_delete_matches_no_ids = (f"DELETE FROM ATO_production.V2_Matches_Urls "
+                                                   f"WHERE match_url_id IN ({placeholders})")
+                    cursor.execute(query_delete_matches_no_ids, (tuple(match_urls_no_ids)))
+                    connection.commit()
+                    print(f"Deleted {cursor.rowcount} matches with no IDs from V2_Matches.")
+
                 # UPDATE COMPETITIONS
                 for data in item["data_dict"]["comp_infos"]:
                     if data["http_status"] == 200:
+                        if self.debug:
+                            print("Updating competitions with updated_date and http_status", data["competition_url_id"], data["updated_date"], data["http_status"])
                         query_update_competitions = (
                             "UPDATE ATO_production.V2_Competitions_Urls "
                             "SET updated_date = %s, http_status = %s "
@@ -274,6 +346,8 @@ class ScrapersPipeline:
                         cursor.execute(query_update_competitions, values)
                         connection.commit()
                     else:
+                        if self.debug:
+                            print("Updating competitions with http_status only", data["competition_url_id"], data["http_status"])
                         query_update_competitions = (
                             "UPDATE ATO_production.V2_Competitions_Urls "
                             "SET http_status = %s "
@@ -296,8 +370,8 @@ class ScrapersPipeline:
                     print(f"Time taken to update V2_Matches_Urls and competitions status ", (end_time - start_time).total_seconds())
                     cursor.close()
                     connection.close()
-                except Exception:
-                    print(traceback.format_exc())
+                except Exception as e:
+                    Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}",message=traceback.format_exc())
                     pass
 
         elif "pipeline_type" in item.keys() and "error_on_competition_url" in item["pipeline_type"]:
@@ -332,23 +406,31 @@ class ScrapersPipeline:
                     pass
 
         if "pipeline_type" in item.keys() and "error_on_match_url" in item["pipeline_type"]:
-            # print("Updating V2_Matches_Urls with status only on error")
             start_time = datetime.datetime.now()
             try:
                 connection = Connect().to_db(db="ATO_production", table=None)
                 cursor = connection.cursor()
                 for data in item["data_dict"]["match_infos"]:
-                    query_update_match = ("""
+
+                    query_update_match = """
                         UPDATE ATO_production.V2_Matches_Urls
                         SET http_status = %s
                         WHERE match_url_id = %s
-                    """)
+                    """
                     values = (
                         data["http_status"],
                         data["match_url_id"],
                     )
                     print("error_on_match_url from pipeline", data["http_status"], data["match_url_id"])
                     cursor.execute(query_update_match, values)
+                    print("Delete odds from failing match")
+                    delete_query = """
+                        DELETE vmo
+                        FROM ATO_production.V2_Matches_Odds AS vmo
+                        JOIN ATO_production.V2_Matches_Urls AS vmu ON vmo.bookie_id = vmu.bookie_id AND vmo.match_id = vmu.match_id
+                        WHERE vmu.match_url_id = %s
+                    """
+                    cursor.execute(delete_query, (data["match_url_id"],))
                     connection.commit()
             except Exception as e:
                 if self.debug:
@@ -367,9 +449,13 @@ class ScrapersPipeline:
             # TODO: update V2_Competitons with updated date and status
             # print("INSERTING teams in V2_Teams")
             start_time = datetime.datetime.now()
+            competition_id = None
+            batch_insert_teams = []
             try:
                 connection = Connect().to_db(db="ATO_production", table=None)
                 cursor = connection.cursor()
+                # TODO: maybe nit such a good idea to KEY UPDATE numerical_team_id = VALUES(numerical_team_id)
+                competition_id = next(iter(item["data_dict"].values()))["competition_id"]
                 query_insert_teams = """
                     INSERT INTO ATO_production.V2_Teams
                     (team_id, bookie_id, competition_id, sport_id, bookie_team_name, normalized_team_name,
@@ -377,7 +463,6 @@ class ScrapersPipeline:
                     VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     ON DUPLICATE KEY UPDATE numerical_team_id = VALUES(numerical_team_id), update_date = VALUES(update_date)
                 """
-                batch_insert_teams = []
                 for key, value in item["data_dict"].items():
                     values_home_team = (
                         Helpers().build_ids(
@@ -422,7 +507,8 @@ class ScrapersPipeline:
                     )
                     batch_insert_teams.append(values_away_team)
                 batch_insert_teams = list(set(batch_insert_teams))
-                print("List of teams to be inserted", [x[0] for x in batch_insert_teams])
+                # if self.debug:
+                #     print("List of teams to be inserted", [x[0] for x in batch_insert_teams])
                 cursor.executemany(query_insert_teams, batch_insert_teams)
                 connection.commit()
 
@@ -433,36 +519,51 @@ class ScrapersPipeline:
             finally:
                 try:
                     end_time = datetime.datetime.now()
-                    print("Time taken to insert teams in V2_Teams:", (end_time - start_time).total_seconds())
+                    print(f"Time taken to insert {len(batch_insert_teams)} teams in V2_Teams for {competition_id}:", (end_time - start_time).total_seconds())
                     cursor.close()
                     connection.close()
                 except Exception:
                     pass
 
-            # if "pipeline_type" in item.keys() and "normalize_teams" in item["pipeline_type"]:
-            #     competition_id = [v["competition_id"] for k, v in item["data_dict"].items()][0]
-            #     debug = False
-            #     try:
-            #         print("RUNNING: change_normalized_team_names_from_betfair_to_all_sport() with debug", debug, "on", competition_id)
-            #         Helpers().change_normalized_team_names_from_betfair_to_all_sport(competition_id=competition_id, debug=debug )
-            #     except Exception as e:
-            #         if self.debug:
-            #             print(traceback.format_exc())
-            #         Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
-
             if "pipeline_type" in item.keys() and "matches" in item["pipeline_type"]:
-                print(f"UPDATING {len(item['data_dict'])} matches in V2_Matches")
                 start_time = datetime.datetime.now()
+                competition_id = None
+                updated_matches_count = 0
                 try:
                     connection = Connect().to_db(db="ATO_production", table=None)
                     cursor = connection.cursor()
-                    query_insert_matches = (
-                        "INSERT INTO ATO_production.V2_Matches "
-                        "(match_id, home_team, away_team, date, date_es, sport_id, competition_id) "
-                        "VALUES(%s, %s, %s, %s, %s, %s, %s) "
-                        "ON DUPLICATE KEY UPDATE date = %s, date_es = %s"
-                    )
-                    # batch_insert_matches = []
+                    if item["data_dict"]:
+                        competition_id = next(iter(item["data_dict"].values()))["competition_id"]
+                        scraped_match_ids = {value["match_id"] for value in item["data_dict"].values()}
+                        query_fetch_db_matches = "SELECT match_id FROM ATO_production.V2_Matches WHERE competition_id = %s"
+                        cursor.execute(query_fetch_db_matches, (competition_id,))
+                        db_match_ids = {row[0] for row in cursor.fetchall()}
+                        matches_to_delete = db_match_ids - scraped_match_ids
+                        # check the ratio of matches to delete vs db_match_ids
+                        num_db_matches = len(db_match_ids)
+                        num_matches_to_delete = len(matches_to_delete)
+                        if num_db_matches > 0:
+                            delete_ratio = num_matches_to_delete / num_db_matches
+                        else:
+                            delete_ratio = 0 if num_db_matches == 0 else float('inf')
+                        if self.debug:
+                            print(f"DB-to-delete match ratio for competition {competition_id}: {delete_ratio:.2f}")
+                            print("matches to delele", matches_to_delete)
+                        print(
+                            f"Deleting {len(matches_to_delete)} obsolete matches for competition {competition_id}.")
+
+                        if matches_to_delete and delete_ratio < 0.5:
+                            query_delete_match = "DELETE FROM ATO_production.V2_Matches WHERE match_id = %s"
+                            # executemany expects a list of tuples
+                            cursor.executemany(query_delete_match, [(match_id,) for match_id in matches_to_delete])
+                            connection.commit()
+
+                    query_insert_matches = """
+                        INSERT INTO ATO_production.V2_Matches
+                        (match_id, home_team, away_team, date, date_es, sport_id, competition_id)
+                        VALUES(%s, %s, %s, %s, %s, %s, %s)
+                        ON DUPLICATE KEY UPDATE date = %s, date_es = %s
+                    """
                     for key, value in item["data_dict"].items():
                         values = (
                             value["match_id"],
@@ -476,6 +577,7 @@ class ScrapersPipeline:
                             value["date"].replace(tzinfo=pytz.UTC).astimezone(spain), #es
                         )
                         cursor.execute(query_insert_matches, values)
+                        updated_matches_count += 1
                     connection.commit()
                 except Exception as e:
                     if self.debug:
@@ -484,140 +586,132 @@ class ScrapersPipeline:
                 finally:
                     try:
                         end_time = datetime.datetime.now()
-                        print("Time taken to update V2_Matches:", (end_time - start_time).total_seconds())
+                        print(f"Time taken to update {updated_matches_count} V2_Matches for {competition_id}:", (end_time - start_time).total_seconds())
                         cursor.close()
                         connection.close()
                     except:
                         pass
 
-            if "pipeline_type" in item.keys() and "delete_matches" in item["pipeline_type"]:
-                # print("DELETING matches from V2_Matches")
-                start_time = datetime.datetime.now()
-                try:
-                    connection = Connect().to_db(db="ATO_production", table=None)
-                    cursor = connection.cursor()
-                    query_find_old_matches = """
-                        SELECT vss.match_id
-                        FROM ATO_production.V2_Scraping_Schedules vss
-                        WHERE vss.to_delete = 1
-                    """
-                    query_delete_matches = """
-                        DELETE FROM ATO_production.V2_Matches
-                        WHERE match_id = %s
-                    """
-                    cursor.execute(query_find_old_matches)
-                    old_matches = cursor.fetchall()
-                    print(f"DELETING {len(old_matches)} matches from V2_Matches")
-                    print("old_matches", old_matches)
-                    old_matches = [x[0] for x in old_matches]
-                    old_matches = list(set(old_matches))
-                    for match in old_matches:
-                        print("deleting from pipeline", match)
-                        cursor.execute(query_delete_matches, (match,))
-                    connection.commit()
-
-                except Exception as e:
-                    if self.debug:
-                        print(traceback.format_exc())
-                    Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
-                finally:
-                    try:
-                        end_time = datetime.datetime.now()
-                        print("Time taken to delete matches from V2_Matches:", (end_time - start_time).total_seconds())
-                        cursor.close()
-                        connection.close()
-                    except:
-                        pass
+            # if "pipeline_type" in item.keys() and "delete_matches" in item["pipeline_type"]:
+            #     # print("DELETING matches from V2_Matches")
+            #     start_time = datetime.datetime.now()
+            #     try:
+            #         connection = Connect().to_db(db="ATO_production", table=None)
+            #         cursor = connection.cursor()
+            #         query_find_old_matches = """
+            #             SELECT vss.match_id
+            #             FROM ATO_production.V2_Scraping_Schedules vss
+            #             WHERE vss.to_delete = 1
+            #         """
+            #         query_delete_matches = """
+            #             DELETE FROM ATO_production.V2_Matches
+            #             WHERE match_id = %s
+            #         """
+            #         cursor.execute(query_find_old_matches)
+            #         old_matches = cursor.fetchall()
+            #         print(f"DELETING {len(old_matches)} matches from V2_Matches")
+            #         print("old_matches", old_matches)
+            #         old_matches = [x[0] for x in old_matches]
+            #         old_matches = list(set(old_matches))
+            #         for match in old_matches:
+            #             print("deleting from pipeline", match)
+            #             cursor.execute(query_delete_matches, (match,))
+            #         connection.commit()
+            #
+            #     except Exception as e:
+            #         if self.debug:
+            #             print(traceback.format_exc())
+            #         Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
+            #     finally:
+            #         try:
+            #             end_time = datetime.datetime.now()
+            #             print("Time taken to delete matches from V2_Matches:", (end_time - start_time).total_seconds())
+            #             cursor.close()
+            #             connection.close()
+            #         except:
+            #             pass
 
         if "pipeline_type" in item.keys() and "exchange_match_odds" in item["pipeline_type"]:
-            # print("UPDATING V2_Exchanges")
             start_time = datetime.datetime.now()
+            connection = None  # Initialize connection to None
             try:
                 connection = Connect().to_db(db="ATO_production", table=None)
                 cursor = connection.cursor()
                 cursor.execute("TRUNCATE TABLE ATO_production.V2_Exchanges")
-                connection.commit()
-                # print("Truncated V2_Exchanges", datetime.datetime.now())
                 query_exchange = ("""
-                    INSERT INTO ATO_production.V2_Exchanges
-                    (bet_id, date, sport, competition, home_team, away_team, market, market_binary,
-                    result, exchange, lay_odds, liquidity, url, updated_time)
-                    VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    ON DUPLICATE KEY UPDATE result = VALUES(result), lay_odds = VALUES(lay_odds),
-                    liquidity = VALUES(liquidity), updated_time = VALUES(updated_time)
-                    """
-                )
+                  INSERT INTO ATO_production.V2_Exchanges
+                  (bet_id, date, sport, competition, home_team, away_team, market, market_binary,
+                   result, exchange, lay_odds, liquidity, url, updated_time)
+                  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                  ON DUPLICATE KEY UPDATE result       = VALUES(result),
+                                          lay_odds     = VALUES(lay_odds),
+                                          liquidity    = VALUES(liquidity),
+                                          updated_time = VALUES(updated_time)
+                  """
+                                  )
                 batch_insert_exchanges = []
                 for key, value in item["data_dict"].items():
-                    # TODO change time for spain time check exchange name with space
                     if "odds" in value.keys():
                         for value_02 in value["odds"]:
-                            values = (value_02["bet_id"], value["date"], value["sport"], value["competition_name"], value["home_team"],
-                                      value["away_team"], value_02["Market"], value_02["Market_Binary"], value_02["Result"],
+                            values = (value_02["bet_id"], value["date"], value["sport"], value["competition_name"],
+                                      value["home_team"],
+                                      value["away_team"], value_02["Market"], value_02["Market_Binary"],
+                                      value_02["Result"],
                                       "Betfair Exchange", value_02["Odds"], value_02["Size"], value["url"],
                                       datetime.datetime.now(tz=datetime.timezone.utc))
                             batch_insert_exchanges.append(values)
-                            # print(values)
 
-                cursor.executemany(query_exchange, batch_insert_exchanges)
-                connection.commit()
-                # print("Updated V2_Exchanges", datetime.datetime.now())
+                if batch_insert_exchanges:
+                    cursor.executemany(query_exchange, batch_insert_exchanges)
+                    print(f"Updated V2_Exchanges. Rows affected: {cursor.rowcount} at {datetime.datetime.now()}")
 
-            except Exception as e:
-                if self.debug:
-                    print(traceback.format_exc())
-                Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
-            finally:
-                try:
-                    end_time = datetime.datetime.now()
-                    print("Time taken to truncate and update V2_Exchanges:", (end_time - start_time).total_seconds())
-                    cursor.close()
-                    connection.close()
-                except:
-                    pass
-
-            try:
-                # print("Updating V2_Oddsmatcher")
-                start_time = datetime.datetime.now()
-                connection = Connect().to_db(db="ATO_production", table=None)
-                cursor = connection.cursor()
-                # cursor.execute("TRUNCATE TABLE ATO_production.V2_Oddsmatcher")
-                query_insert_odds_match_maker = ("""
+                # Now update V2_Oddsmatcher
+                cursor.execute("TRUNCATE TABLE ATO_production.V2_Oddsmatcher")
+                query_insert_odds_match_maker = """
                     INSERT INTO ATO_production.V2_Oddsmatcher
-                    # (bet_id,match_id,bookie_id,back_odd,lay_odds,liquidity,rating_qualifying_bet,rating_free_bet,rating_refund_bet,url)
-                    SELECT vmo.bet_id, vmo.match_id, vmo.bookie_id, vmo.back_odd,
-                    ve.lay_odds, ve.liquidity,
-                    ROUND((100 * vmo.back_odd * (1 - 0.02) / (ve.lay_odds - 0.02)),2) AS rating_qualifying_bet,
-                    ROUND((100 * (vmo.back_odd - 1) * (1 - 0.02) / (ve.lay_odds - 0.02)),2) AS rating_free_bet,
-                    ROUND((100 * ((vmo.back_odd - 0.7) * (1 - 0.02) / (ve.lay_odds - 0.02) - 0.3)),2) AS rating_refund_bet,
-                    ve.url
+                    SELECT vmo.bet_id,
+                           vmo.match_id,
+                           vmo.bookie_id,
+                           vmo.back_odd,
+                           ve.lay_odds,
+                           ve.liquidity,
+                           ROUND((100 * vmo.back_odd * (1 - 0.02) / (ve.lay_odds - 0.02)), 2) AS rating_qualifying_bet,
+                           ROUND((100 * (vmo.back_odd - 1) * (1 - 0.02) / (ve.lay_odds - 0.02)),2) AS rating_free_bet,
+                           ROUND((100 * ((vmo.back_odd - 0.7) * (1 - 0.02) / (ve.lay_odds - 0.02) - 0.3)),2) AS rating_refund_bet,
+                           ve.url
                     FROM ATO_production.V2_Matches_Odds vmo
                     INNER JOIN ATO_production.V2_Exchanges ve ON vmo.bet_id = ve.bet_id
                     WHERE ve.lay_odds > 0
-                    AND ve.liquidity > 0
+                      AND ve.liquidity > 0
                     HAVING rating_qualifying_bet < 105
-                    AND rating_free_bet < 85
-                    AND rating_refund_bet < 65
-                    ON DUPLICATE KEY UPDATE
-                    rating_qualifying_bet = VALUES(rating_qualifying_bet),
-                    rating_free_bet = VALUES(rating_free_bet),
-                    rating_refund_bet = VALUES(rating_refund_bet),
-                    lay_odds = ve.lay_odds,
-                    liquidity = ve.liquidity
-                """
-                )
+                        AND rating_free_bet < 85
+                        AND rating_refund_bet < 65
+                    ON DUPLICATE KEY UPDATE rating_qualifying_bet = VALUES(rating_qualifying_bet),
+                                             rating_free_bet       = VALUES(rating_free_bet),
+                                             rating_refund_bet     = VALUES(rating_refund_bet),
+                                             lay_odds              = ve.lay_odds,
+                                             liquidity             = ve.liquidity
+                     """
                 cursor.execute(query_insert_odds_match_maker)
                 connection.commit()
+                print("Time taken to update V2_Oddsmatcher:", (datetime.datetime.now() - start_time).total_seconds())
+
+
             except Exception as e:
                 if self.debug:
                     print(traceback.format_exc())
-                Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
+                if connection and connection.is_connected():
+                    connection.rollback()
+                Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}",
+                                     message=traceback.format_exc())
             finally:
                 try:
                     end_time = datetime.datetime.now()
-                    print("Time taken to update V2_Oddsmatcher:", (end_time - start_time).total_seconds())
-                    cursor.close()
-                    connection.close()
+                    print("Time taken to truncate and update V2_Exchanges & V2_Oddsmatcher:",
+                          (end_time - start_time).total_seconds())
+                    if connection and connection.is_connected():
+                        cursor.close()
+                        connection.close()
                 except:
                     pass
 

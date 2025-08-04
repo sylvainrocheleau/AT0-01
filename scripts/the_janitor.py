@@ -39,19 +39,19 @@ def stop_hanging_spiders():
                 except IndexError:
                     # print(traceback.format_exc())
                     continue
-                except Exception as e:
+                except Exception:
                     print(traceback.format_exc())
                     continue
                 try:
-                    # Group not mor than 60 minutes
-                    spiders_under_60_minutes = ["BetfairExchange", "comp_spider_01"]
+                    # Group not more than 60 minutes
+                    spiders_under_60_minutes = ["BetfairExchange", "comp_spider_01", "WinaMaxv2"]
                     if spider_name in spiders_under_60_minutes and difference_in_minutes > 60:
                         print(f"Cancel job {value['job']}")
                         job.cancel()
-                    elif spider_name not in spiders_under_60_minutes and difference_in_minutes > 20:
+                    elif spider_name not in spiders_under_60_minutes and difference_in_minutes > 30:
                         print(f"Cancel job {value['job']}")
                         job.cancel()
-                except Exception as e:
+                except Exception:
                     # print(traceback.format_exc())
                     continue
     except Exception as e:
@@ -81,7 +81,6 @@ def delete_old_cookies():
         print("Error deleting old cookies:", e)
         Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
 
-
 def delete_old_logs():
     try:
         from script_utilities import Connect
@@ -108,7 +107,7 @@ def delete_old_matches():
         cursor = connection.cursor()
         query = """
             DELETE FROM ATO_production.V2_Matches
-            WHERE `date` < (UTC_TIMESTAMP() - INTERVAL 2 HOUR)
+            WHERE UTC_TIMESTAMP() > `date`
         """
         cursor.execute(query)
         deleted_count = cursor.rowcount
@@ -129,6 +128,7 @@ def delete_old_matches_with_no_id():
             DELETE FROM ATO_production.V2_Matches_Urls_No_Ids
             WHERE `date` < (NOW() - INTERVAL 1 MONTH)
         """
+        # WHERE `date` < (NOW() - INTERVAL 1 MONTH)
         cursor.execute(query)
         deleted_count = cursor.rowcount
         connection.commit()
@@ -139,6 +139,49 @@ def delete_old_matches_with_no_id():
         print("Error deleting old matches with no ID:", e)
         Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
 
+def delete_matches_odds_with_bad_http_status():
+    try:
+        from script_utilities import Connect
+        connection = Connect().to_db(db="ATO_production", table=None)
+        cursor = connection.cursor()
+        query = """
+            DELETE vmo
+            FROM ATO_production.V2_Matches_Odds AS vmo
+            JOIN ATO_production.V2_Matches_Urls AS vmu
+            ON vmo.bookie_id = vmu.bookie_id AND vmo.match_id = vmu.match_id
+            WHERE vmu.http_status != 200
+        """
+        cursor.execute(query)
+        deleted_count = cursor.rowcount
+        connection.commit()
+        cursor.close()
+        connection.close()
+        print(f"{deleted_count} matches odds with bad HTTP status deleted successfully")
+    except Exception as e:
+        print("Error deleting matches odds with bad HTTP status:", e)
+        Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
+
+def delete_old_dutcher_entries():
+    try:
+        from script_utilities import Connect, Helpers
+        import traceback
+        connection = Connect().to_db(db="ATO_production", table=None)
+        cursor = connection.cursor()
+        query = """
+            DELETE vd
+            FROM ATO_production.V2_Dutcher vd
+            JOIN ATO_production.V2_Matches vm ON vd.match_id = vm.match_id
+            WHERE UTC_TIMESTAMP() > vm.`date`
+        """
+        cursor.execute(query)
+        deleted_count = cursor.rowcount
+        connection.commit()
+        cursor.close()
+        connection.close()
+        print(f"{deleted_count} old dutcher entries deleted successfully")
+    except Exception as e:
+        print("Error deleting old dutcher entries:", e)
+        Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
 
 def select_next_match_date():
     try:
@@ -174,11 +217,22 @@ def select_next_match_date():
             except Exception as e:
                 print(f"Error processing result {result}: {e}")
                 continue
-        query_update_next_matches = (
-            "UPDATE ATO_production.V2_Competitions "
-            "SET next_match_date = %s, active = %s "
-            "WHERE competition_id = %s"
-        )
+        print("Setting all competitions to inactive")
+        query_set_inactive = """
+            UPDATE ATO_production.V2_Competitions
+            SET next_match_date = NULL, active = FALSE
+            WHERE competition_id NOT IN (SELECT competition_id FROM ATO_production.V2_Matches WHERE `date` > NOW())
+        """
+
+        cursor.execute(query_set_inactive)
+        connection.commit()
+
+        print(f"Setting next match dates for {len(next_match_update)} competitions")
+        query_update_next_matches = """
+            UPDATE ATO_production.V2_Competitions
+            SET next_match_date = %s, active = %s
+            WHERE competition_id = %s
+        """
         cursor.executemany(query_update_next_matches, next_match_update)
         connection.commit()
         cursor.close()
@@ -190,13 +244,16 @@ def select_next_match_date():
         return None
 
 if __name__ == "__main__":
+    # stop_hanging_spiders()
+    # select_next_match_date()
     delete_old_matches()
     # delete_old_matches_with_no_id()
-    # stop_hanging_spiders()
+    # delete_old_dutcher_entries()
+    # delete_matches_odds_with_bad_http_status()
     # delete_old_cookies()
     # delete_old_logs()
 
     process_all_the_time = False
     if datetime.datetime.now().minute == 0 or process_all_the_time:
         CreateViews().create_view_Dash_Competitions_and_MatchUrlCounts_per_Bookie()
-        select_next_match_date()
+

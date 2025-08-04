@@ -41,27 +41,35 @@ class TwoStepsSpider(scrapy.Spider):
     def start_requests(self):
         print(self.settings_used)
         context_infos = get_context_infos(bookie_name=["all_bookies"])
-        # FILTER BY BOOKIE AND COMPETITION
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
                 # No filters
-                # competitions = bookie_config(bookie=["RetaBet"])
+                # competitions = bookie_config(bookie=["all_bookies"])
+                # Filter by bookie that have errors
+                # competitions = bookie_config(bookie=["Bwin", "http_errors"])
                 # Filter by bookie
-                # competitions = bookie_config(bookie=["WilliamHill", "http_errors"])
+                # competitions = bookie_config(bookie=["Bet777"])
+                # Filter by competition
+                # competitions = [x for x in bookie_config(bookie=["all_bookies"]) if x["competition_id"] == "Partidosamistosos"]
                 # Filter by boookie and competition
-                competitions = [x for x in bookie_config(bookie=["RetaBet"]) if x["competition_id"] == "NBA"]
-        except:
-            if 0 <= Helpers().get_time_now("UTC").hour < 4:
-                print("PROCESSING ALL COMPETITIONS between and midnight and 4AM UTC")
-                competitions = bookie_config(bookie=["all_bookies"])
+                competitions = [x for x in bookie_config(bookie=["AupaBet"]) if
+                                x["competition_id"] == "ATP"]
+
+        except Exception as e:
+            if (
+                0 <= Helpers().get_time_now("UTC").hour < 2
+                or 10 <= Helpers().get_time_now("UTC").hour < 12
+            ):
+                print("PROCESSING ALL COMPETITIONS")
+                competitions = bookie_config(bookie=["all_bookies"])  # v2_competitions_url
             else:
-                print("PROCESSING COMPETITIONS WITH HTTP ERRORS between 4AM and midnight UTC")
+                print("PROCESSING COMPETITIONS WITH HTTP ERRORS")
                 competitions = bookie_config(bookie=["all_bookies", "http_errors"])
 
         competitions = [x for x in competitions if x["scraping_tool"] in self.allowed_scraping_tools]
         if self.debug:
-            print("competitions to scrape", competitions)
+            print("competitions to scrape", [x["competition_id"] for x in competitions])
         for data in competitions:
             try:
                 if data["scraping_tool"] in ["requests", "playwright", "zyte_proxy_mode", "zyte_api"]:
@@ -70,8 +78,8 @@ class TwoStepsSpider(scrapy.Spider):
                 if data["scraping_tool"] == "playwright":
                     self.close_playwright = True
                 url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="competition", data=data)
-                # if self.debug:
-                #     print("url to scrape", url, "dont_filter", dont_filter, "meta_request", meta_request)
+                if self.debug:
+                    print("url to scrape", url, "dont_filter", dont_filter, "meta_request", meta_request)
                 yield scrapy.Request(
                     dont_filter=dont_filter,
                     url=url,
@@ -85,7 +93,7 @@ class TwoStepsSpider(scrapy.Spider):
                 print(traceback.format_exc())
                 continue
 
-    async def match_requests(self,response):
+    async def match_requests(self, response):
         item = ScrapersItem()
         if response.meta.get("scraping_tool") == "playwright":
             print('found playwright')
@@ -107,6 +115,8 @@ class TwoStepsSpider(scrapy.Spider):
             map_matches_urls=self.map_matches_urls,
             debug=self.debug
         )
+        if self.debug:
+            print("match_infos", match_infos)
 
         try:
             if len(match_infos) > 0:
@@ -116,8 +126,7 @@ class TwoStepsSpider(scrapy.Spider):
                     bookie_id=response.meta.get("bookie_id"),
                     debug=self.debug
                 )
-                if self.debug:
-                    print("match_infos", match_infos)
+
                 if response.meta.get("competition_id") in self.map_matches.keys():
                     item["data_dict"] = {
                         "map_matches": self.map_matches[response.meta.get("competition_id")],
@@ -162,8 +171,9 @@ class TwoStepsSpider(scrapy.Spider):
         print("RAW HTML RESPONSE")
         parent = os.path.dirname(os.getcwd())
         try:
-            with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/" + self.name + "_response" + ".txt", "w") as f:
-                f.write(response.text) # response.meta["playwright_page"]
+            with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/" + self.name + "_response" + ".txt",
+                      "w") as f:
+                f.write(response.text)  # response.meta["playwright_page"]
         except Exception as e:
             print(traceback.format_exc())
 
@@ -183,13 +193,23 @@ class TwoStepsSpider(scrapy.Spider):
                 error = f"scrape_ops, {failure.request.meta['bookie_id']} url:{failure.request.url}"
             else:
                 error = (f"{failure.request.meta['bookie_id']}; "
-                           f"url:{failure.request.url}; proxy:{failure.request.meta['proxy_ip']}")
+                         f"url:{failure.request.url}; proxy:{failure.request.meta['proxy_ip']}")
 
             Helpers().insert_log(level="INFO", type="NETWORK", error=error, message=traceback.format_exc())
         except Exception as e:
             Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
 
+        try:
+            if self.close_playwright is True:
+                page = failure.request.meta["playwright_page"]
+                response_playwright = await page.content()
+        except KeyError:
+            if self.debug:
+                print("No playwright page in failure request meta")
+            page = None
+
         if failure.check(HttpError):
+            # TODO: check this status instead failure.value.response.status if failure.value.response else 'No response'
             response = failure.value.response
             status = response.status
             url = response.url
@@ -205,6 +225,11 @@ class TwoStepsSpider(scrapy.Spider):
             url = request.url
             status = 501
             print("TimeoutError on %s", request.url)
+        elif self.close_playwright is True and "Lo sentimos" in response_playwright:
+            request = failure.request
+            url = request.url
+            status = 1500
+            print("No match error from sorry message", request.url)
         else:
             try:
                 request = failure.request
@@ -217,9 +242,9 @@ class TwoStepsSpider(scrapy.Spider):
             item["data_dict"] = {
                 "comp_infos": [
                     {
-                    "competition_url_id": url,
-                    "http_status": status,
-                    # "updated_date": Helpers().get_time_now("UTC")
+                        "competition_url_id": url,
+                        "http_status": status,
+                        # "updated_date": Helpers().get_time_now("UTC")
                     },
                 ]
             }
@@ -239,7 +264,6 @@ class TwoStepsSpider(scrapy.Spider):
                 print("Closing context on error")
                 await page.context.close()
         except Exception as e:
-            Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
             pass
 
 
