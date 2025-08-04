@@ -1037,7 +1037,7 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                                 if url not in map_matches_urls and home_team is not None:
                                     match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id,
                                                                    bookie_id, sport_id)
-                                    # print("match_info for WinaMax", match_info)
+                                    print("match_info for WinaMax", match_info)
                                     match_infos.append(match_info)
                                 else:
                                     if debug:

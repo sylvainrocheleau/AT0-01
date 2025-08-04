@@ -111,8 +111,8 @@ def get_matches_details_and_urls():
     return None
 
 if __name__ == "__main__":
-    # check_list_of_markets()
+    check_list_of_markets()
     # get_comps_for_bookie()
     # teams_and_dates_from_response()
-    get_odds_from_response()
+    # get_odds_from_response()
     # get_matches_details_and_urls()

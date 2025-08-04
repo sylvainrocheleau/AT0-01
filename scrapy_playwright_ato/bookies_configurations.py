@@ -215,7 +215,7 @@ list_of_markets_V2 = {
 "WinaMax": {
     "1": ["Match_Result", "Resultado", "Resultado exacto", "Número total de goles"], #"Match_Result" was added tur to confusion with "Resultado"
     "2": ["Ganador", "Número total de puntos"],
-    "3": ["Cuotas del partido", "Total de juegos"],
+    "3": ["Ganador", "Total juegos"],
 },
 "EfBet": {
     "1": [
