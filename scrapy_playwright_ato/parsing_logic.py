@@ -784,7 +784,7 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                         continue
         elif bookie_id == "KirolBet":
             # Ajout de commentaire RB 5
-            # Ajout de commentaire SR #7,
+            # Ajout de commentaire SR #8
             xpath_results = response.xpath("//div[@class='infoEve']").extract()
             match_infos = []
             for xpath_result in xpath_results:
