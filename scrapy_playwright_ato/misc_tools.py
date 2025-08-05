@@ -56,15 +56,15 @@ def teams_and_dates_from_response(bookie_id, competition_id, sport_id, normalize
         )
     print("Normalized match infos", match_infos)
 
-def get_odds_from_response():
+def get_odds_from_response(bookie_id, sport_id):
     from parsing_logic import parse_match as parse_match_logic
     from utilities import Helpers
     from parsel import Selector
     from bookies_configurations import list_of_markets_V2
 
     # VARIABLES TO CHANGE
-    bookie_id = str(input("enter bookie_id "))
-    sport_id = str(input("enter sport_id "))
+    # bookie_id = str(input("enter bookie_id "))
+    # sport_id = str(input("enter sport_id "))
     # home_team = str(input("enter home team name "))
     # away_team = str(input("enter home team name "))
     home_team = "Team A"
@@ -148,7 +148,7 @@ if __name__ == "__main__":
     # check_list_of_markets()
     # get_comps_for_bookie()
     # teams_and_dates_from_response(bookie_id='Bet777', competition_id='NorthAmericanLeaguesCup', sport_id='3', normalize=False)
-    # get_odds_from_response()
+    get_odds_from_response(bookie_id="AdmralBet", sport_id="3")
     # get_matches_details_and_urls()
     # get_sports_pages()
-    get_tournaments_from_sport_page(bookie_id="Bet777", sport_id="3", debug=True)
+    # get_tournaments_from_sport_page(bookie_id="Bet777", sport_id="3", debug=True)
