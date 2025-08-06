@@ -39,8 +39,8 @@ class MetaSpider(scrapy.Spider):
 
             # FILTER OPTIONS
             # match_filter = {}
-            match_filter = {"type": "bookie_id", "params":["MarathonBet", 1]}
-            # match_filter = {"type": "bookie_and_comp", "params": ["1XBet", "UEFAConferenceLeague"]}
+            # match_filter = {"type": "bookie_id", "params":["MarathonBet", 1]}
+            match_filter = {"type": "bookie_and_comp", "params": ["AdmiralBet", "ATP"]}
             # match_filter = {"type": "comp", "params":["MajorLeagueSoccerUSA"]}
             # match_filter = {"type": "match_url_id",
             #                 "params":["https://www.marathonbet.es/es/betting/Football/Friendly+Tournaments/Clubs/Category+2/Leagues+Cup/Canada+%26+USA/Group+Stage/Monterrey+vs+FC+Cincinnati+-+23951540"]}
@@ -136,8 +136,8 @@ class MetaSpider(scrapy.Spider):
                         if data["scraping_tool"] == "playwright":
                             self.close_playwright = True
                         url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="match", data=data)
-                        if self.debug:
-                            print("Meta request:", meta_request)
+                        # if self.debug:
+                        #     # print("Meta request:", meta_request)
                         dutcher_counter += 1
                         if dutcher_counter == len(value) and 'match_spider_01' in self.name :
                             meta_request["queue_dutcher"] = True
@@ -146,7 +146,7 @@ class MetaSpider(scrapy.Spider):
                         yield scrapy.Request(
                             dont_filter=dont_filter,
                             url=url,
-                            callback=self.parse_match if self.debug else self.parse_match,
+                            callback=self.raw_html if self.debug else self.parse_match,
                             errback=self.errback,
                             meta=meta_request,
                         )

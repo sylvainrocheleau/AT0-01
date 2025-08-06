@@ -1449,6 +1449,19 @@ class Helpers():
                     ],
                     )
                     )
+                elif data["sport_id"] == "3":
+                    meta_request.update(dict(playwright_page_methods=[
+                        PageMethod(
+                            method="wait_for_selector",
+                            selector="//div[@class='d-flex w-100 px-2 px-lg-0 ng-star-inserted']",
+                        ),
+                        PageMethod(
+                            method="click",
+                            selector="//button[@id='onetrust-reject-all-handler']"
+                        ),
+                    ],
+                    )
+                    )
 
             elif data["bookie_id"] == "Bet777":
                 if data["sport_id"] == "1":

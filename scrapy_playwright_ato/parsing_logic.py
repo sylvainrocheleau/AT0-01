@@ -1379,6 +1379,8 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                 clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
                 # print(f"clean selection keys {clean_selection_keys}")
                 for selection_key02 in clean_selection_keys:
+                    # if debug:
+                    #     print("select key2: ", selection_key02)
                     if clean_selection_keys[0] in list_of_markets:
                         market = clean_selection_keys[0]
                     else:
@@ -1421,10 +1423,12 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                             result = "empty"
                             odd = "empty"
                     except UnboundLocalError as e:
-                        # print("unbound", e)
+                        # if debug:
+                        #     print("unbound", e)
                         pass
                     except NameError:
-                        # print("name", e)
+                        # if debug:
+                        #     print("name", e)
                         pass
         except Exception as e:
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())

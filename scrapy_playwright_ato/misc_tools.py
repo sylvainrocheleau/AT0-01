@@ -72,11 +72,11 @@ def get_odds_from_response(bookie_id, sport_id):
     # END VARIABLES TO CHANGE
 
     try:
-        with open('match_spider_01_response.txt') as f:
+        with open('match_spider_01_g1_response.txt') as f:
             response = Selector(text=f.read())
 
     except FileNotFoundError:
-        print("File 'match_spider_01_response.txt' not found. Please provide a valid response file.")
+        print("File 'match_spider_01_g1_response.txt' not found. Please provide a valid response file.")
         return []
 
     odds = parse_match_logic(
@@ -148,7 +148,7 @@ if __name__ == "__main__":
     # check_list_of_markets()
     # get_comps_for_bookie()
     # teams_and_dates_from_response(bookie_id='Bet777', competition_id='NorthAmericanLeaguesCup', sport_id='3', normalize=False)
-    get_odds_from_response(bookie_id="AdmralBet", sport_id="3")
+    get_odds_from_response(bookie_id="AdmiralBet", sport_id="3")
     # get_matches_details_and_urls()
     # get_sports_pages()
     # get_tournaments_from_sport_page(bookie_id="Bet777", sport_id="3", debug=True)
