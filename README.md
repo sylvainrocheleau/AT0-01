@@ -50,7 +50,6 @@ Liste de bookies à ajouter ppour le tennis:
 - BetfairSportsbook: PAS A FAIRE
 - CasinoBarcelona: FALSE(NE CONTIENT QUE JUSTE UN SEUL TOURNOI)
 - CasinoGranMadrid: timeout
-- MarathonBet : FAIT
 - RetaBet
 - WilliamHill
 - ZeBet : Erreur 403 sur lien de la competition(à revoir)
@@ -58,5 +57,4 @@ Liste de bookies à ajouter ppour le tennis:
 - JokerBet: FAIT
 - LeoVegas: FAIT
 - Paston: FAIT
-- WinaMax: a revoir
-- YaassCasino
+
