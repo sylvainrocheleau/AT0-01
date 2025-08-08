@@ -2,78 +2,59 @@ import json
 import time
 import hashlib
 import datetime
-import mysql.connector
+# import mysql.connector
 import traceback
-import sys
+# import sys
 import ast
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
+from script_utilities import Connect
 
 
-# TODO get connection from script_utilities
-# Connection to Mysql
-TEST_ENV = "server"
-SQL_USER = "spider_rw_03"
-SQL_PWD = "43&trdGhqLlM"
-conn_params = {
-    'user': SQL_USER,
-    'password': SQL_PWD,
-    'host': "127.0.0.1",
-    'port': 3306,
-    'database': "ATO_production",
-}
-if TEST_ENV == "local":
-    conn_params["host"] = "127.0.0.1"
-elif TEST_ENV == "server":
-    conn_params["host"] = "164.92.191.102"
-try:
-    connection = mysql.connector.connect(**conn_params)
-except Exception as e:
-    print(f"Error connecting to MariaDB Platform: {e} with {TEST_ENV}")
-    sys.exit(1)
+connection = Connect().to_db(db="ATO_production", table=None)
+cursor = connection.cursor()
 
 soltia_user_name = "pY33k6KH6t"
 soltia_password = "eLHvfC5BZq"
 
-# Temporary config
-list_of_headers =[
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.yahoo.com', 'Accept-Encoding': 'compress', 'Accept-Language': 'en-GB,es-US;q=0.8,en;q=0.6,en-US;q=0.3'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2866.71 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.indeed.com', 'Accept-Encoding': 'gzip, compress, deflate, br, identity, *', 'Accept-Language': 'en-GB,es-US,en,en-US'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.indeed.com', 'Accept-Encoding': 'compress, br, identity', 'Accept-Language': 'en-GB,es-US,en,en-US'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.79 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.google.com', 'Accept-Encoding': 'gzip, br, identity', 'Accept-Language': 'en-GB,es-US;q=0.7,en;q=0.5,en-US;q=0.2'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.79 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.bing.com', 'Accept-Encoding': 'gzip', 'Accept-Language': 'en-GB,es-US;q=0.8,en;q=0.6,en-US;q=0.4'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.yahoo.com', 'Accept-Encoding': 'gzip, br', 'Accept-Language': 'en-GB,es-US,en,en-US'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.79 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.craigslist.org', 'Accept-Encoding': 'deflate', 'Accept-Language': 'en-GB,es-US,en,en-US'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.google.com', 'Accept-Encoding': 'gzip, br, identity, deflate, compress, *', 'Accept-Language': 'en-GB,es-US,en,en-US'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.indeed.com', 'Accept-Encoding': 'deflate, compress;q=0.7, br;q=0.6, identity;q=0.4, *;q=0.3', 'Accept-Language': 'en-GB,es-US,en,en-US'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.craigslist.org', 'Accept-Encoding': 'gzip, identity;q=0.7, deflate;q=0.4, *;q=0.2', 'Accept-Language': 'en-GB,es-US,en,en-US'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux i686 on x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2820.59 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.zillow.com', 'Accept-Encoding': 'gzip, br, deflate, identity, compress, *', 'Accept-Language': 'en-GB,es-US,en,en-US'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2762.73 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.yahoo.com', 'Accept-Encoding': 'gzip, deflate;q=0.8, br;q=0.6, identity;q=0.4, *;q=0.3', 'Accept-Language': 'en-GB,es-US;q=0.7,en;q=0.4,en-US;q=0.2'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2866.71 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.zillow.com', 'Accept-Encoding': 'gzip, identity;q=0.8, compress;q=0.6, br;q=0.5, deflate;q=0.3, *;q=0.1', 'Accept-Language': 'en-GB,es-US,en,en-US'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'http://vector.us', 'Accept-Encoding': 'deflate, br, *', 'Accept-Language': 'en-GB,es-US;q=0.8,en;q=0.5,en-US;q=0.3'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.79 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'http://www.similicio.us', 'Accept-Encoding': 'gzip, identity;q=0.7, br;q=0.4, *;q=0.2', 'Accept-Language': 'en-GB,es-US,en,en-US'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2919.83 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'http://vector.us', 'Accept-Encoding': 'compress, identity, deflate, br, *', 'Accept-Language': 'en-GB,es-US;q=0.8,en;q=0.6,en-US;q=0.4'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2762.73 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.bing.com', 'Accept-Encoding': 'identity, deflate;q=0.8, *;q=0.6', 'Accept-Language': 'en-GB,es-US,en,en-US'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.53 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.zillow.com', 'Accept-Encoding': 'gzip, compress, identity, br, *', 'Accept-Language': 'en-GB,es-US,en,en-US'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.indeed.com', 'Accept-Encoding': 'compress, identity', 'Accept-Language': 'en-GB,es-US,en,en-US'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.zillow.com', 'Accept-Encoding': 'br', 'Accept-Language': 'en-GB,es-US;q=0.8,en;q=0.6,en-US;q=0.3'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.zillow.com', 'Accept-Encoding': 'gzip, br', 'Accept-Language': 'en-GB,es-US;q=0.8,en;q=0.6,en-US;q=0.3'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2919.83 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.zillow.com', 'Accept-Encoding': 'identity, br, *', 'Accept-Language': 'en-GB,es-US,en,en-US'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2762.73 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.bing.com', 'Accept-Encoding': 'gzip, identity;q=0.7, *;q=0.4', 'Accept-Language': 'en-GB,es-US,en,en-US'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2762.73 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.yahoo.com', 'Accept-Encoding': 'gzip, identity;q=0.8, deflate;q=0.6, br;q=0.4, compress;q=0.2, *;q=0.1', 'Accept-Language': 'en-GB,es-US,en,en-US'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2919.83 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.bing.com', 'Accept-Encoding': 'gzip', 'Accept-Language': 'en-GB,es-US;q=0.8,en;q=0.5,en-US;q=0.3'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2866.71 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.craigslist.org', 'Accept-Encoding': 'gzip, *', 'Accept-Language': 'en-GB,es-US,en,en-US'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.79 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.indeed.com', 'Accept-Encoding': 'gzip, *;q=0.8', 'Accept-Language': 'en-GB,es-US,en,en-US'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.53 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.craigslist.org', 'Accept-Encoding': 'br, compress', 'Accept-Language': 'en-GB,es-US;q=0.8,en;q=0.6,en-US;q=0.3'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.79 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.craigslist.org', 'Accept-Encoding': 'br', 'Accept-Language': 'en-GB,es-US,en,en-US'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2762.73 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.indeed.com', 'Accept-Encoding': 'gzip, identity, deflate, compress, br, *', 'Accept-Language': 'en-GB,es-US,en,en-US'} ,
-{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', 'Referer': 'https://www.google.com', 'Accept-Encoding': 'br', 'Accept-Language': 'en-GB,es-US,en,en-US'} ,
-]
-
+browser_types = ["Chrome"]
 list_of_proxies = [
     "115.124.36.119", "185.106.126.109", "185.107.152.14", "185.105.15.160", "85.115.193.157",
-    "185.159.43.180", "185.166.172.76", "194.38.59.88", "185.118.52.126", "212.80.210.193",
+    "185.159.43.180", "185.166.172.76", "194.38.59.88", "185.118.52.126", "212.80.210.193"
 ]
-browser_types = ["Chrome"]
+
+list_of_headers =[
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.6478.114 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://duckduckgo.com/', 'Accept-Encoding': 'gzip, br', 'Accept-Language': 'es-ES,es;q=0.9,ca;q=0.7,en;q=0.6', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.6478.99 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://www.tiktok.com/', 'Accept-Encoding': 'gzip, br', 'Accept-Language': 'es-ES,es;q=0.9,ca;q=0.7,en;q=0.6', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.6613.98 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://www.tiktok.com/', 'Accept-Encoding': 'gzip, br', 'Accept-Language': 'es-ES,es;q=0.9,en-US;q=0.8,en;q=0.7', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.6478.55 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://www.reddit.com/', 'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'es-ES,es;q=0.9,en-US;q=0.8,en;q=0.7', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.6613.52 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://www.google.com/', 'Accept-Encoding': 'gzip, br', 'Accept-Language': 'es-ES,es;q=0.9,en-GB;q=0.8,en;q=0.7', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.6478.72 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://www.facebook.com/', 'Accept-Encoding': 'gzip, br', 'Accept-Language': 'es-ES,es;q=0.9,en-US;q=0.8,en;q=0.7', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.6533.188 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://www.tiktok.com/', 'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'es-ES,es;q=0.9,en-GB;q=0.8,en;q=0.7', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.6613.71 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://www.bing.com/', 'Accept-Encoding': 'gzip, br', 'Accept-Language': 'es-ES,es;q=0.9,en-US;q=0.8,en;q=0.7', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.6533.107 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://www.google.com/', 'Accept-Encoding': 'gzip, br', 'Accept-Language': 'es-ES,es;q=0.9,en;q=0.8', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.6478.185 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://www.instagram.com/', 'Accept-Encoding': 'gzip, br', 'Accept-Language': 'es-ES,es;q=0.9,en-GB;q=0.8,en;q=0.7', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.6533.120 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://www.google.com/', 'Accept-Encoding': 'gzip, br', 'Accept-Language': 'es-ES,es;q=0.9,ca;q=0.7,en;q=0.6', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.6613.101 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://www.facebook.com/', 'Accept-Encoding': 'gzip, br', 'Accept-Language': 'es-ES,es;q=0.9,en-US;q=0.8,en;q=0.7', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.6533.92 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://es.wikipedia.org/', 'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'es-ES,es;q=0.9,ca;q=0.7,en;q=0.6', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.6478.124 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://search.yahoo.com/', 'Accept-Encoding': 'gzip, br', 'Accept-Language': 'es-ES,es;q=0.9,en-US;q=0.8,en;q=0.7', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.6613.92 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://www.google.com/', 'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'es-ES,es;q=0.9,en-US;q=0.8,en;q=0.7', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.6478.137 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://www.youtube.com/', 'Accept-Encoding': 'gzip, br', 'Accept-Language': 'es-ES,es;q=0.9,en-US;q=0.8,en;q=0.7', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.6533.68 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://search.yahoo.com/', 'Accept-Encoding': 'gzip, br', 'Accept-Language': 'es-ES,es;q=0.9,en-US;q=0.8,en;q=0.7', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.6533.96 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://x.com/', 'Accept-Encoding': 'gzip, br', 'Accept-Language': 'es-ES,es;q=0.9,en;q=0.8', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.6533.154 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://www.youtube.com/', 'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'es-ES,es;q=0.9,en;q=0.8', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.6533.156 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://www.linkedin.com/', 'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'es-ES,es;q=0.9,en-US;q=0.8,en;q=0.7', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.6478.111 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://duckduckgo.com/', 'Accept-Encoding': 'gzip, br', 'Accept-Language': 'es-ES,es;q=0.9,en-GB;q=0.8,en;q=0.7', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.6533.144 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://www.reddit.com/', 'Accept-Encoding': 'gzip, br', 'Accept-Language': 'es-ES,es;q=0.9,en-GB;q=0.8,en;q=0.7', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.6613.196 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://es.wikipedia.org/', 'Accept-Encoding': 'gzip, br', 'Accept-Language': 'es-ES,es;q=0.9,en;q=0.8', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.6613.141 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://es.wikipedia.org/', 'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'es-ES,es;q=0.9,en;q=0.8', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.6478.59 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://es.wikipedia.org/', 'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'es-ES,es;q=0.9,en;q=0.8', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.6613.178 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://www.facebook.com/', 'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'es-ES,es;q=0.9,en;q=0.8', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.6533.138 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://www.facebook.com/', 'Accept-Encoding': 'gzip, br', 'Accept-Language': 'es-ES,es;q=0.9,en-GB;q=0.8,en;q=0.7', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.6613.152 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://www.tiktok.com/', 'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'es-ES,es;q=0.9,ca;q=0.7,en;q=0.6', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.6533.123 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://www.facebook.com/', 'Accept-Encoding': 'gzip, br', 'Accept-Language': 'es-ES,es;q=0.9,en-US;q=0.8,en;q=0.7', 'Upgrade-Insecure-Requests': '1'},
+{'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.6533.189 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://es.wikipedia.org/', 'Accept-Encoding': 'gzip, br', 'Accept-Language': 'es-ES,es;q=0.9,en-US;q=0.8,en;q=0.7', 'Upgrade-Insecure-Requests': '1'},
+]
+
 
 
 def get_cookies(test_mode, headless, pause_time, filters):
@@ -101,7 +82,7 @@ def get_cookies(test_mode, headless, pause_time, filters):
         SELECT bookie_id, bookie_url, use_cookies, burnt_ips
         FROM ATO_production.V2_Bookies
         """
-        cursor = connection.cursor()
+        # cursor = connection.cursor()
         cursor.execute(query_bookies)
         bookies_infos = cursor.fetchall()
         bookies_infos = [
@@ -136,7 +117,7 @@ def get_cookies(test_mode, headless, pause_time, filters):
                                                FROM ATO_production.V2_Cookies
                                                WHERE bookie = %s AND proxy_ip = %s
                                                """
-                                cursor = connection.cursor()
+                                # cursor = connection.cursor()
                                 cursor.execute(delete_query, (bookie_info["bookie_name"], proxy_ip))
                                 connection.commit()
                                 bookie_info["deleted_ips"].append(proxy_ip)
@@ -174,20 +155,68 @@ def get_cookies(test_mode, headless, pause_time, filters):
                     "username": soltia_user_name,
                     "password": soltia_password,
                 }
+                # Launch Chromium with additional flags to reduce automation fingerprints
                 browser = pw.chromium.launch(
                     headless=headless,
                     proxy=proxy_settings,
+                    args=[
+                        "--disable-blink-features=AutomationControlled",
+                        "--no-sandbox",
+                        "--disable-dev-shm-usage",
+                        "--disable-features=IsolateOrigins,site-per-process",
+                    ],
                 )
-                # # To save cookies to a file first extract them from the browser context:
+                # Create a context with more realistic environment and headers
                 context = browser.new_context(
                     viewport={"width": 1920, "height": 1080},
                     user_agent=headers_per_browser,
+                    locale="es-ES",
+                    timezone_id="Europe/Madrid",
+                    device_scale_factor=1,
+                    is_mobile=False,
+                    has_touch=False,
+                    color_scheme="light",
+                    extra_http_headers={
+                        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+                        "Accept-Language": "es-ES,es;q=0.9,en;q=0.8",
+                        # Basic client hints to look like a standard Chrome desktop
+                        "Sec-CH-UA": '"Chromium";v="125", "Not.A/Brand";v="24", "Google Chrome";v="125"',
+                        "Sec-CH-UA-Platform": '"Linux"',
+                        "Sec-CH-UA-Mobile": "?0",
+                        "Upgrade-Insecure-Requests": "1",
+                    },
                 )
+                # Hide common automation signals as early as possible
+                context.add_init_script(
+                    """
+                    Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+                    Object.defineProperty(navigator, 'languages', { get: () => ['es-ES', 'es', 'en'] });
+                    // Provide a non-empty plugins array
+                    Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3, 4, 5] });
+                    // Mimic proper permissions API behavior
+                    const originalQuery = window.navigator.permissions && window.navigator.permissions.query;
+                    if (originalQuery) {
+                        window.navigator.permissions.query = (parameters) => (
+                            parameters && parameters.name === 'notifications'
+                        )
+                            ? Promise.resolve({ state: Notification.permission })
+                            : originalQuery(parameters);
+                    }
+                    """
+                )
+
                 page = context.new_page()
                 try:
-                    page.goto(bookie_url)
-                    time.sleep(pause_time)
-                    page.wait_for_timeout(timeout=10000)
+                    # Navigate with a realistic wait strategy
+                    page.goto(bookie_url, wait_until="domcontentloaded")
+                    # Add a small random human-like jitter to the pause time
+                    try:
+                        import random
+                        jitter = random.uniform(0.2, 1.1)
+                    except Exception:
+                        jitter = 0.6
+                    time.sleep(max(0, pause_time) + jitter)
+                    page.wait_for_load_state(state="networkidle")
                     cookies = context.cookies()
                     print("context cookies", cookies)
                     # page.close()
@@ -251,14 +280,12 @@ def get_cookies(test_mode, headless, pause_time, filters):
             VALUES (%s, %s, %s, %s, %s, %s, %s)
             ON DUPLICATE KEY UPDATE cookies = %s, timestamp = %s
             """
-            cursor = connection.cursor()
+            # cursor = connection.cursor()
             cursor.execute(query_cookies, data_to_update_mysql)
             connection.commit()
         except Exception as e:
             print(e, data_to_update_mysql)
             pass
-    cursor.close()
-    connection.close()
 
 def use_cookies():
     with sync_playwright() as pw:
@@ -320,7 +347,7 @@ def test(filters):
     query_bookies = """
             SELECT bookie_id, bookie_url, use_cookies
             FROM ATO_production.V2_Bookies"""
-    cursor = connection.cursor()
+    # cursor = connection.cursor()
     cursor.execute(query_bookies)
     bookies_infos = cursor.fetchall()
     bookies_infos = [{"bookie_name": x[0], "url": x[1], "get_cookies": bool(x[2])} for x in bookies_infos]
@@ -331,9 +358,11 @@ def test(filters):
     print(bookies_infos)
 
 if __name__ == "__main__":
-    # get_cookies(test_mode=False, headless=False, pause_time=5, filters={"bookie_name": "1XBet", "only_cookies": True})
-    get_cookies(test_mode=False, headless=True, pause_time=5, filters={"bookie_name": "all_bookies", "only_cookies": False})
+    get_cookies(test_mode=False, headless=True, pause_time=5, filters={"bookie_name": "1XBet", "only_cookies": True})
+    # get_cookies(test_mode=False, headless=True, pause_time=5, filters={"bookie_name": "all_bookies", "only_cookies": False})
     # test(filters={"bookie_name": "all_bookies", "only_cookies": True})
     # use_cookies()
+    cursor.close()
+    connection.close()
 
 

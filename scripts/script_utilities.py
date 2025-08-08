@@ -95,7 +95,7 @@ class Helpers():
         else:
             return datetime.datetime.now().replace(microsecond=0).replace(tzinfo=None)
 
-    def send_email(self, status, alert_name):
+    def send_email(self, status, alert_name, debug):
         try:
             server = smtplib.SMTP('smtp.gmail.com', 587)
             server.starttls()
@@ -104,6 +104,8 @@ class Helpers():
             body = "The alert " + alert_name + " has generated this status: " + status
             message = 'Subject: %s\n\n%s' % (subject, body)
             server.sendmail("sylvainrocheleau@gmail.com", "info@sylvainrocheleau.com", message)
+            if alert_name in ["dutcher with rating_qualifying_bets > 120"] and debug is False:
+                server.sendmail("sylvainrocheleau@gmail.com", "david@againsttheodds.es", message)
             server.quit()
         except Exception as e:
             status = (

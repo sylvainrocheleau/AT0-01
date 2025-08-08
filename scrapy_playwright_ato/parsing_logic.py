@@ -2110,7 +2110,7 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                 clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
                 count = 0
                 # print(clean_selection_keys)
-                if clean_selection_keys[0] == "GOLES TOTALES" or clean_selection_keys[0] == "PUNTOS TOTALES":
+                if clean_selection_keys[0].lower() == "goles totales" or clean_selection_keys[0] == "puntos totales":
                     del clean_selection_keys[1:3]
                     for index, value in enumerate(clean_selection_keys):
                         if "+" in value and count % 2 == 0:
@@ -2132,7 +2132,7 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                         selection_key02 != market
                         and market in list_of_markets
                         and re.search('[a-zA-Z]', selection_key02) is not None
-                        or "-" in selection_key02
+                        or ":" in selection_key02
                         or "+" in selection_key02
                     ):
                         result = selection_key02

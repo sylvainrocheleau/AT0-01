@@ -395,8 +395,66 @@ class ScrapersPipeline:
                     pass
 
         elif "pipeline_type" in item.keys() and "tournaments_infos" in item["pipeline_type"]:
-            print("Updating V2_Sport_Urls with status and updated_date")
-
+            print("Deleting tounaments from V2_Competitons_Urls")
+            query_delete_tournaments = """
+                DELETE vcu
+                FROM ATO_production.V2_Competitions_Urls AS vcu
+                WHERE vcu.competition_url_id = %s
+            """
+            missing_tournaments = [t for t in item['data_dict']['map_tournaments'] if
+                                   t not in item['data_dict']['tournaments_infos']]
+            for missing_tournament in missing_tournaments:
+                try:
+                    if self.debug:
+                        print(f"Deleting competition URL {missing_tournament['competition_url_id']} "
+                              f"for bookie {missing_tournament['bookie_id']} and "
+                              f"competition {missing_tournament['competition_id']}")
+                    self.cursor.execute(query_delete_tournaments, (missing_tournament["competition_url_id"],))
+                except Exception as e:
+                    if self.debug:
+                        print(f"Error deleting competition URL {missing_tournament['competition_url_id']}: {e}")
+                        print(traceback.format_exc())
+                    Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}",
+                                         message=traceback.format_exc())
+                self.connection.commit()
+            print(f"Deleted {self.cursor.rowcount} tournaments from V2_Competitons_Urls")
+            print("Create or update competitions in V2_Competitions_Urls")
+            start_time = datetime.datetime.now()
+            try:
+                query_create_competitions = """
+                    INSERT IGNORE INTO ATO_production.V2_Competitions_Urls
+                    (competition_url_id, bookie_id, competition_id)
+                    VALUES(%s, %s, %s)
+                """
+                create_competitions = []
+                for data in item["data_dict"]["tournaments_infos"]:
+                    if self.debug:
+                        print("Creating competition URL", data["competition_url_id"], data["bookie_id"], data["competition_id"])
+                    create_competitions.append(
+                        (data["competition_url_id"], data["bookie_id"], data["competition_id"])
+                    )
+                    safe_executemany(self.cursor, query_create_competitions, create_competitions)
+                    self.connection.commit()
+            except mysql.connector.Error as e:
+                if self.debug:
+                    print(f"Database error during update of tournaments: {e}")
+                    print(traceback.format_exc())
+                Helpers().insert_log(level="CRITICAL", type="CODE",
+                                     error=f"{self.spider_name} DB_UPDATE_TOURNAMENTS_ERROR: {str(e)}",
+                                     message=traceback.format_exc())
+                if self.connection and self.connection.is_connected():
+                    self.connection.rollback()
+            except Exception as e:
+                if self.debug:
+                    print(traceback.format_exc())
+                Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{self.spider_name} {str(e)}",
+                                     message=traceback.format_exc())
+                self.connection.rollback()
+            finally:
+                self.match_odds_buffer.clear()
+                self.match_urls_update_buffer.clear()
+                end_time = datetime.datetime.now()
+                print(f"Time taken for updating new tournaments: {(end_time - start_time).total_seconds()}s")
 
         elif "pipeline_type" in item.keys() and "error_on_competition_url" in item["pipeline_type"]:
             # print("Updating V2_Competitions_Urls with status only on error")

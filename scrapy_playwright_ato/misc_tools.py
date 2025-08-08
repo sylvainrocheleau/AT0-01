@@ -1,4 +1,8 @@
+from locale import normalize
+
 from pandas.core.window.rolling import BaseWindow
+
+from scrapy_playwright_ato.bookies_configurations import normalize_odds_variables
 
 
 def get_comps_for_bookie():
@@ -37,14 +41,14 @@ def teams_and_dates_from_response(bookie_id, competition_id, sport_id, normalize
 
     map_matches_urls = []
     try:
-        with open('comp_spider_01_response.txt') as f:
+        with open('logs/comp_spider_01_response.txt') as f:
             response = Selector(text=f.read())
             # response = f.read()
         match_infos = parse_competition(response=response, bookie_id=bookie_id, competition_id=competition_id,
                                         competition_url_id="", sport_id=sport_id, map_matches_urls=map_matches_urls,
                                         debug=True)
     except FileNotFoundError:
-        print("File 'comp_spider_01_response.txt' not found. Please provide a valid response file.")
+        print("File 'logs/comp_spider_01_response.txt' not found. Please provide a valid response file.")
         return []
     print("RAW match infos", match_infos)
     if normalize is True:
@@ -56,7 +60,7 @@ def teams_and_dates_from_response(bookie_id, competition_id, sport_id, normalize
         )
     print("Normalized match infos", match_infos)
 
-def get_odds_from_response(bookie_id, sport_id):
+def get_odds_from_response(bookie_id, sport_id, parser  ):
     from parsing_logic import parse_match as parse_match_logic
     from utilities import Helpers
     from parsel import Selector
@@ -72,11 +76,14 @@ def get_odds_from_response(bookie_id, sport_id):
     # END VARIABLES TO CHANGE
 
     try:
-        with open('match_spider_01_response.txt') as f:
-            response = Selector(text=f.read())
+        with open('../logs/match_spider_01_g1_response.txt') as f:
+            if parser == 'html':
+                response = Selector(text=f.read())
+            if parser == 'json':
+                response = f.read()
 
     except FileNotFoundError:
-        print("File 'match_spider_01_response.txt' not found. Please provide a valid response file.")
+        print("File '../logs/match_spider_01_response.txt' not found. Please provide a valid response file.")
         return []
 
     odds = parse_match_logic(
@@ -128,10 +135,10 @@ def get_tournaments_from_sport_page(bookie_id, sport_id, debug):
 
     competiton_names_and_variants = Helpers().load_competiton_names_and_variants(sport_id=sport_id)
     try:
-        with open('sport_spider_01_response.txt') as f:
+        with open('../logs/sport_spider_01_response.txt') as f:
             response = Selector(text=f.read())
     except FileNotFoundError:
-        print("File 'sport_spider_01_response.txt' not found. Please provide a valid response file.")
+        print("File '../logs/sport_spider_01_response.txt' not found. Please provide a valid response file.")
         return []
     tournaments = parse_sport(
         response=response,
@@ -148,7 +155,7 @@ if __name__ == "__main__":
     # check_list_of_markets()
     # get_comps_for_bookie()
     # teams_and_dates_from_response(bookie_id='Bet777', competition_id='NorthAmericanLeaguesCup', sport_id='3', normalize=False)
-    get_odds_from_response(bookie_id="AdmralBet", sport_id="3")
+    get_odds_from_response(bookie_id="DaznBet", sport_id="1", parser=html)
     # get_matches_details_and_urls()
     # get_sports_pages()
     # get_tournaments_from_sport_page(bookie_id="Bet777", sport_id="3", debug=True)

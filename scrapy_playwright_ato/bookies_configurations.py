@@ -252,8 +252,8 @@ list_of_markets_V2 = {
     "3": ["Cuotas del partido", "Total de juegos"],
 },
 "DaznBet": {
-    "1": ["1X2", "GOLES TOTALES", "MARCADOR EXACTO"],
-    "2": ["TIEMPO REGULAR (INCL. TIEMPO EXTRA) - GANADOR", "PUNTOS TOTALES"],
+    "1": ["1X2", "Goles Totales", "Marcador Exacto"],
+    "2": ["TIEMPO REGULAR (INCL. TIEMPO EXTRA) - GANADOR", "Puntos Totales"],
     "3": ["Cuotas del partido", "Total de juegos"],
 },
 "Versus": {
@@ -494,7 +494,7 @@ def bookie_config(bookie):
             if os.environ["USER"] in LOCAL_USERS:
                 # data = data.iloc[0:1]
                 data = data
-                data = data.loc[data["competition"] == "FA Cup Inglesa"] # CONMEBOL - Copa Libertadores
+                data = data.loc[data["competition"] == "Estados Unidos - Major League Soccer"] # CONMEBOL - Copa Libertadores
                 # FOOTBALL: UEFA Champions League, Serie A Italiana, Premier League Inglesa, La Liga Española, Bundesliga Alemana, Eurocopa 2024,
                 #           Argentina - Primera división, España - Segunda división
                 # Basketball: NBA, Liga ACB
@@ -1131,11 +1131,11 @@ def bookie_config(bookie):
                 list_of_competitions.append(value)
             # DaznBet
             elif "DaznBet" == bookie and value["bookie"] == bookie and value["sport"] == "Football":
-                list_of_markets = ["1X2", "GOLES TOTALES", "MARCADOR EXACTO"]
+                list_of_markets = ["1X2", "Goles Totales", "Marcador Exacto"]
                 value.update({"list_of_markets": list_of_markets})
                 list_of_competitions.append(value)
             elif "DaznBet" == bookie and value["bookie"] == bookie and value["sport"] == "Basketball":
-                list_of_markets = ["TIEMPO REGULAR (INCL. TIEMPO EXTRA) - GANADOR", "PUNTOS TOTALES"]
+                list_of_markets = ["TIEMPO REGULAR (INCL. TIEMPO EXTRA) - GANADOR", "Puntos Totales"]
                 value.update({"list_of_markets": list_of_markets})
                 value.update({"list_of_markets": list_of_markets})
                 list_of_competitions.append(value)
@@ -1213,7 +1213,7 @@ def normalize_odds_variables(odds, sport, home_team, away_team):
         "Resultado Final", "Resultado Correcto", "Resultado correcto", "¿Resultado exacto?",  "Correct_Score_(Dynamic_Type)",
         "Marcador Exacto", "Resul. Exacto", "MARCADOR EXACTO", "Puntuación exacta", "Resultado"
     ]
-    not_market_result_correct_score_keywords = ["Cualquier otro resultado"]
+    not_market_result_correct_score_keywords = ["Cualquier otro resultado", "Otros"]
 
     over_keywords = ["Más", "Más de", "más", "Mas", "mas", "Over", "over", "+", "yes"]
     under_keywords = ["Menos", "menos", "Menos de", "Under", "under", "-", "no"]
@@ -1311,8 +1311,11 @@ def normalize_odds_variables(odds, sport, home_team, away_team):
             bet["Market_Tertiary"] = False
 
         try:
+            # Quality checks
             if market_over_under["prefix"] in bet["Market"] and ".5" not in str(x):
                 pass
+            elif "otro" in bet["Result"].lower() and bet["Market"] != market_winner:
+                bet["Result"] = "unable_to_normalize"
             elif bet["Odds"] < 50 and bet["Result"] != "unable_to_normalize" and "Size" not in bet.keys():
                 odds_02.append(
                     {
@@ -1342,6 +1345,6 @@ if __name__ == "__main__":
     try:
         if os.environ["USER"] in LOCAL_USERS:
             SYSTEM_VERSION = "V1"
-            print(bookie_config("BetWay"))
+            print(bookie_config("DaznBet"))
     except:
         pass

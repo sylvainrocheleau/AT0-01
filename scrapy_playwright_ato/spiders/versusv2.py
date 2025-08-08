@@ -335,7 +335,7 @@ destination:/api/markets/multi
                                     "http_status": response.status,
                                     "match_url_id": data["match_url_id"],
                                 }
-                                item["pipeline_type"] = ["match_odds"]
+                                item["pipeline_type"] = ["match_odds", "queue_dutcher"]
                             yield item
                     else:
                         item["data_dict"] = {

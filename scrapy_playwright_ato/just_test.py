@@ -1,22 +1,16 @@
-from utilities import Helpers
-
-# competitions = Helpers().load_competitions()
-#
-# def add_bigrams(names):
-#     variants = set(names)
-#     for name in names:
-#         words = name.split()
-#         for i in range(len(words) - 1):
-#             bigram = f"{words[i]} {words[i+1]}"
-#             variants.add(bigram)
-#     return list(variants)
-#
-# competitions_names_and_variants = {}
-# for x in competitions:
-#     if x[3] == "3":
-#         base_names = list({x[1], x[2]})
-#         competitions_names_and_variants[x[0]] = add_bigrams(base_names)
-#
-# print(competitions_names_and_variants)
-
-print(Helpers().load_competiton_names_and_variants(sport_id="3"))
+PATH = "/home/sylvain/info@sylvainrocheleau.com/projets/AgainstTheOdds/Scrapy_Playwright/scrapy_playwright_ato/spider_log.txt"
+CHUNK = 25000
+import os
+with open(PATH, "r", encoding="utf-8", errors="replace") as f:
+    s = f.read()
+total = len(s)
+parts = (total + CHUNK - 1) // CHUNK
+base, ext = os.path.splitext(PATH)
+for i in range(parts):
+    start = i * CHUNK
+    end = min(start + CHUNK, total)
+    out_path = f"{base}.part_{i+1:04d}.txt"
+    with open(out_path, "w", encoding="utf-8") as out:
+        out.write(s[start:end])
+    print(f"Wrote {out_path} ({end-start} chars)")
+print(f"Total chars: {total}, Parts: {parts}")

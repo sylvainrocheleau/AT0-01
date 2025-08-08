@@ -63,7 +63,7 @@ class MetaSpider(scrapy.Spider):
                         data.update(context_info)
                     if data["scraping_tool"] == "playwright":
                         self.close_playwright = True
-                    url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="match", data=data)
+                    url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="match", data=data, debug=self.debug)
                     counter += 1
                     # TODO use the change of keys to trigger the dutcher
                     if counter == len(value) and self.name == "match_spider_01":

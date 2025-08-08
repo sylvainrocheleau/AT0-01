@@ -11,7 +11,7 @@ from scrapy.exceptions import DontCloseSpider
 from twisted.internet.error import DNSLookupError, TimeoutError, TCPTimedOutError
 from ..items import ScrapersItem
 from ..settings import get_custom_playwright_settings, get_custom_settings_for_zyte_api, LOCAL_USERS
-from ..bookies_configurations import get_context_infos,  normalize_odds_variables, list_of_markets_V2
+from ..bookies_configurations import get_context_infos, normalize_odds_variables, list_of_markets_V2
 from ..parsing_logic import parse_match as parse_match_logic
 from ..utilities import Helpers
 
@@ -39,11 +39,11 @@ class MetaSpider(scrapy.Spider):
 
             # FILTER OPTIONS
             # match_filter = {}
-            match_filter = {"type": "bookie_id", "params":["MarathonBet", 1]}
-            # match_filter = {"type": "bookie_and_comp", "params": ["1XBet", "UEFAConferenceLeague"]}
+            # match_filter = {"type": "bookie_id", "params":["1XBet", 1]}
+            # match_filter = {"type": "bookie_and_comp", "params": ["AdmiralBet", "ATP"]}
             # match_filter = {"type": "comp", "params":["MajorLeagueSoccerUSA"]}
-            # match_filter = {"type": "match_url_id",
-            #                 "params":["https://www.marathonbet.es/es/betting/Football/Friendly+Tournaments/Clubs/Category+2/Leagues+Cup/Canada+%26+USA/Group+Stage/Monterrey+vs+FC+Cincinnati+-+23951540"]}
+            match_filter = {"type": "match_url_id",
+                            "params":["https://1xbet.es/es/line/football/118587-uefa-champions-league/642914757-qarabag-skendija"]}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -128,16 +128,16 @@ class MetaSpider(scrapy.Spider):
                 dutcher_counter = 0
                 for data in value:
                     try:
-                        if self.debug:
-                            print("Data to process:", data)
+                        # if self.debug:
+                        #     print("Data to process:", data)
                         if data["scraping_tool"] in ["requests", "playwright", "zyte_proxy_mode"]:
                             context_info = random.choice([x for x in context_infos if x["bookie_id"] == data["bookie_id"]])
                             data.update(context_info)
                         if data["scraping_tool"] == "playwright":
                             self.close_playwright = True
-                        url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="match", data=data)
-                        if self.debug:
-                            print("Meta request:", meta_request)
+                        url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="match", data=data, debug=self.debug)
+                        # if self.debug:
+                        #     print("Meta request:", meta_request)
                         dutcher_counter += 1
                         if dutcher_counter == len(value) and 'match_spider_01' in self.name :
                             meta_request["queue_dutcher"] = True
@@ -174,7 +174,6 @@ class MetaSpider(scrapy.Spider):
                 break
 
     async def parse_match(self, response):
-
         item = ScrapersItem()
         if response.meta.get("scraping_tool") == "playwright":
             try:
@@ -190,8 +189,12 @@ class MetaSpider(scrapy.Spider):
             print("working proxy_ip", response.meta.get("proxy_ip"))
             print("working user_agent", response.meta.get("user_agent"))
             # save proxy_ip, user_agent plus a third value "working"  to a csv file called proxy_ip_user_agent.csv
-            with open("proxy_ip_user_agent.csv", "a") as f:
-                f.write(f"{response.meta.get('proxy_ip')};{response.meta.get('user_agent')};working\n")
+            parent = os.path.dirname(os.getcwd())
+            try:
+                with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/logs/proxy_ip_user_agent.csv", "a") as f:
+                    f.write(f"{response.meta.get('proxy_ip')};{response.meta.get('user_agent')};working\n")
+            except:
+                pass
 
         odds = parse_match_logic(
             bookie_id=response.meta.get("bookie_id"),
@@ -214,6 +217,7 @@ class MetaSpider(scrapy.Spider):
                 )
             }
         )
+
         if not odds:
             item["data_dict"] = {
                 "match_infos": [
@@ -247,7 +251,7 @@ class MetaSpider(scrapy.Spider):
         print("RAW HTML RESPONSE")
         parent = os.path.dirname(os.getcwd())
         try:
-            with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/" + self.name + "_response" + ".txt", "w") as f:
+            with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/logs/" + self.name + "_response" + ".txt", "w") as f:
                 f.write(response.text) # response.meta["playwright_page"]
         except Exception as e:
             print(traceback.format_exc())
@@ -257,11 +261,70 @@ class MetaSpider(scrapy.Spider):
         print("### err back triggered")
         if self.debug:
             print("failed proxy_ip", failure.request.meta["proxy_ip"])
-            # print("failure", failure)
             print("failed user_agent", failure.request.meta["user_agent"])
-            # save proxy_ip, user_agent plus a third value "failed"  to a csv file called proxy_ip_user_agent.csv
-            with open("proxy_ip_user_agent.csv", "a") as f:
-                f.write(f"{failure.request.meta.get('proxy_ip')};{failure.request.meta.get('user_agent')};failed\n")
+            # Fix: correctly access headers through the appropriate objects
+            if hasattr(failure, 'value') and hasattr(failure.value, 'response'):
+                print('response headers:', failure.value.response.headers)
+            else:
+                print('response headers: N/A - No response object available')
+
+            print("request headers:", failure.request.headers)
+            # Also show the Playwright extra_http_headers (actual browser-like headers) if present
+            try:
+                if failure.request.meta.get("extra_http_headers"):
+                    print("playwright extra_http_headers:", failure.request.meta.get("extra_http_headers"))
+                else:
+                    print("playwright extra_http_headers: N/A")
+            except Exception:
+                print("playwright extra_http_headers: error while retrieving")
+            # Playwright page diagnostics: title and cf_clearance cookie presence + save DOM snapshot
+            try:
+                page = failure.request.meta.get("playwright_page")
+                if page is not None:
+                    try:
+                        title = await page.title()
+                    except Exception:
+                        title = "N/A"
+                    print("playwright page title:", title)
+                    try:
+                        cookies = await page.context.cookies()
+                        has_cf = any((c.get("name") == "cf_clearance") for c in cookies)
+                        print("cf_clearance cookie present:", has_cf)
+                    except Exception:
+                        print("cf_clearance cookie present: error while retrieving")
+
+                    # Capture full HTML and write to logs/dom_snapshot_<slug>.html
+                    # try:
+                    #     import os, re
+                    #     from urllib.parse import urlparse
+                    #     html = await page.content()
+                    #     os.makedirs("logs", exist_ok=True)
+                    #     # Build slug from bookie + match_id, or fallback to URL path
+                    #     bookie = failure.request.meta.get("bookie_id", "NA")
+                    #     match_id = failure.request.meta.get("match_id")
+                    #     if match_id:
+                    #         base_slug = f"{bookie}_{match_id}"
+                    #     else:
+                    #         parsed = urlparse(failure.request.url)
+                    #         path_part = re.sub(r"[^A-Za-z0-9]+", "_", (parsed.path or "").strip("/")) or "page"
+                    #         base_slug = f"{bookie}_{path_part}"
+                    #     # Normalize slug
+                    #     slug = re.sub(r"_+", "_", base_slug).strip("_")[:120]
+                    #     html_path = os.path.join("logs", f"dom_snapshot_{slug}.html")
+                    #     with open(html_path, "w", encoding="utf-8", errors="replace") as outf:
+                    #         outf.write(html or "")
+                    #     print("Saved DOM snapshot to:", html_path)
+                    # except Exception:
+                    #     print("Could not capture DOM snapshot")
+            except Exception:
+                # do not break errback on diagnostics
+                pass
+            parent = os.path.dirname(os.getcwd())
+            try:
+                with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/logs/proxy_ip_user_agent.csv", "a") as f:
+                    f.write(f"{failure.request.meta.get('proxy_ip')};{failure.request.meta.get('user_agent')};failed\n")
+            except:
+                pass
         # print("failure.request.meta", failure.request.meta)
         # print("failure.request.url", failure.request.url)
         # print("failure.value.response.url", failure.value.response.url)

@@ -22,13 +22,11 @@ class TwoStepsSpider(scrapy.Spider):
         custom_settings = get_custom_settings_for_zyte_api()
         allowed_scraping_tools = ["zyte_api"]
     debug = False
-    # match_url = str
     comp_url = str
     proxy_ip = str
-    pipeline_type = ["tournaments_urls"]
+    pipeline_type = ["tournaments_infos"]
     user_agent_hash = int
-    # TODO: map tournaments to exclude old tournaments
-    map_matches = {}
+    map_tournaments = Helpers().load_competitions_urls_and_sports()
     competiton_names_and_variants = Helpers().load_competiton_names_and_variants(sport_id="3")
     close_playwright = False
 
@@ -39,46 +37,24 @@ class TwoStepsSpider(scrapy.Spider):
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
                 # No filters
-                # competitions = bookie_config(bookie=["all_bookies"])
+                # sport_pages = bookie_config(bookie={"name": "all_bookies","http_errors": False, "output": "tournaments"})
                 # Filter by bookie that have errors
-                # competitions = bookie_config(bookie=["1XBet", "http_errors"])
+                # sport_pages = bookie_config(bookie={"name": "all_bookies","http_errors": True, "output": "tournaments"})
                 # Filter by bookie
-                sport_pages = bookie_config(
-                    bookie={
-                        "name": "Bet777",
-                        "http_errors": False,
-                        "output": "tournaments", # "output" can be "tournaments" or "competitions",
-                    }
-                )
-                # Filter by competition
-                # competitions = [x for x in bookie_config(bookie=["all_bookies"]) if x["competition_id"] == "Partidosamistosos"]
-                # Filter by bookie and competition
-                # competitions = [x for x in bookie_config(bookie=["Bwin"]) if x["competition_id"] == "NorthAmericanLeaguesCup"]
+                sport_pages = bookie_config(bookie={"name": "Bet777", "http_errors": False, "output": "tournaments"})
+
             else:
                 sport_pages = []
-
         except Exception as e:
             if (
                 0 <= Helpers().get_time_now("UTC").hour < 1
                 or 10 <= Helpers().get_time_now("UTC").hour < 11
             ):
-                print("PROCESSING ALL COMPETITIONS")
-                sport_pages = bookie_config(
-                    bookie={
-                        "name": "all_bookies",
-                        "http_errors": False,
-                        "output": "tournaments",  # "output" can be "tournaments" or "competitions",
-                    }
-                )
+                print("PROCESSING ALL TOURNAMENTS")
+                sport_pages = bookie_config(bookie={"name": "all_bookies", "http_errors": False,"output": "tournaments"})
             else:
-                print("PROCESSING COMPETITIONS WITH HTTP ERRORS")
-                sport_pages = bookie_config(
-                    bookie={
-                        "name": "all_bookies",
-                        "http_errors": True,
-                        "output": "tournaments",  # "output" can be "tournaments" or "competitions",
-                    }
-                )
+                print("PROCESSING TOURNAMENTS WITH HTTP ERRORS")
+                sport_pages = bookie_config(bookie={"name": "all_bookies", "http_errors": True,"output": "tournaments"})
 
 
         sport_pages = [x for x in sport_pages if x["scraping_tool"] in self.allowed_scraping_tools]
@@ -97,7 +73,7 @@ class TwoStepsSpider(scrapy.Spider):
                 yield scrapy.Request(
                     dont_filter=dont_filter,
                     url=url,
-                    callback=self.match_requests if self.debug else self.match_requests,
+                    callback=self.tournaments_request if self.debug else self.tournaments_request,
                     errback=self.errback,
                     meta=meta_request,
                 )
@@ -107,7 +83,7 @@ class TwoStepsSpider(scrapy.Spider):
                 print(traceback.format_exc())
                 continue
 
-    async def match_requests(self,response):
+    async def tournaments_request(self,response):
         item = ScrapersItem()
         if response.meta.get("scraping_tool") == "playwright":
             print('found playwright')
@@ -127,12 +103,16 @@ class TwoStepsSpider(scrapy.Spider):
             competiton_names_and_variants=self.competiton_names_and_variants,
             debug=self.debug
         )
-        if self.debug:
-            print("match_infos", match_infos)
+        # if self.debug:
+        #     print("tournaments_infos", tournaments_infos)
 
         try:
             if len(tournaments_infos) > 0:
                 item["data_dict"] = {
+                    "map_tournaments": [
+                        {"bookie_id": x[4], "competition_id": x[1], "competition_url_id": x[0]} for x in self.map_tournaments
+                        if x[3] == response.meta.get("sport_id") and x[4] == response.meta.get("bookie_id")
+                    ],
                     "tournaments_infos": tournaments_infos,
                     "sport_infos": [
                         {
@@ -223,7 +203,7 @@ class TwoStepsSpider(scrapy.Spider):
             request = failure.request
             url = request.url
             status = 1500
-            print("No match error from sorry message", request.url)
+            print("No tournament error from sorry message", request.url)
         else:
             try:
                 request = failure.request
@@ -236,13 +216,13 @@ class TwoStepsSpider(scrapy.Spider):
             item["data_dict"] = {
                 "comp_infos": [
                     {
-                    "competition_url_id": url,
+                    "sport_url_id": url,
                     "http_status": status,
                     # "updated_date": Helpers().get_time_now("UTC")
                     },
                 ]
             }
-            item["pipeline_type"] = ["error_on_competition_url"]
+            item["pipeline_type"] = ["error_on_sport_url"]
             if self.debug:
                 print("item error yielded", item)
             yield item
