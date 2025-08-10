@@ -1214,6 +1214,9 @@ class Helpers():
 
             # pagemethods and addons for competition
             if data["bookie_id"] == "1XBet":
+                meta_request["playwright_accept_request_predicate"] = {
+                    'activate': False
+                }
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
                         method="add_init_script",
@@ -1235,7 +1238,7 @@ class Helpers():
                             "Object.defineProperty(navigator, 'plugins', {get: () => [1,2,3]});\n"
                         )
                     ),
-                    PageMethod(method="wait_for_load_state", state="domcontentloaded"),
+                    # PageMethod(method="wait_for_load_state", state="domcontentloaded"),
                     PageMethod(
                         method="wait_for_selector",
                         selector="xpath=//ul[contains(@class, 'dashboard-games')]",

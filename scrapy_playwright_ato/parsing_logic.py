@@ -121,7 +121,7 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                         url = max(urls, key=len) if urls else None
                         url = "https://1xbet.es" + url
                         web_url = url
-                        date = xpath_result.xpath("//time[contains(@class, 'dashboard-game-info-additional__item')]/text()").extract()[0]
+                        date = xpath_result.xpath("//time[contains(@class, 'dashboard-game-info-additional_')]/text()").extract()[0]
                         date = dateparser.parse(''.join(date), locales=['es'])
                         if url not in map_matches_urls:
                             match_info = build_match_infos(
