@@ -163,7 +163,7 @@ class ScrapersPipeline:
                         item["data_dict"]["match_url_id"],
                     )
                     self.match_odds_buffer.append(values_odds)
-
+                # TODO: build a function for cloning bookies
                 values_url_update = (
                     item["data_dict"]["updated_date"],
                     item["data_dict"]["http_status"],

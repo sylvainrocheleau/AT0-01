@@ -115,11 +115,30 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                 for xpath_result in xpath_results:
                     try:
                         xpath_result = Selector(xpath_result)
-                        home_team = xpath_result.xpath("//span[contains(@class, 'dashboard-game-info-rival__name')]/text()").extract()[0]
-                        away_team = xpath_result.xpath("//span[contains(@class, 'dashboard-game-info-rival__name')]/text()").extract()[1]
-                        urls = xpath_result.xpath("//a[@href]/@href").extract()
-                        url = max(urls, key=len) if urls else None
-                        url = "https://1xbet.es" + url
+                        team_texts = xpath_result.xpath(
+                            ".//span[contains(@class, 'dashboard-game-info-rival__name')]//text()"
+                        ).getall()
+                        team_texts = [t.strip() for t in team_texts if t and t.strip()]
+
+                        if len(team_texts) < 2:
+                            if debug:
+                                print(
+                                    f"[1XBet:{competition_id}] Skipping item: could not find two team names. Found: {team_texts} in {xpath_result.extract()}")
+                            continue
+
+                        home_team, away_team = team_texts[0], team_texts[1]
+                        urls = xpath_result.xpath(".//a[@href]/@href").getall()
+                        if not urls:
+                            if debug:
+                                print(f"[1XBet:{competition_id}] Skipping {home_team} vs {away_team}: no href found")
+                            continue
+
+                        url_candidate = max(urls, key=len)
+                        if url_candidate.startswith("http"):
+                            url = url_candidate
+                        else:
+                            url = "https://1xbet.es" + url_candidate
+
                         web_url = url
                         date = xpath_result.xpath("//time[contains(@class, 'dashboard-game-info-additional_')]/text()").extract()[0]
                         date = dateparser.parse(''.join(date), locales=['es'])
