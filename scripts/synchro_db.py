@@ -20,7 +20,7 @@ TABLES = [
     {'name': 'V2_Matches_Odds', 'key': ['bet_id', 'bookie_id']},
     {'name': 'V2_Matches_Urls_No_Ids', 'key': 'match_url_id'},
     {'name': 'V2_Dutcher', 'key': ['bet_id', 'bookie_id', 'bookie_2']},
-    {'name': 'V2_Oddsmatcher', 'key': ['bet_id', 'lay_odds', 'bookie_id']},
+    {'name': 'V2_Oddsmatcher', 'key': ['bet_id', 'bookie_id', 'lay_odds']},
     {'name': 'V2_Sports', 'key': ['sport_id']},
     {'name': 'V2_Sports_Urls', 'key': ['sport_url_id']},
     {'name':'V2_Teams', 'key': ['team_id']},
@@ -200,7 +200,7 @@ def sync_all_tables():
         sync_table(table)
 
 if __name__ == "__main__":
-    # dump_database(local_conn_params)
+    dump_database(local_conn_params)
     drop_local_tables()
     clone_table_structures()
     sync_all_tables()

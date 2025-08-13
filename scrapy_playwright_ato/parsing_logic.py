@@ -2036,7 +2036,7 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
         except Exception as e:
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
     elif bookie_id == "CasinoGranMadrid":
-        # print(response.text)
+        print("response2", response)
         try:
             json_responses = response.text.split("<pre>")[1]
             json_responses = json_responses.split("</pre>")[0]

@@ -40,10 +40,10 @@ class MetaSpider(scrapy.Spider):
             # FILTER OPTIONS
             # match_filter = {}
             # match_filter = {"type": "bookie_id", "params":["MarathonBet", 1]}
-            match_filter = {"type": "bookie_and_comp", "params": ["AdmiralBet", "ATP"]}
+            # match_filter = {"type": "bookie_and_comp", "params": ["EfBet", "ATP"]}
             # match_filter = {"type": "comp", "params":["MajorLeagueSoccerUSA"]}
-            # match_filter = {"type": "match_url_id",
-            #                 "params":["https://www.marathonbet.es/es/betting/Football/Friendly+Tournaments/Clubs/Category+2/Leagues+Cup/Canada+%26+USA/Group+Stage/Monterrey+vs+FC+Cincinnati+-+23951540"]}
+            match_filter = {"type": "match_url_id",
+                            "params":["https://www.efbet.es/ES/sports#bo-navigation=280361.1,280363.1&action=market-group-list&event=37964697.1"]}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -146,7 +146,7 @@ class MetaSpider(scrapy.Spider):
                         yield scrapy.Request(
                             dont_filter=dont_filter,
                             url=url,
-                            callback=self.raw_html if self.debug else self.parse_match,
+                            callback=self.parse_match if self.debug else self.parse_match,
                             errback=self.errback,
                             meta=meta_request,
                         )
@@ -214,6 +214,7 @@ class MetaSpider(scrapy.Spider):
                 )
             }
         )
+        print("Odds norm: ", odds)
         if not odds:
             item["data_dict"] = {
                 "match_infos": [
