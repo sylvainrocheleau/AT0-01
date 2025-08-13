@@ -225,7 +225,7 @@ list_of_markets_V2 = {
     ],
     "2": ['Ganador del partido (Incl. Prórroga)', 'Ganador del partido (Incl. Prórroga) - 0% de Margen',]+
          ["Total De Puntos " + str(x) + " (Incl. Prórroga)" for x in basketball_intervals],
-    "3": ["Cuotas del partido", "Total de juegos"],
+    "3": ["Resultado del Partido"] + ["Total De Juegos " + str(x) for x in tennis_intervals],
 },
 "BetfairSportsbook": {
     "1": ['Cuotas de partido', 'Más/Menos', 'Resultado correcto'],
