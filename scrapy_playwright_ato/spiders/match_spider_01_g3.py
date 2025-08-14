@@ -244,8 +244,7 @@ class MetaSpider(scrapy.Spider):
         print("RAW HTML RESPONSE")
         parent = os.path.dirname(os.getcwd())
         try:
-            with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/logs/" + self.name + "_response" + ".txt",
-                      "w") as f:
+            with open(parent + "/Scrapy_Playwright/logs/" + self.name + "_response" + ".txt", "w") as f:
                 f.write(response.text)  # response.meta["playwright_page"]
         except Exception as e:
             print(traceback.format_exc())
