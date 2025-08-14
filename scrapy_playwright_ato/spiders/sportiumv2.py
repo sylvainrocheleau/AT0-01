@@ -393,6 +393,7 @@ destination:/api/markets/multi
                                 {
                                     "match_url_id": data["match_url_id"],
                                     "http_status": 1600,  # No odds found
+                                    "match_id": data["match_id"],
                                     # "updated_date": Helpers().get_time_now("UTC")
                                 },
                             ]

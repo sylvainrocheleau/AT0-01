@@ -26,13 +26,13 @@ class WebsocketsSpider(Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                self.competitions = [x for x in bookie_config(bookie=["Betsson"]) if x["competition_id"] == "CopaSudamericana"]
+                self.competitions = [x for x in bookie_config(bookie=["Betsson"]) if x["competition_id"] == "Argentina-PrimeraDivision"]
                 # self.match_filter = {"type": "bookie_and_comp", "params": ["Betsson", "CopaSudamericana"]}
 
                 # self.competitions = bookie_config(bookie=["Betsson"])
                 # self.match_filter = {"type": "bookie_id", "params": ["Betsson" ,1]}
                 self.match_filter = {"type": "match_url_id", "params": [
-                    "https://sportsbook.betsson.es/#/sport/?type=0&region=20001&competition=2985&sport=1&game=27688096"]}
+                    "https://www.betfair.es/sport/football/argentina-primera-divisi%C3%B3n/ca-platense-san-lorenzo/34564497"]}
 
                 print(self.competitions)
         except:
@@ -244,37 +244,56 @@ class WebsocketsSpider(Spider):
             print("matches_details_and_urls", matches_details_and_urls)
 
         for key, value in matches_details_and_urls.items():
-
             for data in value:
-                flag_error = False
-                if data["sport_id"] == "1":
-                    betsson_sport_id = 1
-                elif data["sport_id"] == "2":
-                    betsson_sport_id = 3
+                try:
+                    flag_error = False
+                    if data["sport_id"] == "1":
+                        betsson_sport_id = 1
+                    elif data["sport_id"] == "2":
+                        betsson_sport_id = 3
+                    else:
+                        betsson_sport_id = None
+                        flag_error = True
+                    if 'game=' in data["match_url_id"]:
+                        game_id = int(data["match_url_id"].split("game=")[-1])
+                    elif '/' in data["match_url_id"]:
+                        game_id = int(data["match_url_id"].split("/")[-1])
+                    else:
+                        game_id = None
+                        flag_error = True
 
-                payload = {
-                    "command": "get",
-                    "params": {
-                        "source": "betting",
-                        "what": {
-                            "game": ["id", "start_ts", "is_live", "text_info", "team1_name", "team2_name"],
-                            "market": ["name_template", "group_name"],
-                            "event": ["type", "name", "price", "base"]
+                    payload = {
+                        "command": "get",
+                        "params": {
+                            "source": "betting",
+                            "what": {
+                                "game": ["id", "start_ts", "is_live", "text_info", "team1_name", "team2_name"],
+                                "market": ["name_template", "group_name"],
+                                "event": ["type", "name", "price", "base"]
+                            },
+                            "where": {
+                                "game": {"id": game_id},
+                                "sport": {"id": betsson_sport_id},
+                            },
+                            "subscribe": True
                         },
-                        "where": {
-                            "game": {"id": int(data["match_url_id"].split("game=")[-1])},
-                            "sport": {"id": betsson_sport_id},
-                        },
-                        "subscribe": True
-                    },
-                    "rid": self.rid
-                }
-
-                response_odds = await self._send_and_receive(payload)
+                        "rid": self.rid
+                    }
+                    if not flag_error:
+                        response_odds = await self._send_and_receive(payload)
+                    else:
+                        response_odds = None
+                except Exception:
+                    if self.debug:
+                        print(traceback.format_exc())
+                    flag_error = True
+                    response_odds = None
                 if not response_odds:
                     print(f"Failed to get odds for match {data['match_id']} after retries.")
                     flag_error = True
                 if not flag_error:
+                    if self.debug:
+                        print("response_odds", response_odds)
                     item = ScrapersItem()
                     odds = parse_match(
                         bookie_id=data["bookie_id"],
@@ -318,7 +337,8 @@ class WebsocketsSpider(Spider):
                         "match_infos": [
                             {
                                 "match_url_id": data["match_url_id"],
-                                "http_status": 1600,  # No odds found
+                                "http_status": 1600,
+                                "match_id": data["match_id"],
                                 # "updated_date": Helpers().get_time_now("UTC")
                             },
                         ]

@@ -33,15 +33,15 @@ class MetaSpider(scrapy.Spider):
             # custom_settings["CONCURRENT_REQUESTS"] = 50
             debug = True
             match_filter_enabled = True
-            scraping_group = [2]
+            scraping_group = [1,2,3,4]
 
             # FILTER OPTIONS
             # match_filter = {}
-            match_filter = {"type": "bookie_id", "params":["Codere", 1]}
+            # match_filter = {"type": "bookie_id", "params":["1XBet", 1]}
             # match_filter = {"type": "bookie_and_comp", "params": ["AdmiralBet", "ATP"]}
             # match_filter = {"type": "comp", "params":["MajorLeagueSoccerUSA"]}
-            # match_filter = {"type": "match_url_id",
-            #                 "params":["https://1xbet.es/es/line/football/118587-uefa-champions-league/642914757-qarabag-skendija"]}
+            match_filter = {"type": "match_url_id",
+                            "params":["https://www.zebet.es/es/event/72d83-club_atletico_platense_san_lorenzo"]}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -123,7 +123,6 @@ class MetaSpider(scrapy.Spider):
                   f"with {self.lenght_of_matches_details_and_urls} matches")
             for key, value in matches_details_and_urls.items():
                 count_of_matches_details_and_urls += 1
-                dutcher_counter = 0
                 for data in value:
                     try:
                         # if self.debug:
@@ -136,11 +135,7 @@ class MetaSpider(scrapy.Spider):
                         url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="match", data=data, debug=self.debug)
                         # if self.debug:
                         #     print("Meta request:", meta_request)
-                        dutcher_counter += 1
-                        if dutcher_counter == len(value) and 'match_spider_01' in self.name :
-                            meta_request["queue_dutcher"] = True
-                        else:
-                            meta_request["queue_dutcher"] = False
+
                         yield scrapy.Request(
                             dont_filter=dont_filter,
                             url=url,
@@ -222,6 +217,7 @@ class MetaSpider(scrapy.Spider):
                     {
                         "match_url_id": response.meta.get("url"),
                         "http_status": 1600,  # No odds found
+                        "match_id": response.meta.get("match_id"),
                         # "updated_date": Helpers().get_time_now("UTC")
                     },
                 ]
@@ -237,10 +233,8 @@ class MetaSpider(scrapy.Spider):
                 "http_status": response.status,
                 "match_url_id": response.meta.get("url"),
             }
-            if response.meta.get("queue_dutcher") is True:
-                self.pipeline_type = ["match_odds", "queue_dutcher"]
-            else:
-                self.pipeline_type = ["match_odds"]
+
+            self.pipeline_type = ["match_odds"]
             item["pipeline_type"] = self.pipeline_type
         yield item
 
@@ -259,7 +253,7 @@ class MetaSpider(scrapy.Spider):
         print("### err back triggered")
         if self.debug:
             print("failed proxy_ip", failure.request.meta["proxy_ip"])
-            print("failed user_agent", failure.request.meta["user_agent"])
+            # print("failed user_agent", failure.request.meta["user_agent"])
             # Fix: correctly access headers through the appropriate objects
             if hasattr(failure, 'value') and hasattr(failure.value, 'response'):
                 print('response headers:', failure.value.response.headers)
@@ -290,30 +284,6 @@ class MetaSpider(scrapy.Spider):
                         print("cf_clearance cookie present:", has_cf)
                     except Exception:
                         print("cf_clearance cookie present: error while retrieving")
-
-                    # Capture full HTML and write to logs/dom_snapshot_<slug>.html
-                    # try:
-                    #     import os, re
-                    #     from urllib.parse import urlparse
-                    #     html = await page.content()
-                    #     os.makedirs("logs", exist_ok=True)
-                    #     # Build slug from bookie + match_id, or fallback to URL path
-                    #     bookie = failure.request.meta.get("bookie_id", "NA")
-                    #     match_id = failure.request.meta.get("match_id")
-                    #     if match_id:
-                    #         base_slug = f"{bookie}_{match_id}"
-                    #     else:
-                    #         parsed = urlparse(failure.request.url)
-                    #         path_part = re.sub(r"[^A-Za-z0-9]+", "_", (parsed.path or "").strip("/")) or "page"
-                    #         base_slug = f"{bookie}_{path_part}"
-                    #     # Normalize slug
-                    #     slug = re.sub(r"_+", "_", base_slug).strip("_")[:120]
-                    #     html_path = os.path.join("logs", f"dom_snapshot_{slug}.html")
-                    #     with open(html_path, "w", encoding="utf-8", errors="replace") as outf:
-                    #         outf.write(html or "")
-                    #     print("Saved DOM snapshot to:", html_path)
-                    # except Exception:
-                    #     print("Could not capture DOM snapshot")
             except Exception:
                 # do not break errback on diagnostics
                 pass
@@ -372,10 +342,10 @@ class MetaSpider(scrapy.Spider):
         try:
             item["data_dict"] = {
                 "match_infos": [
-                    # TODO url should be the original url, not the one from the response
                     {
                         "match_url_id": url,
                         "http_status": status,
+                        "match_id": failure.request.meta["match_id"],
                         # "updated_date": Helpers().get_time_now("UTC")
                     },
                 ]

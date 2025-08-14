@@ -358,8 +358,8 @@ def test(filters):
     print(bookies_infos)
 
 if __name__ == "__main__":
-    get_cookies(test_mode=False, headless=True, pause_time=5, filters={"bookie_name": "1XBet", "only_cookies": True})
-    # get_cookies(test_mode=False, headless=True, pause_time=5, filters={"bookie_name": "all_bookies", "only_cookies": False})
+    # get_cookies(test_mode=False, headless=True, pause_time=5, filters={"bookie_name": "1XBet", "only_cookies": True})
+    get_cookies(test_mode=False, headless=True, pause_time=5, filters={"bookie_name": "all_bookies", "only_cookies": False})
     # test(filters={"bookie_name": "all_bookies", "only_cookies": True})
     # use_cookies()
     cursor.close()

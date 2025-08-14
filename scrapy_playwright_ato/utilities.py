@@ -1238,13 +1238,23 @@ class Helpers():
                             "Object.defineProperty(navigator, 'plugins', {get: () => [1,2,3]});\n"
                         )
                     ),
-                    # PageMethod(method="wait_for_load_state", state="domcontentloaded"),
+                    PageMethod(method="wait_for_load_state", state="domcontentloaded"),
                     PageMethod(
                         method="wait_for_selector",
-                        selector="xpath=//ul[contains(@class, 'dashboard-games')]",
+                        selector="//li[contains(@class, 'dashboard-games__item')]",
                     ),
                 ],
                 }
+                )
+                meta_request["playwright_context_kwargs"].update(
+                    {
+                    #     "viewport": {
+                    #         "width": 1920,
+                    #         "height": 3200,
+                    # },
+                        "bypass_csp": True,
+                        "service_workers": "allow",
+                    }
                 )
             elif data["bookie_id"] == "BetWay":
                 meta_request.update({"playwright_page_methods": [

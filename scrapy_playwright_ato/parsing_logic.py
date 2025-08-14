@@ -123,7 +123,7 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                         if len(team_texts) < 2:
                             if debug:
                                 print(
-                                    f"[1XBet:{competition_id}] Skipping item: could not find two team names. Found: {team_texts} in {xpath_result.extract()}")
+                                    f"[1XBet:{competition_id}] Skipping item: could not find two team names. Found: {team_texts}")
                             continue
 
                         home_team, away_team = team_texts[0], team_texts[1]

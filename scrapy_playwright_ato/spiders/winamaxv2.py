@@ -613,6 +613,7 @@ class TwoStepsSpider(scrapy.Spider):
                             {
                                 "match_url_id": match_url,
                                 "http_status": 1600,  # No odds found
+                                "match_id": match_id,
                                 # "updated_date": Helpers().get_time_now("UTC")
                             },
                         ]
@@ -637,6 +638,7 @@ class TwoStepsSpider(scrapy.Spider):
                         {
                             "match_url_id": match_url,
                             "http_status": 1600,  # No odds found
+                            "match_id": match_id,
                             # "updated_date": Helpers().get_time_now("UTC")
                         },
                     ]

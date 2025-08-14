@@ -31,6 +31,7 @@ class ScrapersPipeline:
         # Define buffer and batch size
         self.match_odds_buffer = []
         self.match_urls_update_buffer = []
+        self.match_ids_buffer = []
         self.batch_size = 500  # Adjust as needed
         self.connection = None
         self.cursor = None
@@ -61,7 +62,6 @@ class ScrapersPipeline:
             self._connect_db()
 
 
-
     def open_spider(self, spider):
         """Initialize database connection when the spider starts."""
         self.spider_name = spider.name
@@ -74,6 +74,16 @@ class ScrapersPipeline:
         if self.connection and self.connection.is_connected():
             self.cursor.close()
             self.connection.close()
+
+    def _queue_dutcher(self, match_ids):
+        query_insert_dutcher_queue = """
+             UPDATE ATO_production.V2_Matches
+             SET queue_dutcher = 1
+             WHERE match_id = %s \
+         """
+        safe_executemany(self.cursor, query_insert_dutcher_queue, match_ids)
+        if self.debug:
+            print(f"Queue dutcher on : {match_ids}")
 
     def _flush_match_odds_batch(self):
         """Write the buffered items to the database."""
@@ -110,7 +120,6 @@ class ScrapersPipeline:
                 # Create a new list of tuples with the last element removed for insertion
                 odds_to_insert = [item[:-1] for item in self.match_odds_buffer]
                 safe_executemany(self.cursor, query_insert_match_odds, odds_to_insert)
-                # self.cursor.executemany(query_insert_match_odds, odds_to_insert)
 
             if self.match_urls_update_buffer:
                 unique_updates = list(set(self.match_urls_update_buffer))
@@ -121,6 +130,10 @@ class ScrapersPipeline:
                 """
                 # self.cursor.executemany(query_update_match_urls, unique_updates)
                 safe_executemany(self.cursor, query_update_match_urls, unique_updates)
+
+            if self.match_ids_buffer:
+                self._queue_dutcher(self.match_ids_buffer)
+
 
             self.connection.commit()
             print(f"Flushed {len(self.match_odds_buffer)} odds and {len(self.match_urls_update_buffer)} URL updates.")
@@ -170,6 +183,11 @@ class ScrapersPipeline:
                     item["data_dict"]["match_url_id"],
                 )
                 self.match_urls_update_buffer.append(values_url_update)
+
+                values_match_id_update = (
+                    item["data_dict"]["match_id"],
+                )
+                self.match_ids_buffer.append(values_match_id_update)
 
                 # If batch size is reached, flush the buffers
                 if len(self.match_odds_buffer) >= self.batch_size:
@@ -513,6 +531,11 @@ class ScrapersPipeline:
                         WHERE vmu.match_url_id = %s
                     """
                     cursor.execute(delete_query, (data["match_url_id"],))
+
+                    if "match_id" in data.keys():
+                        print(f"Queueing Dutcher on {data['match_id']}")
+                        self._queue_dutcher([(data["match_id"],)])
+
                     connection.commit()
             except Exception as e:
                 if self.debug:

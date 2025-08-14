@@ -30,8 +30,8 @@ class MetaSpider(scrapy.Spider):
             # match_filter = {}
             # match_filter = {"type": "bookie_id", "params":["1XBet", 2]}
             # match_filter = {"type": "bookie_and_comp", "params": ["1XBet", "Argentina-PrimeraDivision"]}
-            # match_filter = {"type": "comp", "params":["LaLigaEspanola"]}
-            match_filter = {"type": "match_url_id", "params":["https://apuestas.retabet.es/deportes/futbol/brasil/brasileirao-serie-a/mirassol-fc-sp-fluminense/30804778"]}
+            match_filter = {"type": "comp", "params":["Argentina-PrimeraDivision"]}
+            # match_filter = {"type": "match_url_id", "params":["https://apuestas.retabet.es/deportes/futbol/brasil/brasileirao-serie-a/mirassol-fc-sp-fluminense/30804778"]}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -120,6 +120,7 @@ class MetaSpider(scrapy.Spider):
                     {
                         "match_url_id": response.meta.get("url"),
                         "http_status": 1600,  # No odds found
+                        "match_id": response.meta.get("match_id")
                         # "updated_date": Helpers().get_time_now("UTC")
                     },
                 ]
@@ -208,6 +209,7 @@ class MetaSpider(scrapy.Spider):
                     {
                         "match_url_id": url,
                         "http_status": status,
+                        "match_id": failure.request.meta["match_id"],
                         # "updated_date": Helpers().get_time_now("UTC")
                     },
                 ]

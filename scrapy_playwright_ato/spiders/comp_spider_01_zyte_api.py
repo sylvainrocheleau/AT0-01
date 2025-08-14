@@ -51,7 +51,7 @@ class TwoStepsSpider(scrapy.Spider):
                 # Filter by bookie
                 # competitions = bookie_config(bookie=["Bet777"])
                 # Filter by competition
-                competitions = [x for x in bookie_config(bookie=["all_bookies"]) if x["competition_id"] == "UEFAConferenceLeague"]
+                competitions = [x for x in bookie_config(bookie=["RetaBet"]) if x["competition_id"] == "Argentina-PrimeraDivision"]
                 # Filter by boookie and competition
                 # competitions = [x for x in bookie_config(bookie=["RetaBet"]) if
                 #                 x["competition_id"] == "FIFAClubWorldCup"]
@@ -77,7 +77,7 @@ class TwoStepsSpider(scrapy.Spider):
                     data.update(context_info)
                 if data["scraping_tool"] == "playwright":
                     self.close_playwright = True
-                url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="competition", data=data)
+                url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="competition", data=data, debug=self.debug)
                 if self.debug:
                     print("url to scrape", url, "dont_filter", dont_filter, "meta_request", meta_request)
                 yield scrapy.Request(
