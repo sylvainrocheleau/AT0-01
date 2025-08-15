@@ -11,20 +11,59 @@ from scrapy_playwright_ato.utilities import Connect, Helpers
 from scrapy_playwright_ato.settings import LOCAL_USERS
 
 
-def safe_executemany(cursor, query, data, retries=3, delay=2):
+def safe_executemany(cursor, query, data, chunk_size=500, retries=3, delay=2):
+    """
+    - Splits into chunks to avoid large packets/timeouts
+    - Retries on deadlocks (1213) and lost connection (2006/2013) with reconnect
+    """
     import time
-    import mysql.connector
-    for attempt in range(retries):
-        try:
-            cursor.executemany(query, data)
-            return
-        except mysql.connector.errors.InternalError as e:
-            if e.errno == 1213:  # Deadlock
-                print(f"Deadlock detected, retrying ({attempt + 1}/{retries})...")
-                time.sleep(delay)
-            else:
+    from mysql.connector import OperationalError, InternalError, InterfaceError, Error
+
+    if not data:
+        return
+
+    conn = getattr(cursor, "connection", None) or getattr(cursor, "_connection", None)
+    if conn is None:
+        raise RuntimeError("safe_executemany: could not obtain connection from cursor (no .connection or ._connection)")
+    # Try to ensure the connection is alive
+    try:
+        conn.ping(reconnect=True, attempts=3, delay=delay)
+    except Exception:
+        pass
+
+    total = len(data)
+    start = 0
+    while start < total:
+        chunk = data[start:start + chunk_size]
+        attempt = 0
+        while True:
+            try:
+                cursor.executemany(query, chunk)
+                break  # success for this chunk
+            except InternalError as e:
+                # Deadlock
+                if getattr(e, "errno", None) == 1213 and attempt < retries - 1:
+                    attempt += 1
+                    print(f"Deadlock (1213) on chunk [{start}:{start+len(chunk)}], retry {attempt}/{retries}...")
+                    time.sleep(delay)
+                    continue
                 raise
-    raise Exception("Max retries reached due to deadlock.")
+            except (OperationalError, InterfaceError) as e:
+                # Lost connection / server has gone away
+                errno = getattr(e, "errno", None)
+                if errno in (2006, 2013) and attempt < retries - 1:
+                    attempt += 1
+                    print(
+                        f"MySQL connection lost ({errno}) on chunk [{start}:{start+len(chunk)}], "
+                        f"reconnecting and retrying {attempt}/{retries}..."
+                    )
+                    try:
+                        conn.reconnect(attempts=3, delay=delay)
+                    except Error:
+                        time.sleep(delay)
+                    continue
+                raise
+        start += len(chunk)
 
 class ScrapersPipeline:
     def __init__(self):
@@ -703,11 +742,11 @@ class ScrapersPipeline:
 
         if "pipeline_type" in item.keys() and "exchange_match_odds" in item["pipeline_type"]:
             start_time = datetime.datetime.now()
-            connection = None  # Initialize connection to None
+            # connection = None  # Initialize connection to None
             try:
-                connection = Connect().to_db(db="ATO_production", table=None)
-                cursor = connection.cursor()
-                cursor.execute("TRUNCATE TABLE ATO_production.V2_Exchanges")
+                # connection = Connect().to_db(db="ATO_production", table=None)
+                # cursor = connection.cursor()
+                self.cursor.execute("TRUNCATE TABLE ATO_production.V2_Exchanges")
                 query_exchange = ("""
                   INSERT INTO ATO_production.V2_Exchanges
                   (bet_id, date, sport, competition, home_team, away_team, market, market_binary,
@@ -732,46 +771,56 @@ class ScrapersPipeline:
                             batch_insert_exchanges.append(values)
 
                 if batch_insert_exchanges:
-                    cursor.executemany(query_exchange, batch_insert_exchanges)
-                    print(f"Updated V2_Exchanges. Rows affected: {cursor.rowcount} at {datetime.datetime.now()}")
+                    safe_executemany(self.cursor, query_exchange, batch_insert_exchanges)
+                    print(f"Updated V2_Exchanges. Rows affected: {self.cursor.rowcount} at {datetime.datetime.now()}")
 
                 # Now update V2_Oddsmatcher
-                cursor.execute("TRUNCATE TABLE ATO_production.V2_Oddsmatcher")
+                self.cursor.execute("TRUNCATE TABLE ATO_production.V2_Oddsmatcher")
                 query_insert_odds_match_maker = """
-                    INSERT INTO ATO_production.V2_Oddsmatcher
-                    SELECT vmo.bet_id,
-                           vmo.match_id,
-                           vmo.bookie_id,
-                           vmo.back_odd,
-                           ve.lay_odds,
-                           ve.liquidity,
-                           ROUND((100 * vmo.back_odd * (1 - 0.02) / (ve.lay_odds - 0.02)), 2) AS rating_qualifying_bet,
-                           ROUND((100 * (vmo.back_odd - 1) * (1 - 0.02) / (ve.lay_odds - 0.02)),2) AS rating_free_bet,
-                           ROUND((100 * ((vmo.back_odd - 0.7) * (1 - 0.02) / (ve.lay_odds - 0.02) - 0.3)),2) AS rating_refund_bet,
-                           ve.url
-                    FROM ATO_production.V2_Matches_Odds vmo
-                    INNER JOIN ATO_production.V2_Exchanges ve ON vmo.bet_id = ve.bet_id
-                    WHERE ve.lay_odds > 0
-                      AND ve.liquidity > 0
-                    HAVING rating_qualifying_bet < 105
-                        AND rating_free_bet < 85
-                        AND rating_refund_bet < 65
-                    ON DUPLICATE KEY UPDATE rating_qualifying_bet = VALUES(rating_qualifying_bet),
-                                             rating_free_bet       = VALUES(rating_free_bet),
-                                             rating_refund_bet     = VALUES(rating_refund_bet),
-                                             lay_odds              = ve.lay_odds,
-                                             liquidity             = ve.liquidity
-                     """
-                cursor.execute(query_insert_odds_match_maker)
-                connection.commit()
-                print("Time taken to update V2_Oddsmatcher:", (datetime.datetime.now() - start_time).total_seconds())
+                    INSERT INTO ATO_production.V2_Oddsmatcher (
+                    bet_id,
+                    match_id,
+                    bookie_id,
+                    back_odd,
+                    lay_odds,
+                    liquidity,
+                    rating_qualifying_bet,
+                    rating_free_bet,
+                    rating_refund_bet,
+                    url
+                )
+                SELECT
+                    vmo.bet_id,
+                    vmo.match_id,
+                    vmo.bookie_id,
+                    vmo.back_odd,
+                    ve.lay_odds,
+                    ve.liquidity,
+                    ROUND((100 * vmo.back_odd * (1 - 0.02) / (ve.lay_odds - 0.02)), 2) AS rating_qualifying_bet,
+                    ROUND((100 * (vmo.back_odd - 1) * (1 - 0.02) / (ve.lay_odds - 0.02)), 2) AS rating_free_bet,
+                    ROUND((100 * ((vmo.back_odd - 0.7) * (1 - 0.02) / (ve.lay_odds - 0.02) - 0.3)), 2) AS rating_refund_bet,
+                    ve.url
+                FROM ATO_production.V2_Matches_Odds vmo
+                INNER JOIN ATO_production.V2_Exchanges ve ON vmo.bet_id = ve.bet_id
+                WHERE ve.lay_odds > 0
+                  AND ve.liquidity > 0
+                ON DUPLICATE KEY UPDATE
+                    rating_qualifying_bet = VALUES(rating_qualifying_bet),
+                    rating_free_bet       = VALUES(rating_free_bet),
+                    rating_refund_bet     = VALUES(rating_refund_bet),
+                    lay_odds              = VALUES(lay_odds),
+                    liquidity             = VALUES(liquidity),
+                    url                   = VALUES(url)
+                """
+                self.cursor.execute(query_insert_odds_match_maker)
+                self.connection.commit()
 
 
             except Exception as e:
                 if self.debug:
                     print(traceback.format_exc())
-                if connection and connection.is_connected():
-                    connection.rollback()
+                if self.connection and self.connection.is_connected():
+                    self.connection.rollback()
                 Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}",
                                      message=traceback.format_exc())
             finally:
@@ -779,9 +828,6 @@ class ScrapersPipeline:
                     end_time = datetime.datetime.now()
                     print("Time taken to truncate and update V2_Exchanges & V2_Oddsmatcher:",
                           (end_time - start_time).total_seconds())
-                    if connection and connection.is_connected():
-                        cursor.close()
-                        connection.close()
                 except:
                     pass
 
