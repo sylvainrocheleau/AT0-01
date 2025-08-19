@@ -111,7 +111,7 @@ def get_matches_details_and_urls():
     from utilities import Helpers
     match_filter_enabled = True
     match_filter  = {}
-    match_filter = {"type": "bookie_and_comp", "params": ["YaassCasino", "Partidosamistosos"]}
+    match_filter = {"type": "bookie_and_comp", "params": ["DaznBet", "ATP"]}
     # match_filter = {"type": "bookie_id", "params": ["Sportium", 1]}
     # match_filter = {"type": "match_url_id", "params": [
     #     "https://www.yaasscasino.es/apuestas/event/70dab40d-99d3-4bfa-a8ee-dd0f31a4a4d9"]}
@@ -154,8 +154,8 @@ def get_tournaments_from_sport_page(bookie_id, sport_id, debug):
 if __name__ == "__main__":
     # check_list_of_markets()
     # get_comps_for_bookie()
-    teams_and_dates_from_response(bookie_id='888Sport', competition_id='NorthAmericanLeaguesCup', sport_id='3', normalize=False)
+    # teams_and_dates_from_response(bookie_id='DaznBet', competition_id='NorthAmericanLeaguesCup', sport_id='3', normalize=False)
     # get_odds_from_response(bookie_id="ZeBet", sport_id="1", parser="html")
-    # get_matches_details_and_urls()
+    get_matches_details_and_urls()
     # get_sports_pages()
     # get_tournaments_from_sport_page(bookie_id="Bet777", sport_id="3", debug=True)

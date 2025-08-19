@@ -85,7 +85,7 @@ class TwoStepsSpider(scrapy.Spider):
                 yield scrapy.Request(
                     dont_filter=dont_filter,
                     url=url,
-                    callback=self.raw_html if self.debug else self.match_requests,
+                    callback=self.match_requests if self.debug else self.match_requests,
                     errback=self.errback,
                     meta=meta_request,
                 )
