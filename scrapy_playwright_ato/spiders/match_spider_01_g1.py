@@ -40,10 +40,10 @@ class MetaSpider(scrapy.Spider):
             # FILTER OPTIONS
             # match_filter = {}
             # match_filter = {"type": "bookie_id", "params":["MarathonBet", 1]}
-            # match_filter = {"type": "bookie_and_comp", "params": ["EfBet", "ATP"]}
+            # match_filter = {"type": "bookie_and_comp", "params": ["DaznBet", "ATP"]}
             # match_filter = {"type": "comp", "params":["MajorLeagueSoccerUSA"]}
             match_filter = {"type": "match_url_id",
-                            "params":["https://www.efbet.es/ES/sports#bo-navigation=280361.1,280363.1&action=market-group-list&event=37964697.1"]}
+                            "params":["https://sb-pp-esfe.daznbet.es/tenis/evento/mcdonald-mackenzie-v-darderi-luciano-u-2380018?tab=principal"]}
     except:
         match_filter_enabled = False
         match_filter = {}

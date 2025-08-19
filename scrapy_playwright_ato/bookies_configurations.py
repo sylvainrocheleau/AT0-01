@@ -254,7 +254,7 @@ list_of_markets_V2 = {
 "DaznBet": {
     "1": ["1X2", "GOLES TOTALES", "MARCADOR EXACTO"],
     "2": ["TIEMPO REGULAR (INCL. TIEMPO EXTRA) - GANADOR", "PUNTOS TOTALES"],
-    "3": ["Cuotas del partido", "Total de juegos"],
+    "3": ["Ganador", "Juegos Totales"],
 },
 "Versus": {
     "1": ["Resultado Del Partido", "1X2 Resultado del Partido", "Total Goles Más/Menos", "Resultado exacto"],

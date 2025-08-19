@@ -560,46 +560,83 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                             print("match already in map_matches_urls", home_team, away_team)
         elif bookie_id == "DaznBet":
             match_infos = []
-            xpath_results = response.xpath("//div[@class='accordion-container competition-accordion-container ']").extract()
-            for xpath_result in xpath_results:
-                try:
-                    xpath_result = Selector(xpath_result)
-                    date = xpath_result.xpath("//div[@class='competition-header-title ']/span/text()").extract()[0]
-                    date = dateparser.parse(date, languages=["es"])
-                    xpath_results_02 = xpath_result.xpath("//div[@class='main-container']").extract()
-                except IndexError as e:
-                    if debug:
-                        print(traceback.format_exc())
-                    continue
-                try:
-                    for xpath_result_02 in xpath_results_02:
-                        xpath_result_02 = Selector(xpath_result_02)
-                        home_team = xpath_result_02.xpath(
-                            "//div[contains(@class, 'event-text event-text-margin text-ellipsis')]/text()").extract()[0]
+            if sport_id in ['1', '2'] :
+                xpath_results = response.xpath("//div[@class='event-container event-row align-center']").extract()
+                for xpath_result in xpath_results:
+                    try:
+                        xpath_result = Selector(xpath_result)
+                        date = xpath_result.xpath("//div[@class='competition-header-title ']/span/text()").extract()[0]
+                        date = dateparser.parse(date, languages=["es"])
+                        xpath_results_02 = xpath_result.xpath("//div[@class='main-container']").extract()
+                    except IndexError as e:
+                        if debug:
+                            print(traceback.format_exc())
+                        continue
+                    try:
+                        for xpath_result_02 in xpath_results_02:
+                            xpath_result_02 = Selector(xpath_result_02)
+                            home_team = xpath_result_02.xpath(
+                                "//div[contains(@class, 'event-text event-text-margin text-ellipsis')]/text()").extract()[0]
+                            home_team = home_team.strip()
+                            away_team = xpath_result_02.xpath(
+                                "//div[contains(@class, 'event-text event-text-margin text-ellipsis')]/text()").extract()[1]
+                            away_team = away_team.strip()
+                            url = xpath_result_02.xpath("//a/@href").extract()[0]
+                            url = "https://sb-pp-esfe.daznbet.es" + url + "?tab=todo"
+                            web_url = "https://www.daznbet.es/es-es/deportes" + url
+
+                            if url not in map_matches_urls:
+                                match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id)
+                                match_infos.append(match_info)
+                                if debug:
+                                    print("match_info for DaznBet", match_info)
+                            else:
+                                if debug:
+                                    print("match already in map_matches_urls", home_team, away_team)
+                    except IndexError as e:
+                        if debug:
+                            print(traceback.format_exc())
+                        continue
+                    except Exception as e:
+                        if debug:
+                            print(traceback.format_exc())
+                        continue
+            elif sport_id == '3':
+                xpath_results = response.xpath("//div[@class='event-container event-row align-center']").extract()
+                for xpath_result in xpath_results:
+                    try:
+                        xpath_result = Selector(xpath_result)
+                        date = xpath_result.xpath("//div[@class='event-timestamp']/div/text()").extract()
+                        date = dateparser.parse(''.join(date), languages=["es"])
+                        home_team = xpath_result.xpath(
+                            "//div[contains(@class, 'event-text event-text-margin text-ellipsis')]/text()").extract()[
+                            0]
                         home_team = home_team.strip()
-                        away_team = xpath_result_02.xpath(
-                            "//div[contains(@class, 'event-text event-text-margin text-ellipsis')]/text()").extract()[1]
+                        away_team = xpath_result.xpath(
+                            "//div[contains(@class, 'event-text event-text-margin text-ellipsis')]/text()").extract()[
+                            1]
                         away_team = away_team.strip()
-                        url = xpath_result_02.xpath("//a/@href").extract()[0]
-                        url = "https://sb-pp-esfe.daznbet.es" + url + "?tab=todo"
+                        url = xpath_result.xpath("//a/@href").extract()[0]
+                        url = "https://sb-pp-esfe.daznbet.es" + url + "?tab=principal"
                         web_url = "https://www.daznbet.es/es-es/deportes" + url
 
                         if url not in map_matches_urls:
-                            match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id)
+                            match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id,
+                                                           bookie_id, sport_id)
                             match_infos.append(match_info)
                             if debug:
                                 print("match_info for DaznBet", match_info)
                         else:
                             if debug:
                                 print("match already in map_matches_urls", home_team, away_team)
-                except IndexError as e:
-                    if debug:
-                        print(traceback.format_exc())
-                    continue
-                except Exception as e:
-                    if debug:
-                        print(traceback.format_exc())
-                    continue
+                    except IndexError as e:
+                        if debug:
+                            print(traceback.format_exc())
+                        continue
+                    except Exception as e:
+                        if debug:
+                            print(traceback.format_exc())
+                        continue
         elif bookie_id == "EfBet":
             match_infos = []
             if sport_id == "1":
