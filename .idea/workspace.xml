@@ -4,12 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69bfffac-69c0-4dde-87b0-ac860a28a211" name="Changes" comment="small changes">
-      <change beforePath="$PROJECT_DIR$/scrapy_playwright_ato/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrapy_playwright_ato/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrapy_playwright_ato/spiders/comp_spider_01.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrapy_playwright_ato/spiders/comp_spider_01.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrapy_playwright_ato/spiders/comp_spider_01_zyte_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrapy_playwright_ato/spiders/comp_spider_01_zyte_api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrapy_playwright_ato/utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrapy_playwright_ato/utilities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/synchro_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/synchro_db.py" afterDir="false" />
+    <list default="true" id="69bfffac-69c0-4dde-87b0-ac860a28a211" name="Changes" comment="test merge problematique">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/response_body_match_requests.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/response_body_parse_match.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,7 +68,7 @@
         "id": "PR_kwDOMziP9s6i1I8V",
         "number": 16
       },
-      "lastSeen": 1755638202079
+      "lastSeen": 1755640310868
     }
   ]
 }]]></component>
@@ -179,7 +178,7 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "sylvain",
+    "git-widget-placeholder": "#20 on sylvain",
     "junie.onboarding.icon.badge.shown": "true",
     "last_opened_file_path": "/home/sylvain/info@sylvainrocheleau.com/projets/OCI/corpus_analysis",
     "node.js.detected.package.eslint": "true",
@@ -746,23 +745,7 @@
       <workItem from="1755259127875" duration="15499000" />
       <workItem from="1755518663318" duration="11702000" />
       <workItem from="1755605754029" duration="2373000" />
-      <workItem from="1755619846216" duration="16634000" />
-    </task>
-    <task id="LOCAL-00002" summary="first commit">
-      <option name="closed" value="true" />
-      <created>1726668637061</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1726668637061</updated>
-    </task>
-    <task id="LOCAL-00003" summary="first commit">
-      <option name="closed" value="true" />
-      <created>1726668820103</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1726668820103</updated>
+      <workItem from="1755619846216" duration="18034000" />
     </task>
     <task id="LOCAL-00004" summary="first commit">
       <option name="closed" value="true" />
@@ -1140,7 +1123,23 @@
       <option name="project" value="LOCAL" />
       <updated>1755638449904</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="retrait des messages playwright de la console">
+      <option name="closed" value="true" />
+      <created>1755639615899</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1755639615899</updated>
+    </task>
+    <task id="LOCAL-00052" summary="test merge problematique">
+      <option name="closed" value="true" />
+      <created>1755640641804</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1755640641804</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1158,8 +1157,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="new debug instructions" />
-    <MESSAGE value="changed xpath" />
     <MESSAGE value="no change" />
     <MESSAGE value="removed keep connection alive" />
     <MESSAGE value="switched to proxy_mode" />
@@ -1183,7 +1180,9 @@
     <MESSAGE value="better handling of proxy errors" />
     <MESSAGE value="change path to save logs" />
     <MESSAGE value="small changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="small changes" />
+    <MESSAGE value="retrait des messages playwright de la console" />
+    <MESSAGE value="test merge problematique" />
+    <option name="LAST_COMMIT_MESSAGE" value="test merge problematique" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
