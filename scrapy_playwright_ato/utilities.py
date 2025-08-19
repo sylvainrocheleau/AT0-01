@@ -1254,6 +1254,7 @@ class Helpers():
                 )
             elif data["bookie_id"] == "888Sport":
                 pass
+
                 # meta_request["playwright_accept_request_predicate"] = {
                 #     'activate': False
                 # }
@@ -2034,12 +2035,11 @@ class Helpers():
             pass
 
         # Ensure Playwright page init callback is set for console piping and tracing
-        if debug:
-            try:
-                if meta_request.get("playwright") and not meta_request.get("playwright_page_init_callback"):
-                    meta_request["playwright_page_init_callback"] = "scrapy_playwright_ato.utilities.init_page_debug"
-            except Exception:
-                pass
+        # try:
+        #     if meta_request.get("playwright") and not meta_request.get("playwright_page_init_callback"):
+        #         meta_request["playwright_page_init_callback"] = "scrapy_playwright_ato.utilities.init_page_debug"
+        # except Exception:
+        #     pass
 
         return url, dont_filter, meta_request
 
