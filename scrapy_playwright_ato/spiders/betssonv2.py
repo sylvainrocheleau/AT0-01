@@ -32,7 +32,7 @@ class WebsocketsSpider(Spider):
                 # self.competitions = bookie_config(bookie=["Betsson"])
                 # self.match_filter = {"type": "bookie_id", "params": ["Betsson" ,1]}
                 self.match_filter = {"type": "match_url_id", "params": [
-                    "https://www.betfair.es/sport/football/argentina-primera-divisi%C3%B3n/ca-platense-san-lorenzo/34564497"]}
+                    "https://sportsbook.betsson.es/#/sport/?type=0&region=20001&competition=1685&sport=1&game=27751850"]}
 
                 print(self.competitions)
         except:

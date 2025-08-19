@@ -65,11 +65,6 @@ class MetaSpider(scrapy.Spider):
                         self.close_playwright = True
                     url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="match", data=data, debug=self.debug)
                     counter += 1
-                    # TODO use the change of keys to trigger the dutcher
-                    if counter == len(value) and self.name == "match_spider_01":
-                        meta_request["queue_dutcher"] = True
-                    else:
-                        meta_request["queue_dutcher"] = False
                     yield scrapy.Request(
                         dont_filter=dont_filter,
                         url=url,
@@ -136,10 +131,8 @@ class MetaSpider(scrapy.Spider):
                 "http_status": response.status,
                 "match_url_id": response.meta.get("url"),
             }
-            if response.meta.get("queue_dutcher") is True:
-                self.pipeline_type = ["match_odds", "queue_dutcher"]
-            else:
-                self.pipeline_type = ["match_odds"]
+
+            self.pipeline_type = ["match_odds"]
             item["pipeline_type"] = self.pipeline_type
         yield item
 

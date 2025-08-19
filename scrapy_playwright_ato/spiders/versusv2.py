@@ -28,7 +28,7 @@ class WebsocketsSpider(Spider):
                 # self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", "UEFAChampionsLeague"]}
 
                 # self.match_filter = {"type": "match_url_id", "params": [
-                #     "https://www.versus.es/apuestas/sports/soccer/events/21377160"]}
+                #     "https://www.versus.es/apuestas/sports/soccer/events/22197283"]}
 
                 self.competitions = bookie_config(bookie=["Versus"])
                 self.match_filter = {"type": "bookie_id", "params": ["Versus", 1]}
@@ -336,7 +336,7 @@ destination:/api/markets/multi
                                     "http_status": response.status,
                                     "match_url_id": data["match_url_id"],
                                 }
-                                item["pipeline_type"] = ["match_odds", "queue_dutcher"]
+                                item["pipeline_type"] = ["match_odds"]
                             yield item
                     else:
                         item["data_dict"] = {

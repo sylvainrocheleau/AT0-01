@@ -242,7 +242,7 @@ list_of_markets_V2 = {
     "3": ["Cuotas del partido", "Total de juegos"],
 },
 "OlyBet": {
-    "1": ['¿Quién ganará el partido?', 'Goles - Más o menos', '¿Resultado exacto?'],
+    "1": ['¿Quién ganará el partido?', 'Total de Goles', '¿Resultado exacto?'],
     "2": ['¿Quién ganará el partido? (Prórroga incluida)', 'Totales'],
     "3": ["Cuotas del partido", "Total de juegos"],
 },
@@ -494,7 +494,7 @@ def bookie_config(bookie):
             if os.environ["USER"] in LOCAL_USERS:
                 # data = data.iloc[0:1]
                 data = data
-                data = data.loc[data["competition"] == "Estados Unidos - Major League Soccer"] # CONMEBOL - Copa Libertadores
+                data = data.loc[data["competition"] == "Ligue 1 Francesa"] # CONMEBOL - Copa Libertadores
                 # FOOTBALL: UEFA Champions League, Serie A Italiana, Premier League Inglesa, La Liga Española, Bundesliga Alemana, Eurocopa 2024,
                 #           Argentina - Primera división, España - Segunda división
                 # Basketball: NBA, Liga ACB
@@ -1101,7 +1101,7 @@ def bookie_config(bookie):
                 list_of_competitions.append(value)
             # OlyBet
             elif "OlyBet" == bookie and value["bookie"] == bookie and value["sport"] == "Football":
-                list_of_markets = ['¿Quién ganará el partido?', 'Goles - Más o menos', '¿Resultado exacto?']
+                list_of_markets = ['¿Quién ganará el partido?', 'Total de Goles', '¿Resultado exacto?']
                 value.update({"list_of_markets": list_of_markets})
                 list_of_competitions.append(value)
             elif "OlyBet" == bookie and value["bookie"] == bookie and value["sport"] == "Basketball":
@@ -1345,6 +1345,6 @@ if __name__ == "__main__":
     try:
         if os.environ["USER"] in LOCAL_USERS:
             SYSTEM_VERSION = "V1"
-            print(bookie_config("DaznBet"))
+            print(bookie_config("888Sport"))
     except:
         pass

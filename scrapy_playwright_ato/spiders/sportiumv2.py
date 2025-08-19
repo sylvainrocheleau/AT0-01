@@ -376,7 +376,7 @@ destination:/api/markets/multi
                                                     "http_status": response.status,
                                                     "match_url_id": data["match_url_id"],
                                                 }
-                                                item["pipeline_type"] = ["match_odds", "queue_dutcher"]
+                                                item["pipeline_type"] = ["match_odds"]
                                                 yield item
                                             except Exception as e:
                                                 if self.debug:

@@ -1248,14 +1248,50 @@ class Helpers():
                 )
                 meta_request["playwright_context_kwargs"].update(
                     {
-                    #     "viewport": {
-                    #         "width": 1920,
-                    #         "height": 3200,
-                    # },
                         "bypass_csp": True,
                         "service_workers": "allow",
                     }
                 )
+            elif data["bookie_id"] == "888Sport":
+                pass
+                # meta_request["playwright_accept_request_predicate"] = {
+                #     'activate': False
+                # }
+                # meta_request.update({"playwright_page_methods": [
+                #     PageMethod(
+                #         method="add_init_script",
+                #         script=(
+                #             "// Stealth tweaks for 1XBet\n"
+                #             "Object.defineProperty(navigator, 'webdriver', {get: () => undefined});\n"
+                #             "Object.defineProperty(navigator, 'languages', {get: () => ['es-ES','es','en']});\n"
+                #             "Object.defineProperty(navigator, 'platform', {get: () => (function(ua){ ua=ua||''; if(ua.includes('Windows')) return 'Win32'; if(ua.includes('Macintosh')) return 'MacIntel'; if(ua.includes('Linux')) return 'Linux x86_64'; return navigator.platform; })(navigator.userAgent)});\n"
+                #             "Object.defineProperty(navigator, 'hardwareConcurrency', {get: () => 8});\n"
+                #             "Object.defineProperty(navigator, 'deviceMemory', {get: () => 8});\n"
+                #             "Object.defineProperty(navigator, 'permissions', { value: { query: async () => ({ state: 'prompt' }) } });\n"
+                #             "window.chrome = { runtime: {} };\n"
+                #             "const getParameter = WebGLRenderingContext.prototype.getParameter;\n"
+                #             "WebGLRenderingContext.prototype.getParameter = function(param){\n"
+                #             "  if (param === 37445) return 'Intel Inc.';\n"
+                #             "  if (param === 37446) return 'Intel Iris OpenGL Engine';\n"
+                #             "  return getParameter.call(this, param);\n"
+                #             "};\n"
+                #             "Object.defineProperty(navigator, 'plugins', {get: () => [1,2,3]});\n"
+                #         )
+                #     ),
+                #     PageMethod(method="wait_for_load_state", state="domcontentloaded"),
+                #     PageMethod(
+                #         method="wait_for_selector",
+                #         selector="//div[@class='LazyLoad__ComponentWrapper LazyLoad__ComponentWrapper--loaded']",
+                #     ),
+                # ],
+                # }
+                # )
+                # meta_request["playwright_context_kwargs"].update(
+                #     {
+                #         "bypass_csp": True,
+                #         "service_workers": "allow",
+                #     }
+                # )
             elif data["bookie_id"] == "BetWay":
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
@@ -1269,7 +1305,7 @@ class Helpers():
                 meta_request.update({"playwright_page_methods":[
                     PageMethod(
                         method="wait_for_selector",
-                        selector="div.participants-pair-game",
+                        selector="//div[@class='grid-event-wrapper image ng-star-inserted']",
                     ),
                 ]
                 }
@@ -1302,10 +1338,7 @@ class Helpers():
                         method="wait_for_selector",
                         selector="//div[@class='main-container']",
                     ),
-                    PageMethod(
-                        method="wait_for_load_state",
-                        state="domcontentloaded"
-                    )
+
                 ],
                 }
                 )

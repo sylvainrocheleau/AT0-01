@@ -35,15 +35,15 @@ class MetaSpider(scrapy.Spider):
             # custom_settings["CONCURRENT_REQUESTS"] = 50
             debug = True
             match_filter_enabled = True
-            scraping_group = [1,2,3,4]
+            scraping_group = [1]
 
             # FILTER OPTIONS
-            # match_filter = {}
-            # match_filter = {"type": "bookie_id", "params":["1XBet", 1]}
+            match_filter = {}
+            # match_filter = {"type": "bookie_id", "params":["AupaBet", 1]}
             # match_filter = {"type": "bookie_and_comp", "params": ["AdmiralBet", "ATP"]}
             # match_filter = {"type": "comp", "params":["MajorLeagueSoccerUSA"]}
-            match_filter = {"type": "match_url_id",
-                            "params":["https://www.zebet.es/es/event/72d83-club_atletico_platense_san_lorenzo"]}
+            # match_filter = {"type": "match_url_id",
+            #                 "params":["https://www.efbet.es/ES/sports#bo-navigation=282241.1,490462.1,490777.1&action=market-group-list&event=37901230.1"]}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -66,7 +66,7 @@ class MetaSpider(scrapy.Spider):
                 for key, matches in (
                     (key, [match for match in value
                            if match['scraping_tool'] in self.allowed_scraping_tools
-                           # and match['scraping_group'] in self.scraping_group
+                           and match['scraping_group'] in self.scraping_group
                            # and match['frequency_group'] == self.frequency_groups[-1]
                            ]
                      )
@@ -141,7 +141,7 @@ class MetaSpider(scrapy.Spider):
                         yield scrapy.Request(
                             dont_filter=dont_filter,
                             url=url,
-                            callback=self.raw_html if self.debug else self.parse_match,
+                            callback=self.parse_match if self.debug else self.parse_match,
                             errback=self.errback,
                             meta=meta_request,
                         )

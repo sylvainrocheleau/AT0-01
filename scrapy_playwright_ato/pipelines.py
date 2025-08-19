@@ -1,23 +1,27 @@
 # from itemadapter import ItemAdapter
 import os
 import datetime
-from logging import raiseExceptions
-
+import threading
+import queue
+import time
 import dateparser
 import pytz
 import traceback
 import mysql.connector
+from logging import raiseExceptions
 from scrapy_playwright_ato.utilities import Connect, Helpers
 from scrapy_playwright_ato.settings import LOCAL_USERS
 
 
-def safe_executemany(cursor, query, data, chunk_size=500, retries=3, delay=2):
+def safe_executemany(cursor, query, data, chunk_size=300, retries=6, delay=0.5):
     """
     - Splits into chunks to avoid large packets/timeouts
-    - Retries on deadlocks (1213) and lost connection (2006/2013) with reconnect
+    - Retries on deadlocks (1213), lock wait timeouts (1205), and lost connection (2006/2013) with reconnect
+    - Uses exponential backoff with jitter; performs rollback before retrying
     """
     import time
-    from mysql.connector import OperationalError, InternalError, InterfaceError, Error
+    import random
+    from mysql.connector import OperationalError, InternalError, InterfaceError, DatabaseError, Error
 
     if not data:
         return
@@ -40,17 +44,20 @@ def safe_executemany(cursor, query, data, chunk_size=500, retries=3, delay=2):
             try:
                 cursor.executemany(query, chunk)
                 break  # success for this chunk
-            except InternalError as e:
-                # Deadlock
-                if getattr(e, "errno", None) == 1213 and attempt < retries - 1:
-                    attempt += 1
-                    print(f"Deadlock (1213) on chunk [{start}:{start+len(chunk)}], retry {attempt}/{retries}...")
-                    time.sleep(delay)
-                    continue
-                raise
-            except (OperationalError, InterfaceError) as e:
-                # Lost connection / server has gone away
+            except (InternalError, OperationalError, DatabaseError) as e:
                 errno = getattr(e, "errno", None)
+                # Deadlock (1213) or Lock wait timeout (1205)
+                if errno in (1213, 1205) and attempt < retries - 1:
+                    attempt += 1
+                    try:
+                        conn.rollback()
+                    except Exception:
+                        pass
+                    sleep_for = min(delay * (2 ** (attempt - 1)) + random.uniform(0, 0.3), 5)
+                    print(f"Retryable DB error ({errno}) on chunk [{start}:{start+len(chunk)}], retry {attempt}/{retries} after {sleep_for:.2f}s...")
+                    time.sleep(sleep_for)
+                    continue
+                # Lost connection / server has gone away
                 if errno in (2006, 2013) and attempt < retries - 1:
                     attempt += 1
                     print(
@@ -60,13 +67,25 @@ def safe_executemany(cursor, query, data, chunk_size=500, retries=3, delay=2):
                     try:
                         conn.reconnect(attempts=3, delay=delay)
                     except Error:
-                        time.sleep(delay)
+                        pass
+                    sleep_for = min(delay * (2 ** (attempt - 1)), 5)
+                    time.sleep(sleep_for)
                     continue
+                raise
+            except InterfaceError:
+                # Interface errors are usually not retryable unless due to connection; propagate
                 raise
         start += len(chunk)
 
 class ScrapersPipeline:
     def __init__(self):
+        # New background writer infrastructure
+        self._work_q = queue.Queue(maxsize=0)  # or a large bounded size, e.g., 50000
+        self._stop_evt = threading.Event()
+        self._worker_thread = None
+        # Flush policy
+        self._flush_interval_secs = 2.0  # time-based flush cadence
+        self._worker_batch_size = 500
         # Define buffer and batch size
         self.match_odds_buffer = []
         self.match_urls_update_buffer = []
@@ -82,6 +101,213 @@ class ScrapersPipeline:
                 self.debug = False
         except KeyError:
             self.debug = False
+
+    def _start_worker(self):
+        """Start the background writer thread."""
+        if self._worker_thread and self._worker_thread.is_alive():
+            return
+        self._stop_evt.clear()
+        self._worker_thread = threading.Thread(
+            target=self._worker_loop,
+            name="DBWriterThread",
+            daemon=True,
+        )
+        self._worker_thread.start()
+
+    def _worker_connect_db(self):
+        """Create a brand-new DB connection for the worker thread only."""
+        conn = Connect().to_db(db="ATO_production", table=None)
+        cur = conn.cursor()
+        try:
+            # Optional: settings that may reduce lock waits/deadlocks
+            cur.execute("SET SESSION innodb_lock_wait_timeout = 30")
+            cur.execute("SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED")
+        except Exception:
+            pass
+        return conn, cur
+
+    def _worker_loop(self):
+        """Owns its own MySQL connection and performs deletes/inserts/commits."""
+        conn, cur = None, None
+        worker_odds_buf = []
+        worker_url_updates_buf = []
+        worker_match_ids_buf = []
+
+        last_flush = time.monotonic()
+
+        def should_flush():
+            return (
+                len(worker_odds_buf) >= self._worker_batch_size
+                or len(worker_url_updates_buf) >= self._worker_batch_size
+                or len(worker_match_ids_buf) >= self._worker_batch_size
+                or (time.monotonic() - last_flush) >= self._flush_interval_secs
+            )
+
+        try:
+            conn, cur = self._worker_connect_db()
+
+            while not self._stop_evt.is_set():
+                # Drain queue with timeout to allow time-based flushes
+                try:
+                    msg = self._work_q.get(timeout=0.5)
+                except queue.Empty:
+                    msg = None
+
+                if msg:
+                    mtype = msg.get("type")
+                    if mtype == "batch":
+                        worker_odds_buf.extend(msg.get("odds", []))
+                        worker_url_updates_buf.extend(msg.get("url_updates", []))
+                        worker_match_ids_buf.extend(msg.get("match_ids", []))
+                    elif mtype == "flush":
+                        # force immediate flush via condition below
+                        pass
+
+                if should_flush() or (msg and msg.get("type") == "flush"):
+                    try:
+                        self._worker_flush(cur, conn, worker_odds_buf, worker_url_updates_buf, worker_match_ids_buf)
+                        worker_odds_buf.clear()
+                        worker_url_updates_buf.clear()
+                        worker_match_ids_buf.clear()
+                        last_flush = time.monotonic()
+                    except Exception as e:
+                        if self.debug:
+                            print("Worker flush error:", e)
+                            print(traceback.format_exc())
+                        try:
+                            if conn:
+                                conn.rollback()
+                        except Exception:
+                            pass
+                        # reconnect for next loop
+                        try:
+                            if cur:
+                                cur.close()
+                        except Exception:
+                            pass
+                        try:
+                            if conn:
+                                conn.close()
+                        except Exception:
+                            pass
+                        conn, cur = self._worker_connect_db()
+
+            # Final flush on stop
+            try:
+                self._worker_flush(cur, conn, worker_odds_buf, worker_url_updates_buf, worker_match_ids_buf)
+            except Exception:
+                if self.debug:
+                    print("Worker final flush failed")
+                    print(traceback.format_exc())
+                try:
+                    if conn:
+                        conn.rollback()
+                except Exception:
+                    pass
+
+        finally:
+            try:
+                if cur:
+                    cur.close()
+            except Exception:
+                pass
+            try:
+                if conn:
+                    conn.close()
+            except Exception:
+                pass
+
+    def _worker_flush(self, cursor, connection, odds_buf, url_updates_buf, match_ids_buf):
+        """Actual DB writes, adapted from _flush_match_odds_batch, using worker buffers."""
+        if not odds_buf and not url_updates_buf and not match_ids_buf:
+            return
+
+        start_time = datetime.datetime.now()
+        try:
+            # Ensure connection is alive
+            try:
+                connection.ping(reconnect=True, attempts=3, delay=5)
+            except Exception:
+                pass
+
+            if odds_buf:
+                # The 10th element (index 9) is match_url_id — use it for deletes
+                unique_urls = sorted(set(item[9] for item in odds_buf))
+
+                delete_query = """
+                    DELETE vmo
+                    FROM ATO_production.V2_Matches_Odds AS vmo
+                    JOIN ATO_production.V2_Matches_Urls AS vmu
+                      ON vmo.bookie_id = vmu.bookie_id AND vmo.match_id = vmu.match_id
+                    WHERE vmu.match_url_id = %s
+                """
+                deleted_rows_count = 0
+                for url in unique_urls:
+                    cursor.execute(delete_query, (url,))
+                    deleted_rows_count += cursor.rowcount
+                if self.debug:
+                    print(f"[Worker] Deleted {deleted_rows_count} old odds entries.")
+
+                query_insert_match_odds = """
+                    INSERT INTO ATO_production.V2_Matches_Odds
+                    (bet_id, match_id, bookie_id, market, market_binary, result, back_odd, web_url, updated_date)
+                    VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    ON DUPLICATE KEY UPDATE
+                      back_odd = VALUES(back_odd),
+                      web_url = VALUES(web_url),
+                      updated_date = VALUES(updated_date)
+                """
+                odds_to_insert = [item[:-1] for item in odds_buf]  # strip match_url_id
+                safe_executemany(cursor, query_insert_match_odds, odds_to_insert)
+
+            if url_updates_buf:
+                unique_updates = list(set(url_updates_buf))
+                query_update_match_urls = """
+                    UPDATE ATO_production.V2_Matches_Urls
+                    SET updated_date = %s, http_status = %s
+                    WHERE match_url_id = %s
+                """
+                safe_executemany(cursor, query_update_match_urls, unique_updates)
+
+            if match_ids_buf:
+                query_insert_dutcher_queue = """
+                    UPDATE ATO_production.V2_Matches
+                    SET queue_dutcher = 1
+                    WHERE match_id = %s AND queue_dutcher <> 1
+                """
+                # Use smaller chunks for dutcher updates to reduce lock contention
+                unique_match_ids = sorted(set(match_ids_buf))
+                safe_executemany(cursor, query_insert_dutcher_queue, unique_match_ids, chunk_size=200)
+
+            connection.commit()
+            if self.debug:
+                print(f"[Worker] Flushed {len(odds_buf)} odds, {len(url_updates_buf)} URL updates, {len(match_ids_buf)} dutcher flags.")
+
+        except mysql.connector.Error as e:
+            if self.debug:
+                print(f"[Worker] Database error during flush: {e}")
+                print(traceback.format_exc())
+            Helpers().insert_log(level="CRITICAL", type="CODE",
+                                 error=f"{getattr(self, 'spider_name', 'unknown_spider')} DB_FLUSH_ERROR: {str(e)}",
+                                 message=traceback.format_exc())
+            try:
+                connection.rollback()
+            except Exception:
+                pass
+        except Exception as e:
+            if self.debug:
+                print(traceback.format_exc())
+            Helpers().insert_log(level="CRITICAL", type="CODE",
+                                 error=f"{getattr(self, 'spider_name', 'unknown_spider')} {str(e)}",
+                                 message=traceback.format_exc())
+            try:
+                connection.rollback()
+            except Exception:
+                pass
+        finally:
+            end_time = datetime.datetime.now()
+            if self.debug:
+                print(f"[Worker] Time taken for batch flush: {(end_time - start_time).total_seconds()}s")
 
     def _connect_db(self):
         """Establishes or re-establishes the database connection."""
@@ -102,17 +328,31 @@ class ScrapersPipeline:
 
 
     def open_spider(self, spider):
-        """Initialize database connection when the spider starts."""
+        """Initialize database connection and start the background worker when the spider starts."""
         self.spider_name = spider.name
         self._connect_db()
+        self._start_worker()
 
     def close_spider(self, spider):
-        """Flush any remaining items and close the connection when the spider finishes."""
-        print(f"Closing spider {spider.name} and flushing remaining items to the database.")
-        self._flush_match_odds_batch()
+        """Stop the background worker after a final flush and close the main-thread connection."""
+        print(f"Closing spider {spider.name}: stopping DB writer thread with final flush...")
+        # Ask worker for final flush and stop
+        try:
+            self._work_q.put({"type": "flush"})
+        except Exception:
+            pass
+        self._stop_evt.set()
+        if self._worker_thread:
+            self._worker_thread.join(timeout=30)
         if self.connection and self.connection.is_connected():
-            self.cursor.close()
-            self.connection.close()
+            try:
+                self.cursor.close()
+            except Exception:
+                pass
+            try:
+                self.connection.close()
+            except Exception:
+                pass
 
     def _queue_dutcher(self, match_ids):
         query_insert_dutcher_queue = """
@@ -200,8 +440,8 @@ class ScrapersPipeline:
         spain = pytz.timezone("Europe/Madrid")
         if "pipeline_type" in item and "match_odds" in item["pipeline_type"]:
             try:
-                # Append data to buffers
-                for data in item["data_dict"]["odds"]:
+                odds_batch = []
+                for data in item["data_dict"].get("odds", []):
                     values_odds = (
                         data["bet_id"],
                         item["data_dict"]["match_id"],
@@ -212,25 +452,25 @@ class ScrapersPipeline:
                         data["Odds"],
                         item["data_dict"]["web_url"],
                         item["data_dict"]["updated_date"],
-                        item["data_dict"]["match_url_id"],
+                        item["data_dict"]["match_url_id"],  # index 9 for worker deletes
                     )
-                    self.match_odds_buffer.append(values_odds)
-                # TODO: build a function for cloning bookies
-                values_url_update = (
+                    odds_batch.append(values_odds)
+
+                url_updates = [(
                     item["data_dict"]["updated_date"],
                     item["data_dict"]["http_status"],
                     item["data_dict"]["match_url_id"],
-                )
-                self.match_urls_update_buffer.append(values_url_update)
+                )]
 
-                values_match_id_update = (
-                    item["data_dict"]["match_id"],
-                )
-                self.match_ids_buffer.append(values_match_id_update)
+                match_ids = [(item["data_dict"]["match_id"],)]
 
-                # If batch size is reached, flush the buffers
-                if len(self.match_odds_buffer) >= self.batch_size:
-                    self._flush_match_odds_batch()
+                msg = {"type": "batch", "odds": odds_batch, "url_updates": url_updates, "match_ids": match_ids}
+                try:
+                    self._work_q.put_nowait(msg)
+                except queue.Full:
+                    Helpers().insert_log(level="WARNING", type="CODE",
+                                         error=f"{spider.name} writer queue full, dropping batch",
+                                         message=None)
 
             except Exception as e:
                 if self.debug:
@@ -239,32 +479,21 @@ class ScrapersPipeline:
                                      message=traceback.format_exc())
 
         if "pipeline_type" in item.keys() and "queue_dutcher" in item["pipeline_type"]:
-            # print("QUEUEING V2_Dutcher with", item["data_dict"]["match_id"])
-            start_time = datetime.datetime.now()
             try:
-                connection = Connect().to_db(db="ATO_production", table=None)
-                cursor = connection.cursor()
-                cursor.execute("SET innodb_lock_wait_timeout = 120")
-                query_insert_dutcher_queue = """
-                    UPDATE ATO_production.V2_Matches
-                    SET queue_dutcher = 1
-                    WHERE match_id = %s
-                """
-                cursor.execute(query_insert_dutcher_queue, (item["data_dict"]["match_id"],))
-                connection.commit()
-            except Exception as e:
+                msg = {"type": "batch", "odds": [], "url_updates": [],
+                       "match_ids": [(item["data_dict"]["match_id"],)]}
+                try:
+                    self._work_q.put_nowait(msg)
+                except queue.Full:
+                    Helpers().insert_log(level="WARNING", type="CODE",
+                                         error=f"{spider.name} writer queue full, dropping dutcher flag",
+                                         message=None)
+            except Exception:
                 if self.debug:
                     print(traceback.format_exc())
-                Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
-                pass
-            finally:
-                try:
-                    end_time = datetime.datetime.now()
-                    print("Time taken for queuing V2_Dutcher:", (end_time - start_time).total_seconds())
-                    cursor.close()
-                    connection.close()
-                except Exception:
-                    pass
+                Helpers().insert_log(level="CRITICAL", type="CODE",
+                                     error=f"{spider.name} queue_dutcher enqueue failed",
+                                     message=traceback.format_exc())
 
         elif "pipeline_type" in item.keys() and "match_urls" in item["pipeline_type"]:
 
@@ -545,49 +774,31 @@ class ScrapersPipeline:
                     pass
 
         if "pipeline_type" in item.keys() and "error_on_match_url" in item["pipeline_type"]:
-            start_time = datetime.datetime.now()
             try:
-                connection = Connect().to_db(db="ATO_production", table=None)
-                cursor = connection.cursor()
-                for data in item["data_dict"]["match_infos"]:
-
-                    query_update_match = """
-                        UPDATE ATO_production.V2_Matches_Urls
-                        SET http_status = %s
-                        WHERE match_url_id = %s
-                    """
-                    values = (
-                        data["http_status"],
-                        data["match_url_id"],
-                    )
-                    print("error_on_match_url from pipeline", data["http_status"], data["match_url_id"])
-                    cursor.execute(query_update_match, values)
-                    print("Delete odds from failing match")
-                    delete_query = """
-                        DELETE vmo
-                        FROM ATO_production.V2_Matches_Odds AS vmo
-                        JOIN ATO_production.V2_Matches_Urls AS vmu ON vmo.bookie_id = vmu.bookie_id AND vmo.match_id = vmu.match_id
-                        WHERE vmu.match_url_id = %s
-                    """
-                    cursor.execute(delete_query, (data["match_url_id"],))
-
-                    if "match_id" in data.keys():
-                        print(f"Queueing Dutcher on {data['match_id']}")
-                        self._queue_dutcher([(data["match_id"],)])
-
-                    connection.commit()
+                # Build url_updates and optional dutcher match_ids for the worker thread
+                url_updates = []
+                match_ids = []
+                for data in item["data_dict"].get("match_infos", []):
+                    updated_date = Helpers().get_time_now("UTC")
+                    http_status = data.get("http_status")
+                    match_url_id = data.get("match_url_id")
+                    if match_url_id is not None and http_status is not None:
+                        url_updates.append((updated_date, http_status, match_url_id))
+                    mid = data.get("match_id")
+                    if mid:
+                        match_ids.append((mid,))
+                if url_updates or match_ids:
+                    msg = {"type": "batch", "odds": [], "url_updates": url_updates, "match_ids": match_ids}
+                    try:
+                        self._work_q.put_nowait(msg)
+                    except queue.Full:
+                        Helpers().insert_log(level="WARNING", type="CODE",
+                                             error=f"{spider.name} writer queue full, dropping error_on_match_url batch",
+                                             message=None)
             except Exception as e:
                 if self.debug:
                     print(traceback.format_exc())
                 Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
-            finally:
-                try:
-                    end_time = datetime.datetime.now()
-                    print("Time taken to update V2_Matches_Urls with status only on error", (end_time - start_time).total_seconds())
-                    cursor.close()
-                    connection.close()
-                except Exception:
-                    pass
 
         if "pipeline_type" in item.keys() and "teams" in item["pipeline_type"]:
             start_time = datetime.datetime.now()

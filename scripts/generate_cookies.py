@@ -81,6 +81,7 @@ def get_cookies(test_mode, headless, pause_time, filters):
         query_bookies = """
         SELECT bookie_id, bookie_url, use_cookies, burnt_ips
         FROM ATO_production.V2_Bookies
+        WHERE v2_ready = 1
         """
         # cursor = connection.cursor()
         cursor.execute(query_bookies)
@@ -209,6 +210,25 @@ def get_cookies(test_mode, headless, pause_time, filters):
                 try:
                     # Navigate with a realistic wait strategy
                     page.goto(bookie_url, wait_until="domcontentloaded")
+
+                    # If target is protected by Cloudflare (e.g., 888Sport), wait for clearance cookie
+                    is_888 = ("888sport.es" in (bookie_url or '').lower()) or (bookie_name.lower() == "888sport")
+                    if is_888:
+                        try:
+                            # First, ensure we are past the interstitial title if present
+                            page.wait_for_function("document.title !== 'Just a moment...'", timeout=30000)
+                        except Exception:
+                            pass
+                        try:
+                            page.wait_for_function("document.cookie.includes('cf_clearance')", timeout=30000)
+                        except PlaywrightTimeoutError:
+                            # Try one reload and wait again (some challenges resolve on reload)
+                            try:
+                                page.reload(wait_until="domcontentloaded")
+                                page.wait_for_function("document.cookie.includes('cf_clearance')", timeout=20000)
+                            except Exception:
+                                pass
+
                     # Add a small random human-like jitter to the pause time
                     try:
                         import random
@@ -216,14 +236,21 @@ def get_cookies(test_mode, headless, pause_time, filters):
                     except Exception:
                         jitter = 0.6
                     time.sleep(max(0, pause_time) + jitter)
-                    page.wait_for_load_state(state="networkidle")
+
+                    # Read cookies and ensure cf_clearance is present for 888Sport before saving
                     cookies = context.cookies()
                     print("context cookies", cookies)
-                    # page.close()
-                    # page.context.close()
+
                     if len(cookies) < 1:
                         print("No cookies found for", bookie_name, "with proxy", proxy_ip)
                         continue
+
+                    if is_888:
+                        has_cf = any(c.get("name") == "cf_clearance" for c in cookies)
+                        if not has_cf:
+                            print("cf_clearance not obtained for 888Sport; skipping save for this proxy/UA combo.")
+                            continue
+
                     data_to_update = {
                          "bookie": bookie_name,
                          "cookies": json.dumps(cookies),
@@ -319,23 +346,7 @@ def use_cookies():
                 "width": 1920,
                 "height": 1080,
             },
-            # extra_http_headers={"Host": "m.apuestas.codere.es"},
         )
-
-        # conn = MongoClient(ATO_DB_01)
-        # db = conn.ATO
-        # coll = db.cookies
-        # cookie_to_send_from_db = coll.find_one(
-        #     {"user_agent_hash": user_agent_hash}
-        # )
-        # cookie_to_send_from_db = json.loads(cookie_to_send_from_db["cookies"])
-        # print("cookie_to_send_from_db", cookie_to_send_from_db)
-        # print("cookie_to_send_from_file", cookie_to_send_from_file)
-
-        # context.add_cookies(json.loads(Path(str(user_agent_hash)+".json").read_text()))
-        # context.add_cookies(cookie_to_send_from_file)
-        # context.add_cookies(cookie_to_send_from_db)
-        # context.set_extra_http_headers({"Host": "m.apuestas.codere.es"})
         page = context.new_page()
         page.goto(bookie_url)
         print(context.cookies())
@@ -358,8 +369,8 @@ def test(filters):
     print(bookies_infos)
 
 if __name__ == "__main__":
-    # get_cookies(test_mode=False, headless=True, pause_time=5, filters={"bookie_name": "1XBet", "only_cookies": True})
-    get_cookies(test_mode=False, headless=True, pause_time=5, filters={"bookie_name": "all_bookies", "only_cookies": False})
+    get_cookies(test_mode=False, headless=False, pause_time=5, filters={"bookie_name": "888Sport", "only_cookies": True})
+    # get_cookies(test_mode=False, headless=True, pause_time=5, filters={"bookie_name": "all_bookies", "only_cookies": False})
     # test(filters={"bookie_name": "all_bookies", "only_cookies": True})
     # use_cookies()
     cursor.close()

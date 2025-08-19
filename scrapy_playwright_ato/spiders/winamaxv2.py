@@ -630,7 +630,7 @@ class TwoStepsSpider(scrapy.Spider):
                         "match_url_id": match_url,
                     }
 
-                    item["pipeline_type"] = ["match_odds", "queue_dutcher"]
+                    item["pipeline_type"] = ["match_odds"]
                 yield item
             else:
                 item["data_dict"] = {
