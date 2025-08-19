@@ -49,11 +49,11 @@ class TwoStepsSpider(scrapy.Spider):
                 # Filter by bookie that have errors
                 # competitions = bookie_config(bookie=["1XBet", "http_errors"])
                 # Filter by bookie
-                competitions = bookie_config(bookie=["1XBet"])
+                # competitions = bookie_config(bookie=["1XBet"])
                 # Filter by competition
                 # competitions = [x for x in bookie_config(bookie=["all_bookies"]) if x["competition_id"] == "Partidosamistosos"]
                 # Filter by bookie and competition
-                competitions = [x for x in bookie_config(bookie=["Bwin"]) if x["competition_id"] == "Partidosamistosos"]
+                competitions = [x for x in bookie_config(bookie=["888Sport"]) if x["competition_id"] == "Argentina-PrimeraDivision"]
             else:
                 competitions = bookie_config(bookie=["all_bookies"])
 
@@ -85,7 +85,7 @@ class TwoStepsSpider(scrapy.Spider):
                 yield scrapy.Request(
                     dont_filter=dont_filter,
                     url=url,
-                    callback=self.match_requests if self.debug else self.match_requests,
+                    callback=self.raw_html if self.debug else self.match_requests,
                     errback=self.errback,
                     meta=meta_request,
                 )
@@ -173,7 +173,7 @@ class TwoStepsSpider(scrapy.Spider):
         print("RAW HTML RESPONSE")
         parent = os.path.dirname(os.getcwd())
         try:
-            with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/logs/" + self.name + "_response" + ".txt", "w") as f:
+            with open(parent + "/Scrapy_Playwright/logs/" + self.name + "_response" + ".txt", "w") as f:
                 f.write(response.text) # response.meta["playwright_page"]
         except Exception as e:
             print(traceback.format_exc())
