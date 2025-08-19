@@ -6,3 +6,4 @@ project.egg-info/
 /logs/
 /.venv/
 /scripts/__pycache__/
+/.idea/
