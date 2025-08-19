@@ -1223,13 +1223,17 @@ class Helpers():
             elif data["bookie_id"] == "DaznBet":
                 url = data["competition_url_id"].replace("https://www.daznbet.es/es-es/deportes/", "https://sb-pp-esfe.daznbet.es/")
                 meta_request.update({"playwright_page_methods": [
+                    # PageMethod(
+                    #     method="wait_for_load_state",
+                    #     state="domcontentloaded"
+                    # ),
                     PageMethod(
                         method="wait_for_selector",
                         selector="//div[@class='main-container']",
                     ),
                     PageMethod(
-                        method="wait_for_load_state",
-                        state="domcontentloaded"
+                        method="wait_for_timeout",
+                        timeout=1000
                     )
                 ],
                 }
@@ -1564,6 +1568,22 @@ class Helpers():
                             selector="//*[text()='PUNTOS TOTALES']",
                             # timeout=40000
                         ),
+                    ],
+                    }
+                    )
+                elif data["sport_id"] == "3":
+                    meta_request.update({"playwright_page_methods": [
+                        PageMethod(
+                            method="wait_for_selector",
+                            selector="//div[@class='accordion-container ']",
+                            # timeout=40000
+                        ),
+
+                        # PageMethod(
+                        #     method="click",
+                        #     selector="//*[text()='PUNTOS TOTALES']",
+                        #     # timeout=40000
+                        # )
                     ],
                     }
                     )

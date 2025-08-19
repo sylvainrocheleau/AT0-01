@@ -37,8 +37,9 @@ def teams_and_dates_from_response(bookie_id, competition_id, sport_id, normalize
 
     map_matches_urls = []
     try:
-        with open('comp_spider_01_response.txt') as f:
+        with open('../logs/comp_spider_01_response.txt') as f:
             response = Selector(text=f.read())
+            print("response misc: ", response)
             # response = f.read()
         match_infos = parse_competition(response=response, bookie_id=bookie_id, competition_id=competition_id,
                                         competition_url_id="", sport_id=sport_id, map_matches_urls=map_matches_urls,
@@ -146,9 +147,9 @@ def get_tournaments_from_sport_page(bookie_id, sport_id, debug):
 
 
 if __name__ == "__main__":
-    check_list_of_markets()
+    # check_list_of_markets()
     # get_comps_for_bookie()
-    # teams_and_dates_from_response(bookie_id='CasinoGranMadrid', competition_id='ATP', sport_id='3', normalize=False)
+    teams_and_dates_from_response(bookie_id='DaznBet', competition_id='ATP', sport_id='3', normalize=False)
     # get_odds_from_response(bookie_id="CasinoGranMadrid", sport_id="3")
     # get_matches_details_and_urls()
     # get_sports_pages()

@@ -10,20 +10,20 @@ warnings.filterwarnings("ignore", category=UserWarning)
 
 
 TABLES = [
-    {'name':'V2_Bookies', 'key': ['bookie_id']},
-    {'name':'V2_Competitions', 'key': ['competition_id']},
-    {'name':'V2_Competitions_Urls', 'key': ['competition_url_id']},
+    {'name': 'V2_Bookies', 'key': ['bookie_id']},
+    {'name': 'V2_Sports', 'key': ['sport_id']},
+    {'name': 'V2_Competitions', 'key': ['competition_id']},
+    {'name': 'V2_Competitions_Urls', 'key': ['competition_url_id']},
     {'name': 'V2_Cookies', 'key': ['user_agent_hash']},
     {'name': 'V2_Exchanges', 'key': ['bet_id', 'lay_odds']},
     {'name': 'V2_Matches', 'key': ['match_id']},
-    {'name':'V2_Matches_Urls', 'key': ['match_url_id']},
+    {'name': 'V2_Matches_Urls', 'key': ['match_url_id']},
     {'name': 'V2_Matches_Odds', 'key': ['bet_id', 'bookie_id']},
     {'name': 'V2_Matches_Urls_No_Ids', 'key': 'match_url_id'},
     {'name': 'V2_Dutcher', 'key': ['bet_id', 'bookie_id', 'bookie_2']},
     {'name': 'V2_Oddsmatcher', 'key': ['bet_id', 'bookie_id', 'lay_odds']},
-    {'name': 'V2_Sports', 'key': ['sport_id']},
     {'name': 'V2_Sports_Urls', 'key': ['sport_url_id']},
-    {'name':'V2_Teams', 'key': ['team_id']},
+    {'name': 'V2_Teams', 'key': ['team_id']},
 ]
 
 SQL_PORT = 3306
