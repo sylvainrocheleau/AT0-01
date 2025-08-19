@@ -8,5 +8,3 @@ else:
     game_id = None
     flag_error = True
 print(game_id)
-
-
