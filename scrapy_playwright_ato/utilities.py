@@ -1411,18 +1411,6 @@ class Helpers():
                            'Referer': 'https://google.com', 'Pragma': 'no-cache'},
                     },
                 )
-            # elif data["bookie_id"] == "ZeBet":
-            #     meta_request.update(
-            #         {
-            #         "header": {
-            #             'Accept': '*/*', 'Connection': 'keep-alive', 'User-Agent': '',
-            #             'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'es-ES;q=0.5,en;q=0.3',
-            #             'Cache-Control': 'max-age=0', 'DNT': '1', 'Upgrade-Insecure-Requests': '1',
-            #             'Referer': 'https://google.com', 'Pragma': 'no-cache'
-            #         }
-            #     }
-            #     )
-
         elif meta_type == "match":
             url = data["match_url_id"]
             dont_filter = False
