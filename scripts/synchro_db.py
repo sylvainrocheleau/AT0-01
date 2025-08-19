@@ -8,6 +8,7 @@ import mysql.connector
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 
+# test merge pb
 
 TABLES = [
     {'name': 'V2_Bookies', 'key': ['bookie_id']},
