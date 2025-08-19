@@ -8,6 +8,8 @@ import os
 import signal
 import traceback
 from scrapy.exceptions import CloseSpider
+from requests.exceptions import ProxyError, ConnectionError, Timeout, RequestException
+from json import JSONDecodeError
 from ..items import ScrapersItem
 from ..settings import proxy_prefix, proxy_suffix, LOCAL_USERS
 from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables, list_of_markets_V2
@@ -143,8 +145,20 @@ class TwoStepsJsonSpider(scrapy.Spider):
                     "https": self.proxy_ip.replace("https://", "http://"),
                 }
                 url = f"https://ips.betfair.es/inplayservice/v1/eventDetails?alt=json&eventIds={chunked_list}&locale=es&productType=EXCHANGE&regionCode=UK"
-                matches_response = requests.get(url, proxies=proxies)
-                matches_jsonresponse = json.loads(matches_response.text)
+                try:
+                    matches_response = requests.get(url, proxies=proxies)
+                    matches_response.raise_for_status()
+                    try:
+                        matches_jsonresponse = json.loads(matches_response.text)
+                    except JSONDecodeError as e:
+                        Helpers().insert_log(level="WARNING", type="NETWORK", error=e,message=traceback.format_exc())
+                        continue
+                except (ProxyError, ConnectionError, Timeout) as e:
+                    Helpers().insert_log(level="WARNING", type="NETWORK",error=e,message=traceback.format_exc())
+                    continue
+                except RequestException as e:
+                    Helpers().insert_log(level="WARNING", type="NETWORK",error=e,message=traceback.format_exc())
+                    continue
                 for data in matches_jsonresponse:
                     # print("data from matches_jsonresponse", data)
                     if data["competitionName"] == "NBA":
@@ -228,8 +242,20 @@ class TwoStepsJsonSpider(scrapy.Spider):
                     "http": self.proxy_ip.replace("https://", "http://"),
                     "https": self.proxy_ip.replace("https://", "http://"),
                 }
-                response = requests.post(url, proxies=proxies)
-                jsonresponse = json.loads(response.text)
+                try:
+                    response = requests.post(url, proxies=proxies)
+                    response.raise_for_status()
+                    try:
+                        jsonresponse = json.loads(response.text)
+                    except json.decoder.JSONDecodeError as e:
+                        Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
+                        continue
+                except (ProxyError, ConnectionError, Timeout) as e:
+                    Helpers().insert_log(level="WARNING", type="NETWORK", error=e, message=traceback.format_exc())
+                    continue
+                except RequestException as e:
+                    Helpers().insert_log(level="WARNING", type="NETWORK", error=e, message=traceback.format_exc())
+                    continue
                 if "eventTypes" in jsonresponse:
                     for data in jsonresponse["eventTypes"]:
                         if "eventNodes" in data:
@@ -257,8 +283,20 @@ class TwoStepsJsonSpider(scrapy.Spider):
                         "http": self.proxy_ip.replace("https://", "http://"),
                         "https": self.proxy_ip.replace("https://", "http://"),
                     }
-                    response = requests.post(url, proxies=proxies)
-                    jsonresponse = json.loads(response.text)
+                    try:
+                        response = requests.post(url, proxies=proxies)
+                        response.raise_for_status()
+                        try:
+                            jsonresponse = json.loads(response.text)
+                        except json.decoder.JSONDecodeError as e:
+                            Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
+                            continue
+                    except (ProxyError, ConnectionError, Timeout) as e:
+                        Helpers().insert_log(level="WARNING", type="NETWORK", error=e, message=traceback.format_exc())
+                        continue
+                    except RequestException as e:
+                        Helpers().insert_log(level="WARNING", type="NETWORK", error=e, message=traceback.format_exc())
+                        continue
                     for data in jsonresponse["eventTypes"]:
                         for data_02 in data["eventNodes"]:
                             event_id = data_02["eventId"]

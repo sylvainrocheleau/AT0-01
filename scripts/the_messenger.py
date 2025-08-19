@@ -89,6 +89,10 @@ class Messenger():
                 self.body += """<h3>Estatus 1500 (mensaje que dice "lo sentimos"):</h3>"""
                 for item in paragraph["content"][1500]:
                     self.body += item
+            if "return_character" in paragraph["content"] and len(paragraph["content"]["return_character"]) > 0:
+                self.body += """<h3>URLs con caracteres de retorno (A corregir por el equipo de Madrid):</h3>"""
+                for item in paragraph["content"]["return_character"]:
+                    self.body += item
             if "other" in paragraph["content"] and len(paragraph["content"]["other"]) > 0:
                 self.body += """<h3>Otros estatus (A corregir por el equipo de Montreal)</h3>"""
                 for item in paragraph["content"]["other"]:
@@ -150,6 +154,26 @@ class Messenger():
         result = self.cursor.fetchone()
         count = result[0] if result else 0
         paragraph["content"].append(f"<li>Hay {count} equipos que tienen el estado unmatched en Dash_Teams_From_Betfair</li>")
+        # In the table ATO_production.ATO_production.Dash_Teams_To_Update, check for status that are not in this list ['to_be_reviewed', 'unmatched']
+        # When we find a status that is not in the list we add it to the list 'typos_in_status'. Then we count the number of times each typos appear in the list and we add to paragraph["content"].append...
+        query = """
+        SELECT status, COUNT(*) as count FROM ATO_production.Dash_Teams_To_Update
+        WHERE status NOT IN ('to_be_reviewed', 'unmatched')
+        GROUP BY status
+        """
+        self.cursor.execute(query)
+        results = self.cursor.fetchall()
+        typos_in_status = {}
+        for row in results:
+            status = row[0]
+            count = row[1]
+            if status not in ['to_be_reviewed', 'unmatched']:
+                typos_in_status[status] = count
+        if typos_in_status:
+            for status, count in typos_in_status.items():
+                paragraph["content"].append(f"<li>Hay errores tipográficos en el estado de los equipos::"
+                                            f"{status}: {count} veces</li>")
+
 
         self.add_to_body(paragraph)
 
@@ -164,7 +188,7 @@ class Messenger():
         paragraph = {}
         paragraph["from"] = "report_on_competitions_01"
         paragraph["title"] = "<h2>Competiciones con estatus 301, 302, 404 o nulo.</h2>"
-        paragraph["content"] = {301: [], 302: [], 404: [], None: [], 1500:[], "other": []}
+        paragraph["content"] = {301: [], 302: [], 404: [], None: [], 1500:[], "return_character": [], "other": []}
         for row in results:
             bookie_id = row["bookie_id"]
             for key, value in row.items():
@@ -190,6 +214,12 @@ class Messenger():
                     elif value !=200:
                         paragraph["content"]["other"].append(
                             f"<li>{value} on {bookie_id}: {key.replace('_status', '')}</li>")
+                elif "_url" in key:
+                    # Check if the there is return characters in the URL
+                    if value is not None and "\n" in value:
+                        paragraph["content"]["return_character"].append(
+                            f"<li>{bookie_id}: {key.replace('_url', '')}</li>"
+                        )
         self.add_to_body(paragraph)
 
     def active_competitions(self):
@@ -203,7 +233,7 @@ class Messenger():
         results = self.cursor.fetchall()
         paragraph = {}
         paragraph["from"] = "report_on_active_competitions"
-        paragraph["title"] = "<h2>Competiciones activas (fase de prueba)</h2>"
+        paragraph["title"] = "<h2>Competiciones activas</h2>"
         paragraph["content"] = {"1": [], "2": [], "3": [], }
         for row in results:
             competition_id = row[0]
@@ -266,7 +296,6 @@ FROM        ATO_production.V2_Dutcher
 
 
 if __name__ == "__main__":
-    # TODO: add acheck on return characters in comp urls and badly spelled team status
     try:
         if os.environ["USER"] in ["sylvain","rickiel"]:
             debug = True
@@ -282,14 +311,14 @@ if __name__ == "__main__":
         except locale.Error:
             print("Locale 'es_ES' not available, using default locale.")
             locale.setlocale(locale.LC_TIME, '')
-    today = datetime.datetime.now(datetime.timezone.utc)
-    formatted_date = today.strftime('%A, %-d de %B')
-    formatted_time = today.strftime('%H:%M')
     Messenger = Messenger()
+    now = datetime.datetime.now(datetime.timezone.utc)
+    formatted_date = now.strftime('%A, %-d de %B')
+    formatted_time = now.strftime('%H:%M')
     Messenger.count_matches_id_to_reviewd()
     Messenger.report_on_competitions_01()
     Messenger.active_competitions()
-    Messenger.dutcher_most_recent_and_oldest_updated_date()
+    # Messenger.dutcher_most_recent_and_oldest_updated_date()
     if debug:
         recipients = "info@sylvainrocheleau.com"
     else:
@@ -299,4 +328,3 @@ if __name__ == "__main__":
         subject=f"Informe sobre el raspado {formatted_date.capitalize()} a las {formatted_time} UTC",
         to=recipients
     )
-

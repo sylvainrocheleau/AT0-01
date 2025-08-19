@@ -613,6 +613,7 @@ class TwoStepsSpider(scrapy.Spider):
                             {
                                 "match_url_id": match_url,
                                 "http_status": 1600,  # No odds found
+                                "match_id": match_id,
                                 # "updated_date": Helpers().get_time_now("UTC")
                             },
                         ]
@@ -628,11 +629,8 @@ class TwoStepsSpider(scrapy.Spider):
                         "http_status": response.status,
                         "match_url_id": match_url,
                     }
-                    if response.meta.get("queue_dutcher") is True:
-                        self.pipeline_type = ["match_odds", "queue_dutcher"]
-                    else:
-                        self.pipeline_type = ["match_odds"]
-                    item["pipeline_type"] = self.pipeline_type
+
+                    item["pipeline_type"] = ["match_odds"]
                 yield item
             else:
                 item["data_dict"] = {
@@ -640,6 +638,7 @@ class TwoStepsSpider(scrapy.Spider):
                         {
                             "match_url_id": match_url,
                             "http_status": 1600,  # No odds found
+                            "match_id": match_id,
                             # "updated_date": Helpers().get_time_now("UTC")
                         },
                     ]

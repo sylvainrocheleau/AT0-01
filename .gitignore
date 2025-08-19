@@ -3,5 +3,4 @@ project.egg-info/
 *.pyc
 .releases
 /archives/
-/scrapy_playwright_ato/comp_spider_01_response.txt
-/scrapy_playwright_ato/match_spider_01_response.txt
+/logs/

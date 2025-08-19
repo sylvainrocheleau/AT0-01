@@ -30,8 +30,8 @@ class MetaSpider(scrapy.Spider):
             # match_filter = {}
             # match_filter = {"type": "bookie_id", "params":["1XBet", 2]}
             # match_filter = {"type": "bookie_and_comp", "params": ["1XBet", "Argentina-PrimeraDivision"]}
-            # match_filter = {"type": "comp", "params":["LaLigaEspanola"]}
-            match_filter = {"type": "match_url_id", "params":["https://apuestas.retabet.es/deportes/futbol/brasil/brasileirao-serie-a/mirassol-fc-sp-fluminense/30804778"]}
+            match_filter = {"type": "comp", "params":["Argentina-PrimeraDivision"]}
+            # match_filter = {"type": "match_url_id", "params":["https://apuestas.retabet.es/deportes/futbol/brasil/brasileirao-serie-a/mirassol-fc-sp-fluminense/30804778"]}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -63,13 +63,8 @@ class MetaSpider(scrapy.Spider):
                         data.update(context_info)
                     if data["scraping_tool"] == "playwright":
                         self.close_playwright = True
-                    url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="match", data=data)
+                    url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="match", data=data, debug=self.debug)
                     counter += 1
-                    # TODO use the change of keys to trigger the dutcher
-                    if counter == len(value) and self.name == "match_spider_01":
-                        meta_request["queue_dutcher"] = True
-                    else:
-                        meta_request["queue_dutcher"] = False
                     yield scrapy.Request(
                         dont_filter=dont_filter,
                         url=url,
@@ -120,6 +115,7 @@ class MetaSpider(scrapy.Spider):
                     {
                         "match_url_id": response.meta.get("url"),
                         "http_status": 1600,  # No odds found
+                        "match_id": response.meta.get("match_id")
                         # "updated_date": Helpers().get_time_now("UTC")
                     },
                 ]
@@ -135,10 +131,8 @@ class MetaSpider(scrapy.Spider):
                 "http_status": response.status,
                 "match_url_id": response.meta.get("url"),
             }
-            if response.meta.get("queue_dutcher") is True:
-                self.pipeline_type = ["match_odds", "queue_dutcher"]
-            else:
-                self.pipeline_type = ["match_odds"]
+
+            self.pipeline_type = ["match_odds"]
             item["pipeline_type"] = self.pipeline_type
         yield item
 
@@ -208,6 +202,7 @@ class MetaSpider(scrapy.Spider):
                     {
                         "match_url_id": url,
                         "http_status": status,
+                        "match_id": failure.request.meta["match_id"],
                         # "updated_date": Helpers().get_time_now("UTC")
                     },
                 ]

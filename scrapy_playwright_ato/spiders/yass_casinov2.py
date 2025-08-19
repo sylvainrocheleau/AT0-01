@@ -349,6 +349,7 @@ class OneStepJsonSpider(scrapy.Spider):
                                             {
                                                 "match_url_id": match_url_id,
                                                 "http_status": 1600,  # No odds found
+                                                "match_id": match_id,
                                                 # "updated_date": Helpers().get_time_now("UTC")
                                             },
                                         ]
@@ -385,7 +386,8 @@ class OneStepJsonSpider(scrapy.Spider):
                 "match_infos": [
                     {
                         "match_url_id": match_url_id,
-                        "http_status": 1600,  # No odds found
+                        "http_status": 1600, # No odds found
+                        # "match_id": match_id,
                         # "updated_date": Helpers().get_time_now("UTC")
                     },
                 ]

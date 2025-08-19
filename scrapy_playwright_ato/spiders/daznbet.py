@@ -170,14 +170,18 @@ class TwoStepsSpider(scrapy.Spider):
                     ),
                     PageMethod(
                         method="click",
-                        selector="//*[normalize-space()='GOLES TOTALES']",
+                        selector="//*[translate(normalize-space(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZÁÉÍÓÚÜÑ', 'abcdefghijklmnopqrstuvwxyzáéíóúüñ') = 'goles totales']",
                         # timeout=40000
                     ),
                     PageMethod(
                         method="click",
-                        selector="//*[normalize-space()='MARCADOR EXACTO']",
+                        selector="//*[translate(normalize-space(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZÁÉÍÓÚÜÑ', 'abcdefghijklmnopqrstuvwxyzáéíóúüñ') = 'marcador exacto']",
                         # timeout=40000
                     ),
+                    PageMethod(
+                        method='wait_for_timeout',
+                        timeout=1000
+                    )
                 ],
                 )
                 )
@@ -191,7 +195,7 @@ class TwoStepsSpider(scrapy.Spider):
 
                     PageMethod(
                         method="click",
-                        selector="//*[text()='PUNTOS TOTALES']",
+                        selector="//*[translate(normalize-space(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZÁÉÍÓÚÜÑ', 'abcdefghijklmnopqrstuvwxyzáéíóúüñ') = 'puntos totales']",
                         # timeout=40000
                     ),
                 ],
@@ -226,7 +230,7 @@ class TwoStepsSpider(scrapy.Spider):
                 clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
                 count = 0
                 # print(clean_selection_keys)
-                if clean_selection_keys[0] == "GOLES TOTALES" or clean_selection_keys[0] == "PUNTOS TOTALES":
+                if clean_selection_keys[0].lower() == "goles totales" or clean_selection_keys[0] == "puntos totales":
                     del clean_selection_keys[1:3]
                     for index, value in enumerate(clean_selection_keys):
                         if "+" in value and count % 2 == 0:
@@ -249,7 +253,7 @@ class TwoStepsSpider(scrapy.Spider):
                         selection_key02 != market
                         and market in response.meta.get("list_of_markets")
                         and re.search('[a-zA-Z]', selection_key02) is not None
-                        or "-" in selection_key02
+                        or ":" in selection_key02
                         or "+" in selection_key02
                     ):
                         result = selection_key02
@@ -283,7 +287,6 @@ class TwoStepsSpider(scrapy.Spider):
             )
             # item["Bets"] = odds
             item["extraction_time_utc"] = datetime.datetime.utcnow()
-            item["date_confidence"] = 0
             item["Sport"] = response.meta.get("sport")
             item["Competition"] = response.meta.get("competition")
             item["Date"] = response.meta.get("start_date")

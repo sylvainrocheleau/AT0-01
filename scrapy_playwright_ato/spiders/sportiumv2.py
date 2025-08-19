@@ -376,11 +376,7 @@ destination:/api/markets/multi
                                                     "http_status": response.status,
                                                     "match_url_id": data["match_url_id"],
                                                 }
-                                                if response.meta.get("queue_dutcher") is True:
-                                                    self.pipeline_type = ["match_odds", "queue_dutcher"]
-                                                else:
-                                                    self.pipeline_type = ["match_odds"]
-                                                item["pipeline_type"] = self.pipeline_type
+                                                item["pipeline_type"] = ["match_odds"]
                                                 yield item
                                             except Exception as e:
                                                 if self.debug:
@@ -397,6 +393,7 @@ destination:/api/markets/multi
                                 {
                                     "match_url_id": data["match_url_id"],
                                     "http_status": 1600,  # No odds found
+                                    "match_id": data["match_id"],
                                     # "updated_date": Helpers().get_time_now("UTC")
                                 },
                             ]

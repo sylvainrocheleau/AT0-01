@@ -33,15 +33,15 @@ class MetaSpider(scrapy.Spider):
             # custom_settings["CONCURRENT_REQUESTS"] = 50
             debug = True
             match_filter_enabled = True
-            scraping_group = [2]
+            scraping_group = [1,2,3,4]
 
             # FILTER OPTIONS
-            match_filter = {}
-            # match_filter = {"type": "bookie_id", "params":["Paf", 0]}
-            # match_filter = {"type": "bookie_and_comp", "params": ["1XBet", "UEFAConferenceLeague"]}
+            # match_filter = {}
+            # match_filter = {"type": "bookie_id", "params":["1XBet", 1]}
+            # match_filter = {"type": "bookie_and_comp", "params": ["AdmiralBet", "ATP"]}
             # match_filter = {"type": "comp", "params":["MajorLeagueSoccerUSA"]}
-            # match_filter = {"type": "match_url_id",
-            #                 "params":["https://1xbet.es/es/line/football/118587-uefa-champions-league/639462687-zrinjski-slovan-bratislava"]}
+            match_filter = {"type": "match_url_id",
+                            "params":["https://www.zebet.es/es/event/72d83-club_atletico_platense_san_lorenzo"]}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -123,23 +123,19 @@ class MetaSpider(scrapy.Spider):
                   f"with {self.lenght_of_matches_details_and_urls} matches")
             for key, value in matches_details_and_urls.items():
                 count_of_matches_details_and_urls += 1
-                dutcher_counter = 0
                 for data in value:
                     try:
-                        if self.debug:
-                            print("Data to process:", data)
+                        # if self.debug:
+                        #     print("Data to process:", data)
                         if data["scraping_tool"] in ["requests", "playwright", "zyte_proxy_mode"]:
-                            context_info = random.choice(
-                                [x for x in context_infos if x["bookie_id"] == data["bookie_id"]])
+                            context_info = random.choice([x for x in context_infos if x["bookie_id"] == data["bookie_id"]])
                             data.update(context_info)
                         if data["scraping_tool"] == "playwright":
                             self.close_playwright = True
-                        url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="match", data=data)
-                        dutcher_counter += 1
-                        if dutcher_counter == len(value) and 'match_spider_01' in self.name:
-                            meta_request["queue_dutcher"] = True
-                        else:
-                            meta_request["queue_dutcher"] = False
+                        url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="match", data=data, debug=self.debug)
+                        # if self.debug:
+                        #     print("Meta request:", meta_request)
+
                         yield scrapy.Request(
                             dont_filter=dont_filter,
                             url=url,
@@ -181,6 +177,17 @@ class MetaSpider(scrapy.Spider):
                 print("Error closing playwright page/context:", e)
                 Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
                 pass
+        if self.debug:
+            # print proxy_ip and user agent used
+            print("working proxy_ip", response.meta.get("proxy_ip"))
+            print("working user_agent", response.meta.get("user_agent"))
+            # save proxy_ip, user_agent plus a third value "working"  to a csv file called proxy_ip_user_agent.csv
+            parent = os.path.dirname(os.getcwd())
+            try:
+                with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/logs/proxy_ip_user_agent.csv", "a") as f:
+                    f.write(f"{response.meta.get('proxy_ip')};{response.meta.get('user_agent')};working\n")
+            except:
+                pass
 
         odds = parse_match_logic(
             bookie_id=response.meta.get("bookie_id"),
@@ -203,12 +210,14 @@ class MetaSpider(scrapy.Spider):
                 )
             }
         )
+
         if not odds:
             item["data_dict"] = {
                 "match_infos": [
                     {
                         "match_url_id": response.meta.get("url"),
                         "http_status": 1600,  # No odds found
+                        "match_id": response.meta.get("match_id"),
                         # "updated_date": Helpers().get_time_now("UTC")
                     },
                 ]
@@ -224,29 +233,67 @@ class MetaSpider(scrapy.Spider):
                 "http_status": response.status,
                 "match_url_id": response.meta.get("url"),
             }
-            if response.meta.get("queue_dutcher") is True:
-                self.pipeline_type = ["match_odds", "queue_dutcher"]
-            else:
-                self.pipeline_type = ["match_odds"]
+
+            self.pipeline_type = ["match_odds"]
             item["pipeline_type"] = self.pipeline_type
         yield item
+
 
     def raw_html(self, response):
         print("RAW HTML RESPONSE")
         parent = os.path.dirname(os.getcwd())
         try:
-            with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/" + self.name + "_response" + ".txt",
-                      "w") as f:
-                f.write(response.text)  # response.meta["playwright_page"]
+            with open(parent + "/Scrapy_Playwright/logs/" + self.name + "_response" + ".txt", "w") as f:
+                f.write(response.text) # response.meta["playwright_page"]
         except Exception as e:
             print(traceback.format_exc())
 
     async def errback(self, failure):
         item = ScrapersItem()
         print("### err back triggered")
-        # print("proxy_ip", failure.request.meta["proxy_ip"])
-        # print("failure", failure)
-        # print("user_agent", failure.request.meta["user_agent"])
+        if self.debug:
+            print("failed proxy_ip", failure.request.meta["proxy_ip"])
+            # print("failed user_agent", failure.request.meta["user_agent"])
+            # Fix: correctly access headers through the appropriate objects
+            if hasattr(failure, 'value') and hasattr(failure.value, 'response'):
+                print('response headers:', failure.value.response.headers)
+            else:
+                print('response headers: N/A - No response object available')
+
+            print("request headers:", failure.request.headers)
+            # Also show the Playwright extra_http_headers (actual browser-like headers) if present
+            try:
+                if failure.request.meta.get("extra_http_headers"):
+                    print("playwright extra_http_headers:", failure.request.meta.get("extra_http_headers"))
+                else:
+                    print("playwright extra_http_headers: N/A")
+            except Exception:
+                print("playwright extra_http_headers: error while retrieving")
+            # Playwright page diagnostics: title and cf_clearance cookie presence + save DOM snapshot
+            try:
+                page = failure.request.meta.get("playwright_page")
+                if page is not None:
+                    try:
+                        title = await page.title()
+                    except Exception:
+                        title = "N/A"
+                    print("playwright page title:", title)
+                    try:
+                        cookies = await page.context.cookies()
+                        has_cf = any((c.get("name") == "cf_clearance") for c in cookies)
+                        print("cf_clearance cookie present:", has_cf)
+                    except Exception:
+                        print("cf_clearance cookie present: error while retrieving")
+            except Exception:
+                # do not break errback on diagnostics
+                pass
+            parent = os.path.dirname(os.getcwd())
+            try:
+                with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/logs/proxy_ip_user_agent.csv", "a") as f:
+                    f.write(f"{failure.request.meta.get('proxy_ip')};{failure.request.meta.get('user_agent')};failed\n")
+            except:
+                pass
+        # print("failure.request.meta", failure.request.meta)
         # print("failure.request.url", failure.request.url)
         # print("failure.value.response.url", failure.value.response.url)
         # print("failure", failure.request.meta["bookie_id"])
@@ -257,7 +304,7 @@ class MetaSpider(scrapy.Spider):
                 error = f"scrape_ops, {failure.request.meta['bookie_id']} url:{failure.request.url}"
             else:
                 error = (f"{failure.request.meta['bookie_id']}; "
-                         f"url:{failure.request.url}; proxy:{failure.request.meta['proxy_ip']}")
+                           f"url:{failure.request.url}; proxy:{failure.request.meta['proxy_ip']}")
 
             Helpers().insert_log(level="INFO", type="NETWORK", error=error, message=None)
         except Exception as e:
@@ -298,6 +345,7 @@ class MetaSpider(scrapy.Spider):
                     {
                         "match_url_id": url,
                         "http_status": status,
+                        "match_id": failure.request.meta["match_id"],
                         # "updated_date": Helpers().get_time_now("UTC")
                     },
                 ]
@@ -310,7 +358,10 @@ class MetaSpider(scrapy.Spider):
             Helpers().insert_log(level="CRITICAL", type="CODE", error=error, message=traceback.format_exc())
 
         try:
-            if self.close_playwright is True:  # and "playwright_page" in failure.request.meta
+            # TODO find a way to close the page and context only if they were opened by playwright
+            # if "playwright_page" in failure.request.meta:
+
+            if self.close_playwright : # and "playwright_page" in failure.request.meta
                 page = failure.request.meta["playwright_page"]
                 print("Closing page on error")
                 await page.close()
@@ -319,3 +370,4 @@ class MetaSpider(scrapy.Spider):
         except Exception as e:
             Helpers().insert_log(level="CRITICAL", type="CODE", error=error, message=traceback.format_exc())
             pass
+

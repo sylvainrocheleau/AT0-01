@@ -1,10 +1,45 @@
 import sys
 import traceback
 # from asyncio import timeout
-
 from scrapy_playwright_ato.settings import SQL_USER, SQL_PWD, TEST_ENV, soltia_user_name, soltia_password, \
     SCRAPE_OPS_API_KEY, proxy_prefix, proxy_suffix, ZYTE_PROXY_MODE
 
+# Playwright page init callback: console piping, errors, key responses, timeouts, tracing
+async def init_page_debug(page, request):
+    try:
+        # Pipe page console to Scrapy logs
+        page.on("console", lambda msg: print(f"[PW CONSOLE] {msg.type} {msg.text}"))
+        # Log JS page errors
+        page.on("pageerror", lambda err: print(f"[PW PAGEERROR] {err}"))
+
+        # Log key responses (filter to reduce noise)
+        def _on_response(resp):
+            try:
+                url = resp.url
+                status = resp.status
+                if any(k in url for k in ["1xbet.es", "/cdn-cgi/", "/line/football/", "/api/"]):
+                    print(f"[PW RESP] {status} {url}")
+            except Exception:
+                pass
+        page.on("response", _on_response)
+
+        # Set sane default timeouts
+        try:
+            page.set_default_timeout(15000)
+            page.set_default_navigation_timeout(20000)
+        except Exception:
+            pass
+
+        # Start tracing (screenshots + snapshots)
+        try:
+            await page.context.tracing.start(screenshots=True, snapshots=True, sources=False)
+            print("[PW TRACE] tracing started")
+        except Exception as e:
+            print("[PW TRACE] Could not start tracing:", e)
+    except Exception:
+        # Never break request creation because of init callback errors
+        print("[PW INIT] init_page_debug encountered an error:")
+        print(traceback.format_exc())
 
 
 class Connect():
@@ -36,6 +71,7 @@ class Connect():
             sys.exit(1)
 
         return connection
+
 
 class Helpers():
     def __init__(self):
@@ -835,7 +871,7 @@ class Helpers():
             FROM ATO_production.V2_Competitions_Urls as vcu
             JOIN ATO_production.V2_Competitions vc ON vcu.competition_id = vc.competition_id
             JOIN ATO_production.V2_Sports vs ON vc.sport_id = vs.sport_id
-                WHERE vc.active = 1
+            WHERE vc.active = 1
         """
         cursor.execute(query_competition_url)
         competitions_urls = cursor.fetchall()
@@ -999,16 +1035,18 @@ class Helpers():
         else:
             return datetime.datetime.now().replace(microsecond=0).replace(tzinfo=None)
 
-    def build_meta_request(self, meta_type, data):
+    def build_meta_request(self, meta_type, data, debug):
         import json
         from urllib.parse import urlencode
         from scrapy_playwright.page import PageMethod
+        uppercase_alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÁÉÍÓÚÜÑ',
+        lowercase_alpabet = 'abcdefghijklmnopqrstuvwxyzáéíóúüñ'
         if meta_type == "sport":
             url = data["sport_url_id"]
             dont_filter = False
             meta_request = dict(
                 sport_id=data["sport_id"],
-                sport_url_id=data["sport_url_id"],
+                sport_url_id=url,
                 bookie_id=data["bookie_id"],
                 scraping_tool=data["scraping_tool"],
             )
@@ -1031,7 +1069,7 @@ class Helpers():
                              'User-Agent': '', 'Accept-Encoding': 'gzip, deflate, br, zstd',
                              'Accept-Language': 'es-ES;q=0.5,en;q=0.3',
                              'Upgrade-Insecure-Requests': '1',
-                             'Referer': data["sport_url_id"],
+                             'Referer': url,
                              'Sec-Fetch-Dest': 'document',
                              'Sec-Fetch-Mode': 'navigate',
                              'Sec-Fetch-Site': 'same-origin',
@@ -1051,7 +1089,7 @@ class Helpers():
                         # "user_agent": data["user_agent"],
                         "playwright": True,
                         "playwright_include_page": True,
-                        "playwright_context": data["sport_url_id"],
+                        "playwright_context": url,
                         "playwright_context_kwargs":
                             {
                                 "user_agent": data["user_agent"],
@@ -1083,12 +1121,12 @@ class Helpers():
                     PageMethod(
                         method="wait_for_selector",
                         selector="//div[@class=' text-gray-300 bg-gray-800 rounded-lg mt-5 pb-5']",
-                        timeout=5000,
+                        timeout=20000,
                     ),
-                    PageMethod(
-                        method="wait_for_timeout",
-                        timeout=30000,
-                    ),
+                    # PageMethod(
+                    #     method="wait_for_timeout",
+                    #     timeout=30000,
+                    # ),
                 ],
                 }
                 )
@@ -1098,7 +1136,7 @@ class Helpers():
             meta_request = dict(
                 sport_id = data["sport_id"],
                 competition_id = data["competition_id"],
-                competition_url_id = data["competition_url_id"],
+                competition_url_id = url,
                 bookie_id = data["bookie_id"],
                 scraping_tool = data["scraping_tool"],
             )
@@ -1121,7 +1159,7 @@ class Helpers():
                              'User-Agent': '', 'Accept-Encoding': 'gzip, deflate, br, zstd',
                              'Accept-Language': 'es-ES;q=0.5,en;q=0.3',
                              'Upgrade-Insecure-Requests': '1',
-                             'Referer': data["competition_url_id"],
+                             'Referer': url,
                              'Sec-Fetch-Dest': 'document',
                              'Sec-Fetch-Mode': 'navigate',
                              'Sec-Fetch-Site': 'same-origin',
@@ -1141,10 +1179,16 @@ class Helpers():
                         # "user_agent": data["user_agent"],
                         "playwright": True,
                         "playwright_include_page": True,
-                        "playwright_context": data["competition_url_id"],
+                        "playwright_context": url,
                         "playwright_context_kwargs":
                             {
                                 "user_agent": data["user_agent"],
+                                "locale": "es-ES",
+                                "timezone_id": "Europe/Madrid",
+                                "color_scheme": "light",
+                                "device_scale_factor": 1.0,
+                                "is_mobile": False,
+                                "has_touch": False,
                                 "java_script_enabled": bool(data["render_js"]),
                                 "ignore_https_errors": True,
                                 "proxy": {
@@ -1153,6 +1197,7 @@ class Helpers():
                                     "password": soltia_password,
                                 },
                             },
+                            "extra_http_headers": self.ua_to_client_hints(data["user_agent"], url),
                             "playwright_accept_request_predicate":
                                 {
                                     'activate': True,
@@ -1169,18 +1214,84 @@ class Helpers():
 
             # pagemethods and addons for competition
             if data["bookie_id"] == "1XBet":
+                meta_request["playwright_accept_request_predicate"] = {
+                    'activate': False
+                }
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
                         method="add_init_script",
-                        script="Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
+                        script=(
+                            "// Stealth tweaks for 1XBet\n"
+                            "Object.defineProperty(navigator, 'webdriver', {get: () => undefined});\n"
+                            "Object.defineProperty(navigator, 'languages', {get: () => ['es-ES','es','en']});\n"
+                            "Object.defineProperty(navigator, 'platform', {get: () => (function(ua){ ua=ua||''; if(ua.includes('Windows')) return 'Win32'; if(ua.includes('Macintosh')) return 'MacIntel'; if(ua.includes('Linux')) return 'Linux x86_64'; return navigator.platform; })(navigator.userAgent)});\n"
+                            "Object.defineProperty(navigator, 'hardwareConcurrency', {get: () => 8});\n"
+                            "Object.defineProperty(navigator, 'deviceMemory', {get: () => 8});\n"
+                            "Object.defineProperty(navigator, 'permissions', { value: { query: async () => ({ state: 'prompt' }) } });\n"
+                            "window.chrome = { runtime: {} };\n"
+                            "const getParameter = WebGLRenderingContext.prototype.getParameter;\n"
+                            "WebGLRenderingContext.prototype.getParameter = function(param){\n"
+                            "  if (param === 37445) return 'Intel Inc.';\n"
+                            "  if (param === 37446) return 'Intel Iris OpenGL Engine';\n"
+                            "  return getParameter.call(this, param);\n"
+                            "};\n"
+                            "Object.defineProperty(navigator, 'plugins', {get: () => [1,2,3]});\n"
+                        )
                     ),
+                    PageMethod(method="wait_for_load_state", state="domcontentloaded"),
                     PageMethod(
                         method="wait_for_selector",
-                        selector="//ul[contains(@class, 'dashboard-games')]",
+                        selector="//li[contains(@class, 'dashboard-games__item')]",
                     ),
                 ],
                 }
                 )
+                meta_request["playwright_context_kwargs"].update(
+                    {
+                        "bypass_csp": True,
+                        "service_workers": "allow",
+                    }
+                )
+            elif data["bookie_id"] == "888Sport":
+                pass
+                # meta_request["playwright_accept_request_predicate"] = {
+                #     'activate': False
+                # }
+                # meta_request.update({"playwright_page_methods": [
+                #     PageMethod(
+                #         method="add_init_script",
+                #         script=(
+                #             "// Stealth tweaks for 1XBet\n"
+                #             "Object.defineProperty(navigator, 'webdriver', {get: () => undefined});\n"
+                #             "Object.defineProperty(navigator, 'languages', {get: () => ['es-ES','es','en']});\n"
+                #             "Object.defineProperty(navigator, 'platform', {get: () => (function(ua){ ua=ua||''; if(ua.includes('Windows')) return 'Win32'; if(ua.includes('Macintosh')) return 'MacIntel'; if(ua.includes('Linux')) return 'Linux x86_64'; return navigator.platform; })(navigator.userAgent)});\n"
+                #             "Object.defineProperty(navigator, 'hardwareConcurrency', {get: () => 8});\n"
+                #             "Object.defineProperty(navigator, 'deviceMemory', {get: () => 8});\n"
+                #             "Object.defineProperty(navigator, 'permissions', { value: { query: async () => ({ state: 'prompt' }) } });\n"
+                #             "window.chrome = { runtime: {} };\n"
+                #             "const getParameter = WebGLRenderingContext.prototype.getParameter;\n"
+                #             "WebGLRenderingContext.prototype.getParameter = function(param){\n"
+                #             "  if (param === 37445) return 'Intel Inc.';\n"
+                #             "  if (param === 37446) return 'Intel Iris OpenGL Engine';\n"
+                #             "  return getParameter.call(this, param);\n"
+                #             "};\n"
+                #             "Object.defineProperty(navigator, 'plugins', {get: () => [1,2,3]});\n"
+                #         )
+                #     ),
+                #     PageMethod(method="wait_for_load_state", state="domcontentloaded"),
+                #     PageMethod(
+                #         method="wait_for_selector",
+                #         selector="//div[@class='LazyLoad__ComponentWrapper LazyLoad__ComponentWrapper--loaded']",
+                #     ),
+                # ],
+                # }
+                # )
+                # meta_request["playwright_context_kwargs"].update(
+                #     {
+                #         "bypass_csp": True,
+                #         "service_workers": "allow",
+                #     }
+                # )
             elif data["bookie_id"] == "BetWay":
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
@@ -1194,7 +1305,7 @@ class Helpers():
                 meta_request.update({"playwright_page_methods":[
                     PageMethod(
                         method="wait_for_selector",
-                        selector="div.participants-pair-game",
+                        selector="//div[@class='grid-event-wrapper image ng-star-inserted']",
                     ),
                 ]
                 }
@@ -1213,7 +1324,7 @@ class Helpers():
                     PageMethod(
                         method="wait_for_selector",
                         selector="//div[@class='flex flex-col bg-gray-800 rounded-lg mb-3 p-1']",
-                        timeout=5000,
+                        # timeout=5000,
                     ),
                 ],
                 }
@@ -1221,16 +1332,13 @@ class Helpers():
             elif data["bookie_id"] == "Codere":
                 pass
             elif data["bookie_id"] == "DaznBet":
-                url = data["competition_url_id"].replace("https://www.daznbet.es/es-es/deportes/", "https://sb-pp-esfe.daznbet.es/")
+                url = url.replace("https://www.daznbet.es/es-es/deportes/", "https://sb-pp-esfe.daznbet.es/")
                 meta_request.update({"playwright_page_methods": [
-                    # PageMethod(
-                    #     method="wait_for_load_state",
-                    #     state="domcontentloaded"
-                    # ),
                     PageMethod(
                         method="wait_for_selector",
                         selector="//div[@class='main-container']",
                     ),
+
                     PageMethod(
                         method="wait_for_timeout",
                         timeout=1000
@@ -1303,18 +1411,6 @@ class Helpers():
                            'Referer': 'https://google.com', 'Pragma': 'no-cache'},
                     },
                 )
-            # elif data["bookie_id"] == "ZeBet":
-            #     meta_request.update(
-            #         {
-            #         "header": {
-            #             'Accept': '*/*', 'Connection': 'keep-alive', 'User-Agent': '',
-            #             'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'es-ES;q=0.5,en;q=0.3',
-            #             'Cache-Control': 'max-age=0', 'DNT': '1', 'Upgrade-Insecure-Requests': '1',
-            #             'Referer': 'https://google.com', 'Pragma': 'no-cache'
-            #         }
-            #     }
-            #     )
-
         elif meta_type == "match":
             url = data["match_url_id"]
             dont_filter = False
@@ -1324,7 +1420,7 @@ class Helpers():
                 competition_id=data["competition_id"],
                 home_team=data["home_team"],
                 away_team=data["away_team"],
-                url=data["match_url_id"],
+                url=url,
                 web_url=self.build_web_url(data["web_url"]),
                 bookie_id=data["bookie_id"],
                 date=data["date"],
@@ -1350,7 +1446,7 @@ class Helpers():
                              'User-Agent': '', 'Accept-Encoding': 'gzip, deflate, br, zstd',
                              'Accept-Language': 'es-ES;q=0.5,en;q=0.3',
                              'Upgrade-Insecure-Requests': '1',
-                             'Referer': data["match_url_id"],
+                             'Referer': url,
                              'Sec-Fetch-Dest': 'document',
                              'Sec-Fetch-Mode': 'navigate',
                              'Sec-Fetch-Site': 'same-origin',
@@ -1360,7 +1456,7 @@ class Helpers():
                 )
 
             elif data["scraping_tool"] == 'scrape_ops':
-                payload = {'api_key': SCRAPE_OPS_API_KEY, 'url': data["match_url_id"], 'country': 'es', }
+                payload = {'api_key': SCRAPE_OPS_API_KEY, 'url': url, 'country': 'es', }
                 url = 'https://proxy.scrapeops.io/v1/?' + urlencode(payload)
 
             elif data["scraping_tool"] == "playwright":
@@ -1370,12 +1466,16 @@ class Helpers():
                         "user_agent": data["user_agent"],
                         "playwright": True,
                         "playwright_include_page": True,
-                        "playwright_context": data["match_url_id"],
+                        "playwright_context": url,
                         "playwright_context_kwargs":
                             {
                                 "user_agent": data["user_agent"],
                                 "timezone_id": "Europe/Madrid",
                                 "locale": "es-ES",
+                                "color_scheme": "light",
+                                "device_scale_factor": 1.0,
+                                "is_mobile": False,
+                                "has_touch": False,
                                 "java_script_enabled": bool(data["render_js"]),
                                 "ignore_https_errors": True,
                                 "proxy": {
@@ -1384,11 +1484,7 @@ class Helpers():
                                     "password": soltia_password,
                                 },
                             },
-                        "extra_http_headers": {
-                            "Accept-Language": "es-ES,es;q=0.9,en;q=0.8",
-                            "Referer": "https://google.com",
-                            "DNT": "1",
-                        },
+                        "extra_http_headers": self.ua_to_client_hints(data["user_agent"], url),
                         "playwright_accept_request_predicate":
                             {
                                 'activate': True,
@@ -1403,23 +1499,178 @@ class Helpers():
 
             # pagemethods and addons for match
             if data["bookie_id"] == "1XBet":
-                meta_request.update({"playwright_page_methods": [
+                meta_request["playwright_accept_request_predicate"] = {
+                    'activate': False
+                }
+                page_methods = [
                     PageMethod(
                         method="add_init_script",
-                        script="Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
+                        script=(
+                            "// Stealth tweaks for 1XBet\n"
+                            "Object.defineProperty(navigator, 'webdriver', {get: () => undefined});\n"
+                            "Object.defineProperty(navigator, 'languages', {get: () => ['es-ES','es','en']});\n"
+                            "Object.defineProperty(navigator, 'platform', {get: () => (function(ua){ ua=ua||''; if(ua.includes('Windows')) return 'Win32'; if(ua.includes('Macintosh')) return 'MacIntel'; if(ua.includes('Linux')) return 'Linux x86_64'; return navigator.platform; })(navigator.userAgent)});\n"
+                            "Object.defineProperty(navigator, 'hardwareConcurrency', {get: () => 8});\n"
+                            "Object.defineProperty(navigator, 'deviceMemory', {get: () => 8});\n"
+                            "Object.defineProperty(navigator, 'permissions', { value: { query: async () => ({ state: 'prompt' }) } });\n"
+                            "window.chrome = { runtime: {} };\n"
+                            "const getParameter = WebGLRenderingContext.prototype.getParameter;\n"
+                            "WebGLRenderingContext.prototype.getParameter = function(param){\n"
+                            "  if (param === 37445) return 'Intel Inc.';\n"
+                            "  if (param === 37446) return 'Intel Iris OpenGL Engine';\n"
+                            "  return getParameter.call(this, param);\n"
+                            "};\n"
+                            "Object.defineProperty(navigator, 'plugins', {get: () => [1,2,3]});\n"
+                        )
+                    ),
+                    # Network sensor to track API statuses
+                    PageMethod(
+                        method="add_init_script",
+                        script=(
+                            "(function(){"
+                            "  if (window._ateApi) return;"
+                            "  window._ateApi = {"
+                            "    targets: ["
+                            "      '/api/web/public/projects/v2/config',"
+                            "      '/api/web/public/client/v1/info',"
+                            "'/service/LineFeed/GetGameZip',"
+                            "    ],"
+                            "    seen: {}"
+                            "  };"
+                            "  const mark = (url, status) => {"
+                            "    try {"
+                            "      const t = window._ateApi.targets.find(x => url.endsWith(x));"
+                            "      if (t) window._ateApi.seen[t] = status;"
+                            "    } catch(e){}"
+                            "  };"
+                            "  const ofetch = window.fetch;"
+                            "  window.fetch = async function(...args){"
+                            "    const res = await ofetch.apply(this, args);"
+                            "    try { mark(res.url, res.status); } catch(e){}"
+                            "    return res;"
+                            "  };"
+                            "  const oOpen = XMLHttpRequest.prototype.open;"
+                            "  const oSend = XMLHttpRequest.prototype.send;"
+                            "  XMLHttpRequest.prototype.open = function(method, url, ...rest){"
+                            "    this.__ate_url = url;"
+                            "    return oOpen.call(this, method, url, ...rest);"
+                            "  };"
+                            "  XMLHttpRequest.prototype.send = function(...args){"
+                            "    this.addEventListener('load', function(){"
+                            "      try { mark(this.responseURL || this.__ate_url || '', this.status); } catch(e){}"
+                            "    });"
+                            "    return oSend.apply(this, args);"
+                            "  };"
+                            "})();"
+                        )
                     ),
                     PageMethod(
+                        method="evaluate",
+                        expression=(
+                            "console.log('[BROWSER] ua=', navigator.userAgent,"
+                            " ' platform=', navigator.platform,"
+                            " ' lang=', navigator.language,"
+                            " ' ch-platform=', (navigator.userAgentData && navigator.userAgentData.platform) || 'NA')"
+                        ),
+                    ),
+
+                    # Soft wait for both APIs to be 200 (adjust timeout as needed)
+                    # PageMethod(
+                    #     method="wait_for_function",
+                    #     expression=(
+                    #         "() => { const s = (window._ateApi && window._ateApi.seen) || {};"
+                    #         " return s['/service/LineFeed/GetGameZip'] === 200; }"
+                    #     ),
+                    #     timeout=10000,
+                    # ),
+                    # Generic stabilization before any per-bookie waits/clicks
+                    # PageMethod(method="wait_for_load_state", state="domcontentloaded"),
+                ]
+                # Cloudflare checks (always run to ensure clearance)
+                if data.get("use_cookies") != 1:
+                    page_methods += [
+                        PageMethod(method="wait_for_function", expression="document.title !== 'Just a moment...'", timeout=5000),
+                        PageMethod(method="wait_for_function", expression="document.cookie.includes('cf_clearance')", timeout=5000),
+                    ]
+                page_methods += [
+                    # Optional pre-selector diagnostic: readyState and early title snippet (moved to monitoring block)
+                    # Content-readiness fallback before selector waits
+                    # PageMethod(method="wait_for_function",
+                    #            expression="document.readyState === 'complete' || (document.body && document.body.innerText.length > 1500)",
+                    #            timeout=10000,
+                    #            ),
+                    PageMethod(
                         method="wait_for_selector",
-                        selector="//div[@class='game-markets__groups']",
-                    )
-                ],
-                }
-                )
+                        selector="xpath=//div[contains(@class,'game-markets') or contains(@class,'groups') or contains(@class,'markets')]",
+                        state="visible",
+                        timeout=15000,
+                    ),
+                    # Secondary CSS union wait to catch variant containers
+                    # PageMethod(
+                    #     method="wait_for_selector",
+                    #     selector="xpath=//div[contains(@class,'game-markets') or contains(@class,'groups') or contains(@class,'markets')]",
+                    #     state="attached",
+                    #     timeout=12000,
+                    # ),
+                    # Trigger layout / lazy-load just in case
+                    # PageMethod(method="evaluate", expression="window.scrollTo(0, 1200)"),
+                    # PageMethod(method="wait_for_timeout", timeout=500),
+                    # Fallback: look for container via querySelector (short last resort)
+                    # PageMethod(
+                    #     method="wait_for_function",
+                    #     expression=(
+                    #         "() => document.querySelector(\"div.game-markets__groups, div[class*='game-view'], div[class*='markets']\") !== null"
+                    #     ),
+                    #     timeout=10000,
+                    # ),
+                    # Best-effort optional clicks that might not exist (non-blocking), after fallback readiness/containers
+                    # PageMethod(
+                    #     method="evaluate",
+                    #     expression=(
+                    #         "(function(){ try { const xpaths = [\"//*[normalize-space(text())='Resultado Exacto']\", \"//*[normalize-space(text())='Marcador correcto']\"]; for (const xp of xpaths){ const el=document.evaluate(xp, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue; if (el){ el.click(); break; } } } catch(e){} })();"
+                    #     ),
+                    # ),
+                    # PageMethod(method="wait_for_timeout", timeout=1000),
+                ]
+                # Monitoring / diagnostics PageMethods (grouped): console breadcrumbs only
+
+                monitor_methods = [
+                    PageMethod(method="evaluate", expression="console.log('ATE: API waits start')"),
+                    PageMethod(method="evaluate", expression="console.log('ATE: API waits end')"),
+                    PageMethod(method="evaluate", expression="console.log('ATE: INIT end')"),
+                    PageMethod(method="evaluate", expression="console.log('ATE: S1 domcontentloaded start')"),
+                    PageMethod(method="evaluate", expression="console.log('ATE: S1 domcontentloaded end')"),
+                    PageMethod(method="evaluate", expression="console.log('ATE: CF title check start')"),
+                    PageMethod(method="evaluate", expression="console.log('ATE: CF title check end')"),
+                    PageMethod(method="evaluate", expression="console.log('ATE: CF clearance check start')"),
+                    PageMethod(method="evaluate", expression="console.log('ATE: CF clearance check end')"),
+                    PageMethod(method="evaluate", expression="console.log('ATE: DIAG start')"),
+                    PageMethod(method="evaluate", expression=("console.log('ATE: before main wait, ready=', document.readyState, ' title=', (document.title||'').slice(0,80))")),
+                    PageMethod(method="evaluate", expression="console.log('ATE: DIAG end')"),
+                    PageMethod(method="evaluate", expression="console.log('ATE: READY start')"),
+                    PageMethod(method="evaluate", expression="console.log('ATE: READY end')"),
+                    PageMethod(method="evaluate", expression="console.log('ATE: SEL1 main XPath start')"),
+                    PageMethod(method="evaluate", expression="console.log('ATE: SEL1 main XPath end')"),
+                    PageMethod(method="evaluate", expression="console.log('ATE: SEL2 CSS union start')"),
+                    PageMethod(method="evaluate", expression="console.log('ATE: SEL2 CSS union end')"),
+                    PageMethod(method="evaluate", expression="console.log('ATE: SCROLL start')"),
+                    PageMethod(method="evaluate", expression="console.log('ATE: SCROLL end')"),
+                    PageMethod(method="evaluate", expression="console.log('ATE: WAIT small start')"),
+                    PageMethod(method="evaluate", expression="console.log('ATE: WAIT small end')"),
+                    PageMethod(method="evaluate", expression="console.log('ATE: FALLBACK presence start')"),
+                    PageMethod(method="evaluate", expression="console.log('ATE: FALLBACK presence end')"),
+                    PageMethod(method="evaluate", expression="console.log('ATE: CLICK optional start')"),
+                    PageMethod(method="evaluate", expression="console.log('ATE: CLICK optional end')"),
+                ]
+                page_methods += monitor_methods
+                meta_request.update({"playwright_page_methods": page_methods})
                 meta_request["playwright_context_kwargs"].update(
                     {"viewport": {
                         "width": 1920,
                         "height": 3200,
                     },
+                        "bypass_csp": True,
+                        "service_workers": "allow",
                     }
                 )
             elif data["bookie_id"] == "AdmiralBet":
@@ -1544,14 +1795,20 @@ class Helpers():
                         ),
                         PageMethod(
                             method="click",
-                            selector="//*[normalize-space()='GOLES TOTALES']",
+                            # selector=f"//*[translate(normalize-space(), {uppercase_alphabet} , {lowercase_alpabet}) = 'goles totales']",
+                            selector="//*[translate(normalize-space(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZÁÉÍÓÚÜÑ', 'abcdefghijklmnopqrstuvwxyzáéíóúüñ') = 'goles totales']",
                             # timeout=40000
                         ),
                         PageMethod(
                             method="click",
-                            selector="//*[normalize-space()='MARCADOR EXACTO']",
+                            # selector=f"//*[translate(normalize-space(), {uppercase_alphabet} , {lowercase_alpabet}) = 'marcador exacto']",
+                            selector="//*[translate(normalize-space(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZÁÉÍÓÚÜÑ', 'abcdefghijklmnopqrstuvwxyzáéíóúüñ') = 'marcador exacto']",
                             # timeout=40000
                         ),
+                        PageMethod(
+                            method='wait_for_timeout',
+                            timeout=1000
+                        )
                     ],
                     }
                     )
@@ -1565,7 +1822,7 @@ class Helpers():
 
                         PageMethod(
                             method="click",
-                            selector="//*[text()='PUNTOS TOTALES']",
+                            selector=f"//*[translate(normalize-space(), {uppercase_alphabet} , {lowercase_alpabet}) = 'puntos totales']",
                             # timeout=40000
                         ),
                     ],
@@ -1766,9 +2023,102 @@ class Helpers():
                 }
                 )
 
+        # Append a generic breadcrumb at the end of page_methods for diagnostics
+        try:
+            from scrapy_playwright.page import PageMethod as _PM
+            if meta_request.get("playwright") and "playwright_page_methods" in meta_request:
+                meta_request["playwright_page_methods"].append(
+                    _PM(method="evaluate", expression="console.log('ATE: end of page_methods')")
+                )
+        except Exception:
+            pass
+
+        # Ensure Playwright page init callback is set for console piping and tracing
+        if debug:
+            try:
+                if meta_request.get("playwright") and not meta_request.get("playwright_page_init_callback"):
+                    meta_request["playwright_page_init_callback"] = "scrapy_playwright_ato.utilities.init_page_debug"
+            except Exception:
+                pass
+
         return url, dont_filter, meta_request
 
+    def ua_to_client_hints(self, user_agent: str, url: str) -> dict:
+        """
+        Build the complete extra_http_headers from a legacy Chrome UA string and a target URL.
+        - Chrome-only: we only consider Google Chrome/Chromium; no Edge/Opera/Samsung/etc. branches.
+        - Referer is derived from the given url (no hard-coded value).
+        Returns a dict suitable for Playwright's extra_http_headers.
+        """
+        import re
+        ua = user_agent or ""
 
+        # Platform mapping
+        if "Windows NT" in ua:
+            platform = "Windows"
+        elif "CrOS" in ua or "Chrome OS" in ua:
+            platform = "Chrome OS"
+        elif "Macintosh" in ua or "Mac OS X" in ua:
+            platform = "macOS"
+        elif "Android" in ua:
+            platform = "Android"
+        elif any(x in ua for x in ["iPhone", "iPad", "iPod"]):
+            platform = "iOS"
+        elif "Linux" in ua:
+            platform = "Linux"
+        else:
+            platform = ""
+
+        # Mobile flag
+        is_mobile = False
+
+        # Chrome major version
+        m = re.search(r"Chrome/(\d+)", ua) or re.search(r"Chromium/(\d+)", ua)
+        chrome_major = int(m.group(1)) if m else 99
+
+        # Brands list: Chromium + GREASE + Google Chrome
+        grease_brand = ("Not.A/Brand", 24)
+        brands = [("Chromium", chrome_major), grease_brand, ("Google Chrome", chrome_major)]
+        sec_ch_ua = ", ".join([f'"{name}";v="{ver}"' for name, ver in brands])
+        sec_ch_ua_mobile = "?1" if is_mobile else "?0"
+        sec_ch_ua_platform = f'"{platform}"'
+
+        # Derive a realistic parent Referer from the URL (drop last path segment)
+        try:
+            from urllib.parse import urlparse, urlunparse
+            parsed = urlparse(url or "")
+            path = parsed.path or "/"
+            # Ensure we remove only the last non-empty segment
+            segments = [seg for seg in path.split("/") if seg != ""]
+            if len(segments) > 0:
+                # remove last segment and rebuild path
+                parent_segments = segments[:-1]
+                parent_path = "/" + "/".join(parent_segments)
+                if not parent_path.endswith("/"):
+                    parent_path += "/"
+                derived_referer = urlunparse((parsed.scheme, parsed.netloc, parent_path, "", "", ""))
+            else:
+                derived_referer = url
+        except Exception:
+            derived_referer = url
+
+        # Compose full headers
+        headers = {
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+            "Accept-Language": "es-ES,es;q=0.9,en;q=0.8",
+            "Referer": derived_referer,
+            "DNT": "1",
+            "Upgrade-Insecure-Requests": "1",
+            "Cache-Control": "max-age=0",
+            "Sec-Fetch-Dest": "document",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Site": "same-origin",
+            "Sec-Fetch-User": "?1",
+            "Sec-CH-UA": sec_ch_ua,
+            "Sec-CH-UA-Mobile": sec_ch_ua_mobile,
+            "Sec-CH-UA-Platform": sec_ch_ua_platform,
+        }
+        return headers
     def build_web_url(self, url):
         url_prefix = "https://href.li/?"
         if url.startswith(url_prefix):

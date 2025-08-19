@@ -1,10 +1,45 @@
+import datetime
+import os
 from script_utilities import Connect, Helpers
+
+LOCAL_USERS = ["sylvain","rickiel"]
 
 class Watchdog():
     def __init__(self):
         self.connection = Connect().to_db(db="ATO_production", table=None)
         self.cursor = self.connection.cursor()
+        try:
+            if os.environ["USER"] in LOCAL_USERS:
+                self.debug = True
+            else:
+                self.debug = False
+        except KeyError:
+            self.debug = False
 
+    def log_messages(self, message_id):
+        query_log_message = """
+        INSERT INTO ATO_production.V2_Message_Logs (message_id, updated_date)
+        VALUES (%s, %s)
+        ON DUPLICATE KEY UPDATE updated_date = VALUES(updated_date);
+        """
+        self.cursor.execute(query_log_message, (message_id, Helpers().get_time_now(country="UTC")))
+        self.connection.commit()
+
+    def retrieve_log_messages(self):
+        query = """
+        SELECT message_id, updated_date FROM ATO_production.V2_Message_Logs
+        ORDER BY updated_date DESC;
+        """
+        self.cursor.execute(query)
+        results = self.cursor.fetchall()
+        log_messages = {}
+        for row in results:
+            log_messages.update(
+                {
+                    row[0]: row[1]
+                }
+            )
+        return log_messages
     def watch_cookies(self):
         query = """
         SELECT vc.bookie
@@ -18,15 +53,67 @@ class Watchdog():
         if len(results) > 0:
             alert_name = "check old cookies"
             status = f"{len(results)} cookies older than 6 days found in the database"
-            print(status)
-            Helpers().send_email(status=status, alert_name=alert_name)
+            print(alert_name, status, self.debug)
+            self.log_messages(message_id=alert_name)
+            Helpers().send_email(status=status, alert_name=alert_name, debug=self.debug)
         else:
-            print("No old cookies found in the database")
+            print("No old cookies found in the database", self.debug)
 
+    def watch_dutcher(self):
+        query_dutcher = """
+            SELECT vd.match_id, vd.rating_qualifying_bets
+            FROM ATO_production.V2_Dutcher vd
+            WHERE vd.rating_qualifying_bets > 120
+            GROUP BY vd.match_id
+        """
+        self.cursor.execute(query_dutcher)
+        results = self.cursor.fetchall()
+        if len(results) > 0:
+            alert_name = "dutcher with rating_qualifying_bets > 120"
+            status = f"\n {', '.join([str(row[0]) for row in results])}"
+            print(alert_name, status, self.debug)
+            self.log_messages(message_id=alert_name)
+            Helpers().send_email(status=status, alert_name=alert_name, debug=self.debug )
+        else:
+            print("No records in Dutcher have rating_qualifying_bets > 120", self.debug)
+
+    def watch_oddsmatcher(self):
+        query_dutcher = """
+            SELECT vo.match_id, vo.rating_qualifying_bet
+            FROM ATO_production.V2_Oddsmatcher vo
+            WHERE vo.rating_qualifying_bet > 120
+            GROUP BY vo.match_id
+        """
+        self.cursor.execute(query_dutcher)
+        results = self.cursor.fetchall()
+        if len(results) > 0:
+            alert_name = "oddsmatcher with rating_qualifying_bets > 120"
+            status = f"\n {', '.join([str(row[0]) for row in results])}"
+            print(alert_name, status, self.debug)
+            self.log_messages(message_id=alert_name)
+            Helpers().send_email(status=status, alert_name=alert_name, debug=self.debug )
+        else:
+            print("No records in Dutcher have rating_qualifying_bets > 120", self.debug)
     # TODO: add a methid to check if BetFair is running correctly
+
     # TODO: add a check on numerical team ids see case of Paris Saint-Germain
     def main(self):
-        self.watch_cookies()
+        watches_to_run = [
+            'check old cookies', 'dutcher with rating_qualifying_bets > 120',
+            'oddsmatcher with rating_qualifying_bets > 120',
+        ]
+        log_messages = self.retrieve_log_messages()
+        if log_messages:
+            now = Helpers().get_time_now(country="UTC")
+            for key, value in log_messages.items():
+                if value > now - datetime.timedelta(hours=1) and not self.debug:
+                    watches_to_run.remove(key)
+
+        print("Watches to run:", watches_to_run)
+        if 'dutcher with rating_qualifying_bets > 120' in watches_to_run:
+            self.watch_dutcher()
+        if 'check old cookies' in watches_to_run:
+            self.watch_cookies()
         self.cursor.close()
         self.connection.close()
 

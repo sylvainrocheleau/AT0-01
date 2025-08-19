@@ -49,11 +49,13 @@ class TwoStepsSpider(scrapy.Spider):
                 # Filter by bookie that have errors
                 # competitions = bookie_config(bookie=["1XBet", "http_errors"])
                 # Filter by bookie
-                # competitions = bookie_config(bookie=["Bwin"])
+                # competitions = bookie_config(bookie=["1XBet"])
                 # Filter by competition
                 # competitions = [x for x in bookie_config(bookie=["all_bookies"]) if x["competition_id"] == "Partidosamistosos"]
                 # Filter by bookie and competition
-                competitions = [x for x in bookie_config(bookie=["DaznBet"]) if x["competition_id"] == "ATP"]
+                competitions = [x for x in bookie_config(bookie=["888Sport"]) if x["competition_id"] == "Argentina-PrimeraDivision"]
+            else:
+                competitions = bookie_config(bookie=["all_bookies"])
 
         except Exception as e:
             if (
@@ -77,13 +79,13 @@ class TwoStepsSpider(scrapy.Spider):
                     data.update(context_info)
                 if data["scraping_tool"] == "playwright":
                     self.close_playwright = True
-                url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="competition", data=data)
+                url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="competition", data=data, debug=self.debug)
                 # if self.debug:
                 #     print("url to scrape", url, "dont_filter", dont_filter, "meta_request", meta_request)
                 yield scrapy.Request(
                     dont_filter=dont_filter,
                     url=url,
-                    callback=self.match_requests if self.debug else self.match_requests,
+                    callback=self.raw_html if self.debug else self.match_requests,
                     errback=self.errback,
                     meta=meta_request,
                 )
@@ -180,13 +182,41 @@ class TwoStepsSpider(scrapy.Spider):
         item = ScrapersItem()
         print("### errback triggered")
         print("proxy", failure.request.meta["proxy_ip"])
-        # print("user_agent", failure.request.meta["user_agent"])
-        # print("failure.request.url", failure.request.url)
-        # print("failure.value.response.url", failure.value.response.url)
-        # print("failure.value.response.status", failure.value.response.status)
-        # print("failure", failure.request.meta["bookie_id"])
-        # print(self.close_playwright)
-        # print("failure", failure.request.meta["scraping_tool"])
+        if self.debug:
+            print("failed proxy_ip", failure.request.meta["proxy_ip"])
+            # print("failed user_agent", failure.request.meta["user_agent"])
+            # Fix: correctly access headers through the appropriate objects
+            if hasattr(failure, 'value') and hasattr(failure.value, 'response'):
+                print('response headers:', failure.value.response.headers)
+            else:
+                print('response headers: N/A - No response object available')
+
+            print("request headers:", failure.request.headers)
+            # Also show the Playwright extra_http_headers (actual browser-like headers) if present
+            try:
+                if failure.request.meta.get("extra_http_headers"):
+                    print("playwright extra_http_headers:", failure.request.meta.get("extra_http_headers"))
+                else:
+                    print("playwright extra_http_headers: N/A")
+            except Exception:
+                print("playwright extra_http_headers: error while retrieving")
+            try:
+                page = failure.request.meta.get("playwright_page")
+                if page is not None:
+                    try:
+                        title = await page.title()
+                    except Exception:
+                        title = "N/A"
+                    print("playwright page title:", title)
+                    try:
+                        cookies = await page.context.cookies()
+                        has_cf = any((c.get("name") == "cf_clearance") for c in cookies)
+                        print("cf_clearance cookie present:", has_cf)
+                    except Exception:
+                        print("cf_clearance cookie present: error while retrieving")
+            except Exception:
+                # do not break errback on diagnostics
+                pass
         try:
             if failure.request.meta["scraping_tool"] == "scrape_ops":
                 error = f"scrape_ops, {failure.request.meta['bookie_id']} url:{failure.request.url}"

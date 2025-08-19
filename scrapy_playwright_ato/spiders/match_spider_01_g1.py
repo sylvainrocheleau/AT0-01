@@ -11,7 +11,7 @@ from scrapy.exceptions import DontCloseSpider
 from twisted.internet.error import DNSLookupError, TimeoutError, TCPTimedOutError
 from ..items import ScrapersItem
 from ..settings import get_custom_playwright_settings, get_custom_settings_for_zyte_api, LOCAL_USERS
-from ..bookies_configurations import get_context_infos,  normalize_odds_variables, list_of_markets_V2
+from ..bookies_configurations import get_context_infos, normalize_odds_variables, list_of_markets_V2
 from ..parsing_logic import parse_match as parse_match_logic
 from ..utilities import Helpers
 
@@ -35,15 +35,15 @@ class MetaSpider(scrapy.Spider):
             # custom_settings["CONCURRENT_REQUESTS"] = 50
             debug = True
             match_filter_enabled = True
-            scraping_group = [1,2,3,4]
+            scraping_group = [1]
 
             # FILTER OPTIONS
-            # match_filter = {}
-            # match_filter = {"type": "bookie_id", "params":["MarathonBet", 1]}
-            # match_filter = {"type": "bookie_and_comp", "params": ["DaznBet", "ATP"]}
+            match_filter = {}
+            # match_filter = {"type": "bookie_id", "params":["AupaBet", 1]}
+            # match_filter = {"type": "bookie_and_comp", "params": ["AdmiralBet", "ATP"]}
             # match_filter = {"type": "comp", "params":["MajorLeagueSoccerUSA"]}
-            match_filter = {"type": "match_url_id",
-                            "params":["https://sb-pp-esfe.daznbet.es/tenis/evento/mcdonald-mackenzie-v-darderi-luciano-u-2380018?tab=principal"]}
+            # match_filter = {"type": "match_url_id",
+            #                 "params":["https://www.efbet.es/ES/sports#bo-navigation=282241.1,490462.1,490777.1&action=market-group-list&event=37901230.1"]}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -66,7 +66,7 @@ class MetaSpider(scrapy.Spider):
                 for key, matches in (
                     (key, [match for match in value
                            if match['scraping_tool'] in self.allowed_scraping_tools
-                           # and match['scraping_group'] in self.scraping_group
+                           and match['scraping_group'] in self.scraping_group
                            # and match['frequency_group'] == self.frequency_groups[-1]
                            ]
                      )
@@ -125,24 +125,19 @@ class MetaSpider(scrapy.Spider):
                   f"with {self.lenght_of_matches_details_and_urls} matches")
             for key, value in matches_details_and_urls.items():
                 count_of_matches_details_and_urls += 1
-                dutcher_counter = 0
                 for data in value:
                     try:
-                        if self.debug:
-                            print("Data to process:", data)
+                        # if self.debug:
+                        #     print("Data to process:", data)
                         if data["scraping_tool"] in ["requests", "playwright", "zyte_proxy_mode"]:
                             context_info = random.choice([x for x in context_infos if x["bookie_id"] == data["bookie_id"]])
                             data.update(context_info)
                         if data["scraping_tool"] == "playwright":
                             self.close_playwright = True
-                        url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="match", data=data)
+                        url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="match", data=data, debug=self.debug)
                         # if self.debug:
-                        #     # print("Meta request:", meta_request)
-                        dutcher_counter += 1
-                        if dutcher_counter == len(value) and 'match_spider_01' in self.name :
-                            meta_request["queue_dutcher"] = True
-                        else:
-                            meta_request["queue_dutcher"] = False
+                        #     print("Meta request:", meta_request)
+
                         yield scrapy.Request(
                             dont_filter=dont_filter,
                             url=url,
@@ -174,7 +169,6 @@ class MetaSpider(scrapy.Spider):
                 break
 
     async def parse_match(self, response):
-
         item = ScrapersItem()
         if response.meta.get("scraping_tool") == "playwright":
             try:
@@ -190,8 +184,12 @@ class MetaSpider(scrapy.Spider):
             print("working proxy_ip", response.meta.get("proxy_ip"))
             print("working user_agent", response.meta.get("user_agent"))
             # save proxy_ip, user_agent plus a third value "working"  to a csv file called proxy_ip_user_agent.csv
-            with open("proxy_ip_user_agent.csv", "a") as f:
-                f.write(f"{response.meta.get('proxy_ip')};{response.meta.get('user_agent')};working\n")
+            parent = os.path.dirname(os.getcwd())
+            try:
+                with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/logs/proxy_ip_user_agent.csv", "a") as f:
+                    f.write(f"{response.meta.get('proxy_ip')};{response.meta.get('user_agent')};working\n")
+            except:
+                pass
 
         odds = parse_match_logic(
             bookie_id=response.meta.get("bookie_id"),
@@ -214,13 +212,14 @@ class MetaSpider(scrapy.Spider):
                 )
             }
         )
-        print("Odds norm: ", odds)
+
         if not odds:
             item["data_dict"] = {
                 "match_infos": [
                     {
                         "match_url_id": response.meta.get("url"),
                         "http_status": 1600,  # No odds found
+                        "match_id": response.meta.get("match_id"),
                         # "updated_date": Helpers().get_time_now("UTC")
                     },
                 ]
@@ -236,10 +235,8 @@ class MetaSpider(scrapy.Spider):
                 "http_status": response.status,
                 "match_url_id": response.meta.get("url"),
             }
-            if response.meta.get("queue_dutcher") is True:
-                self.pipeline_type = ["match_odds", "queue_dutcher"]
-            else:
-                self.pipeline_type = ["match_odds"]
+
+            self.pipeline_type = ["match_odds"]
             item["pipeline_type"] = self.pipeline_type
         yield item
 
@@ -248,7 +245,7 @@ class MetaSpider(scrapy.Spider):
         print("RAW HTML RESPONSE")
         parent = os.path.dirname(os.getcwd())
         try:
-            with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/" + self.name + "_response" + ".txt", "w") as f:
+            with open(parent + "/Scrapy_Playwright/logs/" + self.name + "_response" + ".txt", "w") as f:
                 f.write(response.text) # response.meta["playwright_page"]
         except Exception as e:
             print(traceback.format_exc())
@@ -258,11 +255,46 @@ class MetaSpider(scrapy.Spider):
         print("### err back triggered")
         if self.debug:
             print("failed proxy_ip", failure.request.meta["proxy_ip"])
-            # print("failure", failure)
-            print("failed user_agent", failure.request.meta["user_agent"])
-            # save proxy_ip, user_agent plus a third value "failed"  to a csv file called proxy_ip_user_agent.csv
-            with open("proxy_ip_user_agent.csv", "a") as f:
-                f.write(f"{failure.request.meta.get('proxy_ip')};{failure.request.meta.get('user_agent')};failed\n")
+            # print("failed user_agent", failure.request.meta["user_agent"])
+            # Fix: correctly access headers through the appropriate objects
+            if hasattr(failure, 'value') and hasattr(failure.value, 'response'):
+                print('response headers:', failure.value.response.headers)
+            else:
+                print('response headers: N/A - No response object available')
+
+            print("request headers:", failure.request.headers)
+            # Also show the Playwright extra_http_headers (actual browser-like headers) if present
+            try:
+                if failure.request.meta.get("extra_http_headers"):
+                    print("playwright extra_http_headers:", failure.request.meta.get("extra_http_headers"))
+                else:
+                    print("playwright extra_http_headers: N/A")
+            except Exception:
+                print("playwright extra_http_headers: error while retrieving")
+            # Playwright page diagnostics: title and cf_clearance cookie presence + save DOM snapshot
+            try:
+                page = failure.request.meta.get("playwright_page")
+                if page is not None:
+                    try:
+                        title = await page.title()
+                    except Exception:
+                        title = "N/A"
+                    print("playwright page title:", title)
+                    try:
+                        cookies = await page.context.cookies()
+                        has_cf = any((c.get("name") == "cf_clearance") for c in cookies)
+                        print("cf_clearance cookie present:", has_cf)
+                    except Exception:
+                        print("cf_clearance cookie present: error while retrieving")
+            except Exception:
+                # do not break errback on diagnostics
+                pass
+            parent = os.path.dirname(os.getcwd())
+            try:
+                with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/logs/proxy_ip_user_agent.csv", "a") as f:
+                    f.write(f"{failure.request.meta.get('proxy_ip')};{failure.request.meta.get('user_agent')};failed\n")
+            except:
+                pass
         # print("failure.request.meta", failure.request.meta)
         # print("failure.request.url", failure.request.url)
         # print("failure.value.response.url", failure.value.response.url)
@@ -312,10 +344,10 @@ class MetaSpider(scrapy.Spider):
         try:
             item["data_dict"] = {
                 "match_infos": [
-                    # TODO url should be the original url, not the one from the response
                     {
                         "match_url_id": url,
                         "http_status": status,
+                        "match_id": failure.request.meta["match_id"],
                         # "updated_date": Helpers().get_time_now("UTC")
                     },
                 ]
