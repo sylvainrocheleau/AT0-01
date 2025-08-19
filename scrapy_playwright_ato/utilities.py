@@ -1339,6 +1339,10 @@ class Helpers():
                         selector="//div[@class='main-container']",
                     ),
 
+                    PageMethod(
+                        method="wait_for_timeout",
+                        timeout=1000
+                    )
                 ],
                 }
                 )
@@ -1833,6 +1837,22 @@ class Helpers():
                             selector=f"//*[translate(normalize-space(), {uppercase_alphabet} , {lowercase_alpabet}) = 'puntos totales']",
                             # timeout=40000
                         ),
+                    ],
+                    }
+                    )
+                elif data["sport_id"] == "3":
+                    meta_request.update({"playwright_page_methods": [
+                        PageMethod(
+                            method="wait_for_selector",
+                            selector="//div[@class='accordion-container ']",
+                            # timeout=40000
+                        ),
+
+                        # PageMethod(
+                        #     method="click",
+                        #     selector="//*[text()='PUNTOS TOTALES']",
+                        #     # timeout=40000
+                        # )
                     ],
                     }
                     )

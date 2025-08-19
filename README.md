@@ -36,20 +36,20 @@
 
 
 Liste de bookies à ajouter ppour le tennis:
-- EfBet: timeout
+- EfBet: FAIT
 - Luckia: FAIT(multiple comp_url, tobereviewed)
-- GoldenPark: timeout
+- GoldenPark: FALSE
 - Bwin: FAIT
-- BetWay: FAIT
-- AdmiralBet: Potentielles erreurs liées à la base de donnée(à revoir)
-- AupaBet: ACCESS DENIED
-- Bet777: timeout
+- BetWay: FALSE(Every atp tournament has their url)06/08
+- AdmiralBet: FAIT
+- AupaBet: ACCESS DENIED(Require NordVPN)
+- Bet777: FALSE
 - DaznBet: timeout
 - Juegging : FALSE
-- KirolBet : FAIT
+- KirolBet : ACCESS DENIED
 - BetfairSportsbook: PAS A FAIRE
 - CasinoBarcelona: FALSE(NE CONTIENT QUE JUSTE UN SEUL TOURNOI)
-- CasinoGranMadrid: timeout
+- CasinoGranMadrid: FAIT
 - RetaBet
 - WilliamHill
 - ZeBet : Erreur 403 sur lien de la competition(à revoir)

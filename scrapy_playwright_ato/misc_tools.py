@@ -41,7 +41,7 @@ def teams_and_dates_from_response(bookie_id, competition_id, sport_id, normalize
 
     map_matches_urls = []
     try:
-        with open('logs/comp_spider_01_response.txt') as f:
+        with open('../logs/comp_spider_01_response.txt') as f:
             response = Selector(text=f.read())
             # response = f.read()
         match_infos = parse_competition(response=response, bookie_id=bookie_id, competition_id=competition_id,
