@@ -4,3 +4,6 @@ project.egg-info/
 .releases
 /archives/
 /logs/
+/.venv/
+/scripts/__pycache__/
+/.idea/
