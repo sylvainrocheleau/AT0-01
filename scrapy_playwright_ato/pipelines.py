@@ -90,7 +90,7 @@ class ScrapersPipeline:
         self.match_odds_buffer = []
         self.match_urls_update_buffer = []
         self.match_ids_buffer = []
-        self.batch_size = 500  # Adjust as needed
+        self.batch_size = 500
         self.connection = None
         self.cursor = None
         try:
@@ -146,11 +146,15 @@ class ScrapersPipeline:
         try:
             conn, cur = self._worker_connect_db()
 
-            while not self._stop_evt.is_set():
+            while True:
                 # Drain queue with timeout to allow time-based flushes
                 try:
                     msg = self._work_q.get(timeout=0.5)
                 except queue.Empty:
+                    # If stop requested and queue is empty, break out to final flush
+                    if self._stop_evt.is_set():
+                        msg = None
+                        break
                     msg = None
 
                 if msg:
@@ -192,7 +196,7 @@ class ScrapersPipeline:
                             pass
                         conn, cur = self._worker_connect_db()
 
-            # Final flush on stop
+            # After stop signal and queue drained: final flush
             try:
                 self._worker_flush(cur, conn, worker_odds_buf, worker_url_updates_buf, worker_match_ids_buf)
             except Exception:
@@ -319,7 +323,6 @@ class ScrapersPipeline:
         """Ensures the database connection is active, reconnecting if necessary."""
         try:
             # Use ping() to check connection and reconnect if needed.
-            # This is the idiomatic way and avoids "Unread result found" errors.
             self.connection.ping(reconnect=True, attempts=3, delay=5)
         except (mysql.connector.Error, AttributeError):
             # If ping fails or connection is None, establish a new one.
@@ -439,7 +442,10 @@ class ScrapersPipeline:
     def process_item(self, item, spider):
         spain = pytz.timezone("Europe/Madrid")
         if "pipeline_type" in item and "match_odds" in item["pipeline_type"]:
+            match_id = item.get("data_dict", {}).get("match_id")
             try:
+                if match_id is not None:
+                    print(f"[Pipeline] Preparing to enqueue {match_id}")
                 odds_batch = []
                 for data in item["data_dict"].get("odds", []):
                     values_odds = (
@@ -466,16 +472,17 @@ class ScrapersPipeline:
 
                 msg = {"type": "batch", "odds": odds_batch, "url_updates": url_updates, "match_ids": match_ids}
                 try:
+                    print(f"[Pipeline] Enqueuing {match_id} with {len(odds_batch)} odds")
                     self._work_q.put_nowait(msg)
                 except queue.Full:
                     Helpers().insert_log(level="WARNING", type="CODE",
-                                         error=f"{spider.name} writer queue full, dropping batch",
+                                         error=f"{spider.name} writer queue full, dropping batch for {match_id}",
                                          message=None)
 
             except Exception as e:
                 if self.debug:
                     print(traceback.format_exc())
-                Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}",
+                Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} process_item failed for {match_id}: {str(e)}",
                                      message=traceback.format_exc())
 
         if "pipeline_type" in item.keys() and "queue_dutcher" in item["pipeline_type"]:
