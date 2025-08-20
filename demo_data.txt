@@ -1,0 +1,1 @@
+{'pipeline_type': ['match_odds']}
