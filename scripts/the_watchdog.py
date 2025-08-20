@@ -4,7 +4,7 @@ from script_utilities import Connect, Helpers
 
 LOCAL_USERS = ["sylvain","rickiel"]
 
-class Watchdog():
+class Watchdog:
     def __init__(self):
         self.connection = Connect().to_db(db="ATO_production", table=None)
         self.cursor = self.connection.cursor()
@@ -94,13 +94,29 @@ class Watchdog():
             Helpers().send_email(status=status, alert_name=alert_name, debug=self.debug )
         else:
             print("No records in Dutcher have rating_qualifying_bets > 120", self.debug)
-    # TODO: add a methid to check if BetFair is running correctly
-
+    # TODO: add a method to check if BetFair is running correctly
     # TODO: add a check on numerical team ids see case of Paris Saint-Germain
+
+
+    def watch_match_url_update_date(self):
+        query_match_url_update = """
+            SELECT vmu.bookie_id, vmu.match_id
+            FROM ATO_production.V2_Matches_Urls vmu
+            WHERE vmu.updated_date < DATE_SUB(NOW(), INTERVAL 1 DAY) AND vmu.http_status = 200
+    """
+        self.cursor.execute(query_match_url_update)
+        results = self.cursor.fetchall()
+        if len(results) > 0:
+            alert_name = "outdated match urls"
+            status =  f"\n {'\n '.join(f'{row[0]}: {row[1]}' for row in results)}"
+            print(alert_name, status, self.debug)
+            self.log_messages(message_id=alert_name)
+            Helpers().send_email(status=status, alert_name=alert_name, debug=self.debug )
+
     def main(self):
         watches_to_run = [
             'check old cookies', 'dutcher with rating_qualifying_bets > 120',
-            'oddsmatcher with rating_qualifying_bets > 120',
+            'oddsmatcher with rating_qualifying_bets > 120', 'outdated match url'
         ]
         log_messages = self.retrieve_log_messages()
         if log_messages:
@@ -114,6 +130,10 @@ class Watchdog():
             self.watch_dutcher()
         if 'check old cookies' in watches_to_run:
             self.watch_cookies()
+        if 'oddsmatcher with rating_qualifying_bets > 120' in watches_to_run:
+            self.watch_oddsmatcher()
+        if 'outdated match url' in watches_to_run:
+            self.watch_match_url_update_date()
         self.cursor.close()
         self.connection.close()
 
