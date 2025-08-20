@@ -44,14 +44,14 @@ Liste de bookies à ajouter ppour le tennis:
 - AdmiralBet: FAIT
 - AupaBet: ACCESS DENIED(Require NordVPN)
 - Bet777: FALSE
-- DaznBet: timeout
+- DaznBet: FAIT
 - Juegging : FALSE
 - KirolBet : ACCESS DENIED
 - BetfairSportsbook: PAS A FAIRE
 - CasinoBarcelona: FALSE(NE CONTIENT QUE JUSTE UN SEUL TOURNOI)
 - CasinoGranMadrid: FAIT
-- RetaBet
-- WilliamHill
+- RetaBet: FALSE
+- WilliamHill: FALSE
 - ZeBet : Erreur 403 sur lien de la competition(à revoir)
 - EnRacha: FAIT
 - JokerBet: FAIT

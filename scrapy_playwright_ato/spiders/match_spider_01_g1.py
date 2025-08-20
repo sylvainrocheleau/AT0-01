@@ -43,7 +43,7 @@ class MetaSpider(scrapy.Spider):
             # match_filter = {"type": "bookie_and_comp", "params": ["DaznBet", "ATP"]}
             # match_filter = {"type": "comp", "params":["MajorLeagueSoccerUSA"]}
             match_filter = {"type": "match_url_id",
-                            "params":["https://sb-pp-esfe.daznbet.es/tenis/evento/mcdonald-mackenzie-v-darderi-luciano-u-2380018?tab=principal"]}
+                            "params":["https://sb-pp-esfe.daznbet.es/tenis/evento/matos-r-melo-m-v-erler-a-galloway-r-u-2394082?tab=principal"]}
     except:
         match_filter_enabled = False
         match_filter = {}
