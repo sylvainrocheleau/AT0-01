@@ -26,15 +26,17 @@ class WebsocketsSpider(Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                self.competitions = [x for x in bookie_config(bookie=["Betsson"]) if x["competition_id"] == "Argentina-PrimeraDivision"]
+                # self.competitions = [x for x in bookie_config(bookie=["Betsson"]) if x["competition_id"] == "Argentina-PrimeraDivision"]
                 # self.match_filter = {"type": "bookie_and_comp", "params": ["Betsson", "CopaSudamericana"]}
 
-                # self.competitions = bookie_config(bookie=["Betsson"])
-                # self.match_filter = {"type": "bookie_id", "params": ["Betsson" ,1]}
-                self.match_filter = {"type": "match_url_id", "params": [
-                    "https://sportsbook.betsson.es/#/sport/?type=0&region=20001&competition=1685&sport=1&game=27751850"]}
+                self.competitions = bookie_config(bookie=["Betsson"])
+                self.match_filter = {"type": "bookie_id", "params": ["Betsson" ,1]}
+                # self.match_filter = {"type": "match_url_id", "params": [
+                #     "https://sportsbook.betsson.es/#/sport/?type=0&region=20001&competition=1792&sport=1&game=27763672"]}
 
                 print(self.competitions)
+            else:
+                self.debug = False
         except:
             if (
                 0 <= Helpers().get_time_now("UTC").hour < 1
@@ -122,6 +124,7 @@ class WebsocketsSpider(Spider):
                 await self._ensure_connection()
                 if not self.ws:
                     raise ConnectionError("WebSocket is not connected.")
+
                 await self.ws.send(json.dumps(payload))
                 return await self.ws.recv()
             except ConnectionClosed:
@@ -245,22 +248,20 @@ class WebsocketsSpider(Spider):
 
         for key, value in matches_details_and_urls.items():
             for data in value:
+                flag_error = True
                 try:
-                    flag_error = False
                     if data["sport_id"] == "1":
                         betsson_sport_id = 1
                     elif data["sport_id"] == "2":
                         betsson_sport_id = 3
                     else:
                         betsson_sport_id = None
-                        flag_error = True
                     if 'game=' in data["match_url_id"]:
                         game_id = int(data["match_url_id"].split("game=")[-1])
                     elif '/' in data["match_url_id"]:
                         game_id = int(data["match_url_id"].split("/")[-1])
                     else:
                         game_id = None
-                        flag_error = True
 
                     payload = {
                         "command": "get",
@@ -279,71 +280,64 @@ class WebsocketsSpider(Spider):
                         },
                         "rid": self.rid
                     }
-                    if not flag_error:
-                        response_odds = await self._send_and_receive(payload)
-                    else:
-                        response_odds = None
+                    response_odds = await self._send_and_receive(payload)
+
+                    if response_odds is not None:
+                        odds = parse_match(
+                            bookie_id=data["bookie_id"],
+                            response=response_odds,
+                            sport_id=data["sport_id"],
+                            list_of_markets=list_of_markets_V2[data["bookie_id"]][data["sport_id"]],
+                            home_team=data["home_team"],
+                            away_team=data["away_team"],
+                            debug=self.debug
+                        )
+                        odds = Helpers().build_ids(
+                            id_type="bet_id",
+                            data={
+                                "match_id": data["match_id"],
+                                "odds": normalize_odds_variables(
+                                    odds,
+                                    data["sport_id"],
+                                    data["home_team"],
+                                    data["away_team"],
+                                )
+                            }
+                        )
+                        if odds:
+                            flag_error = False
+
                 except Exception:
                     if self.debug:
                         print(traceback.format_exc())
-                    flag_error = True
-                    response_odds = None
-                if not response_odds:
-                    print(f"Failed to get odds for match {data['match_id']} after retries.")
-                    flag_error = True
-                if not flag_error:
-                    if self.debug:
-                        print("response_odds", response_odds)
+                finally:
                     item = ScrapersItem()
-                    odds = parse_match(
-                        bookie_id=data["bookie_id"],
-                        response=response_odds,
-                        sport_id=data["sport_id"],
-                        list_of_markets=list_of_markets_V2[data["bookie_id"]][data["sport_id"]],
-                        home_team=data["home_team"],
-                        away_team=data["away_team"],
-                        debug=self.debug
-                    )
-                    odds = Helpers().build_ids(
-                        id_type="bet_id",
-                        data={
-                            "match_id": data["match_id"],
-                            "odds": normalize_odds_variables(
-                                odds,
-                                data["sport_id"],
-                                data["home_team"],
-                                data["away_team"],
-                            )
+                    if flag_error:
+                        if self.debug:
+                            print(f"Flag error on {data['match_id']}")
+                        item["data_dict"] = {
+                            "match_infos": [
+                                {
+                                    "match_url_id": data["match_url_id"],
+                                    "http_status": 1600,
+                                    "match_id": data["match_id"],
+                                },
+                            ]
                         }
-                    )
-                    if not odds:
-                        flag_error = True
-                    else:
+                        item["pipeline_type"] = ["error_on_match_url"]
+                    elif not flag_error:
+                        if self.debug:
+                            print(f"No flag error on {data['match_id']}")
                         item["data_dict"] = {
                             "match_id": data["match_id"],
                             "bookie_id": data["bookie_id"],
                             "odds": odds,
                             "updated_date": Helpers().get_time_now(country="UTC"),
                             "web_url": data["web_url"],
-                            "http_status": 200, # Assuming 200 since we got data
+                            "http_status": 200,  # Assuming 200 since we got data
                             "match_url_id": data["match_url_id"],
                         }
-
-                        item["pipeline_type"] = ["match_odds", "queue_dutcher"]
-                    yield item
-                if flag_error:
-                    item = ScrapersItem()
-                    item["data_dict"] = {
-                        "match_infos": [
-                            {
-                                "match_url_id": data["match_url_id"],
-                                "http_status": 1600,
-                                "match_id": data["match_id"],
-                                # "updated_date": Helpers().get_time_now("UTC")
-                            },
-                        ]
-                    }
-                    item["pipeline_type"] = ["error_on_match_url"]
+                        item["pipeline_type"] = ["match_odds"]
                     yield item
         await self.close_websocket()
 
