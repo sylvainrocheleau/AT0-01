@@ -30,9 +30,9 @@ class WebsocketsSpider(Spider):
                 # self.match_filter = {"type": "bookie_and_comp", "params": ["Betsson", "CopaSudamericana"]}
 
                 self.competitions = bookie_config(bookie=["Betsson"])
-                self.match_filter = {"type": "bookie_id", "params": ["Betsson" ,1]}
-                # self.match_filter = {"type": "match_url_id", "params": [
-                #     "https://sportsbook.betsson.es/#/sport/?type=0&region=20001&competition=1792&sport=1&game=27763672"]}
+                # self.match_filter = {"type": "bookie_id", "params": ["Betsson", 1]}
+                self.match_filter = {"type": "match_url_id", "params": [
+                    'https://sportsbook.betsson.es/#/sport/?type=0&region=20001&competition=1685&sport=1&game=27808509']}
 
                 print(self.competitions)
             else:
