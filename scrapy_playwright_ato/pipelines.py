@@ -93,6 +93,7 @@ class ScrapersPipeline:
         self.batch_size = 500
         self.connection = None
         self.cursor = None
+        self.cloned_bookies = {}
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
@@ -234,10 +235,23 @@ class ScrapersPipeline:
             except Exception:
                 pass
 
-            if odds_buf:
-                # The 10th element (index 9) is match_url_id — use it for deletes
-                unique_urls = sorted(set(item[9] for item in odds_buf))
+            # Collect URLs to delete from both odds and url updates (when status indicates error)
+            urls_from_odds = set(item[9] for item in odds_buf) if odds_buf else set()
+            urls_from_updates = set()
+            for upd in (url_updates_buf or []):
+                # upd is (updated_date, http_status, match_url_id)
+                try:
+                    http_status = upd[1]
+                    match_url_id = upd[2]
+                except Exception:
+                    http_status = None
+                    match_url_id = None
+                if http_status is not None and http_status != 200 and match_url_id is not None:
+                    urls_from_updates.add(match_url_id)
 
+            urls_to_delete = urls_from_odds | urls_from_updates
+
+            if urls_to_delete:
                 delete_query = """
                     DELETE vmo
                     FROM ATO_production.V2_Matches_Odds AS vmo
@@ -246,12 +260,14 @@ class ScrapersPipeline:
                     WHERE vmu.match_url_id = %s
                 """
                 deleted_rows_count = 0
-                for url in unique_urls:
+                for url in sorted(urls_to_delete):
                     cursor.execute(delete_query, (url,))
                     deleted_rows_count += cursor.rowcount
                 if self.debug:
                     print(f"[Worker] Deleted {deleted_rows_count} old odds entries.")
 
+            # Insert odds only if we have them
+            if odds_buf:
                 query_insert_match_odds = """
                     INSERT INTO ATO_production.V2_Matches_Odds
                     (bet_id, match_id, bookie_id, market, market_binary, result, back_odd, web_url, updated_date)
@@ -271,7 +287,9 @@ class ScrapersPipeline:
                     SET updated_date = %s, http_status = %s
                     WHERE match_url_id = %s
                 """
-                safe_executemany(cursor, query_update_match_urls, unique_updates)
+                for upd in unique_updates:
+                    cursor.execute(query_update_match_urls, upd)
+                    print(f"[Worker] URL update rowcount {cursor.rowcount} for {upd[2]}")
 
             if match_ids_buf:
                 query_insert_dutcher_queue = """
@@ -329,12 +347,81 @@ class ScrapersPipeline:
             print("Database connection lost. Reconnecting...")
             self._connect_db()
 
+    def _safe_execute_sql(self, sql, params=None, retries=5, base_delay=0.5):
+        """Execute a single SQL statement with retry and auto-reconnect on transient errors.
+        Designed for DDL like TRUNCATE, but works for any simple statement.
+        """
+        attempt = 0
+        last_err = None
+        while attempt <= retries:
+            try:
+                # Make sure connection is alive before executing
+                self._ensure_connection()
+                if params is not None:
+                    self.cursor.execute(sql, params)
+                else:
+                    self.cursor.execute(sql)
+                return
+            except mysql.connector.errors.OperationalError as e:
+                # 2006: MySQL server has gone away, 2013: Lost connection
+                if getattr(e, 'errno', None) in (2006, 2013):
+                    last_err = e
+                    try:
+                        # best-effort rollback if in txn
+                        if self.connection:
+                            self.connection.rollback()
+                    except Exception:
+                        pass
+                    # reconnect and backoff
+                    self._connect_db()
+                    delay = base_delay * (2 ** attempt)
+                    time.sleep(min(delay, 5.0))
+                    attempt += 1
+                    continue
+                else:
+                    raise
+            except mysql.connector.errors.DatabaseError as e:
+                # Retry on deadlock (1213) or lock wait timeout (1205)
+                if getattr(e, 'errno', None) in (1213, 1205):
+                    last_err = e
+                    try:
+                        if self.connection:
+                            self.connection.rollback()
+                    except Exception:
+                        pass
+                    delay = base_delay * (2 ** attempt)
+                    time.sleep(min(delay, 5.0))
+                    attempt += 1
+                    continue
+                else:
+                    raise
+            except Exception as e:
+                # Non-MySQL errors: do not loop infinitely
+                raise
+        # If we exit loop without return, raise last error
+        if last_err:
+            raise last_err
+
+    def _get_cloned_bookies(self):
+        query_clones = """
+            SELECT vb.bookie_id, vb.bookie_url, vb.cloned_of
+            FROM ATO_production.V2_Bookies vb
+            WHERE vb.cloned_of IS NOT NULL
+        """
+        self.cursor.execute(query_clones)
+        results = self.cursor.fetchall()
+        if results:
+            self.cloned_bookies = {result[2]: [] for result in results}
+            for result in results:
+                self.cloned_bookies[result[2]].append({result[0]: result[1]})
+        return self.cloned_bookies
 
     def open_spider(self, spider):
         """Initialize database connection and start the background worker when the spider starts."""
         self.spider_name = spider.name
         self._connect_db()
         self._start_worker()
+        # self._get_cloned_bookies()
 
     def close_spider(self, spider):
         """Stop the background worker after a final flush and close the main-thread connection."""
@@ -444,8 +531,8 @@ class ScrapersPipeline:
         if "pipeline_type" in item and "match_odds" in item["pipeline_type"]:
             match_id = item.get("data_dict", {}).get("match_id")
             try:
-                if match_id is not None:
-                    print(f"[Pipeline] Preparing to enqueue {match_id}")
+                # if match_id is not None:
+                    # print(f"[Pipeline] Preparing to enqueue {match_id}")
                 odds_batch = []
                 for data in item["data_dict"].get("odds", []):
                     values_odds = (
@@ -461,6 +548,23 @@ class ScrapersPipeline:
                         item["data_dict"]["match_url_id"],  # index 9 for worker deletes
                     )
                     odds_batch.append(values_odds)
+                    # # This clones bookies we don't have data for
+                    # if item["data_dict"]["bookie_id"] in self.cloned_bookies.keys():
+                    #     for cloning_data in self.cloned_bookies[item["data_dict"]["bookie_id"]]:
+                    #         for bookie_to_clone_id, url_to_clone_id in cloning_data.items():
+                    #             values_odds = (
+                    #                 data["bet_id"],
+                    #                 item["data_dict"]["match_id"],
+                    #                 bookie_to_clone_id,
+                    #                 data["Market"],
+                    #                 data["Market_Binary"],
+                    #                 data["Result"],
+                    #                 data["Odds"],
+                    #                 url_to_clone_id,
+                    #                 item["data_dict"]["updated_date"],
+                    #                 url_to_clone_id,  # index 9 for worker deletes
+                    #             )
+                    #             odds_batch.append(values_odds)
 
                 url_updates = [(
                     item["data_dict"]["updated_date"],
@@ -472,7 +576,7 @@ class ScrapersPipeline:
 
                 msg = {"type": "batch", "odds": odds_batch, "url_updates": url_updates, "match_ids": match_ids}
                 try:
-                    print(f"[Pipeline] Enqueuing {match_id} with {len(odds_batch)} odds")
+                    # print(f"[Pipeline] Enqueuing {match_id} with {len(odds_batch)} odds")
                     self._work_q.put_nowait(msg)
                 except queue.Full:
                     Helpers().insert_log(level="WARNING", type="CODE",
@@ -964,7 +1068,8 @@ class ScrapersPipeline:
             try:
                 # connection = Connect().to_db(db="ATO_production", table=None)
                 # cursor = connection.cursor()
-                self.cursor.execute("TRUNCATE TABLE ATO_production.V2_Exchanges")
+                self._ensure_connection()
+                self._safe_execute_sql("TRUNCATE TABLE ATO_production.V2_Exchanges")
                 query_exchange = ("""
                   INSERT INTO ATO_production.V2_Exchanges
                   (bet_id, date, sport, competition, home_team, away_team, market, market_binary,
@@ -992,47 +1097,52 @@ class ScrapersPipeline:
                     safe_executemany(self.cursor, query_exchange, batch_insert_exchanges)
                     print(f"Updated V2_Exchanges. Rows affected: {self.cursor.rowcount} at {datetime.datetime.now()}")
 
-                # Now update V2_Oddsmatcher
-                self.cursor.execute("TRUNCATE TABLE ATO_production.V2_Oddsmatcher")
+                # Now truncate and update V2_Oddsmatcher
+                self._safe_execute_sql("TRUNCATE TABLE ATO_production.V2_Oddsmatcher")
                 query_insert_odds_match_maker = """
                     INSERT INTO ATO_production.V2_Oddsmatcher (
-                    bet_id,
-                    match_id,
-                    bookie_id,
-                    back_odd,
-                    lay_odds,
-                    liquidity,
-                    rating_qualifying_bet,
-                    rating_free_bet,
-                    rating_refund_bet,
-                    url
-                )
-                SELECT
-                    vmo.bet_id,
-                    vmo.match_id,
-                    vmo.bookie_id,
-                    vmo.back_odd,
-                    ve.lay_odds,
-                    ve.liquidity,
-                    ROUND((100 * vmo.back_odd * (1 - 0.02) / (ve.lay_odds - 0.02)), 2) AS rating_qualifying_bet,
-                    ROUND((100 * (vmo.back_odd - 1) * (1 - 0.02) / (ve.lay_odds - 0.02)), 2) AS rating_free_bet,
-                    ROUND((100 * ((vmo.back_odd - 0.7) * (1 - 0.02) / (ve.lay_odds - 0.02) - 0.3)), 2) AS rating_refund_bet,
-                    ve.url
-                FROM ATO_production.V2_Matches_Odds vmo
-                INNER JOIN ATO_production.V2_Exchanges ve ON vmo.bet_id = ve.bet_id
-                WHERE ve.lay_odds > 0
-                  AND ve.liquidity > 0
-                ON DUPLICATE KEY UPDATE
-                    rating_qualifying_bet = VALUES(rating_qualifying_bet),
-                    rating_free_bet       = VALUES(rating_free_bet),
-                    rating_refund_bet     = VALUES(rating_refund_bet),
-                    lay_odds              = VALUES(lay_odds),
-                    liquidity             = VALUES(liquidity),
-                    url                   = VALUES(url)
+                        bet_id,
+                        match_id,
+                        bookie_id,
+                        back_odd,
+                        lay_odds,
+                        liquidity,
+                        rating_qualifying_bet,
+                        rating_free_bet,
+                        rating_refund_bet,
+                        url
+                    )
+                    SELECT
+                        vmo.bet_id,
+                        vmo.match_id,
+                        vmo.bookie_id,
+                        vmo.back_odd,
+                        ve.lay_odds,
+                        ve.liquidity,
+                        ROUND((100 * vmo.back_odd * (1 - 0.02) / (ve.lay_odds - 0.02)), 2) AS rating_qualifying_bet,
+                        ROUND((100 * (vmo.back_odd - 1) * (1 - 0.02) / (ve.lay_odds - 0.02)), 2) AS rating_free_bet,
+                        ROUND((100 * ((vmo.back_odd - 0.7) * (1 - 0.02) / (ve.lay_odds - 0.02) - 0.3)), 2) AS rating_refund_bet,
+                        ve.url
+                    FROM ATO_production.V2_Matches_Odds vmo
+                    INNER JOIN ATO_production.V2_Exchanges ve ON vmo.bet_id = ve.bet_id
+                    WHERE ve.lay_odds > 0
+                      AND ve.liquidity > 0
                 """
                 self.cursor.execute(query_insert_odds_match_maker)
                 self.connection.commit()
-
+                # Now truncate and update V1_Oddsmatcher
+                self._safe_execute_sql("TRUNCATE TABLE ATO_production.V1_Oddsmatcher")
+                query_insert_v1_odds_match_maker = """
+                    INSERT INTO ATO_production.V1_Oddsmatcher
+                    SELECT
+                    Date, Sport, Competition, Event,
+                    RatingQualifyingBets, RatingFreeBets, RatingRefundBets,
+                    Market, Market_Binary, Result, Bookie, Back_Odds,
+                    Exchange, Lay_Odds, Liquidity, UrlBookie, UrlExchange, updated_time
+                    FROM ATO_production.Oddsmatcher_with_clones
+                """
+                self.cursor.execute(query_insert_v1_odds_match_maker)
+                self.connection.commit()
 
             except Exception as e:
                 if self.debug:
@@ -1044,7 +1154,7 @@ class ScrapersPipeline:
             finally:
                 try:
                     end_time = datetime.datetime.now()
-                    print("Time taken to truncate and update V2_Exchanges & V2_Oddsmatcher:",
+                    print("Time taken to truncate and update V2_Exchanges & V1 + V2_Oddsmatcher :",
                           (end_time - start_time).total_seconds())
                 except:
                     pass
