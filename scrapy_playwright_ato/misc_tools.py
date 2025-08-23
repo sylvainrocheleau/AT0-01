@@ -151,9 +151,9 @@ def get_tournaments_from_sport_page(bookie_id, sport_id, debug):
 
 if __name__ == "__main__":
     # check_list_of_markets()
-    # get_comps_for_bookie(bookie_id='Bwin')
+    get_comps_for_bookie(bookie_id='Versus')
     # teams_and_dates_from_response(bookie_id='888Sport', competition_id='NorthAmericanLeaguesCup', sport_id='3', normalize=False)
     # get_odds_from_response(bookie_id="ZeBet", sport_id="1", parser="html")
-    get_matches_details_and_urls({"type": "bookie_id", "params": ["Betsson" ,1]})
+    # get_matches_details_and_urls({"type": "bookie_id", "params": ["Betsson" ,1]})
     # get_sports_pages()
     # get_tournaments_from_sport_page(bookie_id="Bet777", sport_id="3", debug=True)
