@@ -9,7 +9,7 @@ import traceback
 import asyncio
 import scrapy
 from websockets_proxy import Proxy, proxy_connect
-# from websockets.exceptions import ConnectionClosedError
+from websockets.exceptions import ConnectionClosedError
 from scrapy import Spider
 from ..items import ScrapersItem
 from ..parsing_logic import parse_competition, parse_match
@@ -28,10 +28,13 @@ class WebsocketsSpider(Spider):
                 # self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", "UEFAChampionsLeague"]}
 
                 # self.match_filter = {"type": "match_url_id", "params": [
-                #     "https://www.versus.es/apuestas/sports/soccer/events/22197283"]}
+                #      'https://www.versus.es/apuestas/sports/soccer/events/22425769']}
 
                 self.competitions = bookie_config(bookie=["Versus"])
+                print(self.competitions)
                 self.match_filter = {"type": "bookie_id", "params": ["Versus", 1]}
+            else:
+                self.debug = False
         except:
             if (
                 0 <= Helpers().get_time_now("UTC").hour < 1
@@ -69,10 +72,11 @@ class WebsocketsSpider(Spider):
                 print(f"Error sending PING: {e}")
                 break
 
-    async def parse(self, response):
-
+    async def _process_competition(self, competition, response):
+        """Open a fresh WS session, fetch and build items for a single competition."""
+        items = []
         context_info = random.choice(self.context_infos)
-        proxy = Proxy.from_url(proxy_prefix_http+context_info.get("proxy_ip")+proxy_suffix)
+        proxy = Proxy.from_url(proxy_prefix_http + context_info.get("proxy_ip") + proxy_suffix)
         async with proxy_connect(
             'wss://sportswidget.versus.es/api/websocket',
             proxy=proxy,
@@ -85,22 +89,21 @@ heart-beat:10000,10000
 
 \x00"""
             await self.ws.send(connect_message)
-            message = await self.ws.recv()
+            _ = await self.ws.recv()
             if self.debug:
-                print(f"Connected to API:")
+                print("Connected to API (competition scope)")
 
             await self.ws.send("""SUBSCRIBE
 id:/user/request-response
 destination:/user/request-response
 
 \x00""")
-            message = await self.ws.recv()
+            _ = await self.ws.recv()
             if self.debug:
-                print(f"Subscribed to API")
+                print("Subscribed to API (competition scope)")
 
             keep_alive_task = asyncio.create_task(self.keep_alive())
-
-            for competition in self.competitions:
+            try:
                 item = ScrapersItem()
                 competition_id = competition["competition_url_id"].split("/")[-1]
                 await self.ws.send(f"""SUBSCRIBE
@@ -113,16 +116,15 @@ destination:/api/eventgroups/{competition_id}-all-match-events
                 try:
                     match_ids = re.search(r'\{.*\}', match_ids, re.DOTALL).group()
                     match_ids = json.loads(match_ids)
-                except Exception as e:
-                    continue
+                except Exception:
+                    # malformed payload; nothing to do for this competition
+                    return items
                 try:
-                    print("match_ids", match_ids)
                     match_ids = [event['id'] for group in match_ids['groups'] for event in group['events']]
-
                 except KeyError:
                     print(f"error in match_ids for {competition['competition_id']} - {competition['competition_url_id']}")
-                    match_ids = []
-                    continue
+                    return items
+
                 matches_details = []
                 for match_id in match_ids:
                     await self.ws.send(f"""SUBSCRIBE
@@ -131,19 +133,19 @@ locale:es
 destination:/api/events/{match_id}
 
 \x00""")
+                    match_details = await self.ws.recv()
                     try:
-                        match_details = await self.ws.recv()
                         match_details = re.search(r'\{.*\}', match_details, re.DOTALL).group()
                         match_details = json.loads(match_details)
                         matches_details.append(match_details)
-                    except Exception as e:
+                    except Exception:
                         print(f"error in match_details for {competition['competition_id']}")
                         matches_details = []
-                        continue
+                        break
 
                 if len(matches_details) == 0:
                     print(f"No matches found for {competition['competition_id']}")
-                    continue
+                    return items
 
                 match_infos = parse_competition(
                     response=matches_details,
@@ -176,8 +178,9 @@ destination:/api/events/{match_id}
                                 ]
                             }
                             item["pipeline_type"] = ["match_urls"]
-                            print("YIELDING item with match_infos 1", item["data_dict"]["match_infos"])
-                            yield item
+                            if self.debug:
+                                print("YIELDING item with match_infos 1", item["data_dict"]["match_infos"])
+                            items.append(item)
                         else:
                             error = f"{competition['bookie_id']} {competition['competition_id']} comp not in map_matches "
                             if self.debug:
@@ -196,18 +199,48 @@ destination:/api/events/{match_id}
                             ]
                         }
                         item["pipeline_type"] = ["match_urls"]
-                        print("YIELDING item without match_infos 2", item["data_dict"])
-                        yield item
+                        if self.debug:
+                            print("YIELDING item without match_infos 2", item["data_dict"])
+                        items.append(item)
                         error = f"{competition['bookie_id']} {competition['competition_id']} comp has no new match "
                         Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
                 except Exception as e:
                     print(traceback.format_exc())
                     Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
+                return items
+            finally:
+                try:
+                    keep_alive_task.cancel()
+                except Exception:
+                    pass
 
-        print("closing connection for comp")
-        keep_alive_task.cancel()
-        await self.ws.close()
-        await asyncio.sleep(5)
+    async def parse(self, response):
+        # Retry per-competition with fresh WS sessions
+        max_retries = 5
+        base_delay = 1.0
+        for competition in self.competitions:
+            attempt = 0
+            while attempt <= max_retries:
+                try:
+                    items = await self._process_competition(competition, response)
+                    for it in items:
+                        yield it
+                    break
+                except ConnectionClosedError as e:
+                    if self.debug:
+                        print(f"WebSocket closed for competition {competition.get('competition_id')}, retry {attempt+1}/{max_retries+1}: {e}")
+                    Helpers().insert_log(level="WARNING", type="CODE", error="VERSUS_WS_RETRY_COMP", message=str(e))
+                    await asyncio.sleep(min(base_delay * (2 ** attempt), 10))
+                    attempt += 1
+                    continue
+                except Exception as e:
+                    # Log unexpected errors and move on to next competition
+                    Helpers().insert_log(level="WARNING", type="CODE", error="VERSUS_COMP_ERROR", message=traceback.format_exc())
+                    if self.debug:
+                        print(traceback.format_exc())
+                    break
+        # small cooldown between phases
+        await asyncio.sleep(1)
 
     async def parse_match(self, response):
         try:
@@ -237,49 +270,57 @@ heart-beat:10000,10000
 \x00"""
             await self.ws.send(connect_message)
             message = await self.ws.recv()
-            if self.debug:
-                print(f"Connected to API: {message}")
-
             await self.ws.send("""SUBSCRIBE
 id:/user/request-response
 destination:/user/request-response
 
 \x00""")
             message = await self.ws.recv()
-            if self.debug:
-                print(f"Subscribed to API: {message}")
-
             keep_alive_task = asyncio.create_task(self.keep_alive())
 
             for key, value in matches_details_and_urls.items():
                 if self.debug:
                     print(f"Match details: {key}, {value}")
                 for data in value:
-                    if data["sport_id"] == "1":
-                        suffix = "-TOPFT"
-                    elif data["sport_id"] == "2":
-                        suffix = "-TOPBK"
-    #
-                    await self.ws.send(f"""SUBSCRIBE
+                    flag_error = True
+                    try:
+                        if data["sport_id"] == "1":
+                            suffix = "-TOPFT"
+                        elif data["sport_id"] == "2":
+                            suffix = "-TOPBK"
+
+                        await self.ws.send(f"""SUBSCRIBE
 id:/api/marketgroup/{data['match_url_id'].split('/')[-1]}{suffix}
 locale:es
 destination:/api/marketgroup/{data['match_url_id'].split('/')[-1]}{suffix}
 
 \x00""")
-                    match_market_ids = await self.ws.recv()
-                    match_market_ids = re.search(r'\{.*\}', match_market_ids, re.DOTALL).group()
-                    match_market_ids = json.loads(match_market_ids)
-                    if isinstance(match_market_ids, dict) and len(match_market_ids) > 0 and "aggregatedMarkets" in match_market_ids.keys():
-                        filtered_match_market_ids = []
-                        for x in match_market_ids["aggregatedMarkets"]:
-                            if x["name"] in list_of_markets_V2[data["bookie_id"]][data["sport_id"]]:
-                                filtered_match_market_ids.append(x["marketIds"])
-                            else:
+                        try:
+                            match_market_ids = await self.ws.recv()
+                        except ConnectionClosedError as e:
+                            if self.debug:
+                                print(f"WebSocket closed while waiting for match_market_ids for match {data.get('match_id')}: {e}")
+                            Helpers().insert_log(level="WARNING", type="CODE", error="VERSUS_WS_CLOSED_MARKET_IDS", message=str(e))
+                            try:
+                                keep_alive_task.cancel()
+                            except Exception:
                                 pass
-                        filtered_match_market_ids = ';'.join(
-                            [item for sublist in filtered_match_market_ids for item in sublist])
-    #
-                        await self.ws.send(f"""SUBSCRIBE
+                            return
+                        if self.debug:
+                            print(f"Match market IDs: {match_market_ids}")
+                        match_market_ids = re.search(r'\{.*\}', match_market_ids, re.DOTALL).group()
+                        match_market_ids = json.loads(match_market_ids)
+                        if isinstance(match_market_ids, dict) and len(match_market_ids) > 0 and "aggregatedMarkets" in match_market_ids.keys():
+                            filtered_match_market_ids = []
+                            for x in match_market_ids["aggregatedMarkets"]:
+                                if x["name"] in list_of_markets_V2[data["bookie_id"]][data["sport_id"]]:
+                                    filtered_match_market_ids.append(x["marketIds"])
+                                else:
+                                    pass
+                            filtered_match_market_ids = ';'.join(
+                                [item for sublist in filtered_match_market_ids for item in sublist])
+        #
+                            await self.ws.send(f"""SUBSCRIBE
 id:/api/markets/multi
 locale:es
 mid:{filtered_match_market_ids};
@@ -287,78 +328,84 @@ key:{filtered_match_market_ids}
 destination:/api/markets/multi
 
 \x00""")
-                        response_odds = await self.ws.recv()
-                        if response_odds is not None:
-                            response_odds = re.search(r'\{.*\}', response_odds, re.DOTALL).group()
-                            response_odds = json.loads(response_odds)
+                            try:
+                                response_odds = await self.ws.recv()
+                            except ConnectionClosedError as e:
+                                if self.debug:
+                                    print(f"WebSocket closed while waiting for response_odds for match {data.get('match_id')}: {e}")
+                                Helpers().insert_log(level="WARNING", type="CODE", error="VERSUS_WS_CLOSED_RESPONSE_ODDS", message=str(e))
+                                try:
+                                    keep_alive_task.cancel()
+                                except Exception:
+                                    pass
+                                return
+                            if response_odds is not None:
+                                response_odds = re.search(r'\{.*\}', response_odds, re.DOTALL).group()
+                                response_odds = json.loads(response_odds)
 
-                            odds = parse_match(
-                                bookie_id=data["bookie_id"],
-                                response=response_odds,
-                                sport_id=data["sport_id"],
-                                list_of_markets=list_of_markets_V2[data["bookie_id"]][data["sport_id"]],
-                                home_team=data["home_team"],
-                                away_team=data["away_team"],
-                                debug=self.debug
-                            )
-                            item = ScrapersItem()
-                            odds = Helpers().build_ids(
-                                id_type="bet_id",
-                                data={
-                                    "match_id": data["match_id"],
-                                    "odds": normalize_odds_variables(
-                                        odds,
-                                        data["sport_id"],
-                                        data["home_team"],
-                                        data["away_team"],
-                                    )
-                                }
-                            )
-                            if not odds:
-                                item["data_dict"] = {
-                                    "match_infos": [
-                                        {
-                                            "match_url_id": data["match_url_id"],
-                                            "http_status": 1600,  # No odds found
-                                            "match_id": data["match_id"],
-                                            # "updated_date": Helpers().get_time_now("UTC")
-                                        },
-                                    ]
-                                }
-                                item["pipeline_type"] = ["error_on_match_url"]
-                            else:
-                                item["data_dict"] = {
-                                    "match_id": data["match_id"],
-                                    "bookie_id": data["bookie_id"],
-                                    "odds": odds,
-                                    "updated_date": Helpers().get_time_now(country="UTC"),
-                                    "web_url": data["web_url"],
-                                    "http_status": response.status,
-                                    "match_url_id": data["match_url_id"],
-                                }
-                                item["pipeline_type"] = ["match_odds"]
-                            yield item
-                    else:
-                        item["data_dict"] = {
-                            "match_infos": [
-                                {
-                                    "match_url_id": data["match_url_id"],
-                                    "http_status": 1600,  # No odds found
-                                    "match_id": data["match_id"],
-                                    # "updated_date": Helpers().get_time_now("UTC")
-                                },
-                            ]
-                        }
-                        item["pipeline_type"] = ["error_on_match_url"]
+                                odds = parse_match(
+                                    bookie_id=data["bookie_id"],
+                                    response=response_odds,
+                                    sport_id=data["sport_id"],
+                                    list_of_markets=list_of_markets_V2[data["bookie_id"]][data["sport_id"]],
+                                    home_team=data["home_team"],
+                                    away_team=data["away_team"],
+                                    debug=self.debug
+                                )
+                                odds = Helpers().build_ids(
+                                    id_type="bet_id",
+                                    data={
+                                        "match_id": data["match_id"],
+                                        "odds": normalize_odds_variables(
+                                            odds,
+                                            data["sport_id"],
+                                            data["home_team"],
+                                            data["away_team"],
+                                        )
+                                    }
+                                )
+                                if odds:
+                                    flag_error = False
+                        else:
+                            if self.debug:
+                                print("match_market_ids is", type(match_market_ids))
+                                print("match_market_ids length", len(match_market_ids))
+                                print("match_market_ids keys", match_market_ids.keys())
+                                print(match_market_ids)
+                                error = f"error with match_market_ids on {data['bookie_id']} {data['competition_id']}"
+                                print(error)
+                            Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
+                    except Exception as e:
+                        pass
+                    finally:
+                        item = ScrapersItem()
+                        if flag_error:
+                            if self.debug:
+                                print(f"Flag error on {data['match_id']}")
+                            item["data_dict"] = {
+                                "match_infos": [
+                                    {
+                                        "match_url_id": data["match_url_id"],
+                                        "http_status": 1600,
+                                        "match_id": data["match_id"],
+                                    },
+                                ]
+                            }
+                            item["pipeline_type"] = ["error_on_match_url"]
+                        elif not flag_error:
+                            if self.debug:
+                                print(f"No flag error on {data['match_id']}")
+                            item["data_dict"] = {
+                                "match_id": data["match_id"],
+                                "bookie_id": data["bookie_id"],
+                                "odds": odds,
+                                "updated_date": Helpers().get_time_now(country="UTC"),
+                                "web_url": data["web_url"],
+                                "http_status": response.status,
+                                "match_url_id": data["match_url_id"],
+                            }
+                            item["pipeline_type"] = ["match_odds"]
                         yield item
-                        print("match_market_ids is", type(match_market_ids))
-                        print("match_market_ids length", len(match_market_ids))
-                        print("match_market_ids keys", match_market_ids.keys())
-                        print(match_market_ids)
-                        error = f"error with match_market_ids on {data['bookie_id']} {data['competition_id']}"
-                        if self.debug:
-                            print(error)
-                        Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
 
         print("closing connection for matches")
         keep_alive_task.cancel()
