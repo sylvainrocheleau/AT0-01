@@ -1,6 +1,107 @@
 import datetime
 import traceback
-from script_utilities import CreateViews, Helpers
+import time
+import random
+from mysql.connector import OperationalError, InternalError, InterfaceError, DatabaseError, Error
+from script_utilities import CreateViews, Helpers, Connect
+
+# ---- Shared DB connection and retry helpers ----
+_CONN = None
+
+def get_db_connection():
+    """
+    Returns a singleton mysql connection. Ensures it's alive by pinging, and reconnects if needed.
+    """
+    global _CONN
+    if _CONN is None or not _CONN.is_connected():
+        _CONN = Connect().to_db(db="ATO_production", table=None)
+    # try to keep it alive
+    try:
+        _CONN.ping(reconnect=True, attempts=3, delay=0.5)
+    except Exception:
+        try:
+            _CONN.reconnect(attempts=3, delay=0.5)
+        except Exception:
+            pass
+    return _CONN
+
+def safe_execute(cursor, query, params=None, retries=6, delay=0.5):
+    """
+    Executes a single query with retry on:
+    - deadlock (1213)
+    - lock wait timeout (1205)
+    - lost connection / server gone (2006/2013) -> reconnect
+    Uses exponential backoff with jitter and rolls back before retrying.
+    """
+    conn = getattr(cursor, "connection", None) or getattr(cursor, "_connection", None) or get_db_connection()
+    attempt = 0
+    while True:
+        try:
+            if params is None:
+                cursor.execute(query)
+            else:
+                cursor.execute(query, params)
+            return
+        except (InternalError, OperationalError, DatabaseError) as e:
+            errno = getattr(e, "errno", None)
+            if errno in (1213, 1205) and attempt < retries - 1:
+                attempt += 1
+                try:
+                    conn.rollback()
+                except Exception:
+                    pass
+                sleep_for = min(delay * (2 ** (attempt - 1)) + random.uniform(0, 0.3), 5)
+                print(f"Retryable DB error ({errno}) on execute, retry {attempt}/{retries} after {sleep_for:.2f}s...")
+                time.sleep(sleep_for)
+                continue
+            if errno in (2006, 2013) and attempt < retries - 1:
+                attempt += 1
+                print(f"MySQL connection lost ({errno}) on execute, reconnecting and retrying {attempt}/{retries}...")
+                try:
+                    conn.reconnect(attempts=3, delay=delay)
+                except Error:
+                    pass
+                sleep_for = min(delay * (2 ** (attempt - 1)), 5)
+                time.sleep(sleep_for)
+                continue
+            raise
+        except InterfaceError:
+            raise
+
+def safe_executemany(cursor, query, data, retries=6, delay=0.5):
+    if not data:
+        return
+    conn = getattr(cursor, "connection", None) or getattr(cursor, "_connection", None) or get_db_connection()
+    attempt = 0
+    while True:
+        try:
+            cursor.executemany(query, data)
+            return
+        except (InternalError, OperationalError, DatabaseError) as e:
+            errno = getattr(e, "errno", None)
+            if errno in (1213, 1205) and attempt < retries - 1:
+                attempt += 1
+                try:
+                    conn.rollback()
+                except Exception:
+                    pass
+                sleep_for = min(delay * (2 ** (attempt - 1)) + random.uniform(0, 0.3), 5)
+                print(f"Retryable DB error ({errno}) on executemany, retry {attempt}/{retries} after {sleep_for:.2f}s...")
+                time.sleep(sleep_for)
+                continue
+            if errno in (2006, 2013) and attempt < retries - 1:
+                attempt += 1
+                print(f"MySQL connection lost ({errno}) on executemany, reconnecting and retrying {attempt}/{retries}...")
+                try:
+                    conn.reconnect(attempts=3, delay=delay)
+                except Error:
+                    pass
+                sleep_for = min(delay * (2 ** (attempt - 1)), 5)
+                time.sleep(sleep_for)
+                continue
+            raise
+        except InterfaceError:
+            raise
 
 def stop_hanging_spiders():
     try:
@@ -61,8 +162,7 @@ def stop_hanging_spiders():
 
 def delete_old_cookies():
     try:
-        from script_utilities import Connect
-        connection = Connect().to_db(db="ATO_production", table=None)
+        connection = get_db_connection()
         cursor = connection.cursor()
         query = """
             DELETE vc
@@ -71,11 +171,10 @@ def delete_old_cookies():
             WHERE vb.use_cookies IS TRUE
             AND vc.timestamp < DATE_SUB(NOW(), INTERVAL 6 DAY)
         """
-        cursor.execute(query)
+        safe_execute(cursor, query)
         deleted_count = cursor.rowcount
         connection.commit()
         cursor.close()
-        connection.close()
         print(f"{deleted_count} old cookies  removed")
     except Exception as e:
         print("Error deleting old cookies:", e)
@@ -83,18 +182,16 @@ def delete_old_cookies():
 
 def delete_old_logs():
     try:
-        from script_utilities import Connect
-        connection = Connect().to_db(db="ATO_production", table=None)
+        connection = get_db_connection()
         cursor = connection.cursor()
         query = """
             DELETE FROM ATO_production.V2_Logs
             WHERE date < DATE_SUB(NOW(), INTERVAL 7 DAY)
         """
-        cursor.execute(query)
+        safe_execute(cursor, query)
         deleted_count = cursor.rowcount
         connection.commit()
         cursor.close()
-        connection.close()
         print(f"{deleted_count} old logs deleted successfully")
     except Exception as e:
         print("Error deleting old logs:", e)
@@ -102,18 +199,16 @@ def delete_old_logs():
 
 def delete_old_matches():
     try:
-        from script_utilities import Connect
-        connection = Connect().to_db(db="ATO_production", table=None)
+        connection = get_db_connection()
         cursor = connection.cursor()
         query = """
             DELETE FROM ATO_production.V2_Matches
             WHERE UTC_TIMESTAMP() > `date`
         """
-        cursor.execute(query)
+        safe_execute(cursor, query)
         deleted_count = cursor.rowcount
         connection.commit()
         cursor.close()
-        connection.close()
         print(f"{deleted_count} old matches deleted successfully")
     except Exception as e:
         print("Error deleting old matches:", e)
@@ -121,19 +216,16 @@ def delete_old_matches():
 
 def delete_old_matches_with_no_id():
     try:
-        from script_utilities import Connect
-        connection = Connect().to_db(db="ATO_production", table=None)
+        connection = get_db_connection()
         cursor = connection.cursor()
         query = """
             DELETE FROM ATO_production.V2_Matches_Urls_No_Ids
             WHERE `date` < (NOW() - INTERVAL 1 MONTH)
         """
-        # WHERE `date` < (NOW() - INTERVAL 1 MONTH)
-        cursor.execute(query)
+        safe_execute(cursor, query)
         deleted_count = cursor.rowcount
         connection.commit()
         cursor.close()
-        connection.close()
         print(f"{deleted_count} old matches with no ID deleted successfully")
     except Exception as e:
         print("Error deleting old matches with no ID:", e)
@@ -141,8 +233,7 @@ def delete_old_matches_with_no_id():
 
 def delete_matches_odds_with_bad_http_status():
     try:
-        from script_utilities import Connect
-        connection = Connect().to_db(db="ATO_production", table=None)
+        connection = get_db_connection()
         cursor = connection.cursor()
         query = """
             DELETE vmo
@@ -151,11 +242,10 @@ def delete_matches_odds_with_bad_http_status():
             ON vmo.bookie_id = vmu.bookie_id AND vmo.match_id = vmu.match_id
             WHERE vmu.http_status != 200
         """
-        cursor.execute(query)
+        safe_execute(cursor, query)
         deleted_count = cursor.rowcount
         connection.commit()
         cursor.close()
-        connection.close()
         print(f"{deleted_count} matches odds with bad HTTP status deleted successfully")
     except Exception as e:
         print("Error deleting matches odds with bad HTTP status:", e)
@@ -163,18 +253,16 @@ def delete_matches_odds_with_bad_http_status():
 
 def delete_matches_urls_with_bad_http_status():
     try:
-        from script_utilities import Connect
-        connection = Connect().to_db(db="ATO_production", table=None)
+        connection = get_db_connection()
         cursor = connection.cursor()
         query = """
             DELETE FROM ATO_production.V2_Matches_Urls
             WHERE http_status IN (301, 404)
         """
-        cursor.execute(query)
+        safe_execute(cursor, query)
         deleted_count = cursor.rowcount
         connection.commit()
         cursor.close()
-        connection.close()
         print(f"{deleted_count} matches URLs with 301 or 404 status deleted successfully")
     except Exception as e:
         print("Error deleting matches URLs with 301 or 404 HTTP status:", e)
@@ -182,9 +270,7 @@ def delete_matches_urls_with_bad_http_status():
 
 def delete_old_dutcher_entries():
     try:
-        from script_utilities import Connect, Helpers
-        import traceback
-        connection = Connect().to_db(db="ATO_production", table=None)
+        connection = get_db_connection()
         cursor = connection.cursor()
         query = """
             DELETE vd
@@ -192,11 +278,10 @@ def delete_old_dutcher_entries():
             JOIN ATO_production.V2_Matches vm ON vd.match_id = vm.match_id
             WHERE UTC_TIMESTAMP() > vm.`date`
         """
-        cursor.execute(query)
+        safe_execute(cursor, query)
         deleted_count = cursor.rowcount
         connection.commit()
         cursor.close()
-        connection.close()
         print(f"{deleted_count} old dutcher entries deleted successfully")
     except Exception as e:
         print("Error deleting old dutcher entries:", e)
@@ -204,8 +289,7 @@ def delete_old_dutcher_entries():
 
 def select_next_match_date():
     try:
-        from script_utilities import Connect
-        connection = Connect().to_db(db="ATO_production", table=None)
+        connection = get_db_connection()
         cursor = connection.cursor()
         query = """
             SELECT
@@ -218,7 +302,7 @@ def select_next_match_date():
             GROUP BY
                 competition_id
         """
-        cursor.execute(query)
+        safe_execute(cursor, query)
         results = cursor.fetchall()
         next_match_update = []
         for result in results:
@@ -229,9 +313,7 @@ def select_next_match_date():
                 now_utc = datetime.datetime.now(tz=datetime.timezone.utc)
                 if match_date < now_utc + datetime.timedelta(days=7):
                     next_match_update.append((match_date, True, result[0]))
-                    # print(f"Active true {result[0]} {match_date}")
                 else:
-                    # print(f"Active false {result[0]} {match_date}")
                     next_match_update.append((match_date, False, result[0]))
             except Exception as e:
                 print(f"Error processing result {result}: {e}")
@@ -243,7 +325,7 @@ def select_next_match_date():
             WHERE competition_id NOT IN (SELECT competition_id FROM ATO_production.V2_Matches WHERE `date` > NOW())
         """
 
-        cursor.execute(query_set_inactive)
+        safe_execute(cursor, query_set_inactive)
         connection.commit()
 
         print(f"Setting next match dates for {len(next_match_update)} competitions")
@@ -252,10 +334,9 @@ def select_next_match_date():
             SET next_match_date = %s, active = %s
             WHERE competition_id = %s
         """
-        cursor.executemany(query_update_next_matches, next_match_update)
+        safe_executemany(cursor, query_update_next_matches, next_match_update)
         connection.commit()
         cursor.close()
-        connection.close()
         print(f"Next match dates updated successfully for {len(next_match_update)} competitions")
     except Exception as e:
         print("Error selecting next match date:", e)
@@ -276,4 +357,12 @@ if __name__ == "__main__":
     process_all_the_time = False
     if datetime.datetime.now().minute == 0 or process_all_the_time:
         CreateViews().create_view_Dash_Competitions_and_MatchUrlCounts_per_Bookie()
+
+    # Close the shared DB connection at the end
+    try:
+        conn = get_db_connection()
+        if conn and conn.is_connected():
+            conn.close()
+    except Exception:
+        pass
 
