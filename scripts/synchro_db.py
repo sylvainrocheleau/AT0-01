@@ -197,7 +197,7 @@ def sync_table(table_info):
 
 
 # Synchronize a localhost db table with the remote db using :
-# - Insert row is missing in localhost db
+# - Insert if row is missing in localhost db
 # - Update if cols have changed between localhost db and remote db
 def update_table(table_name, key_col):
 
@@ -267,7 +267,7 @@ def sync_all_tables():
         sync_table(table)
 
 if __name__ == "__main__":
-    dump_database(remote_conn_params)
+    dump_database(local_conn_params)
     drop_local_tables()
     clone_table_structures()
     sync_all_tables()

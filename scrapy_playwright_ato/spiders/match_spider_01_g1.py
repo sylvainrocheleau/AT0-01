@@ -39,11 +39,11 @@ class MetaSpider(scrapy.Spider):
 
             # FILTER OPTIONS
             # match_filter = {}
-            # match_filter = {"type": "bookie_id", "params":["AupaBet", 1]}
+            match_filter = {"type": "bookie_id", "params":["ZeBet", 1]}
             # match_filter = {"type": "bookie_and_comp", "params": ["DaznBet", "ATP"]}
             # match_filter = {"type": "comp", "params":["MajorLeagueSoccerUSA"]}
-            match_filter = {"type": "match_url_id",
-                            "params":["https://sb-pp-esfe.daznbet.es/tenis/evento/matos-r-melo-m-v-erler-a-galloway-r-u-2394082?tab=principal"]}
+            # match_filter = {"type": "match_url_id",
+            #                 "params":["https://sb-pp-esfe.daznbet.es/tenis/evento/matos-r-melo-m-v-erler-a-galloway-r-u-2394082?tab=principal"]}
     except:
         match_filter_enabled = False
         match_filter = {}

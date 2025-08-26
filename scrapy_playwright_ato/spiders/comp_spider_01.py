@@ -53,7 +53,7 @@ class TwoStepsSpider(scrapy.Spider):
                 # Filter by competition
                 # competitions = [x for x in bookie_config(bookie=["all_bookies"]) if x["competition_id"] == "Partidosamistosos"]
                 # Filter by bookie and competition
-                competitions = [x for x in bookie_config(bookie=["DaznBet"]) if x["competition_id"] == "ATP"]
+                competitions = [x for x in bookie_config(bookie=["ZeBet"]) if x["competition_id"] == "ATP"]
             else:
                 competitions = bookie_config(bookie=["all_bookies"])
 
