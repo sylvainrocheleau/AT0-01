@@ -1,20 +1,95 @@
 import datetime
 import os
+import time
+import mysql.connector
 from script_utilities import Connect, Helpers
 
 LOCAL_USERS = ["sylvain","rickiel"]
 
 class Watchdog:
     def __init__(self):
-        self.connection = Connect().to_db(db="ATO_production", table=None)
-        self.cursor = self.connection.cursor()
+        self.connection = None
+        self.cursor = None
+        self._connect()
         try:
-            if os.environ["USER"] in LOCAL_USERS:
+            if os.environ.get("USER") in LOCAL_USERS:
                 self.debug = True
             else:
                 self.debug = False
         except KeyError:
             self.debug = False
+
+    def _connect(self):
+        if self.connection:
+            try:
+                self.cursor.close()
+            except Exception:
+                pass
+            try:
+                self.connection.close()
+            except Exception:
+                pass
+        self.connection = Connect().to_db(db="ATO_production", table=None)
+        self.cursor = self.connection.cursor()
+
+    def _ensure_connection(self):
+        try:
+            if self.connection is None or not self.connection.is_connected():
+                raise mysql.connector.errors.InterfaceError("Disconnected")
+            # Ping with reconnect to keepalive
+            try:
+                self.connection.ping(reconnect=True, attempts=1, delay=0)
+            except AttributeError:
+                # Some connector versions may not have ping
+                pass
+        except Exception:
+            if self.debug:
+                print("Watchdog: reconnecting to database...")
+            self._connect()
+
+    def _execute(self, query, params=None, fetch=None, many=False, max_retries=3, retry_delay=1.0):
+        """
+        Execute a query with automatic reconnection on lost-connection errors.
+        - fetch: None, 'one', or 'all'
+        - many: if True, will call executemany instead of execute
+        Returns fetched rows if requested, otherwise None.
+        """
+        attempt = 0
+        while True:
+            attempt += 1
+            try:
+                self._ensure_connection()
+                if many:
+                    self.cursor.executemany(query, params or [])
+                else:
+                    if params is None:
+                        self.cursor.execute(query)
+                    else:
+                        self.cursor.execute(query, params)
+                if fetch == 'one':
+                    return self.cursor.fetchone()
+                elif fetch == 'all':
+                    return self.cursor.fetchall()
+                else:
+                    # For DMLs ensure commit
+                    try:
+                        self.connection.commit()
+                    except Exception:
+                        pass
+                    return None
+            except (mysql.connector.errors.OperationalError, mysql.connector.errors.InterfaceError) as e:
+                errcode = getattr(e, 'errno', None)
+                # 2013: Lost connection; 2006: MySQL server has gone away
+                if errcode in (2006, 2013) or isinstance(e, mysql.connector.errors.InterfaceError):
+                    if attempt >= max_retries:
+                        raise
+                    if self.debug:
+                        print(f"Watchdog: DB error {errcode}, attempt {attempt}/{max_retries}, retrying after {retry_delay}s...")
+                    time.sleep(retry_delay)
+                    self._connect()
+                    continue
+                else:
+                    raise
 
     def log_messages(self, message_id):
         query_log_message = """
@@ -22,16 +97,14 @@ class Watchdog:
         VALUES (%s, %s)
         ON DUPLICATE KEY UPDATE updated_date = VALUES(updated_date);
         """
-        self.cursor.execute(query_log_message, (message_id, Helpers().get_time_now(country="UTC")))
-        self.connection.commit()
+        self._execute(query_log_message, (message_id, Helpers().get_time_now(country="UTC")))
 
     def retrieve_log_messages(self):
         query = """
         SELECT message_id, updated_date FROM ATO_production.V2_Message_Logs
         ORDER BY updated_date DESC;
         """
-        self.cursor.execute(query)
-        results = self.cursor.fetchall()
+        results = self._execute(query, fetch='all')
         log_messages = {}
         for row in results:
             log_messages.update(
@@ -48,8 +121,7 @@ class Watchdog:
         WHERE vb.use_cookies IS TRUE
         AND vc.timestamp < DATE_SUB(NOW(), INTERVAL 6 DAY)
         """
-        self.cursor.execute(query)
-        results = self.cursor.fetchall()
+        results = self._execute(query, fetch='all')
         if len(results) > 0:
             alert_name = "check old cookies"
             status = f"{len(results)} cookies older than 6 days found in the database"
@@ -66,8 +138,7 @@ class Watchdog:
             WHERE vd.rating_qualifying_bets > 120
             GROUP BY vd.match_id
         """
-        self.cursor.execute(query_dutcher)
-        results = self.cursor.fetchall()
+        results = self._execute(query_dutcher, fetch='all')
         if len(results) > 0:
             alert_name = "dutcher with rating_qualifying_bets > 120"
             status = f"\n {', '.join([str(row[0]) for row in results])}"
@@ -84,8 +155,7 @@ class Watchdog:
             WHERE vo.rating_qualifying_bet > 120
             GROUP BY vo.match_id
         """
-        self.cursor.execute(query_dutcher)
-        results = self.cursor.fetchall()
+        results = self._execute(query_dutcher, fetch='all')
         if len(results) > 0:
             alert_name = "oddsmatcher with rating_qualifying_bets > 120"
             status = f"\n {', '.join([str(row[0]) for row in results])}"
@@ -104,8 +174,7 @@ class Watchdog:
             FROM ATO_production.V2_Matches_Urls vmu
             WHERE vmu.updated_date < DATE_SUB(NOW(), INTERVAL 1 DAY) AND vmu.http_status = 200
     """
-        self.cursor.execute(query_match_url_update)
-        results = self.cursor.fetchall()
+        results = self._execute(query_match_url_update, fetch='all')
         if len(results) > 0:
             alert_name = "outdated match urls"
             status =  f"\n {'\n '.join(f'{row[0]}: {row[1]}' for row in results)}"
