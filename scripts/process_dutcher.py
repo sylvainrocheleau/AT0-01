@@ -23,7 +23,7 @@ def update_dutcher():
         query_delete_dutcher = f"DELETE FROM ATO_production.V2_Dutcher WHERE match_id IN ({placeholders})"
 
         # Prepare the query to update or insert into V2_Dutcher
-        query_update_dutcher = """
+        query_update_dutcher = f"""
             REPLACE INTO ATO_production.V2_Dutcher (
                 bet_id, match_id, rating_qualifying_bets, rating_free_bets, rating_refund_bets,
                 result_1, back_odds_1, bookie_id, result_2, back_odds_2, bookie_2,
@@ -81,7 +81,7 @@ def update_dutcher():
                     AND vmo2.bookie_id = vmu2.bookie_id
                     AND vmu1.web_url <> vmu2.web_url
                 WHERE
-                    vmo1.match_id IN (%s)
+                    vmo1.match_id IN ({placeholders})
                     AND vmo2.back_odd > 0
                     # AND EXISTS (
                     #     SELECT 1
@@ -93,13 +93,13 @@ def update_dutcher():
             #     ranked.rating_qualifying_bets < 105
             #     AND ranked.rating_free_bets < 85
             #     AND ranked.rating_refund_bets < 65;
-        """ % (",".join(["%s"] * len(match_ids)))
+        """
 
-        query_update_queue = """
+        query_update_queue = f"""
             UPDATE ATO_production.V2_Matches
             SET queue_dutcher = 0
-            WHERE match_id IN (%s)
-        """ % (",".join(["%s"] * len(match_ids)))
+            WHERE match_id IN ({placeholders})
+        """
         print("Executing queries...")
         cursor.execute(query_delete_dutcher, match_ids)
         print(f"Deleted existing dutcher {cursor.rowcount} records.")
@@ -108,7 +108,7 @@ def update_dutcher():
 
         # Materialize clones at write time for best read performance
         # Left-side clones: replace bookie_id and url_1 based on V2_Bookies.cloned_of = vd.bookie_id
-        query_insert_left_clones = """
+        query_insert_left_clones = f"""
             INSERT INTO ATO_production.V2_Dutcher (
               bet_id, match_id, rating_qualifying_bets, rating_free_bets, rating_refund_bets,
               result_1, back_odds_1, bookie_id,
@@ -122,15 +122,15 @@ def update_dutcher():
               bl.bookie_url, vd.url_2, NOW()
             FROM ATO_production.V2_Dutcher vd
             JOIN ATO_production.V2_Bookies bl ON bl.cloned_of = vd.bookie_id
-            WHERE vd.match_id IN (%s)
-        """ % (",".join(["%s"] * len(match_ids)))
+            WHERE vd.match_id IN ({placeholders})
+        """
         cursor.execute(query_insert_left_clones, match_ids)
         left_clones = cursor.rowcount
         print(f"Inserted left-side clones: {left_clones}")
 
         # Right-side clones: replace bookie_2 and url_2 based on V2_Bookies.cloned_of = vd.bookie_2
         # Important: exclude rows whose bookie_id itself is a clone to avoid cascading from left-clone rows
-        query_insert_right_clones = """
+        query_insert_right_clones = f"""
             INSERT INTO ATO_production.V2_Dutcher (
               bet_id, match_id, rating_qualifying_bets, rating_free_bets, rating_refund_bets,
               result_1, back_odds_1, bookie_id,
@@ -144,9 +144,9 @@ def update_dutcher():
               vd.url_1, br.bookie_url, NOW()
             FROM ATO_production.V2_Dutcher vd
             JOIN ATO_production.V2_Bookies br ON br.cloned_of = vd.bookie_2
-            WHERE vd.match_id IN (%s)
+            WHERE vd.match_id IN ({placeholders})
               AND vd.bookie_id NOT IN (SELECT bookie_id FROM ATO_production.V2_Bookies WHERE cloned_of IS NOT NULL)
-        """ % (",".join(["%s"] * len(match_ids)))
+        """
         cursor.execute(query_insert_right_clones, match_ids)
         right_clones = cursor.rowcount
         print(f"Inserted right-side clones: {right_clones}")
