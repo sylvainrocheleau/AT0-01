@@ -47,13 +47,13 @@ class TwoStepsSpider(scrapy.Spider):
                 # No filters
                 # competitions = bookie_config(bookie=["all_bookies"])
                 # Filter by bookie that have errors
-                # competitions = bookie_config(bookie=["1XBet", "http_errors"])
+                # competitions = bookie_config(bookie=["Bwin", "http_errors"])
                 # Filter by bookie
-                # competitions = bookie_config(bookie=["1XBet"])
+                competitions = bookie_config(bookie=["DaznBet"])
                 # Filter by competition
                 # competitions = [x for x in bookie_config(bookie=["all_bookies"]) if x["competition_id"] == "Partidosamistosos"]
                 # Filter by bookie and competition
-                competitions = [x for x in bookie_config(bookie=["ZeBet"]) if x["competition_id"] == "ATP"]
+                # competitions = [x for x in bookie_config(bookie=["DaznBet"]) if x["competition_id"] == "BundesligaAlemana"]
             else:
                 competitions = bookie_config(bookie=["all_bookies"])
 
@@ -80,8 +80,8 @@ class TwoStepsSpider(scrapy.Spider):
                 if data["scraping_tool"] == "playwright":
                     self.close_playwright = True
                 url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="competition", data=data, debug=self.debug)
-                # if self.debug:
-                #     print("url to scrape", url, "dont_filter", dont_filter, "meta_request", meta_request)
+                if self.debug:
+                    print("url to scrape", url, "dont_filter", dont_filter, "meta_request", meta_request)
                 yield scrapy.Request(
                     dont_filter=dont_filter,
                     url=url,

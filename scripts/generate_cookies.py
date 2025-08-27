@@ -21,7 +21,7 @@ list_of_proxies = [
     "115.124.36.119", "185.106.126.109", "185.107.152.14", "185.105.15.160", "85.115.193.157",
     "185.159.43.180", "185.166.172.76", "194.38.59.88", "185.118.52.126", "212.80.210.193"
 ]
-
+# Chromium 136.0.7103.25 (playwright build v1169)
 list_of_headers =[
 {'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.6478.114 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://duckduckgo.com/', 'Accept-Encoding': 'gzip, br', 'Accept-Language': 'es-ES,es;q=0.9,ca;q=0.7,en;q=0.6', 'Upgrade-Insecure-Requests': '1'},
 {'Connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.6478.99 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8', 'Referer': 'https://www.tiktok.com/', 'Accept-Encoding': 'gzip, br', 'Accept-Language': 'es-ES,es;q=0.9,ca;q=0.7,en;q=0.6', 'Upgrade-Insecure-Requests': '1'},
@@ -369,8 +369,8 @@ def test(filters):
     print(bookies_infos)
 
 if __name__ == "__main__":
-    get_cookies(test_mode=False, headless=False, pause_time=5, filters={"bookie_name": "888Sport", "only_cookies": True})
-    # get_cookies(test_mode=False, headless=True, pause_time=5, filters={"bookie_name": "all_bookies", "only_cookies": False})
+    # get_cookies(test_mode=False, headless=False, pause_time=5, filters={"bookie_name": "888Sport", "only_cookies": True})
+    get_cookies(test_mode=False, headless=True, pause_time=5, filters={"bookie_name": "all_bookies", "only_cookies": True})
     # test(filters={"bookie_name": "all_bookies", "only_cookies": True})
     # use_cookies()
     cursor.close()

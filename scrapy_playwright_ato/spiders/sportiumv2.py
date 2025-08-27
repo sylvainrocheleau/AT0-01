@@ -24,12 +24,12 @@ class WebsocketsSpider(Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                self.competitions = [x for x in bookie_config(bookie=["Sportium"]) if x["competition_id"] == "UEFAChampionsLeague"]
-                self.match_filter = {"type": "bookie_and_comp", "params": ["Sportium", "UEFAChampionsLeague"]}
+                # self.competitions = [x for x in bookie_config(bookie=["Sportium"]) if x["competition_id"] == "UEFAChampionsLeague"]
+                # self.match_filter = {"type": "bookie_and_comp", "params": ["Sportium", "UEFAChampionsLeague"]}
 
 
-                # self.competitions = bookie_config(bookie=["Sportium"])
-                # self.match_filter = {"type": "bookie_id", "params": ["Sportium", 1]}
+                self.competitions = bookie_config(bookie=["Sportium"])
+                self.match_filter = {"type": "bookie_id", "params": ["Sportium", 1]}
                 # https://href.li/?https://www.sportium.es/apuestas/sports/soccer/events/16931943
                 # self.match_filter = {"type": "match_url_id", "params": [
                 #     "https://www.sportium.es/apuestas/sports/soccer/events/16997048"]}
@@ -61,18 +61,217 @@ class WebsocketsSpider(Spider):
     match_filter_enabled = True
     # v2 = True
 
+    async def _safe_send(self, payload: str) -> bool:
+        """Send over websocket guarding against closed connection.
+        Returns True on success, False if the connection is closed or send failed.
+        """
+        try:
+            if not getattr(self, "ws", None) or self.ws.closed:
+                print("Cannot send: WebSocket is not open")
+                return False
+            await self.ws.send(payload)
+            return True
+        except websockets.exceptions.ConnectionClosed as e:
+            print(f"Send failed: WebSocket closed ({e})")
+            return False
+        except Exception as e:
+            print(f"Send failed with unexpected error: {e}")
+            return False
+
     async def keep_alive(self, interval=5):
         while True:
             try:
-                if self.ws.closed:
+                if not getattr(self, "ws", None) or self.ws.closed:
                     print("WebSocket connection is closed. Exiting keep_alive.")
                     break
-                await self.ws.send("")
-                print("PING sent at", datetime.datetime.now())
+                # Use a real WebSocket ping instead of sending an empty text frame
+                pong_waiter = await self.ws.ping()
+                try:
+                    await asyncio.wait_for(pong_waiter, timeout=10)
+                    print("PING/PONG ok at", datetime.datetime.now())
+                except asyncio.TimeoutError:
+                    print("PING timed out; exiting keep_alive")
+                    break
                 await asyncio.sleep(interval)
             except Exception as e:
                 print(f"Error in keep_alive: {e}")
                 break
+
+    async def _safe_recv(self):
+        """Receive from websocket guarding against closed connection.
+        Returns the message string on success, or None if the connection is closed or an error occurs.
+        """
+        try:
+            if not getattr(self, "ws", None) or self.ws.closed:
+                print("Cannot recv: WebSocket is not open")
+                return None
+            return await self.ws.recv()
+        except (websockets.exceptions.ConnectionClosed, websockets.exceptions.ConnectionClosedError) as e:
+            print(f"Recv failed: WebSocket closed ({e})")
+            return None
+        except Exception as e:
+            print(f"Recv failed with unexpected error: {e}")
+            return None
+
+    async def _process_competition(self, competition, response):
+        """Open a fresh WS session and fetch/build items for a single competition.
+        Returns a list of ScrapersItem to be yielded by parse.
+        """
+        items = []
+        context_info = random.choice(self.context_infos)
+        proxy = Proxy.from_url(proxy_prefix_http + context_info.get("proxy_ip") + proxy_suffix)
+        async with proxy_connect(
+            'wss://sportswidget.sportium.es/api/websocket',
+            proxy=proxy,
+            user_agent_header=context_info.get("user_agent")
+        ) as self.ws:
+            connect_message = """CONNECT
+protocol-version:1.5
+accept-version:1.2,1.1,1.0
+heart-beat:10000,10000
+
+\x00"""
+            await self.ws.send(connect_message)
+            _ = await self.ws.recv()
+            if self.debug:
+                print("Connected to Sportium API (competition scope)")
+
+            await self.ws.send("""SUBSCRIBE
+id:/user/request-response
+destination:/user/request-response
+
+\x00""")
+            _ = await self.ws.recv()
+            if self.debug:
+                print("Subscribed to API (competition scope)")
+
+            keep_alive_task = asyncio.create_task(self.keep_alive())
+            try:
+                item = ScrapersItem()
+                competition_id = competition["competition_url_id"].split("/")[-1]
+                count = 0
+                await self.ws.send(f"""SUBSCRIBE
+id:/api/eventgroups/{competition_id}-all-match-events
+locale:es
+destination:/api/eventgroups/{competition_id}-all-match-events
+
+\x00""")
+                raw_match_ids = await self.ws.recv()
+                if raw_match_ids is None:
+                    return items
+                while f"id:/api/eventgroups/{competition_id}" not in raw_match_ids and count < 2:
+                    nxt = await self.ws.recv()
+                    if nxt is None:
+                        break
+                    raw_match_ids = nxt
+                    if self.debug:
+                        print("waiting for match_ids")
+                    count += 1
+                else:
+                    if "type:FULL" in raw_match_ids:
+                        try:
+                            match_ids = re.search(r'\{.*\}', raw_match_ids, re.DOTALL).group()
+                            match_ids = json.loads(match_ids)
+                            match_ids = [event['id'] for group in match_ids['groups'] for event in group['events']]
+                        except Exception:
+                            if self.debug:
+                                print(f"error in match_ids for {competition['competition_id']}")
+                                print("bad raw_match_ids", raw_match_ids)
+                            return items
+                    else:
+                        return items
+
+                matches_details = []
+                for match_id in match_ids:
+                    await self.ws.send(f"""SUBSCRIBE
+id:/api/events/{match_id}
+locale:es
+destination:/api/events/{match_id}
+
+\x00""")
+                    try:
+                        raw_match_details = await self.ws.recv()
+                        match_details = re.search(r'\{.*\}', raw_match_details, re.DOTALL).group()
+                        match_details = json.loads(match_details)
+                        matches_details.append(match_details)
+                    except Exception:
+                        if self.debug:
+                            print(f"error in match_details for {competition['competition_id']}")
+                        matches_details = []
+                        break
+
+                if len(matches_details) == 0:
+                    if self.debug:
+                        print(f"No matches found for {competition['competition_id']}")
+                    return items
+
+                match_infos = parse_competition(
+                    response=matches_details,
+                    bookie_id="Sportium",
+                    competition_id=competition["competition_id"],
+                    competition_url_id=competition["competition_url_id"],
+                    sport_id=competition["sport_id"],
+                    map_matches_urls=self.map_matches_urls,
+                    debug=self.debug
+                )
+
+                try:
+                    if len(match_infos) > 0:
+                        match_infos = Helpers().normalize_team_names(
+                            match_infos=match_infos,
+                            competition_id=competition["competition_id"],
+                            bookie_id=competition["bookie_id"],
+                            debug=self.debug
+                        )
+                        if competition["competition_id"] in self.map_matches.keys():
+                            item["data_dict"] = {
+                                "map_matches": self.map_matches[competition["competition_id"]],
+                                "match_infos": match_infos,
+                                "comp_infos": [
+                                    {
+                                        "competition_url_id": competition["competition_url_id"],
+                                        "http_status": response.status if hasattr(response, 'status') else 200,
+                                        "updated_date": Helpers().get_time_now("UTC")
+                                    },
+                                ]
+                            }
+                            item["pipeline_type"] = ["match_urls"]
+                            if self.debug:
+                                print("YIELDING item with match_infos", len(item["data_dict"]["match_infos"]))
+                            items.append(item)
+                        else:
+                            error = f"{competition['bookie_id']} {competition['competition_id']} comp not in map_matches "
+                            if self.debug:
+                                print(error)
+                            Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
+                    else:
+                        item["data_dict"] = {
+                            "map_matches": [],
+                            "match_infos": match_infos,
+                            "comp_infos": [
+                                {
+                                    "competition_url_id": competition["competition_url_id"],
+                                    "http_status": response.status if hasattr(response, 'status') else 200,
+                                    "updated_date": Helpers().get_time_now("UTC")
+                                },
+                            ]
+                        }
+                        item["pipeline_type"] = ["match_urls"]
+                        if self.debug:
+                            print("YIELDING item without match_infos", item["data_dict"])
+                        items.append(item)
+                        error = f"{competition['bookie_id']} {competition['competition_id']} comp has no new match "
+                        Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
+                except Exception as e:
+                    if self.debug:
+                        print(traceback.format_exc())
+                    Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
+                return items
+            finally:
+                try:
+                    keep_alive_task.cancel()
+                except Exception:
+                    pass
 
     async def parse(self, response, **kwargs):
         context_info = random.choice(self.context_infos)
@@ -88,17 +287,29 @@ accept-version:1.2,1.1,1.0
 heart-beat:10000,10000
 
 \x00"""
-            await self.ws.send(connect_message)
-            message = await self.ws.recv()
+            ok = await self._safe_send(connect_message)
+            if not ok:
+                print("Failed to send CONNECT; aborting parse")
+                return
+            message = await self._safe_recv()
+            if message is None:
+                print("Failed to recv CONNECTED frame; aborting parse")
+                return
             if self.debug:
                 print(f"Connected to API: {message}")
 
-            await self.ws.send("""SUBSCRIBE
+            ok = await self._safe_send("""SUBSCRIBE
 id:/user/request-response
 destination:/user/request-response
 
 \x00""")
-            message = await self.ws.recv()
+            if not ok:
+                print("Failed to send SUBSCRIBE /user/request-response; aborting parse")
+                return
+            message = await self._safe_recv()
+            if message is None:
+                print("Failed to recv SUBSCRIBE ack; aborting parse")
+                return
             if self.debug:
                 print(f"Subscribed to API: {message}")
 
@@ -110,23 +321,25 @@ destination:/user/request-response
                 item = ScrapersItem()
                 competition_id = competition["competition_url_id"].split("/")[-1]
                 count = 0
-                await self.ws.send(f"""SUBSCRIBE
+                ok = await self._safe_send(f"""SUBSCRIBE
 id:/api/eventgroups/{competition_id}-all-match-events
 locale:es
 destination:/api/eventgroups/{competition_id}-all-match-events
 
 \x00""")
-                try:
-
-                    raw_match_ids = await self.ws.recv()
-                except websockets.exceptions.ConnectionClosedError as e:
-                    print(f"WebSocket connection closed with error: {e}")
+                if not ok:
+                    print("Failed to subscribe to competition events; skipping competition")
+                    continue
+                raw_match_ids = await self._safe_recv()
+                if raw_match_ids is None:
                     if self.debug:
                         print(f"competiton {competition}")
-                        print(traceback.format_exc())
                     continue
                 while f"id:/api/eventgroups/{competition_id}" not in raw_match_ids and count < 2:
-                    raw_match_ids = await self.ws.recv()
+                    nxt = await self._safe_recv()
+                    if nxt is None:
+                        break
+                    raw_match_ids = nxt
                     print("waiting for match_ids")
                     count += 1
                 else:
@@ -145,7 +358,7 @@ destination:/api/eventgroups/{competition_id}-all-match-events
 
                 matches_details = []
                 for match_id in match_ids:
-                    await self.ws.send(f"""SUBSCRIBE
+                    await self._safe_send(f"""SUBSCRIBE
 id:/api/events/{match_id}
 locale:es
 destination:/api/events/{match_id}
@@ -227,6 +440,32 @@ destination:/api/events/{match_id}
             keep_alive_task.cancel()
             await self.ws.close()
             await asyncio.sleep(5)
+
+    async def parse2(self, response, **kwargs):
+        # Retry per-competition with fresh WS sessions (resilient against closed WS)
+        max_retries = 5
+        base_delay = 1.0
+        for competition in self.competitions:
+            attempt = 0
+            while attempt <= max_retries:
+                try:
+                    items = await self._process_competition(competition, response)
+                    for it in items:
+                        yield it
+                    break
+                except (websockets.exceptions.ConnectionClosed, websockets.exceptions.ConnectionClosedError) as e:
+                    if self.debug:
+                        print(f"Sportium WS closed for competition {competition.get('competition_id')}, retry {attempt+1}/{max_retries+1}: {e}")
+                    Helpers().insert_log(level="WARNING", type="CODE", error="SPORTIUM_WS_RETRY_COMP", message=str(e))
+                    await asyncio.sleep(min(base_delay * (2 ** attempt), 10))
+                    attempt += 1
+                    continue
+                except Exception as e:
+                    Helpers().insert_log(level="WARNING", type="CODE", error="SPORTIUM_COMP_ERROR", message=traceback.format_exc())
+                    if self.debug:
+                        print(traceback.format_exc())
+                    break
+        await asyncio.sleep(1)
 
     async def parse_match(self, response):
         # item = ScrapersItem()
@@ -424,6 +663,6 @@ destination:/api/markets/multi
     def start_requests(self):
         try:
             if self.parser == "comp":
-                yield scrapy.Request(url="data:,", callback=self.parse)
+                yield scrapy.Request(url="data:,", callback=self.parse2)
         except AttributeError:
             yield scrapy.Request(url="data:,", callback=self.parse_match)
