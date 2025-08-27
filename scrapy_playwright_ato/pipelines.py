@@ -289,7 +289,7 @@ class ScrapersPipeline:
                 """
                 for upd in unique_updates:
                     cursor.execute(query_update_match_urls, upd)
-                    print(f"[Worker] URL update rowcount {cursor.rowcount} for {upd[2]}")
+                    # print(f"[Worker] URL update rowcount {cursor.rowcount} for {upd[2]}")
 
             if match_ids_buf:
                 query_insert_dutcher_queue = """

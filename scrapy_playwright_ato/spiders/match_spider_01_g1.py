@@ -31,19 +31,19 @@ class MetaSpider(scrapy.Spider):
         custom_settings = get_custom_settings_for_zyte_api()
     try:
         if os.environ["USER"] in LOCAL_USERS:
-            # custom_settings["PLAYWRIGHT_MAX_CONTEXTS"] = 10
-            # custom_settings["CONCURRENT_REQUESTS"] = 50
+            custom_settings["PLAYWRIGHT_MAX_CONTEXTS"] = 10
+            custom_settings["CONCURRENT_REQUESTS"] = 50
             debug = True
             match_filter_enabled = True
-            scraping_group = [1]
+            scraping_group = [1,2,3,4]
 
             # FILTER OPTIONS
-            match_filter = {}
-            # match_filter = {"type": "bookie_id", "params":["AupaBet", 1]}
+            # match_filter = {}
+            # match_filter = {"type": "bookie_id", "params":["YoSports", 1]}
             # match_filter = {"type": "bookie_and_comp", "params": ["AdmiralBet", "ATP"]}
             # match_filter = {"type": "comp", "params":["MajorLeagueSoccerUSA"]}
-            # match_filter = {"type": "match_url_id",
-            #                 "params":["https://www.efbet.es/ES/sports#bo-navigation=282241.1,490462.1,490777.1&action=market-group-list&event=37901230.1"]}
+            match_filter = {"type": "match_url_id",
+                            "params":["https://sb-pp-esfe.daznbet.es/futbol/evento/ue-sant-andreu-v-cf-montanesa-u-2440652?tab=todo"]}
     except:
         match_filter_enabled = False
         match_filter = {}

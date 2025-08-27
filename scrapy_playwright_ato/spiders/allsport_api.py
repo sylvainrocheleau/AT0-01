@@ -43,12 +43,12 @@ class APISpider(scrapy.Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 # No filters
-                # list_of_competitions = bookie_config(bookie=["AllSportAPI"])
+                list_of_competitions = bookie_config(bookie=["AllSportAPI"])
                 # Filter by active competitions
                 # list_of_competitions = [x for x in bookie_config(bookie=["AllSportAPI", "only_active"])]
                 # Filter by competition
-                list_of_competitions = [x for x in bookie_config(bookie=["AllSportAPI"])
-                                        if x["competition_id"] == "ATP"]
+                # list_of_competitions = [x for x in bookie_config(bookie=["AllSportAPI"])
+                #                         if x["competition_id"] == "ATP"]
                 # if self.debug:
                 #     print("list of competitions", list_of_competitions)
                 pass

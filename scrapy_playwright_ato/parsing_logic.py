@@ -596,7 +596,7 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
         elif bookie_id == "DaznBet":
             match_infos = []
             if sport_id in ['1', '2'] :
-                xpath_results = response.xpath("//div[@class='event-container event-row align-center']").extract()
+                xpath_results = response.xpath("//div[@class='accordion-container competition-accordion-container ']").extract()
                 for xpath_result in xpath_results:
                     try:
                         xpath_result = Selector(xpath_result)
@@ -619,6 +619,8 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                             url = xpath_result_02.xpath("//a/@href").extract()[0]
                             url = "https://sb-pp-esfe.daznbet.es" + url + "?tab=todo"
                             web_url = "https://www.daznbet.es/es-es/deportes" + url
+
+                            # date = None
 
                             if url not in map_matches_urls:
                                 match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id)
@@ -1769,28 +1771,50 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
     elif bookie_id == "Betsson":
         odds = []
         try:
-            response = response.replace("null", '0').replace("true", '0').replace("false", '0')
-            response = eval(response)
-            odds = []
-            for key, values in response.items():
-                if key == "data":
-                    for key_02, values_02 in values["data"].items():
-                        for key_03, values_03 in values_02.items():
-                            for key_04, values_04 in values_03["market"].items():
-                                if values_04["name_template"] in list_of_markets:
-                                    for key_05, values_05 in values_04["event"].items():
-                                        market = values_04["name_template"]
-                                        result = values_05["name"]
-                                        try:
-                                            result = result + str(values_05["base"])
-                                        except KeyError as e:
-                                            pass
-                                        odds.append(
-                                            {"Market": market,
-                                             "Result": result,
-                                             "Odds": values_05["price"],
-                                             }
-                                        )
+            # Accept either a JSON string or a dict
+            data = None
+            if isinstance(response, str):
+                try:
+                    data = json.loads(response)
+                except Exception:
+                    data = None
+            elif isinstance(response, dict):
+                data = response
+            if not isinstance(data, dict):
+                return []
+
+            root = data.get("data", {}).get("data", {})
+            games_map = root.get("game", {}) if isinstance(root, dict) else {}
+            if not isinstance(games_map, dict):
+                return []
+
+            # Iterate each game in the response and collect matching markets/events
+            for _gid, game_obj in games_map.items():
+                if not isinstance(game_obj, dict):
+                    continue
+                markets = game_obj.get("market", {})
+                if not isinstance(markets, dict):
+                    continue
+                for _mid, market_obj in markets.items():
+                    if not isinstance(market_obj, dict):
+                        continue
+                    name_template = market_obj.get("name_template")
+                    if name_template in list_of_markets:
+                        events = market_obj.get("event", {})
+                        if isinstance(events, dict):
+                            for _eid, event_obj in events.items():
+                                if not isinstance(event_obj, dict):
+                                    continue
+                                market = name_template
+                                result = event_obj.get("name", "")
+                                base = event_obj.get("base")
+                                if base not in (None, ""):
+                                    result = f"{result}{base}"
+                                odds.append({
+                                    "Market": market,
+                                    "Result": result,
+                                    "Odds": event_obj.get("price"),
+                                })
         except Exception as e:
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
     elif bookie_id == "BetWay":

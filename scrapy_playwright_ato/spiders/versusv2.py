@@ -9,7 +9,7 @@ import traceback
 import asyncio
 import scrapy
 from websockets_proxy import Proxy, proxy_connect
-from websockets.exceptions import ConnectionClosedError
+# from websockets.exceptions import ConnectionClosedError
 from scrapy import Spider
 from ..items import ScrapersItem
 from ..parsing_logic import parse_competition, parse_match
@@ -24,17 +24,14 @@ class WebsocketsSpider(Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                # self.competitions = [x for x in bookie_config(bookie=["Versus"]) if x["competition_id"] == "UEFAChampionsLeague"]
-                # self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", "UEFAChampionsLeague"]}
+                self.competitions = [x for x in bookie_config(bookie=["Versus"]) if x["competition_id"] == "UEFAChampionsLeague"]
+                self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", "UEFAChampionsLeague"]}
 
                 # self.match_filter = {"type": "match_url_id", "params": [
-                #      'https://www.versus.es/apuestas/sports/soccer/events/22425769']}
+                #     "https://www.versus.es/apuestas/sports/soccer/events/22197283"]}
 
-                self.competitions = bookie_config(bookie=["Versus"])
-                print(self.competitions)
-                self.match_filter = {"type": "bookie_id", "params": ["Versus", 1]}
-            else:
-                self.debug = False
+                # self.competitions = bookie_config(bookie=["Versus"])
+                # self.match_filter = {"type": "bookie_id", "params": ["Versus", 1]}
         except:
             if (
                 0 <= Helpers().get_time_now("UTC").hour < 1
@@ -72,11 +69,10 @@ class WebsocketsSpider(Spider):
                 print(f"Error sending PING: {e}")
                 break
 
-    async def _process_competition(self, competition, response):
-        """Open a fresh WS session, fetch and build items for a single competition."""
-        items = []
+    async def parse(self, response):
+
         context_info = random.choice(self.context_infos)
-        proxy = Proxy.from_url(proxy_prefix_http + context_info.get("proxy_ip") + proxy_suffix)
+        proxy = Proxy.from_url(proxy_prefix_http+context_info.get("proxy_ip")+proxy_suffix)
         async with proxy_connect(
             'wss://sportswidget.versus.es/api/websocket',
             proxy=proxy,
@@ -89,21 +85,22 @@ heart-beat:10000,10000
 
 \x00"""
             await self.ws.send(connect_message)
-            _ = await self.ws.recv()
+            message = await self.ws.recv()
             if self.debug:
-                print("Connected to API (competition scope)")
+                print(f"Connected to API:")
 
             await self.ws.send("""SUBSCRIBE
 id:/user/request-response
 destination:/user/request-response
 
 \x00""")
-            _ = await self.ws.recv()
+            message = await self.ws.recv()
             if self.debug:
-                print("Subscribed to API (competition scope)")
+                print(f"Subscribed to API")
 
             keep_alive_task = asyncio.create_task(self.keep_alive())
-            try:
+
+            for competition in self.competitions:
                 item = ScrapersItem()
                 competition_id = competition["competition_url_id"].split("/")[-1]
                 await self.ws.send(f"""SUBSCRIBE
@@ -112,19 +109,21 @@ locale:es
 destination:/api/eventgroups/{competition_id}-all-match-events
 
 \x00""")
+                await asyncio.sleep(0.1)
                 match_ids = await self.ws.recv()
                 try:
                     match_ids = re.search(r'\{.*\}', match_ids, re.DOTALL).group()
                     match_ids = json.loads(match_ids)
-                except Exception:
-                    # malformed payload; nothing to do for this competition
-                    return items
+                except Exception as e:
+                    continue
                 try:
+                    print("match_ids", match_ids)
                     match_ids = [event['id'] for group in match_ids['groups'] for event in group['events']]
+
                 except KeyError:
                     print(f"error in match_ids for {competition['competition_id']} - {competition['competition_url_id']}")
-                    return items
-
+                    match_ids = []
+                    continue
                 matches_details = []
                 for match_id in match_ids:
                     await self.ws.send(f"""SUBSCRIBE
@@ -133,19 +132,20 @@ locale:es
 destination:/api/events/{match_id}
 
 \x00""")
-                    match_details = await self.ws.recv()
+                    await asyncio.sleep(0.1)
                     try:
+                        match_details = await self.ws.recv()
                         match_details = re.search(r'\{.*\}', match_details, re.DOTALL).group()
                         match_details = json.loads(match_details)
                         matches_details.append(match_details)
-                    except Exception:
+                    except Exception as e:
                         print(f"error in match_details for {competition['competition_id']}")
                         matches_details = []
-                        break
+                        continue
 
                 if len(matches_details) == 0:
                     print(f"No matches found for {competition['competition_id']}")
-                    return items
+                    continue
 
                 match_infos = parse_competition(
                     response=matches_details,
@@ -178,9 +178,8 @@ destination:/api/events/{match_id}
                                 ]
                             }
                             item["pipeline_type"] = ["match_urls"]
-                            if self.debug:
-                                print("YIELDING item with match_infos 1", item["data_dict"]["match_infos"])
-                            items.append(item)
+                            print("YIELDING item with match_infos 1", item["data_dict"]["match_infos"])
+                            yield item
                         else:
                             error = f"{competition['bookie_id']} {competition['competition_id']} comp not in map_matches "
                             if self.debug:
@@ -199,48 +198,18 @@ destination:/api/events/{match_id}
                             ]
                         }
                         item["pipeline_type"] = ["match_urls"]
-                        if self.debug:
-                            print("YIELDING item without match_infos 2", item["data_dict"])
-                        items.append(item)
+                        print("YIELDING item without match_infos 2", item["data_dict"])
+                        yield item
                         error = f"{competition['bookie_id']} {competition['competition_id']} comp has no new match "
                         Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
                 except Exception as e:
                     print(traceback.format_exc())
                     Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
-                return items
-            finally:
-                try:
-                    keep_alive_task.cancel()
-                except Exception:
-                    pass
 
-    async def parse(self, response):
-        # Retry per-competition with fresh WS sessions
-        max_retries = 5
-        base_delay = 1.0
-        for competition in self.competitions:
-            attempt = 0
-            while attempt <= max_retries:
-                try:
-                    items = await self._process_competition(competition, response)
-                    for it in items:
-                        yield it
-                    break
-                except ConnectionClosedError as e:
-                    if self.debug:
-                        print(f"WebSocket closed for competition {competition.get('competition_id')}, retry {attempt+1}/{max_retries+1}: {e}")
-                    Helpers().insert_log(level="WARNING", type="CODE", error="VERSUS_WS_RETRY_COMP", message=str(e))
-                    await asyncio.sleep(min(base_delay * (2 ** attempt), 10))
-                    attempt += 1
-                    continue
-                except Exception as e:
-                    # Log unexpected errors and move on to next competition
-                    Helpers().insert_log(level="WARNING", type="CODE", error="VERSUS_COMP_ERROR", message=traceback.format_exc())
-                    if self.debug:
-                        print(traceback.format_exc())
-                    break
-        # small cooldown between phases
-        await asyncio.sleep(1)
+        print("closing connection for comp")
+        keep_alive_task.cancel()
+        await self.ws.close()
+        await asyncio.sleep(5)
 
     async def parse_match(self, response):
         try:
@@ -270,46 +239,83 @@ heart-beat:10000,10000
 \x00"""
             await self.ws.send(connect_message)
             message = await self.ws.recv()
+            if self.debug:
+                print(f"Connected to API: {message}")
+
             await self.ws.send("""SUBSCRIBE
 id:/user/request-response
 destination:/user/request-response
 
 \x00""")
             message = await self.ws.recv()
+            if self.debug:
+                print(f"Subscribed to API: {message}")
+
             keep_alive_task = asyncio.create_task(self.keep_alive())
 
             for key, value in matches_details_and_urls.items():
-                if self.debug:
-                    print(f"Match details: {key}, {value}")
-                for data in value:
-                    flag_error = True
-                    try:
+                flag_error = True
+                try:
+                    if self.debug:
+                        print(f"Match details: {key}, {value}")
+                    for data in value:
                         if data["sport_id"] == "1":
                             suffix = "-TOPFT"
                         elif data["sport_id"] == "2":
                             suffix = "-TOPBK"
-
                         await self.ws.send(f"""SUBSCRIBE
 id:/api/marketgroup/{data['match_url_id'].split('/')[-1]}{suffix}
 locale:es
 destination:/api/marketgroup/{data['match_url_id'].split('/')[-1]}{suffix}
 
 \x00""")
+                        await asyncio.sleep(0.1)  # small delay so the broker registers the subscription
+
+                        # First frame
+                        raw = await self.ws.recv()
                         try:
-                            match_market_ids = await self.ws.recv()
-                        except ConnectionClosedError as e:
-                            if self.debug:
-                                print(f"WebSocket closed while waiting for match_market_ids for match {data.get('match_id')}: {e}")
-                            Helpers().insert_log(level="WARNING", type="CODE", error="VERSUS_WS_CLOSED_MARKET_IDS", message=str(e))
-                            try:
-                                keep_alive_task.cancel()
-                            except Exception:
-                                pass
-                            return
-                        if self.debug:
-                            print(f"Match market IDs: {match_market_ids}")
-                        match_market_ids = re.search(r'\{.*\}', match_market_ids, re.DOTALL).group()
-                        match_market_ids = json.loads(match_market_ids)
+                            json_str = re.search(r"\{.*\}", raw, re.DOTALL).group()
+                            msg = json.loads(json_str)
+                        except Exception:
+                            msg = None
+
+                        expected_id = f"{data['match_url_id'].split('/')[-1]}{suffix}"
+
+                        if not (isinstance(msg, dict) and str(msg.get('id')) == expected_id):
+                            # Drain a bit more until we find the correct message
+                            loop = asyncio.get_event_loop()
+                            deadline = loop.time() + 8.0  # total wait budget
+                            msg = None
+                            while loop.time() < deadline:
+                                try:
+                                    raw = await asyncio.wait_for(self.ws.recv(),
+                                                                 timeout=max(0.1, deadline - loop.time()))
+                                except asyncio.TimeoutError:
+                                    break
+                                except Exception:
+                                    break
+                                # Filter by destination header to reduce noise
+                                try:
+                                    header_part = raw.split("\x00", 1)[0]
+                                    m = re.search(r"destination:(.+)", header_part)
+                                    dest = m.group(1).strip() if m else None
+                                    if not dest or "/api/marketgroup/" not in dest:
+                                        continue
+                                except Exception:
+                                    continue
+                                # Parse JSON body
+                                try:
+                                    json_str = re.search(r"\{.*\}", raw, re.DOTALL).group()
+                                    cand = json.loads(json_str)
+                                except Exception:
+                                    continue
+                                if isinstance(cand, dict) and str(cand.get('id')) == expected_id:
+                                    msg = cand
+                                    break
+
+                        match_market_ids = msg
+                        # if self.debug:
+                        #     print("match_market_ids: ", match_market_ids)
                         if isinstance(match_market_ids, dict) and len(match_market_ids) > 0 and "aggregatedMarkets" in match_market_ids.keys():
                             filtered_match_market_ids = []
                             for x in match_market_ids["aggregatedMarkets"]:
@@ -319,7 +325,6 @@ destination:/api/marketgroup/{data['match_url_id'].split('/')[-1]}{suffix}
                                     pass
                             filtered_match_market_ids = ';'.join(
                                 [item for sublist in filtered_match_market_ids for item in sublist])
-        #
                             await self.ws.send(f"""SUBSCRIBE
 id:/api/markets/multi
 locale:es
@@ -328,84 +333,96 @@ key:{filtered_match_market_ids}
 destination:/api/markets/multi
 
 \x00""")
-                            try:
-                                response_odds = await self.ws.recv()
-                            except ConnectionClosedError as e:
-                                if self.debug:
-                                    print(f"WebSocket closed while waiting for response_odds for match {data.get('match_id')}: {e}")
-                                Helpers().insert_log(level="WARNING", type="CODE", error="VERSUS_WS_CLOSED_RESPONSE_ODDS", message=str(e))
-                                try:
-                                    keep_alive_task.cancel()
-                                except Exception:
-                                    pass
-                                return
+                            response_odds = await self.ws.recv()
+                            # if self.debug:
+                            #     print(f"response_odds: {response_odds}")
                             if response_odds is not None:
                                 response_odds = re.search(r'\{.*\}', response_odds, re.DOTALL).group()
                                 response_odds = json.loads(response_odds)
+                                if self.debug:
+                                    print(f"response_odds keys, {response_odds.keys()}")
+                                    print("filtered_match_market_ids", filtered_match_market_ids)
 
-                                odds = parse_match(
-                                    bookie_id=data["bookie_id"],
-                                    response=response_odds,
-                                    sport_id=data["sport_id"],
-                                    list_of_markets=list_of_markets_V2[data["bookie_id"]][data["sport_id"]],
-                                    home_team=data["home_team"],
-                                    away_team=data["away_team"],
-                                    debug=self.debug
-                                )
-                                odds = Helpers().build_ids(
-                                    id_type="bet_id",
-                                    data={
-                                        "match_id": data["match_id"],
-                                        "odds": normalize_odds_variables(
-                                            odds,
-                                            data["sport_id"],
-                                            data["home_team"],
-                                            data["away_team"],
-                                        )
-                                    }
-                                )
-                                if odds:
-                                    flag_error = False
-                        else:
-                            if self.debug:
-                                print("match_market_ids is", type(match_market_ids))
-                                print("match_market_ids length", len(match_market_ids))
-                                print("match_market_ids keys", match_market_ids.keys())
-                                print(match_market_ids)
-                                error = f"error with match_market_ids on {data['bookie_id']} {data['competition_id']}"
-                                print(error)
-                            Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
-                    except Exception as e:
+                                # Normalize to sets of strings (ignore order and whitespace)
+                                resp_ids = {str(k).strip() for k in response_odds.keys()}
+                                sent_ids = {s.strip() for s in (filtered_match_market_ids or "").split(";") if
+                                            s.strip()}
+
+                                # Check coverage
+                                missing = sent_ids - resp_ids
+
+                                valid_superset = len(missing) == 0
+                                if valid_superset:
+                                    odds = parse_match(
+                                        bookie_id=data["bookie_id"],
+                                        response=response_odds,
+                                        sport_id=data["sport_id"],
+                                        list_of_markets=list_of_markets_V2[data["bookie_id"]][data["sport_id"]],
+                                        home_team=data["home_team"],
+                                        away_team=data["away_team"],
+                                        debug=self.debug
+                                    )
+                                    odds = Helpers().build_ids(
+                                        id_type="bet_id",
+                                        data={
+                                            "match_id": data["match_id"],
+                                            "odds": normalize_odds_variables(
+                                                odds,
+                                                data["sport_id"],
+                                                data["home_team"],
+                                                data["away_team"],
+                                            )
+                                        }
+                                    )
+                                    if odds:
+                                        flag_error = False
+
+                except Exception as error:
+                    Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
+                finally:
+                    # Unsubscribe to reduce noise from prior matches
+                    try:
+                        await self.ws.send(f"""UNSUBSCRIBE
+id:/api/marketgroup/{data['match_url_id'].split('/')[-1]}{suffix}
+
+\x00""")
+                    except Exception:
                         pass
-                    finally:
-                        item = ScrapersItem()
-                        if flag_error:
-                            if self.debug:
-                                print(f"Flag error on {data['match_id']}")
-                            item["data_dict"] = {
-                                "match_infos": [
-                                    {
-                                        "match_url_id": data["match_url_id"],
-                                        "http_status": 1600,
-                                        "match_id": data["match_id"],
-                                    },
-                                ]
-                            }
-                            item["pipeline_type"] = ["error_on_match_url"]
-                        elif not flag_error:
-                            if self.debug:
-                                print(f"No flag error on {data['match_id']}")
-                            item["data_dict"] = {
-                                "match_id": data["match_id"],
-                                "bookie_id": data["bookie_id"],
-                                "odds": odds,
-                                "updated_date": Helpers().get_time_now(country="UTC"),
-                                "web_url": data["web_url"],
-                                "http_status": response.status,
-                                "match_url_id": data["match_url_id"],
-                            }
-                            item["pipeline_type"] = ["match_odds"]
-                        yield item
+                    try:
+                        await self.ws.send("""UNSUBSCRIBE
+id:/api/markets/multi
+
+\x00""")
+                    except Exception:
+                        pass
+                    item = ScrapersItem()
+                    if flag_error:
+                        if self.debug:
+                            print(f"Flag error on {data['match_id']}")
+                        item["data_dict"] = {
+                            "match_infos": [
+                                {
+                                    "match_url_id": data["match_url_id"],
+                                    "http_status": 1600,
+                                    "match_id": data["match_id"],
+                                },
+                            ]
+                        }
+                        item["pipeline_type"] = ["error_on_match_url"]
+                    elif not flag_error:
+                        if self.debug:
+                            print(f"No flag error on {data['match_id']}")
+                        item["data_dict"] = {
+                            "match_id": data["match_id"],
+                            "bookie_id": data["bookie_id"],
+                            "odds": odds,
+                            "updated_date": Helpers().get_time_now(country="UTC"),
+                            "web_url": data["web_url"],
+                            "http_status": 200,  # Assuming 200 since we got data
+                            "match_url_id": data["match_url_id"],
+                        }
+                        item["pipeline_type"] = ["match_odds"]
+                    yield item
 
         print("closing connection for matches")
         keep_alive_task.cancel()

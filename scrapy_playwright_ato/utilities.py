@@ -1339,7 +1339,6 @@ class Helpers():
                         method="wait_for_selector",
                         selector="//div[@class='main-container']",
                     ),
-
                     PageMethod(
                         method="wait_for_timeout",
                         timeout=1000
