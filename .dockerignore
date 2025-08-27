@@ -1,0 +1,13 @@
+# Ignore everything by default
+**
+
+# Allow only necessary project files
+!scrapy_playwright_ato/**
+!requirements.txt
+!setup.py
+!pyproject.toml
+!scrapy.cfg
+!README.md
+!scrapinghub.yml
+!Dockerfile
+!/.dockerignore
