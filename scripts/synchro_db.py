@@ -24,7 +24,7 @@ TABLES = [
     # {'name': 'V2_Dutcher', 'key': ['bet_id', 'bookie_id', 'bookie_2']},
     # {'name': 'V2_Oddsmatcher', 'key': ['bet_id', 'bookie_id', 'lay_odds']},
     {'name': 'V2_Sports_Urls', 'key': ['sport_url_id']},
-    {'name': 'V2_Teams', 'key': ['team_id']},
+    # {'name': 'V2_Teams', 'key': ['team_id']},
 ]
 
 SQL_PORT = 3306
@@ -195,6 +195,72 @@ def sync_table(table_info):
     local_conn.commit()
     print(f"[{table}] Synchro completed.")
 
+
+# Synchronize a localhost db table with the remote db using :
+# - Insert if row is missing in localhost db
+# - Update if cols have changed between localhost db and remote db
+def update_table(table_name, key_col):
+
+    local_cursor = local_conn.cursor(dictionary=True)
+    remote_cursor = remote_conn.cursor(dictionary=True)
+
+    try:
+        # loading localhost data in key -> row form
+        local_cursor.execute(f"SELECT * FROM {table_name}")
+        local_rows = {row[key_col]: row for row in local_cursor.fetchall()}
+
+        # loading remote data
+        remote_cursor.execute(f"SELECT * FROM {table_name}")
+        remote_rows = remote_cursor.fetchall()
+
+        if not remote_rows:
+            print(f"[{table_name}] No data found in remote db.")
+            return
+
+        cols = list(remote_rows[0].keys())
+
+        rows_to_insert = []
+        rows_to_update = []
+
+        for remote_row in remote_rows:
+            row_id = remote_row[key_col]
+
+            if row_id not in local_rows:
+                rows_to_insert.append(remote_row)
+            else:
+                local_row = local_rows[row_id]
+                if any(remote_row[c] != local_row[c] for c in cols if c != key_col):
+                    rows_to_update.append(remote_row)
+
+        if rows_to_insert:
+            placeholders = ", ".join(["%s"] * len(cols))
+            insert_query = f"INSERT INTO {table_name} ({', '.join(cols)}) VALUES ({placeholders})"
+            local_cursor.executemany(insert_query, [tuple(r[c] for c in cols) for r in rows_to_insert])
+            print(f"[{table_name}] {len(rows_to_insert)} new rows inserted.")
+
+        if rows_to_update:
+            update_query = f"""
+                UPDATE {table_name}
+                SET {', '.join([f"{c}=%s" for c in cols if c != key_col])}
+                WHERE {key_col}=%s
+            """
+            local_cursor.executemany(update_query, [
+                tuple(r[c] for c in cols if c != key_col) + (r[key_col],)
+                for r in rows_to_update
+            ])
+            print(f"[{table_name}] {len(rows_to_update)} rows updated.")
+
+        local_conn.commit()
+        print(f"[{table_name}] Synchro completed")
+
+    except Exception as e:
+        print(f"[{table_name}] Error : {e}")
+        local_conn.rollback()
+
+    local_cursor.close()
+    remote_cursor.close()
+
+
 # Synchronize all tables from remote db to localhost db
 def sync_all_tables():
     for table in TABLES:
@@ -205,3 +271,4 @@ if __name__ == "__main__":
     drop_local_tables()
     clone_table_structures()
     sync_all_tables()
+    update_table("V2_Teams", "team_id")
