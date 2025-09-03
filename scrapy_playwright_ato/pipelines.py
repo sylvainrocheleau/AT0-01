@@ -814,7 +814,10 @@ class ScrapersPipeline:
                     Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}",
                                          message=traceback.format_exc())
                 self.connection.commit()
-            print(f"Deleted {self.cursor.rowcount} tournaments from V2_Competitons_Urls")
+            if self.cursor.rowcount > 0:
+                print(f"Deleted {self.cursor.rowcount} tournaments from V2_Competitons_Urls")
+            else:
+                print(f"No tournaments were deleted from V2_Competitons_Urls")
             print("Create or update competitions in V2_Competitions_Urls")
             start_time = datetime.datetime.now()
             try:
@@ -826,7 +829,7 @@ class ScrapersPipeline:
                 create_competitions = []
                 for data in item["data_dict"]["tournaments_infos"]:
                     if self.debug:
-                        print("Creating competition URL", data["competition_url_id"], data["bookie_id"], data["competition_id"])
+                        print("Creating or updating competition URL", data["competition_url_id"], data["bookie_id"], data["competition_id"])
                     create_competitions.append(
                         (data["competition_url_id"], data["bookie_id"], data["competition_id"])
                     )
