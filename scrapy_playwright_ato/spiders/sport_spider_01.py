@@ -41,7 +41,7 @@ class TwoStepsSpider(scrapy.Spider):
                 # Filter by bookie that have errors
                 # sport_pages = bookie_config(bookie={"name": "all_bookies","http_errors": True, "output": "tournaments"})
                 # Filter by bookie
-                sport_pages = bookie_config(bookie={"name": "Bet777", "http_errors": False, "output": "tournaments"})
+                sport_pages = bookie_config(bookie={"name": "KirolBet", "http_errors": False, "output": "tournaments"})
 
             else:
                 sport_pages = []

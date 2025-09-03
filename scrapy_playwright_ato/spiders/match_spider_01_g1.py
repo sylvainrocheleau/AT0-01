@@ -43,7 +43,7 @@ class MetaSpider(scrapy.Spider):
             # match_filter = {"type": "bookie_and_comp", "params": ["AdmiralBet", "ATP"]}
             # match_filter = {"type": "comp", "params":["MajorLeagueSoccerUSA"]}
             match_filter = {"type": "match_url_id",
-                            "params":["https://sb-pp-esfe.daznbet.es/futbol/evento/ue-sant-andreu-v-cf-montanesa-u-2440652?tab=todo"]}
+                            "params":["https://www.zebet.es/es/event/f2z83-raphael_collignon_bel_casper_ruud_nor"]}
     except:
         match_filter_enabled = False
         match_filter = {}

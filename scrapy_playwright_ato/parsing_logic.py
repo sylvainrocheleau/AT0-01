@@ -44,7 +44,37 @@ def parse_sport(response, bookie_id, sport_id, competiton_names_and_variants, de
         elif bookie_id == "AdmiralBet":
             pass
         elif bookie_id == "AupaBet":
-            pass
+            try:
+                xpath_results = response.xpath("//span[@class='campeonato']").extract()
+                for xpath_result in xpath_results:
+                    xpath_result = Selector(xpath_result)
+                    try:
+                        tournament_name = \
+                        xpath_result.xpath("//a/text()").extract()[0].strip()
+                        tournaments_found = []
+                        for comp_id, variants in competiton_names_and_variants.items():
+                            for variant in variants:
+                                if any(variant in tournament_name for variant in variants):
+                                    tournaments_found.append((comp_id, variant))
+
+                        if tournaments_found:
+                            # Pick the comp_id with the longest matching variant (most specific)
+                            competition_id = max(tournaments_found, key=lambda x: len(x[1]))[0]
+                            url = xpath_result.xpath("//a[@href]/@href").extract()[0]
+                            url = "https://www.bet777.es" + url
+                            print(tournament_name, '>', competition_id, '>', url)
+                            tournaments_info.append(
+                                {
+                                    'competition_url_id': url,
+                                    'competition_id': competition_id,
+                                    'bookie_id': bookie_id,
+                                }
+                            )
+                    except IndexError as ide:
+                        continue
+            except Exception as e:
+                if debug:
+                    print(traceback.format_exc())
         elif bookie_id == "Bet777":
             xpath_results = response.xpath("//a[contains(@class, 'content-between')]").extract()
             for xpath_result in xpath_results:
@@ -95,6 +125,38 @@ def parse_sport(response, bookie_id, sport_id, competiton_names_and_variants, de
             pass
         elif bookie_id == "EfBet":
             pass
+        elif bookie_id == "KirolBet":
+            try:
+                xpath_results = response.xpath("//span[@class='campeonato']").extract()
+                for xpath_result in xpath_results:
+                    xpath_result = Selector(xpath_result)
+                    try:
+                        tournament_name = \
+                            xpath_result.xpath("//a/text()").extract()[0].strip()
+                        tournaments_found = []
+                        for comp_id, variants in competiton_names_and_variants.items():
+                            for variant in variants:
+                                if any(variant in tournament_name for variant in variants):
+                                    tournaments_found.append((comp_id, variant))
+
+                        if tournaments_found:
+                            # Pick the comp_id with the longest matching variant (most specific)
+                            competition_id = max(tournaments_found, key=lambda x: len(x[1]))[0]
+                            url = xpath_result.xpath("//a[@href]/@href").extract()[0]
+                            url = "https://www.bet777.es" + url
+                            print(tournament_name, '>', competition_id, '>', url)
+                            tournaments_info.append(
+                                {
+                                    'competition_url_id': url,
+                                    'competition_id': competition_id,
+                                    'bookie_id': bookie_id,
+                                }
+                            )
+                    except IndexError as ide:
+                        continue
+            except Exception as e:
+                if debug:
+                    print(traceback.format_exc())
         return tournaments_info
     except Exception as e:
         print("GENERAL EXCEPTION ON", bookie_id, "from parse_sport")

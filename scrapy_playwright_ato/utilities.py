@@ -892,7 +892,7 @@ class Helpers():
             "Davis Cup": [],
             "Exhibition": [],
             "Grand Slam": ["US Open", "Australian Open", "French Open", "Wimbledon"],
-            "Grand Slam Cup": [],
+            # "Grand Slam Cup": [],
             "United Cup": [],
         }
         competitions = Helpers().load_competitions()
