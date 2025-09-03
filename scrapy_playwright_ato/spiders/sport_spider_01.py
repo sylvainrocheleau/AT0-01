@@ -58,8 +58,8 @@ class TwoStepsSpider(scrapy.Spider):
 
 
         sport_pages = [x for x in sport_pages if x["scraping_tool"] in self.allowed_scraping_tools]
-        if self.debug:
-            print("sport_url_id to scrape", [x["sport_url_id"] for x in sport_pages])
+        # if self.debug:
+        #     print("sport_url_id to scrape", [x["sport_url_id"] for x in sport_pages])
         for data in sport_pages:
             try:
                 if data["scraping_tool"] in ["requests", "playwright", "zyte_proxy_mode", "zyte_api"]:
@@ -67,7 +67,7 @@ class TwoStepsSpider(scrapy.Spider):
                     data.update(context_info)
                 if data["scraping_tool"] == "playwright":
                     self.close_playwright = True
-                url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="sport", data=data)
+                url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="sport", data=data, debug=self.debug)
                 if self.debug:
                     print("url to scrape", url, "dont_filter", dont_filter, "meta_request", meta_request)
                 yield scrapy.Request(
@@ -79,14 +79,13 @@ class TwoStepsSpider(scrapy.Spider):
                 )
             except Exception as e:
                 import traceback
-                print(data["bookie_id"])
-                print(traceback.format_exc())
+                if self.debug:
+                    print(traceback.format_exc())
                 continue
 
     async def tournaments_request(self,response):
         item = ScrapersItem()
         if response.meta.get("scraping_tool") == "playwright":
-            print('found playwright')
             try:
                 page = response.meta["playwright_page"]
                 await page.close()
