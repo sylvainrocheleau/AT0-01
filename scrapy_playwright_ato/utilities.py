@@ -1,8 +1,11 @@
 import sys
 import traceback
 # from asyncio import timeout
+# from bookies_configurations import list_of_competitons_synonyms
 from scrapy_playwright_ato.settings import SQL_USER, SQL_PWD, TEST_ENV, soltia_user_name, soltia_password, \
     SCRAPE_OPS_API_KEY, proxy_prefix, proxy_suffix, ZYTE_PROXY_MODE
+
+
 
 # Playwright page init callback: console piping, errors, key responses, timeouts, tracing
 async def init_page_debug(page, request):
@@ -879,23 +882,37 @@ class Helpers():
         return competitions_urls
 
     def load_competiton_names_and_variants(self, sport_id):
+        # from bookies_configurations import list_of_competitons_synonyms
+        list_of_competitons_synonyms = {
+            "ATP": [],
+            "Copa Billie Jean King": [],
+            "Billie Jean King Cup": [],
+            "Challenger": [],
+            "Copa Davis": [],
+            "Davis Cup": [],
+            "Exhibition": [],
+            "Grand Slam": ["US Open", "Australian Open", "French Open", "Wimbledon"],
+            "Grand Slam Cup": [],
+            "United Cup": [],
+        }
         competitions = Helpers().load_competitions()
 
-        def add_bigrams(names):
+        def add_bigrams_and_tournaments(names):
             variants = set(names)
             for name in names:
                 words = name.split()
                 for i in range(len(words) - 1):
                     bigram = f"{words[i]} {words[i + 1]}"
                     variants.add(bigram)
+                for synonym in list_of_competitons_synonyms[name]:
+                    variants.add(synonym)
             return list(variants)
 
         competitions_names_and_variants = {}
         for x in competitions:
             if x[3] == sport_id:
                 base_names = list({x[1], x[2]})
-                competitions_names_and_variants[x[0]] = add_bigrams(base_names)
-
+                competitions_names_and_variants[x[0]] = add_bigrams_and_tournaments(base_names)
         return competitions_names_and_variants
 
     def load_matches(self):
@@ -1121,7 +1138,7 @@ class Helpers():
                     PageMethod(
                         method="wait_for_selector",
                         selector="//div[@class=' text-gray-300 bg-gray-800 rounded-lg mt-5 pb-5']",
-                        timeout=20000,
+                        timeout=30000,
                     ),
                     # PageMethod(
                     #     method="wait_for_timeout",
