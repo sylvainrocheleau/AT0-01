@@ -8,9 +8,21 @@ import requests
 from difflib import SequenceMatcher
 # from pymongo import MongoClient
 from scrapy_playwright_ato.settings import LOCAL_USERS
-from scrapy_playwright_ato.utilities import Connect, Helpers
+# from scrapy_playwright_ato.utilities import Connect, Helpers
 
-# coR
+
+list_of_competitons_synonyms = {
+"ATP": [],
+"Copa Billie Jean King": [],
+"Billie Jean King Cup": [],
+"Challenger": [],
+"Copa Davis": [],
+"Davis Cup": [],
+"Exhibition": [],
+"Grand Slam": ["US Open", "Australian Open", "French Open", "Wimbledon"],
+"Grand Slam Cup": [],
+"United Cup": [],
+}
 
 basketball_intervals = np.arange(79.5, 260.5, 1)
 tennis_intervals = np.arange(15.5, 45.5, 1)
@@ -273,6 +285,7 @@ list_of_markets_V2 = {
 }
 
 def get_context_infos(bookie_name):
+    from scrapy_playwright_ato.utilities import Connect, Helpers
     connection = Connect().to_db(db="ATO_production", table=None)
     cursor = connection.cursor()
     if isinstance(bookie_name, list):
@@ -317,6 +330,7 @@ def get_context_infos(bookie_name):
 
 
 def bookie_config(bookie):
+    from scrapy_playwright_ato.utilities import Connect, Helpers
     if isinstance(bookie, dict):
         list_of_sport_pages = []
         if (
