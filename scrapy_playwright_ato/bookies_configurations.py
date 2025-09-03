@@ -8,7 +8,7 @@ import requests
 from difflib import SequenceMatcher
 # from pymongo import MongoClient
 from scrapy_playwright_ato.settings import LOCAL_USERS
-from scrapy_playwright_ato.utilities import Connect, Helpers
+# from scrapy_playwright_ato.utilities import Connect, Helpers
 
 
 list_of_competitons_synonyms = {
@@ -285,6 +285,7 @@ list_of_markets_V2 = {
 }
 
 def get_context_infos(bookie_name):
+    from scrapy_playwright_ato.utilities import Connect, Helpers
     connection = Connect().to_db(db="ATO_production", table=None)
     cursor = connection.cursor()
     if isinstance(bookie_name, list):
@@ -329,6 +330,7 @@ def get_context_infos(bookie_name):
 
 
 def bookie_config(bookie):
+    from scrapy_playwright_ato.utilities import Connect, Helpers
     if isinstance(bookie, dict):
         list_of_sport_pages = []
         if (
