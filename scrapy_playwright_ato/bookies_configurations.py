@@ -6,23 +6,8 @@ import os
 import re
 import requests
 from difflib import SequenceMatcher
-# from pymongo import MongoClient
 from scrapy_playwright_ato.settings import LOCAL_USERS
-# from scrapy_playwright_ato.utilities import Connect, Helpers
 
-
-list_of_competitons_synonyms = {
-"ATP": [],
-"Copa Billie Jean King": [],
-"Billie Jean King Cup": [],
-"Challenger": [],
-"Copa Davis": [],
-"Davis Cup": [],
-"Exhibition": [],
-"Grand Slam": ["US Open", "Australian Open", "French Open", "Wimbledon"],
-"Grand Slam Cup": [],
-"United Cup": [],
-}
 
 basketball_intervals = np.arange(79.5, 260.5, 1)
 tennis_intervals = np.arange(15.5, 45.5, 1)
