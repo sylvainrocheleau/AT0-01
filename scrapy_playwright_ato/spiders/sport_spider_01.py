@@ -63,7 +63,14 @@ class TwoStepsSpider(scrapy.Spider):
         for data in sport_pages:
             try:
                 if data["scraping_tool"] in ["requests", "playwright", "zyte_proxy_mode", "zyte_api"]:
-                    context_info = random.choice([x for x in context_infos if x["bookie_id"] == data["bookie_id"]])
+                    choices_of_contexts = []
+                    for x in context_infos:
+                        if x["bookie_id"] == data["bookie_id"] and data["use_cookies"] == 1:
+                            choices_of_contexts.append(x)
+                        elif "no_cookies_bookies" == x["bookie_id"] and data["use_cookies"] == 0:
+                            choices_of_contexts.append(x)
+                    context_info = random.choice(choices_of_contexts)
+                    context_info.update({"bookie_id": data["bookie_id"]})
                     data.update(context_info)
                 if data["scraping_tool"] == "playwright":
                     self.close_playwright = True

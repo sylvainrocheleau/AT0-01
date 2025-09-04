@@ -40,7 +40,7 @@ class TwoStepsSpider(scrapy.Spider):
 
     def start_requests(self):
         print(self.settings_used)
-        context_infos = get_context_infos(bookie_name=["all_bookies"])
+        context_infos = get_context_infos(bookie_name=["no_cookies_bookies"])
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
@@ -51,7 +51,7 @@ class TwoStepsSpider(scrapy.Spider):
                 # Filter by bookie
                 # competitions = bookie_config(bookie=["Bet777"])
                 # Filter by competition
-                competitions = [x for x in bookie_config(bookie=["RetaBet"]) if x["competition_id"] == "Argentina-PrimeraDivision"]
+                competitions = [x for x in bookie_config(bookie=["RetaBet"]) if x["competition_id"] == "SegundaDivisionEspanola"]
                 # Filter by boookie and competition
                 # competitions = [x for x in bookie_config(bookie=["RetaBet"]) if
                 #                 x["competition_id"] == "FIFAClubWorldCup"]
@@ -73,7 +73,14 @@ class TwoStepsSpider(scrapy.Spider):
         for data in competitions:
             try:
                 if data["scraping_tool"] in ["requests", "playwright", "zyte_proxy_mode", "zyte_api"]:
-                    context_info = random.choice([x for x in context_infos if x["bookie_id"] == data["bookie_id"]])
+                    choices_of_contexts = []
+                    for x in context_infos:
+                        if x["bookie_id"] == data["bookie_id"] and data["use_cookies"] == 1:
+                            choices_of_contexts.append(x)
+                        elif "no_cookies_bookies" == x["bookie_id"] and data["use_cookies"] == 0:
+                            choices_of_contexts.append(x)
+                    context_info = random.choice(choices_of_contexts)
+                    context_info.update({"bookie_id": data["bookie_id"]})
                     data.update(context_info)
                 if data["scraping_tool"] == "playwright":
                     self.close_playwright = True

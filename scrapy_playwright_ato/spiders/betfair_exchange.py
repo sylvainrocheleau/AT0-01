@@ -65,10 +65,10 @@ class TwoStepsJsonSpider(scrapy.Spider):
 
             if os.environ["USER"] in LOCAL_USERS:
                 # NO FILTERS
-                pass
+                # pass
                 # FILTER BY COMPETITION
-                # self.map_competitions_urls = {key: value for key, value in self.map_competitions_urls.items()
-                #                               if value["competition_id"] == "SerieABrasil"}
+                self.map_competitions_urls = {key: value for key, value in self.map_competitions_urls.items()
+                                              if value["competition_id"] == "WorldChampionshipQualUEFA"}
         except:
             pass
 
@@ -358,7 +358,7 @@ class TwoStepsJsonSpider(scrapy.Spider):
                 if self.debug:
                     print(f"updating {len(item['data_dict'])} items data_dict")
                 yield item
-                if time.time() - self.start_time > self.time_between_runs*self.max_number_of_runs:
+                if time.time() - self.start_time > self.time_between_runs*self.max_number_of_runs+5:
                     raise CloseSpider('Timeout reached')
                 else:
                     try:
