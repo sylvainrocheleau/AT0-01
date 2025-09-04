@@ -36,7 +36,7 @@ class OneStepJsonSpider(scrapy.Spider):
         "CONCURRENT_REQUESTS": 1,
         "DOWNLOAD_DELAY": 3
     }
-    context_infos = get_context_infos(bookie_name=["YaassCasino"])
+    context_infos = get_context_infos(bookie_name=["no_cookies_bookies"])
     map_matches_urls = [x[0] for x in Helpers().load_matches_urls("YaassCasino")]
     map_matches = {}
     for match in Helpers().load_matches():

@@ -35,15 +35,15 @@ class MetaSpider(scrapy.Spider):
             custom_settings["CONCURRENT_REQUESTS"] = 50
             debug = True
             match_filter_enabled = True
-            scraping_group = [1,2,3,4]
+            scraping_group = [1,2,3,4,5]
 
             # FILTER OPTIONS
             # match_filter = {}
             # match_filter = {"type": "bookie_id", "params":["YoSports", 1]}
-            # match_filter = {"type": "bookie_and_comp", "params": ["AdmiralBet", "ATP"]}
-            # match_filter = {"type": "comp", "params":["MajorLeagueSoccerUSA"]}
-            match_filter = {"type": "match_url_id",
-                            "params":["https://sb-pp-esfe.daznbet.es/futbol/evento/ue-sant-andreu-v-cf-montanesa-u-2440652?tab=todo"]}
+            match_filter = {"type": "bookie_and_comp", "params": ["BetWay", "AmistososInternacionales"]}
+            # match_filter = {"type": "comp", "params":["WorldChampionshipQualUEFA"]}
+            # match_filter = {"type": "match_url_id",
+            #                 "params":['https://spectate-web.888sport.es/spectate/sportsbook/getEventData/football/international/international-friendlies/australia-vs-new-zealand/6312928']}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -127,10 +127,15 @@ class MetaSpider(scrapy.Spider):
                 count_of_matches_details_and_urls += 1
                 for data in value:
                     try:
-                        # if self.debug:
-                        #     print("Data to process:", data)
                         if data["scraping_tool"] in ["requests", "playwright", "zyte_proxy_mode"]:
-                            context_info = random.choice([x for x in context_infos if x["bookie_id"] == data["bookie_id"]])
+                            choices_of_contexts = []
+                            for x in context_infos:
+                                if x["bookie_id"] == data["bookie_id"] and data["use_cookies"] == 1:
+                                    choices_of_contexts.append(x)
+                                elif "no_cookies_bookies" == x["bookie_id"] and data["use_cookies"] == 0:
+                                    choices_of_contexts.append(x)
+                            context_info = random.choice(choices_of_contexts)
+                            context_info.update({"bookie_id": data["bookie_id"]})
                             data.update(context_info)
                         if data["scraping_tool"] == "playwright":
                             self.close_playwright = True
@@ -254,7 +259,7 @@ class MetaSpider(scrapy.Spider):
         item = ScrapersItem()
         print("### err back triggered")
         if self.debug:
-            print("failed proxy_ip", failure.request.meta["proxy_ip"])
+            # print("failed proxy_ip", failure.request.meta["proxy_ip"])
             # print("failed user_agent", failure.request.meta["user_agent"])
             # Fix: correctly access headers through the appropriate objects
             if hasattr(failure, 'value') and hasattr(failure.value, 'response'):
