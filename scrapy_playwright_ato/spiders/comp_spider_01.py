@@ -51,9 +51,9 @@ class TwoStepsSpider(scrapy.Spider):
                 # Filter by bookie
                 # competitions = bookie_config(bookie=["1XBet"])
                 # Filter by competition
-                # competitions = [x for x in bookie_config(bookie=["all_bookies"]) if x["competition_id"] == "WorldChampionshipQualUEFA"]
+                # competitions = [x for x in bookie_config(bookie=["all_bookies"]) if x["competition_id"] == "UEFAChampionsLeague"]
                 # Filter by bookie and competition
-                competitions = [x for x in bookie_config(bookie=["OlyBet"]) if x["competition_id"] == "AmistososInternacionales"]
+                competitions = [x for x in bookie_config(bookie=["BetWay"]) if x["competition_id"] == "UEFAChampionsLeague"]
             else:
                 competitions = bookie_config(bookie=["all_bookies"])
 

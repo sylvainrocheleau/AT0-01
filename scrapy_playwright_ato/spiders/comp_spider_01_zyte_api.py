@@ -40,7 +40,7 @@ class TwoStepsSpider(scrapy.Spider):
 
     def start_requests(self):
         print(self.settings_used)
-        context_infos = get_context_infos(bookie_name=["no_cookies_bookies"])
+        context_infos = get_context_infos(bookie_name="no_cookies_bookies")
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
@@ -51,7 +51,7 @@ class TwoStepsSpider(scrapy.Spider):
                 # Filter by bookie
                 # competitions = bookie_config(bookie=["Bet777"])
                 # Filter by competition
-                competitions = [x for x in bookie_config(bookie=["RetaBet"]) if x["competition_id"] == "SegundaDivisionEspanola"]
+                competitions = [x for x in bookie_config(bookie=["RetaBet"]) if x["competition_id"] == "UEFAChampionsLeague"]
                 # Filter by boookie and competition
                 # competitions = [x for x in bookie_config(bookie=["RetaBet"]) if
                 #                 x["competition_id"] == "FIFAClubWorldCup"]

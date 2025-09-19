@@ -59,7 +59,7 @@ class TwoStepsJsonSpider(scrapy.Spider):
         signal.signal(signal.SIGINT, self.end_loop)
         signal.signal(signal.SIGTERM, self.end_loop)
         self.start_time = time.time()
-        context_infos = get_context_infos(bookie_name=[self.name])
+        context_infos = get_context_infos(bookie_name="no_cookies_bookies")
         self.context_infos = [x for x in context_infos if x["proxy_ip"] not in []]
         try:
 

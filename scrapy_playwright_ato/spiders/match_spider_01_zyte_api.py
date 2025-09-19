@@ -24,6 +24,7 @@ class MetaSpider(scrapy.Spider):
     elif name == "match_spider_01_zyte_api":
         settings_used = "USING ZYTE API SETTINGS"
         allowed_scraping_tools = ["zyte_api"]
+        scraping_group = [1]
         custom_settings = get_custom_settings_for_zyte_api()
     try:
         if os.environ["USER"] in LOCAL_USERS:
@@ -34,10 +35,10 @@ class MetaSpider(scrapy.Spider):
             scraping_group = [1,2,3,4]
 
             # FILTER OPTIONS
-            match_filter = {}
+            # match_filter = {}
             # match_filter = {"type": "bookie_id", "params":["RetaBet", 0]}
             # match_filter = {"type": "bookie_and_comp", "params": ["BetWay", "AmistososInternacionales"]}
-            # match_filter = {"type": "comp", "params":["SegundaDivisionEspanola"]}
+            match_filter = {"type": "comp", "params":["CopadelaLigaInglesa"]}
             # match_filter = {"type": "match_url_id",
             #                 "params":['https://spectate-web.888sport.es/spectate/sportsbook/getEventData/football/international/international-friendlies/australia-vs-new-zealand/6312928']}
     except:

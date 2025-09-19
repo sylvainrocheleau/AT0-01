@@ -64,14 +64,8 @@ def get_odds_from_response(bookie_id, sport_id, parser  ):
     from parsel import Selector
     from bookies_configurations import list_of_markets_V2
 
-    # VARIABLES TO CHANGE
-    # bookie_id = str(input("enter bookie_id "))
-    # sport_id = str(input("enter sport_id "))
-    # home_team = str(input("enter home team name "))
-    # away_team = str(input("enter home team name "))
     home_team = "Team A"
     away_team = "Team B"
-    # END VARIABLES TO CHANGE
 
     try:
         with open('../logs/match_spider_01_g1_response.txt') as f:
@@ -152,8 +146,8 @@ def get_tournaments_from_sport_page(bookie_id, sport_id, debug):
 if __name__ == "__main__":
     # check_list_of_markets()
     # get_comps_for_bookie(bookie_id='Versus')
-    teams_and_dates_from_response(bookie_id='DaznBet', competition_id='BundesligaAlemana', sport_id='1', normalize=False)
-    # get_odds_from_response(bookie_id="ZeBet", sport_id="1", parser="html")
+    # teams_and_dates_from_response(bookie_id='DaznBet', competition_id='BundesligaAlemana', sport_id='1', normalize=False)
+    get_odds_from_response(bookie_id="Codere", sport_id="1", parser="json")
     # get_matches_details_and_urls({"type": "bookie_id", "params": ["Betsson" ,1]})
     # get_sports_pages()
     # get_tournaments_from_sport_page(bookie_id="Bet777", sport_id="3", debug=True)

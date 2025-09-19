@@ -39,11 +39,11 @@ class MetaSpider(scrapy.Spider):
 
             # FILTER OPTIONS
             # match_filter = {}
-            # match_filter = {"type": "bookie_id", "params":["YoSports", 1]}
-            match_filter = {"type": "bookie_and_comp", "params": ["BetWay", "AmistososInternacionales"]}
-            # match_filter = {"type": "comp", "params":["WorldChampionshipQualUEFA"]}
-            # match_filter = {"type": "match_url_id",
-            #                 "params":['https://spectate-web.888sport.es/spectate/sportsbook/getEventData/football/international/international-friendlies/australia-vs-new-zealand/6312928']}
+            # match_filter = {"type": "bookie_id", "params":["GoldenPark", 0]}
+            # match_filter = {"type": "bookie_and_comp", "params": ["888Sport", "Argentina-PrimeraDivision"]}
+            # match_filter = {"type": "comp", "params":["FIBA-EuroBasket"]}
+            match_filter = {"type": "match_url_id",
+                            "params":['https://apuestas.olybet.es/es/evento/9689439-betis-real-sociedad']}
     except:
         match_filter_enabled = False
         match_filter = {}

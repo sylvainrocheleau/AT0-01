@@ -882,7 +882,6 @@ class Helpers():
         return competitions_urls
 
     def load_competiton_names_and_variants(self, sport_id):
-        # from bookies_configurations import list_of_competitons_synonyms
         list_of_competitons_synonyms = {
             "ATP": [],
             "Copa Billie Jean King": [],
@@ -892,7 +891,7 @@ class Helpers():
             "Davis Cup": [],
             "Exhibition": [],
             "Grand Slam": ["US Open", "Australian Open", "French Open", "Wimbledon"],
-            "Grand Slam Cup": [],
+            # "Grand Slam Cup": [],
             "United Cup": [],
         }
         competitions = Helpers().load_competitions()
@@ -1298,8 +1297,8 @@ class Helpers():
                 #     ),
                 #     PageMethod(method="wait_for_load_state", state="domcontentloaded"),
                 #     PageMethod(
-                #         method="wait_for_selector",
-                #         selector="//div[@class='LazyLoad__ComponentWrapper LazyLoad__ComponentWrapper--loaded']",
+                #         method="wait_for_timeout",
+                #         timeout=10000,
                 #     ),
                 # ],
                 # }
