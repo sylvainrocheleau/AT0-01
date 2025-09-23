@@ -97,7 +97,6 @@ class ScrapersPipeline:
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                open("demo_data.txt", "w").close()  # Clear file on start
             else:
                 self.debug = False
         except KeyError:
@@ -527,7 +526,7 @@ class ScrapersPipeline:
             print(f"Time taken for batch flush: {(end_time - start_time).total_seconds()}s")
 
     def process_item(self, item, spider):
-        spain = pytz.timezone("Europe/Madrid")
+        # spain = pytz.timezone("Europe/Madrid")
         if "pipeline_type" in item and "match_odds" in item["pipeline_type"]:
             match_id = item.get("data_dict", {}).get("match_id")
             try:
@@ -1032,9 +1031,9 @@ class ScrapersPipeline:
 
                     query_insert_matches = """
                         INSERT INTO ATO_production.V2_Matches
-                        (match_id, home_team, away_team, date, date_es, sport_id, competition_id)
-                        VALUES(%s, %s, %s, %s, %s, %s, %s)
-                        ON DUPLICATE KEY UPDATE date = VALUES(date), date_es = VALUES(date_es)
+                        (match_id, home_team, away_team, date, sport_id, competition_id)
+                        VALUES(%s, %s, %s, %s, %s, %s)
+                        ON DUPLICATE KEY UPDATE date = VALUES(date)
                     """
                     for key, value in item["data_dict"].items():
                         values = (
@@ -1042,7 +1041,7 @@ class ScrapersPipeline:
                             value["home_team"],
                             value["away_team"],
                             value["date"].replace(tzinfo=pytz.UTC).replace(microsecond=0),
-                            value["date"].replace(tzinfo=pytz.UTC).astimezone(spain), #es
+                            # value["date"].replace(tzinfo=pytz.UTC).astimezone(spain), #es
                             value["sport_id"],
                             value["competition_id"],
                         )
@@ -1162,34 +1161,33 @@ class ScrapersPipeline:
                 except:
                     pass
 
-
-        if "pipeline_type" not in item.keys() or "v1" in item["pipeline_type"]:
-            if "data_dict" in item.keys():
-                del item["data_dict"]
-            try:
-                if os.environ["USER"] in LOCAL_USERS:
-                    # print("data")
-                    f = open("demo_data.txt", "a")
-                    f.write(str(item))
-                    f.write("\n")
-                    f.close()
-
-            except:
-                pass
-            return item
-        else:
-            if "data_dict" in item.keys():
-                del item["data_dict"]
-            # item["updated_on"] = datetime.datetime.now(tz=datetime.timezone.utc).replace(microsecond=0).replace(tzinfo=None)
-            try:
-                if os.environ["USER"] in LOCAL_USERS:
-                    # print("data")
-                    f = open("demo_data.txt", "a")
-                    f.write(str(item))
-                    # f.write(str(item["pipeline_type"]))
-                    f.write("\n")
-                    f.close()
-
-            except:
-                pass
+        # if "pipeline_type" not in item.keys() or "v1" in item["pipeline_type"]:
+        #     if "data_dict" in item.keys():
+        #         del item["data_dict"]
+        #     try:
+        #         if os.environ["USER"] in LOCAL_USERS:
+        #             # print("data")
+        #             f = open("demo_data.txt", "a")
+        #             f.write(str(item))
+        #             f.write("\n")
+        #             f.close()
+        #
+        #     except:
+        #         pass
+        #     return item
+        # else:
+        #     if "data_dict" in item.keys():
+        #         del item["data_dict"]
+        #     # item["updated_on"] = datetime.datetime.now(tz=datetime.timezone.utc).replace(microsecond=0).replace(tzinfo=None)
+        #     try:
+        #         if os.environ["USER"] in LOCAL_USERS:
+        #             # print("data")
+        #             f = open("demo_data.txt", "a")
+        #             f.write(str(item))
+        #             # f.write(str(item["pipeline_type"]))
+        #             f.write("\n")
+        #             f.close()
+        #
+        #     except:
+        #         pass
             return item
