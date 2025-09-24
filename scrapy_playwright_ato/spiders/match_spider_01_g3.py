@@ -29,19 +29,19 @@ class MetaSpider(scrapy.Spider):
         custom_settings = get_custom_settings_for_zyte_api()
     try:
         if os.environ["USER"] in LOCAL_USERS:
-            # custom_settings["PLAYWRIGHT_MAX_CONTEXTS"] = 10
-            # custom_settings["CONCURRENT_REQUESTS"] = 50
+            custom_settings["PLAYWRIGHT_MAX_CONTEXTS"] = 10
+            custom_settings["CONCURRENT_REQUESTS"] = 50
             debug = True
             match_filter_enabled = True
-            scraping_group = [1, 2, 3, 4]
+            scraping_group = [1,2,3,4]
 
             # FILTER OPTIONS
             # match_filter = {}
-            # match_filter = {"type": "bookie_id", "params":["1XBet", 1]}
-            # match_filter = {"type": "bookie_and_comp", "params": ["AdmiralBet", "ATP"]}
-            # match_filter = {"type": "comp", "params":["MajorLeagueSoccerUSA"]}
-            match_filter = {"type": "match_url_id",
-                            "params": ["https://www.zebet.es/es/event/72d83-club_atletico_platense_san_lorenzo"]}
+            # match_filter = {"type": "bookie_id", "params":["YoSports", 1]}
+            match_filter = {"type": "bookie_and_comp", "params": ["BetWay", "AmistososInternacionales"]}
+            # match_filter = {"type": "comp", "params":["WorldChampionshipQualUEFA"]}
+            # match_filter = {"type": "match_url_id",
+            #                 "params":['https://spectate-web.888sport.es/spectate/sportsbook/getEventData/football/international/international-friendlies/australia-vs-new-zealand/6312928']}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -64,7 +64,7 @@ class MetaSpider(scrapy.Spider):
                 for key, matches in (
                     (key, [match for match in value
                            if match['scraping_tool'] in self.allowed_scraping_tools
-                           # and match['scraping_group'] in self.scraping_group
+                           and match['scraping_group'] in self.scraping_group
                            # and match['frequency_group'] == self.frequency_groups[-1]
                            ]
                      )
@@ -125,16 +125,19 @@ class MetaSpider(scrapy.Spider):
                 count_of_matches_details_and_urls += 1
                 for data in value:
                     try:
-                        # if self.debug:
-                        #     print("Data to process:", data)
                         if data["scraping_tool"] in ["requests", "playwright", "zyte_proxy_mode"]:
-                            context_info = random.choice(
-                                [x for x in context_infos if x["bookie_id"] == data["bookie_id"]])
+                            choices_of_contexts = []
+                            for x in context_infos:
+                                if x["bookie_id"] == data["bookie_id"] and data["use_cookies"] == 1:
+                                    choices_of_contexts.append(x)
+                                elif "no_cookies_bookies" == x["bookie_id"] and data["use_cookies"] == 0:
+                                    choices_of_contexts.append(x)
+                            context_info = random.choice(choices_of_contexts)
+                            context_info.update({"bookie_id": data["bookie_id"]})
                             data.update(context_info)
                         if data["scraping_tool"] == "playwright":
                             self.close_playwright = True
-                        url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="match", data=data,
-                                                                                      debug=self.debug)
+                        url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="match", data=data, debug=self.debug)
                         # if self.debug:
                         #     print("Meta request:", meta_request)
 
@@ -240,12 +243,13 @@ class MetaSpider(scrapy.Spider):
             item["pipeline_type"] = self.pipeline_type
         yield item
 
+
     def raw_html(self, response):
         print("RAW HTML RESPONSE")
         parent = os.path.dirname(os.getcwd())
         try:
             with open(parent + "/Scrapy_Playwright/logs/" + self.name + "_response" + ".txt", "w") as f:
-                f.write(response.text)  # response.meta["playwright_page"]
+                f.write(response.text) # response.meta["playwright_page"]
         except Exception as e:
             print(traceback.format_exc())
 
@@ -253,7 +257,7 @@ class MetaSpider(scrapy.Spider):
         item = ScrapersItem()
         print("### err back triggered")
         if self.debug:
-            print("failed proxy_ip", failure.request.meta["proxy_ip"])
+            # print("failed proxy_ip", failure.request.meta["proxy_ip"])
             # print("failed user_agent", failure.request.meta["user_agent"])
             # Fix: correctly access headers through the appropriate objects
             if hasattr(failure, 'value') and hasattr(failure.value, 'response'):
@@ -305,7 +309,7 @@ class MetaSpider(scrapy.Spider):
                 error = f"scrape_ops, {failure.request.meta['bookie_id']} url:{failure.request.url}"
             else:
                 error = (f"{failure.request.meta['bookie_id']}; "
-                         f"url:{failure.request.url}; proxy:{failure.request.meta['proxy_ip']}")
+                           f"url:{failure.request.url}; proxy:{failure.request.meta['proxy_ip']}")
 
             Helpers().insert_log(level="INFO", type="NETWORK", error=error, message=None)
         except Exception as e:
@@ -362,7 +366,7 @@ class MetaSpider(scrapy.Spider):
             # TODO find a way to close the page and context only if they were opened by playwright
             # if "playwright_page" in failure.request.meta:
 
-            if self.close_playwright:  # and "playwright_page" in failure.request.meta
+            if self.close_playwright : # and "playwright_page" in failure.request.meta
                 page = failure.request.meta["playwright_page"]
                 print("Closing page on error")
                 await page.close()

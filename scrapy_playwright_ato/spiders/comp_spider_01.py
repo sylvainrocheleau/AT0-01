@@ -45,15 +45,15 @@ class TwoStepsSpider(scrapy.Spider):
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
                 # No filters
-                # competitions = bookie_config(bookie=["all_bookies"])
+                competitions = bookie_config(bookie=["all_bookies"])
                 # Filter by bookie that have errors
-                # competitions = bookie_config(bookie=["Bwin", "http_errors"])
+                competitions = bookie_config(bookie=["all_bookies", "http_errors"])
                 # Filter by bookie
-                # competitions = bookie_config(bookie=["DaznBet"])
+                # competitions = bookie_config(bookie=["1XBet"])
                 # Filter by competition
-                # competitions = [x for x in bookie_config(bookie=["all_bookies"]) if x["competition_id"] == "Partidosamistosos"]
+                # competitions = [x for x in bookie_config(bookie=["all_bookies"]) if x["competition_id"] == "UEFAEuropaLeague"]
                 # Filter by bookie and competition
-                competitions = [x for x in bookie_config(bookie=["ZeBet"]) if x["competition_id"] == "ATP"]
+                # competitions = [x for x in bookie_config(bookie=["Bet777"]) if x["competition_id"] == "UEFAEuropaLeague"]
             else:
                 competitions = bookie_config(bookie=["all_bookies"])
 
@@ -68,14 +68,20 @@ class TwoStepsSpider(scrapy.Spider):
                 print("PROCESSING COMPETITIONS WITH HTTP ERRORS")
                 competitions = bookie_config(bookie=["all_bookies", "http_errors"])
 
-
         competitions = [x for x in competitions if x["scraping_tool"] in self.allowed_scraping_tools]
         if self.debug:
             print("competitions to scrape", [x["competition_id"] for x in competitions])
         for data in competitions:
             try:
                 if data["scraping_tool"] in ["requests", "playwright", "zyte_proxy_mode", "zyte_api"]:
-                    context_info = random.choice([x for x in context_infos if x["bookie_id"] == data["bookie_id"]])
+                    choices_of_contexts = []
+                    for x in context_infos:
+                        if x["bookie_id"] == data["bookie_id"] and data["use_cookies"] == 1:
+                            choices_of_contexts.append(x)
+                        elif "no_cookies_bookies" == x["bookie_id"] and data["use_cookies"] == 0:
+                            choices_of_contexts.append(x)
+                    context_info = random.choice(choices_of_contexts)
+                    context_info.update({"bookie_id": data["bookie_id"]})
                     data.update(context_info)
                 if data["scraping_tool"] == "playwright":
                     self.close_playwright = True
@@ -98,7 +104,6 @@ class TwoStepsSpider(scrapy.Spider):
     async def match_requests(self,response):
         item = ScrapersItem()
         if response.meta.get("scraping_tool") == "playwright":
-            print('found playwright')
             try:
                 page = response.meta["playwright_page"]
                 await page.close()
@@ -107,7 +112,8 @@ class TwoStepsSpider(scrapy.Spider):
                 print("Error closing playwright page/context:", e)
                 Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
                 pass
-
+        if self.debug:
+            print(response)
         match_infos = parse_competition(
             response=response,
             bookie_id=response.meta.get("bookie_id"),

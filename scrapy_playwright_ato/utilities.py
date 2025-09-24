@@ -1,5 +1,6 @@
 import sys
 import traceback
+from uuid import uuid4
 # from asyncio import timeout
 # from bookies_configurations import list_of_competitons_synonyms
 from scrapy_playwright_ato.settings import SQL_USER, SQL_PWD, TEST_ENV, soltia_user_name, soltia_password, \
@@ -882,7 +883,6 @@ class Helpers():
         return competitions_urls
 
     def load_competiton_names_and_variants(self, sport_id):
-        # from bookies_configurations import list_of_competitons_synonyms
         list_of_competitons_synonyms = {
             "ATP": [],
             "Copa Billie Jean King": [],
@@ -1165,6 +1165,12 @@ class Helpers():
                         "proxy": proxy_prefix+data["proxy_ip"]+proxy_suffix,
                     }
                 )
+            # elif data["scraping_tool"] == "zyte_api":
+            #     meta_request.update(
+            #         {"zyte_api_automap":
+            #              {"session": {"id": str(uuid4())}}
+            #          },
+            #     )
             elif data["scraping_tool"] == "zyte_proxy_mode":
                 meta_request.update(
                     {
@@ -1298,8 +1304,8 @@ class Helpers():
                 #     ),
                 #     PageMethod(method="wait_for_load_state", state="domcontentloaded"),
                 #     PageMethod(
-                #         method="wait_for_selector",
-                #         selector="//div[@class='LazyLoad__ComponentWrapper LazyLoad__ComponentWrapper--loaded']",
+                #         method="wait_for_timeout",
+                #         timeout=10000,
                 #     ),
                 # ],
                 # }
@@ -1387,6 +1393,7 @@ class Helpers():
                 meta_request.update({"zyte_api_automap": {
                         "geolocation": "ES",
                         "browserHtml": True,
+                        "session": {"id": str(uuid4())},
                         "actions":[
                             {
                               "action": "waitForSelector",
@@ -1452,6 +1459,12 @@ class Helpers():
                         "proxy": proxy_prefix + data["proxy_ip"] + proxy_suffix,
                     }
                 )
+            # elif data["scraping_tool"] == "zyte_api":
+            #     meta_request.update(
+            #         {"zyte_api_automap":
+            #              {"session": {"id": str(uuid4())}}
+            #          },
+            #     )
             elif data["scraping_tool"] == "zyte_proxy_mode":
                 meta_request.update(
                     {
@@ -1951,6 +1964,7 @@ class Helpers():
                 meta_request.update({"zyte_api_automap": {
                         "geolocation": "ES",
                         "browserHtml": True,
+                        "session": {"id": str(uuid4())},
                         "actions":[
                             {
                                 "action": "waitForSelector",

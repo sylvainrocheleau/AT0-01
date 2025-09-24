@@ -26,11 +26,11 @@ class WebsocketsSpider(Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                # self.competitions = [x for x in bookie_config(bookie=["Betsson"]) if x["competition_id"] == "Argentina-PrimeraDivision"]
-                # self.match_filter = {"type": "bookie_and_comp", "params": ["Betsson", "CopaSudamericana"]}
+                self.competitions = [x for x in bookie_config(bookie=["Betsson"]) if x["competition_id"] == "UEFAChampionsLeague"]
+                self.match_filter = {"type": "bookie_and_comp", "params": ["Betsson", "UEFAChampionsLeague"]}
 
-                self.competitions = bookie_config(bookie=["Betsson"])
-                self.match_filter = {"type": "bookie_id", "params": ["Betsson", 0]}
+                # self.competitions = bookie_config(bookie=["Betsson"])
+                # self.match_filter = {"type": "bookie_id", "params": ["Betsson", 0]}
                 # self.match_filter = {"type": "match_url_id", "params": [
                 #     'https://sportsbook.betsson.es/#/sport/?type=0&region=20001&competition=538&sport=1&game=27808634']}
 
@@ -53,7 +53,7 @@ class WebsocketsSpider(Spider):
     pipeline_type = []
     start_urls = ["data:,"]
     custom_settings = {"TWISTED_REACTOR": "twisted.internet.asyncioreactor.AsyncioSelectorReactor"}
-    context_infos = get_context_infos(bookie_name=["Betsson"])
+    context_infos = get_context_infos(bookie_name="no_cookies_bookies")
     map_matches_urls = [x[0] for x in Helpers().load_matches_urls(name)]
     map_matches = {}
     for match in Helpers().load_matches():

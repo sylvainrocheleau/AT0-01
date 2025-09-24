@@ -19,7 +19,7 @@ class OneStepJsonSpider(scrapy.Spider):
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
                 print("PROCESSING IN DEBUG MODE")
-                self.competitions = [x for x in bookie_config(bookie=["YaassCasino"]) if x["competition_id"] == "Partidosamistosos"]
+                self.competitions = [x for x in bookie_config(bookie=["YaassCasino"]) if x["competition_id"] == "UEFANationsLeague"]
                 # self.competitions = bookie_config(bookie=["YaassCasino"])
 
                 # self.match_filter = {"type": "bookie_and_comp", "params": ["YaassCasino", "UEFAConferenceLeague"]}
@@ -36,7 +36,7 @@ class OneStepJsonSpider(scrapy.Spider):
         "CONCURRENT_REQUESTS": 1,
         "DOWNLOAD_DELAY": 3
     }
-    context_infos = get_context_infos(bookie_name=["YaassCasino"])
+    context_infos = get_context_infos(bookie_name="no_cookies_bookies")
     map_matches_urls = [x[0] for x in Helpers().load_matches_urls("YaassCasino")]
     map_matches = {}
     for match in Helpers().load_matches():

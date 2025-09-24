@@ -24,12 +24,12 @@ class WebsocketsSpider(Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                # self.competitions = [x for x in bookie_config(bookie=["Sportium"]) if x["competition_id"] == "UEFAChampionsLeague"]
-                # self.match_filter = {"type": "bookie_and_comp", "params": ["Sportium", "UEFAChampionsLeague"]}
+                self.competitions = [x for x in bookie_config(bookie=["Sportium"]) if x["competition_id"] == "UEFANationsLeague"]
+                self.match_filter = {"type": "bookie_and_comp", "params": ["Sportium", "UEFANationsLeague"]}
 
-
-                self.competitions = bookie_config(bookie=["Sportium"])
-                self.match_filter = {"type": "bookie_id", "params": ["Sportium", 1]}
+                #
+                # self.competitions = bookie_config(bookie=["Sportium"])
+                # self.match_filter = {"type": "bookie_id", "params": ["Sportium", 1]}
                 # https://href.li/?https://www.sportium.es/apuestas/sports/soccer/events/16931943
                 # self.match_filter = {"type": "match_url_id", "params": [
                 #     "https://www.sportium.es/apuestas/sports/soccer/events/16997048"]}
@@ -48,7 +48,7 @@ class WebsocketsSpider(Spider):
     name = "Sportiumv2"
     start_urls = ["data:,"]
     custom_settings = {"TWISTED_REACTOR": "twisted.internet.asyncioreactor.AsyncioSelectorReactor"}
-    context_infos = get_context_infos(bookie_name=["Sportium"])
+    context_infos = get_context_infos(bookie_name="no_cookies_bookies")
     map_matches_urls = [x[0] for x in Helpers().load_matches_urls(name)]
     map_matches = {}
     for match in Helpers().load_matches():
