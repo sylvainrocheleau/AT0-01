@@ -37,7 +37,7 @@ try:
     if os.environ["USER"] in LOCAL_USERS:
         TEST_ENV = "server"
         # TEST_ENV = "local"
-        PLAYWRIGHT_HEADLESS = False
+        PLAYWRIGHT_HEADLESS = True
 except KeyError:
     TEST_ENV = "server"
     PLAYWRIGHT_HEADLESS = True
@@ -209,8 +209,6 @@ def get_custom_playwright_settings(browser, rotate_headers):
         # },
         "PLAYWRIGHT_DEFAULT_NAVIGATION_TIMEOUT" : 60*1000, # 25000, 7200
         "PLAYWRIGHT_BROWSER_TYPE" : playwright_browser_type,
-
-
     },
     )
     return custom_settings

@@ -39,11 +39,11 @@ class MetaSpider(scrapy.Spider):
 
             # FILTER OPTIONS
             # match_filter = {}
-            # match_filter = {"type": "bookie_id", "params":["YoSports", 1]}
-            match_filter = {"type": "bookie_and_comp", "params": ["BetWay", "AmistososInternacionales"]}
-            # match_filter = {"type": "comp", "params":["WorldChampionshipQualUEFA"]}
-            # match_filter = {"type": "match_url_id",
-            #                 "params":['https://spectate-web.888sport.es/spectate/sportsbook/getEventData/football/international/international-friendlies/australia-vs-new-zealand/6312928']}
+            # match_filter = {"type": "bookie_id", "params":["GoldenPark", 0]}
+            # match_filter = {"type": "bookie_and_comp", "params": ["OlyBet", "LaLigaEspanola"]}
+            # match_filter = {"type": "comp", "params":["FIBA-EuroBasket"]}
+            match_filter = {"type": "match_url_id",
+                            "params":['https://1xbet.es/es/line/football/110163-italy-serie-a/649846804-lazio-roma']}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -189,12 +189,12 @@ class MetaSpider(scrapy.Spider):
             print("working proxy_ip", response.meta.get("proxy_ip"))
             print("working user_agent", response.meta.get("user_agent"))
             # save proxy_ip, user_agent plus a third value "working"  to a csv file called proxy_ip_user_agent.csv
-            parent = os.path.dirname(os.getcwd())
-            try:
-                with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/logs/proxy_ip_user_agent.csv", "a") as f:
-                    f.write(f"{response.meta.get('proxy_ip')};{response.meta.get('user_agent')};working\n")
-            except:
-                pass
+            # parent = os.path.dirname(os.getcwd())
+            # try:
+            #     with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/logs/proxy_ip_user_agent.csv", "a") as f:
+            #         f.write(f"{response.meta.get('proxy_ip')};{response.meta.get('user_agent')};working\n")
+            # except:
+            #     pass
 
         odds = parse_match_logic(
             bookie_id=response.meta.get("bookie_id"),
@@ -217,7 +217,6 @@ class MetaSpider(scrapy.Spider):
                 )
             }
         )
-
         if not odds:
             item["data_dict"] = {
                 "match_infos": [

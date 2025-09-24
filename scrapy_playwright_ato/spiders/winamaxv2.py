@@ -30,7 +30,7 @@ class TwoStepsSpider(scrapy.Spider):
                 debug = False
                 if spider.parser == "comp":
                     print("PROCESSING COMPETITIONS DEBUG MODE")
-                    spider.competitions = [x for x in bookie_config(bookie=["WinaMax"]) if x["competition_id"] == "WorldChampionshipQualUEFA"]
+                    spider.competitions = [x for x in bookie_config(bookie=["WinaMax"]) if x["competition_id"] == "UEFAChampionsLeague"]
                     spider.competitions = bookie_config(bookie=["WinaMax"])
                 else:
                     print("PROCESSING MATCHES DEBUG MODE")
@@ -165,7 +165,7 @@ class TwoStepsSpider(scrapy.Spider):
             print("### opening file response_body_match_requests.txt")
             f = open("response_body_match_requests.txt", "w")
             f2 = open("response_body_parse_match.txt", "w")
-        context_infos = get_context_infos(bookie_name="WinaMax")
+        context_infos = get_context_infos(bookie_name="no_cookies_bookies")
         self.context_infos = [x for x in context_infos if x["proxy_ip"]]
         if self.parser == "comp":
             for data in self.competitions:

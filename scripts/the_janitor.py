@@ -114,7 +114,7 @@ def stop_hanging_spiders():
         project = client.get_project(592160) # 643480
         jobs = {}
         # print(project.activity.list(count=250))
-        for job in project.activity.list(count=400):
+        for job in project.activity.list(count=600):
             if job["event"] in ["job:started"]:
                 try:
                     # if job["job"].split("/")[1] not in jobs.keys():
