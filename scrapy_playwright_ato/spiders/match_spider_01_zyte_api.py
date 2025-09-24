@@ -38,9 +38,9 @@ class MetaSpider(scrapy.Spider):
             # match_filter = {}
             # match_filter = {"type": "bookie_id", "params":["RetaBet", 0]}
             # match_filter = {"type": "bookie_and_comp", "params": ["BetWay", "AmistososInternacionales"]}
-            match_filter = {"type": "comp", "params":["CopadelaLigaInglesa"]}
-            # match_filter = {"type": "match_url_id",
-            #                 "params":['https://spectate-web.888sport.es/spectate/sportsbook/getEventData/football/international/international-friendlies/australia-vs-new-zealand/6312928']}
+            # match_filter = {"type": "comp", "params":["CopadelaLigaInglesa"]}
+            match_filter = {"type": "match_url_id",
+                            "params":['https://apuestas.retabet.es/deportes/futbol/alemania/bundesliga/bayern-munich-werder-bremen/32407110']}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -137,8 +137,8 @@ class MetaSpider(scrapy.Spider):
                         if data["scraping_tool"] == "playwright":
                             self.close_playwright = True
                         url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="match", data=data, debug=self.debug)
-                        # if self.debug:
-                        #     print("Meta request:", meta_request)
+                        if self.debug:
+                            print("Meta request:", meta_request)
 
                         yield scrapy.Request(
                             dont_filter=dont_filter,

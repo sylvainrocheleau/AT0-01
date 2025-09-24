@@ -240,7 +240,7 @@ list_of_markets_V2 = {
     "3": ["Cuotas del partido", "Total de juegos"],
 },
 "OlyBet": {
-    "1": ['¿Quién ganará el partido?', 'Total de Goles', '¿Resultado exacto?'],
+    "1": ['¿Quién ganará el partido?', 'Total de Goles', 'Resultado exacto'],
     "2": ['¿Quién ganará el partido? (Prórroga incluida)', 'Totales'],
     "3": ["Cuotas del partido", "Total de juegos"],
 },
@@ -488,7 +488,7 @@ def normalize_odds_variables(odds, sport, home_team, away_team):
         "Partido", "partido", "Match_Result", "Match Result", "Ganador", "1x2", "1X2", "1-2", "Normal_Time_Result", "1-X-2",
         "Prórroga incluida", "Oferta básica", "Money Line", "Winner", "3-Way", "Local", "ganará", "Línea de Juego",
         "Apuestas a ganador", "Cuotas de partido", "Tiempo reglamentario", "Vencedor del partido",
-        "TIEMPO REGULAR (INCL. TIEMPO EXTRA) - GANADOR", "Resultado final", "Resultado Final",
+        "TIEMPO REGULAR (INCL. TIEMPO EXTRA) - GANADOR", "Resultado final", "Resultado Final", "¿Quién ganará el partido?",
     ]
     not_winners_keywords = ["Puntos", "puntos", "Menos", "menos", "Goals"]
     home_team_keywords = ["1", "HB_H", ".HB_H", "home", "Local", "W1"]

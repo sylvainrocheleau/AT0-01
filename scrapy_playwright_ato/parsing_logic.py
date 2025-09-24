@@ -3119,7 +3119,7 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                         for bets in data:
                             if bets["odd"] != "-1":
                                 if sport_id == "1":
-                                    if "menos" in market.lower():
+                                    if "total" in market.lower():
                                         odds.append(
                                             {"Market": market,
                                              "Result": bets["actor"]["label"],
@@ -3143,10 +3143,14 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
 
 
                     except Exception as e:
+                        if debug:
+                            print(traceback.format_exc())
                         continue
                         # print("EVAL NO")
                         # print(data_brut)
         except Exception as e:
+            if debug:
+                print(traceback.format_exc())
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
     elif bookie_id == "Paf":
         try:

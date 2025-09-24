@@ -68,7 +68,7 @@ class TwoStepsJsonSpider(scrapy.Spider):
                 # pass
                 # FILTER BY COMPETITION
                 self.map_competitions_urls = {key: value for key, value in self.map_competitions_urls.items()
-                                              if value["competition_id"] == "WorldChampionshipQualUEFA"}
+                                              if value["competition_id"] == "UEFAEuropaLeague"}
         except:
             pass
 
