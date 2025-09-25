@@ -31,8 +31,8 @@ class MetaSpider(scrapy.Spider):
         custom_settings = get_custom_settings_for_zyte_api()
     try:
         if os.environ["USER"] in LOCAL_USERS:
-            custom_settings["PLAYWRIGHT_MAX_CONTEXTS"] = 10
-            custom_settings["CONCURRENT_REQUESTS"] = 50
+            # custom_settings["PLAYWRIGHT_MAX_CONTEXTS"] = 10
+            # custom_settings["CONCURRENT_REQUESTS"] = 50
             debug = True
             match_filter_enabled = True
             scraping_group = [1,2,3,4,5]
@@ -40,10 +40,10 @@ class MetaSpider(scrapy.Spider):
             # FILTER OPTIONS
             # match_filter = {}
             # match_filter = {"type": "bookie_id", "params":["GoldenPark", 0]}
-            # match_filter = {"type": "bookie_and_comp", "params": ["OlyBet", "LaLigaEspanola"]}
-            # match_filter = {"type": "comp", "params":["FIBA-EuroBasket"]}
-            match_filter = {"type": "match_url_id",
-                            "params":['https://1xbet.es/es/line/football/110163-italy-serie-a/649846804-lazio-roma']}
+            match_filter = {"type": "bookie_and_comp", "params": ["MarcaApuestas", "LaLigaEspanola"]}
+            # match_filter = {"type": "comp", "params":["UEFAEuropaLeague"]}
+            # match_filter = {"type": "match_url_id",
+                            # "params":['https://1xbet.es/es/line/football/110163-italy-serie-a/649846804-lazio-roma']}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -133,6 +133,9 @@ class MetaSpider(scrapy.Spider):
                                 if x["bookie_id"] == data["bookie_id"] and data["use_cookies"] == 1:
                                     choices_of_contexts.append(x)
                                 elif "no_cookies_bookies" == x["bookie_id"] and data["use_cookies"] == 0:
+                                    choices_of_contexts.append(x)
+                                else:
+                                    # TODO: make this more tight
                                     choices_of_contexts.append(x)
                             context_info = random.choice(choices_of_contexts)
                             context_info.update({"bookie_id": data["bookie_id"]})

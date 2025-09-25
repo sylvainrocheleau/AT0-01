@@ -24,8 +24,8 @@ class WebsocketsSpider(Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                self.competitions = [x for x in bookie_config(bookie=["Versus"]) if x["competition_id"] == "UEFANationsLeague"]
-                self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", "UEFANationsLeague"]}
+                self.competitions = [x for x in bookie_config(bookie=["Versus"]) if x["competition_id"] == "UEFAEuropaLeague"]
+                self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", "UEFAEuropaLeague"]}
 
                 # self.match_filter = {"type": "match_url_id", "params": [
                 #     "https://www.versus.es/apuestas/sports/soccer/events/22197283"]}

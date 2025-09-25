@@ -2266,7 +2266,6 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                              }
                         )
         except Exception as e:
-            print(traceback.format_exc())
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
     elif bookie_id == "DaznBet":
         html_cleaner = re.compile("<.*?>")

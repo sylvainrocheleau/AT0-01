@@ -1147,6 +1147,7 @@ class Helpers():
                 ],
                 }
                 )
+
         elif meta_type == "competition":
             url = data["competition_url_id"]
             dont_filter = False

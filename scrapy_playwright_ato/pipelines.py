@@ -9,6 +9,7 @@ import pytz
 import traceback
 import mysql.connector
 from logging import raiseExceptions
+from scrapy.exceptions import DropItem
 from scrapy_playwright_ato.utilities import Connect, Helpers
 from scrapy_playwright_ato.settings import LOCAL_USERS
 
@@ -258,12 +259,16 @@ class ScrapersPipeline:
                       ON vmo.bookie_id = vmu.bookie_id AND vmo.match_id = vmu.match_id
                     WHERE vmu.match_url_id = %s
                 """
-                deleted_rows_count = 0
-                for url in sorted(urls_to_delete):
-                    cursor.execute(delete_query, (url,))
-                    deleted_rows_count += cursor.rowcount
+                # deleted_rows_count = 0
+                # for url in sorted(urls_to_delete):
+                #     cursor.execute(delete_query, (url,))
+                #     deleted_rows_count += cursor.rowcount
+                # if self.debug:
+                #     print(f"[Worker] Deleted {deleted_rows_count} old odds entries.")
+                params = [(url,) for url in sorted(urls_to_delete)]
+                safe_executemany(cursor, delete_query, params, chunk_size=200)
                 if self.debug:
-                    print(f"[Worker] Deleted {deleted_rows_count} old odds entries.")
+                    print(f"[Worker] Deleted {cursor.rowcount} old odds entries.")
 
             # Insert odds only if we have them
             if odds_buf:
@@ -394,7 +399,7 @@ class ScrapersPipeline:
                     continue
                 else:
                     raise
-            except Exception as e:
+            except Exception:
                 # Non-MySQL errors: do not loop infinitely
                 raise
         # If we exit loop without return, raise last error
@@ -527,6 +532,9 @@ class ScrapersPipeline:
 
     def process_item(self, item, spider):
         # spain = pytz.timezone("Europe/Madrid")
+        if item is None:
+            Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} Received None item in pipeline", message=None)
+            raise DropItem("Received None item")
         if "pipeline_type" in item and "match_odds" in item["pipeline_type"]:
             match_id = item.get("data_dict", {}).get("match_id")
             try:
@@ -587,6 +595,7 @@ class ScrapersPipeline:
                     print(traceback.format_exc())
                 Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} process_item failed for {match_id}: {str(e)}",
                                      message=traceback.format_exc())
+            # return item
 
         if "pipeline_type" in item.keys() and "queue_dutcher" in item["pipeline_type"]:
             try:
@@ -604,6 +613,7 @@ class ScrapersPipeline:
                 Helpers().insert_log(level="CRITICAL", type="CODE",
                                      error=f"{spider.name} queue_dutcher enqueue failed",
                                      message=traceback.format_exc())
+            # return item
 
         elif "pipeline_type" in item.keys() and "match_urls" in item["pipeline_type"]:
 
@@ -723,7 +733,7 @@ class ScrapersPipeline:
                 safe_executemany(cursor, query_create_match_urls, create_match_urls)
                 connection.commit()
 
-                # TODO add competiton_id
+                # TODO add competition_id
                 query_create_match_urls_with_no_ids = """
                     INSERT IGNORE INTO ATO_production.V2_Matches_Urls_No_Ids
                     (message, match_url_id, match_id, bookie_id, competition_id, home_team, home_team_normalized, home_team_status,
@@ -789,6 +799,7 @@ class ScrapersPipeline:
                 except Exception as e:
                     Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}",message=traceback.format_exc())
                     pass
+            # return item
 
         elif "pipeline_type" in item.keys() and "tournaments_infos" in item["pipeline_type"]:
             print("Deleting tounaments from V2_Competitons_Urls")
@@ -1041,7 +1052,6 @@ class ScrapersPipeline:
                             value["home_team"],
                             value["away_team"],
                             value["date"].replace(tzinfo=pytz.UTC).replace(microsecond=0),
-                            # value["date"].replace(tzinfo=pytz.UTC).astimezone(spain), #es
                             value["sport_id"],
                             value["competition_id"],
                         )
@@ -1062,7 +1072,6 @@ class ScrapersPipeline:
                         connection.close()
                     except:
                         pass
-
 
         if "pipeline_type" in item.keys() and "exchange_match_odds" in item["pipeline_type"]:
             start_time = datetime.datetime.now()
@@ -1160,34 +1169,5 @@ class ScrapersPipeline:
                           (end_time - start_time).total_seconds())
                 except:
                     pass
-
-        # if "pipeline_type" not in item.keys() or "v1" in item["pipeline_type"]:
-        #     if "data_dict" in item.keys():
-        #         del item["data_dict"]
-        #     try:
-        #         if os.environ["USER"] in LOCAL_USERS:
-        #             # print("data")
-        #             f = open("demo_data.txt", "a")
-        #             f.write(str(item))
-        #             f.write("\n")
-        #             f.close()
-        #
-        #     except:
-        #         pass
-        #     return item
-        # else:
-        #     if "data_dict" in item.keys():
-        #         del item["data_dict"]
-        #     # item["updated_on"] = datetime.datetime.now(tz=datetime.timezone.utc).replace(microsecond=0).replace(tzinfo=None)
-        #     try:
-        #         if os.environ["USER"] in LOCAL_USERS:
-        #             # print("data")
-        #             f = open("demo_data.txt", "a")
-        #             f.write(str(item))
-        #             # f.write(str(item["pipeline_type"]))
-        #             f.write("\n")
-        #             f.close()
-        #
-        #     except:
-        #         pass
-            return item
+            # return item
+        return item
