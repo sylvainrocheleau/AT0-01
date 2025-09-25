@@ -40,10 +40,10 @@ class MetaSpider(scrapy.Spider):
             # FILTER OPTIONS
             # match_filter = {}
             # match_filter = {"type": "bookie_id", "params":["GoldenPark", 0]}
-            match_filter = {"type": "bookie_and_comp", "params": ["MarcaApuestas", "LaLigaEspanola"]}
+            # match_filter = {"type": "bookie_and_comp", "params": ["MarcaApuestas", "LaLigaEspanola"]}
             # match_filter = {"type": "comp", "params":["UEFAEuropaLeague"]}
-            # match_filter = {"type": "match_url_id",
-                            # "params":['https://1xbet.es/es/line/football/110163-italy-serie-a/649846804-lazio-roma']}
+            match_filter = {"type": "match_url_id",
+                            "params":['https://spectate-web.888sport.es/spectate/sportsbook/getEventData/football/europe/uefa-europa-league/aston-villa-vs-bologna/6340863']}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -132,14 +132,17 @@ class MetaSpider(scrapy.Spider):
                             for x in context_infos:
                                 if x["bookie_id"] == data["bookie_id"] and data["use_cookies"] == 1:
                                     choices_of_contexts.append(x)
+                                    if self.debug:
+                                        print('found cookie')
                                 elif "no_cookies_bookies" == x["bookie_id"] and data["use_cookies"] == 0:
                                     choices_of_contexts.append(x)
-                                else:
-                                    # TODO: make this more tight
-                                    choices_of_contexts.append(x)
+                                    print('found agent')
                             context_info = random.choice(choices_of_contexts)
                             context_info.update({"bookie_id": data["bookie_id"]})
                             data.update(context_info)
+                            if self.debug:
+                                print('context info:', context_info)
+                                print('data info:', data)
                         if data["scraping_tool"] == "playwright":
                             self.close_playwright = True
                         url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="match", data=data, debug=self.debug)
