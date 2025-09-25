@@ -132,9 +132,6 @@ class MetaSpider(scrapy.Spider):
                                     choices_of_contexts.append(x)
                                 elif "no_cookies_bookies" == x["bookie_id"] and data["use_cookies"] == 0:
                                     choices_of_contexts.append(x)
-                                else:
-                                    # TODO: make this more tight
-                                    choices_of_contexts.append(x)
                             context_info = random.choice(choices_of_contexts)
                             context_info.update({"bookie_id": data["bookie_id"]})
                             data.update(context_info)
