@@ -30,7 +30,7 @@ class TwoStepsSpider(scrapy.Spider):
                 debug = False
                 if spider.parser == "comp":
                     print("PROCESSING COMPETITIONS DEBUG MODE")
-                    spider.competitions = [x for x in bookie_config(bookie=["WinaMax"]) if x["competition_id"] == "UEFAChampionsLeague"]
+                    spider.competitions = [x for x in bookie_config(bookie=["WinaMax"]) if x["competition_id"] == "UEFAEuropaLeague"]
                     spider.competitions = bookie_config(bookie=["WinaMax"])
                 else:
                     print("PROCESSING MATCHES DEBUG MODE")

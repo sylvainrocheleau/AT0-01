@@ -47,13 +47,15 @@ class TwoStepsSpider(scrapy.Spider):
                 # No filters
                 competitions = bookie_config(bookie=["all_bookies"])
                 # Filter by bookie that have errors
-                competitions = bookie_config(bookie=["all_bookies", "http_errors"])
+                # competitions = bookie_config(bookie=["all_bookies", "http_errors"])
                 # Filter by bookie
                 # competitions = bookie_config(bookie=["1XBet"])
+                # Filter by competition that have http_errors
+                # competitions = [x for x in bookie_config(bookie=["all_bookies", "http_errors" ]) if x["competition_id"] == "UEFAEuropaLeague"]
                 # Filter by competition
                 # competitions = [x for x in bookie_config(bookie=["all_bookies"]) if x["competition_id"] == "UEFAEuropaLeague"]
                 # Filter by bookie and competition
-                # competitions = [x for x in bookie_config(bookie=["Bet777"]) if x["competition_id"] == "UEFAEuropaLeague"]
+                competitions = [x for x in bookie_config(bookie=["Bet777"]) if x["competition_id"] == "AmistososInternacionales"]
             else:
                 competitions = bookie_config(bookie=["all_bookies"])
 
@@ -123,6 +125,8 @@ class TwoStepsSpider(scrapy.Spider):
             map_matches_urls=self.map_matches_urls,
             debug=self.debug
         )
+        if match_infos is None:
+            match_infos = []
         if self.debug:
             print("match_infos", match_infos)
 
@@ -148,7 +152,8 @@ class TwoStepsSpider(scrapy.Spider):
                         ]
                     }
                     item["pipeline_type"] = self.pipeline_type
-                    yield item
+                    if isinstance(item, (dict, scrapy.Item)):
+                        yield item
                 else:
                     error = f"{response.meta.get('bookie_id')} {response.meta.get('competition_id')} comp_id not in map_matches "
                     if self.debug:
@@ -167,7 +172,8 @@ class TwoStepsSpider(scrapy.Spider):
                     ]
                 }
                 item["pipeline_type"] = self.pipeline_type
-                yield item
+                if isinstance(item, (dict, scrapy.Item)):
+                    yield item
                 error = f"{response.meta.get('bookie_id')} {response.meta.get('competition_id')} comp has no new match "
                 Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
 
@@ -293,7 +299,8 @@ class TwoStepsSpider(scrapy.Spider):
             item["pipeline_type"] = ["error_on_competition_url"]
             if self.debug:
                 print("item error yielded", item)
-            yield item
+            if isinstance(item, (dict, scrapy.Item)):
+                yield item
 
         except Exception as e:
             Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
