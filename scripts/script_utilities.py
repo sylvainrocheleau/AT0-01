@@ -1,22 +1,32 @@
 import mysql.connector
+import os
 import sys
 import smtplib
 import traceback
 
-
+LOCAL_USERS = ["sylvain","rickiel"]
 class Connect():
     def __init__(self):
         # self.server = server
         pass
 
     def to_db(self, db, table):
+        try:
+            if os.environ["USER"] in LOCAL_USERS:
+
+                host_ip = "127.0.0.1"
+                # host_ip = "164.92.191.102"
+                print(f"Connecting to {host_ip}")
+            else:
+                host_ip = "192.168.127.12"
+        except:
+            host_ip = "192.168.127.12"
         SQL_USER = "spider_rw_03"
         SQL_PWD = "43&trdGhqLlM"
         conn_params = {
             'user': SQL_USER,
             'password': SQL_PWD,
-            # 'host': "127.0.0.1",
-            'host': "164.92.191.102",
+            'host': host_ip,
             'port': 3306,
             'database': db,
         }

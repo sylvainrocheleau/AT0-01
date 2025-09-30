@@ -131,6 +131,17 @@ class Watchdog:
         else:
             print("No old cookies found in the database", self.debug)
 
+    def watch_normalised_team_names(self):
+        # TODO: finish coding this alert
+        query = """
+        SELECT *
+        FROM ATO_production.V2_Teams AS t
+        LEFT JOIN ATO_production.Dash_Teams_From_AllSportAPI AS d
+          ON d.normalized_team_name = t.normalized_team_name
+        WHERE d.normalized_team_name IS NULL and t.status = 'confirmed' and t.normalized_short_name IS NOT NULL;
+        """
+        pass
+
     def watch_dutcher(self):
         query_dutcher = """
             SELECT vd.match_id, vd.rating_qualifying_bets
