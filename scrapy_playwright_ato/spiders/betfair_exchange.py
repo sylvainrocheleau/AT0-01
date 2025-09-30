@@ -51,6 +51,12 @@ class TwoStepsJsonSpider(scrapy.Spider):
             "sport_id": result[3],
             "sport_name_es": result[5]
         } for result in competitions_urls if result[4] == "BetfairExchange"}
+    map_matches = {}
+    for match in Helpers().load_matches():
+        try:
+            map_matches[match[6]].append(match[0])
+        except KeyError:
+            map_matches.update({match[6]: [match[0]]})
 
     def end_loop(self, sig, frame):
         raise CloseSpider('Signal handler')
@@ -65,10 +71,10 @@ class TwoStepsJsonSpider(scrapy.Spider):
 
             if os.environ["USER"] in LOCAL_USERS:
                 # NO FILTERS
-                # pass
+                pass
                 # FILTER BY COMPETITION
-                self.map_competitions_urls = {key: value for key, value in self.map_competitions_urls.items()
-                                              if value["competition_id"] == "UEFAEuropaLeague"}
+                # self.map_competitions_urls = {key: value for key, value in self.map_competitions_urls.items()
+                #                               if value["competition_id"] == "SegundaDivisionEspanola"}
         except:
             pass
 
@@ -202,32 +208,41 @@ class TwoStepsJsonSpider(scrapy.Spider):
                         bookie_id=self.name,
                         debug=self.debug
                     )
-                    # print("match_infos", match_infos)
                     if len(match_infos[0]["match_id"]) > 0:
-                        self.events[str(data["eventId"])] = {
-                            "exchange_name": self.name,
-                            "competition_id": self.map_competitions_urls[data['competitionId']]['competition_id'],
-                            "sport": self.map_competitions_urls[data['competitionId']]['sport_name_es'],
-                            "sport_id": self.map_competitions_urls[data['competitionId']]['sport_id'],
-                            "betfair_competition_id": data["competitionId"],
-                            "competition_name": self.map_competitions_urls[data['competitionId']]['competition_name_es'],
-                            "home_team": match_infos[0]["home_team_normalized"],
-                            "home_team_id": home_team_id,
-                            "away_team": match_infos[0]["away_team_normalized"],
-                            "away_team_id": away_team_id,
-                            "date": match_infos[0]["date"],
-                            "market_ids": [],
-                            "odds": [],
-                            "url": url,
-                            "match_id": match_infos[0]["match_id"],
-                        }
+                        competiton_id = self.map_competitions_urls[data['competitionId']]['competition_id']
+                        if match_infos[0]["match_id"] in self.map_matches[competiton_id]:
+                            # if self.debug:
+                            #     print(f"{match_infos[0]["match_id"]} in {self.map_matches[competiton_id]}")
+                            self.events[str(data["eventId"])] = {
+                                "exchange_name": self.name,
+                                "competition_id": competiton_id,
+                                "sport": self.map_competitions_urls[data['competitionId']]['sport_name_es'],
+                                "sport_id": self.map_competitions_urls[data['competitionId']]['sport_id'],
+                                "betfair_competition_id": data["competitionId"],
+                                "competition_name": self.map_competitions_urls[data['competitionId']]['competition_name_es'],
+                                "home_team": match_infos[0]["home_team_normalized"],
+                                "home_team_id": home_team_id,
+                                "away_team": match_infos[0]["away_team_normalized"],
+                                "away_team_id": away_team_id,
+                                "date": match_infos[0]["date"],
+                                "market_ids": [],
+                                "odds": [],
+                                "url": url,
+                                "match_id": match_infos[0]["match_id"],
+                            }
+                        else:
+                            error = (f"/BetfairExchange.py "
+                                     f"comp:{competiton_id}; "
+                                     f"match_id does not exists {match_infos[0]['match_id']}")
+                            if self.debug:
+                                print(error)
+                            Helpers().insert_log(level="INFOS", type="CODE", error=error,message=None)
                     else:
-
-                        error = (f"/BetfairExchange.py"
+                        error = (f"/BetfairExchange.py "
                                    f"comp:{self.map_competitions_urls[data['competitionId']]['competition_id']}; "
                                    f"match_id is empty for {home_team} vs {away_team}")
                         print(error)
-                        Helpers().insert_log(level="CRITICAL", type="CODE", error=error, message=traceback.format_exc())
+                        Helpers().insert_log(level="CRITICAL", type="CODE", error=error, message=None)
             # print("self.events", self.events)
 
             # GETS MARKET IDS
