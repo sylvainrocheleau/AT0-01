@@ -2,9 +2,12 @@ import datetime
 import traceback
 import time
 import random
+import os
 from mysql.connector import OperationalError, InternalError, InterfaceError, DatabaseError, Error
 from script_utilities import CreateViews, Helpers, Connect
 
+
+LOCAL_USERS = ["sylvain","rickiel"]
 # ---- Shared DB connection and retry helpers ----
 _CONN = None
 
@@ -114,7 +117,7 @@ def stop_hanging_spiders():
         project = client.get_project(592160) # 643480
         jobs = {}
         # print(project.activity.list(count=250))
-        for job in project.activity.list(count=600):
+        for job in project.activity.list(count=900):
             if job["event"] in ["job:started"]:
                 try:
                     # if job["job"].split("/")[1] not in jobs.keys():
@@ -144,9 +147,13 @@ def stop_hanging_spiders():
                     print(traceback.format_exc())
                     continue
                 try:
-                    # Group not more than 60 minutes
-                    spiders_under_60_minutes = ["BetfairExchange", "comp_spider_01", "WinaMaxv2"]
-                    if spider_name in spiders_under_60_minutes and difference_in_minutes > 60:
+                    spiders_under_60_minutes = ["BetfairExchange", "WinaMaxv2"]
+                    spiders_under_90_minutes = ["comp_spider_01"]
+
+                    if spider_name in spiders_under_90_minutes and difference_in_minutes > 90:
+                        print(f"Cancel job {value['job']}")
+                        job.cancel()
+                    elif spider_name in spiders_under_60_minutes and difference_in_minutes > 60:
                         print(f"Cancel job {value['job']}")
                         job.cancel()
                     elif spider_name not in spiders_under_60_minutes and difference_in_minutes > 30:
@@ -311,7 +318,7 @@ def select_next_match_date():
                 if match_date.tzinfo is None:
                     match_date = match_date.replace(tzinfo=datetime.timezone.utc)
                 now_utc = datetime.datetime.now(tz=datetime.timezone.utc)
-                if match_date < now_utc + datetime.timedelta(days=7):
+                if match_date < now_utc + datetime.timedelta(days=15):
                     next_match_update.append((match_date, True, result[0]))
                 else:
                     next_match_update.append((match_date, False, result[0]))
@@ -344,19 +351,54 @@ def select_next_match_date():
         return None
 
 if __name__ == "__main__":
-    stop_hanging_spiders()
-    select_next_match_date()
-    delete_old_matches()
-    delete_old_matches_with_no_id()
-    delete_old_dutcher_entries()
-    delete_matches_odds_with_bad_http_status()
-    delete_matches_urls_with_bad_http_status()
-    delete_old_cookies()
-    delete_old_logs()
+    try:
+        if os.environ["USER"] in LOCAL_USERS:
+            print("Processing debug")
+            # stop_hanging_spiders()
+            select_next_match_date()
+            delete_old_matches()
+            delete_old_matches_with_no_id()
+            delete_old_dutcher_entries()
+            delete_matches_odds_with_bad_http_status()
+            delete_matches_urls_with_bad_http_status()
+            delete_old_cookies()
+            delete_old_logs()
 
-    process_all_the_time = False
-    if datetime.datetime.now().minute == 0 or process_all_the_time:
-        CreateViews().create_view_Dash_Competitions_and_MatchUrlCounts_per_Bookie()
+            # process_all_the_time = False
+            # if datetime.datetime.now().minute == 0 or process_all_the_time:
+            #     CreateViews().create_view_Dash_Competitions_and_MatchUrlCounts_per_Bookie()
+
+        else:
+            stop_hanging_spiders()
+            select_next_match_date()
+            delete_old_matches()
+            delete_old_matches_with_no_id()
+            delete_old_dutcher_entries()
+            delete_matches_odds_with_bad_http_status()
+            delete_matches_urls_with_bad_http_status()
+            delete_old_cookies()
+            delete_old_logs()
+
+            process_all_the_time = False
+            if datetime.datetime.now().minute == 0 or process_all_the_time:
+                CreateViews().create_view_Dash_Competitions_and_MatchUrlCounts_per_Bookie()
+
+    except:
+        stop_hanging_spiders()
+        select_next_match_date()
+        delete_old_matches()
+        delete_old_matches_with_no_id()
+        delete_old_dutcher_entries()
+        delete_matches_odds_with_bad_http_status()
+        delete_matches_urls_with_bad_http_status()
+        delete_old_cookies()
+        delete_old_logs()
+
+        process_all_the_time = False
+        if datetime.datetime.now().minute == 0 or process_all_the_time:
+            CreateViews().create_view_Dash_Competitions_and_MatchUrlCounts_per_Bookie()
+
+
 
     # Close the shared DB connection at the end
     try:
