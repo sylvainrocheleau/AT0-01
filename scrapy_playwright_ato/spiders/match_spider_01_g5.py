@@ -134,6 +134,17 @@ class MetaSpider(scrapy.Spider):
                                     choices_of_contexts.append(x)
                                 elif "no_cookies_bookies" == x["bookie_id"] and data["use_cookies"] == 0:
                                     choices_of_contexts.append(x)
+                            if not choices_of_contexts:
+                                Helpers().insert_log(
+                                    level="WARNING",
+                                    type="CONFIG",
+                                    error=None,
+                                    message=(
+                                        f"No context found for bookie_id={data.get('bookie_id')}, "
+                                        f"use_cookies={data.get('use_cookies')}"
+                                    ),
+                                )
+                                continue
                             context_info = random.choice(choices_of_contexts)
                             context_info.update({"bookie_id": data["bookie_id"]})
                             data.update(context_info)
