@@ -1,13 +1,17 @@
 import random
+from math import frexp
+
 import scrapy
 import os
 import traceback
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 from scrapy.spidermiddlewares.httperror import HttpError
+from scrapy import signals
+from scrapy.exceptions import DontCloseSpider
 from twisted.internet.error import DNSLookupError, TimeoutError, TCPTimedOutError
 from ..items import ScrapersItem
 from ..settings import get_custom_playwright_settings, get_custom_settings_for_zyte_api, LOCAL_USERS
-from ..bookies_configurations import get_context_infos,  normalize_odds_variables, list_of_markets_V2
+from ..bookies_configurations import get_context_infos, normalize_odds_variables, list_of_markets_V2, bookie_config
 from ..parsing_logic import parse_match as parse_match_logic
 from ..utilities import Helpers
 
@@ -24,7 +28,6 @@ class MetaSpider(scrapy.Spider):
     elif name == "match_spider_01_zyte_api":
         settings_used = "USING ZYTE API SETTINGS"
         allowed_scraping_tools = ["zyte_api"]
-        scraping_group = [1]
         custom_settings = get_custom_settings_for_zyte_api()
     try:
         if os.environ["USER"] in LOCAL_USERS:
@@ -32,15 +35,15 @@ class MetaSpider(scrapy.Spider):
             # custom_settings["CONCURRENT_REQUESTS"] = 50
             debug = True
             match_filter_enabled = True
-            scraping_group = [1,2,3,4]
+            scraping_group = [1,2,3,4,5]
 
             # FILTER OPTIONS
             # match_filter = {}
-            # match_filter = {"type": "bookie_id", "params":["RetaBet", 0]}
-            # match_filter = {"type": "bookie_and_comp", "params": ["BetWay", "AmistososInternacionales"]}
-            # match_filter = {"type": "comp", "params":["CopadelaLigaInglesa"]}
+            # match_filter = {"type": "bookie_id", "params":["CasinoBarcelona", 1]}
+            # match_filter = {"type": "bookie_and_comp", "params": ["1XBet", "LaLigaEspanola"]}
+            # match_filter = {"type": "comp", "params":["UEFAEuropaLeague"]}
             match_filter = {"type": "match_url_id",
-                            "params":['https://apuestas.retabet.es/deportes/futbol/alemania/bundesliga/bayern-munich-werder-bremen/32407110']}
+                            "params":['https://apuestas.casinobarcelona.es/evento/8985891-rosario-central-river-plate']}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -50,6 +53,7 @@ class MetaSpider(scrapy.Spider):
     frequency_groups = ['A']
     frequency_group_being_processed = ''
     lenght_of_matches_details_and_urls = 1
+    burnt_ips_per_bookie = bookie_config(bookie={"name": "all_bookies", "http_errors": False, "output": "burnt_ips"})
 
     def get_schedule(self):
         if self.debug:
@@ -102,8 +106,6 @@ class MetaSpider(scrapy.Spider):
                 print(f"frequency group from function {frequency_group}: {len(matches_details_and_urls)}")
                 if self.frequency_groups[-1] != 'A' and self.frequency_group_being_processed != 'A':
                     self.frequency_groups.append('A')
-                # elif self.frequency_groups[-1] != 'B' and self.frequency_group_being_processed != 'B':
-                #     self.frequency_groups.append('B')
                 else:
                     next_letter = chr(ord(max(self.frequency_groups)) + 1)
                     self.frequency_groups.append(next_letter)
@@ -127,18 +129,37 @@ class MetaSpider(scrapy.Spider):
                         if data["scraping_tool"] in ["requests", "playwright", "zyte_proxy_mode"]:
                             choices_of_contexts = []
                             for x in context_infos:
-                                if x["bookie_id"] == data["bookie_id"] and data["use_cookies"] == 1:
+                                if (
+                                    x["bookie_id"] == data["bookie_id"]
+                                    and data["use_cookies"] == 1
+                                    and x["proxy_ip"] not in self.burnt_ips_per_bookie[data["bookie_id"]]
+                                ):
                                     choices_of_contexts.append(x)
-                                elif "no_cookies_bookies" == x["bookie_id"] and data["use_cookies"] == 0:
+                                elif (
+                                    "no_cookies_bookies" == x["bookie_id"]
+                                    and data["use_cookies"] == 0
+                                    and x["proxy_ip"] not in self.burnt_ips_per_bookie[data["bookie_id"]]
+                                ):
                                     choices_of_contexts.append(x)
+                            if not choices_of_contexts:
+                                Helpers().insert_log(
+                                    level="WARNING",
+                                    type="CONFIG",
+                                    error=None,
+                                    message=(
+                                        f"No context found for bookie_id={data.get('bookie_id')}, "
+                                        f"use_cookies={data.get('use_cookies')}"
+                                    ),
+                                )
+                                continue
                             context_info = random.choice(choices_of_contexts)
                             context_info.update({"bookie_id": data["bookie_id"]})
                             data.update(context_info)
                         if data["scraping_tool"] == "playwright":
                             self.close_playwright = True
                         url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="match", data=data, debug=self.debug)
-                        if self.debug:
-                            print("Meta request:", meta_request)
+                        # if self.debug:
+                        #     print("Meta request:", meta_request)
 
                         yield scrapy.Request(
                             dont_filter=dont_filter,
@@ -186,12 +207,12 @@ class MetaSpider(scrapy.Spider):
             print("working proxy_ip", response.meta.get("proxy_ip"))
             print("working user_agent", response.meta.get("user_agent"))
             # save proxy_ip, user_agent plus a third value "working"  to a csv file called proxy_ip_user_agent.csv
-            parent = os.path.dirname(os.getcwd())
-            try:
-                with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/logs/proxy_ip_user_agent.csv", "a") as f:
-                    f.write(f"{response.meta.get('proxy_ip')};{response.meta.get('user_agent')};working\n")
-            except:
-                pass
+            # parent = os.path.dirname(os.getcwd())
+            # try:
+            #     with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/logs/proxy_ip_user_agent.csv", "a") as f:
+            #         f.write(f"{response.meta.get('proxy_ip')};{response.meta.get('user_agent')};working\n")
+            # except:
+            #     pass
 
         odds = parse_match_logic(
             bookie_id=response.meta.get("bookie_id"),
@@ -214,7 +235,6 @@ class MetaSpider(scrapy.Spider):
                 )
             }
         )
-
         if not odds:
             item["data_dict"] = {
                 "match_infos": [
@@ -256,8 +276,11 @@ class MetaSpider(scrapy.Spider):
         item = ScrapersItem()
         print("### err back triggered")
         if self.debug:
-            # print("failed proxy_ip", failure.request.meta["proxy_ip"])
-            # print("failed user_agent", failure.request.meta["user_agent"])
+            try:
+                print("failed proxy_ip", failure.request.meta["proxy_ip"])
+                print("failed user_agent", failure.request.meta["user_agent"])
+            except Exception:
+                print("Error while retrieving proxy ip and user_agent:")
             # Fix: correctly access headers through the appropriate objects
             if hasattr(failure, 'value') and hasattr(failure.value, 'response'):
                 print('response headers:', failure.value.response.headers)
@@ -291,29 +314,12 @@ class MetaSpider(scrapy.Spider):
             except Exception:
                 # do not break errback on diagnostics
                 pass
-            parent = os.path.dirname(os.getcwd())
-            try:
-                with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/logs/proxy_ip_user_agent.csv", "a") as f:
-                    f.write(f"{failure.request.meta.get('proxy_ip')};{failure.request.meta.get('user_agent')};failed\n")
-            except:
-                pass
-        # print("failure.request.meta", failure.request.meta)
-        # print("failure.request.url", failure.request.url)
-        # print("failure.value.response.url", failure.value.response.url)
-        # print("failure", failure.request.meta["bookie_id"])
-        # print(self.close_playwright)
-        # print("failure", failure.request.meta["scraping_tool"])
-        try:
-            if failure.request.meta["scraping_tool"] == "scrape_ops":
-                error = f"scrape_ops, {failure.request.meta['bookie_id']} url:{failure.request.url}"
-            else:
-                error = (f"{failure.request.meta['bookie_id']}; "
-                           f"url:{failure.request.url}; proxy:{failure.request.meta['proxy_ip']}")
-
-            Helpers().insert_log(level="INFO", type="NETWORK", error=error, message=None)
-        except Exception as e:
-            error = "no bookie or comp info"
-            Helpers().insert_log(level="CRITICAL", type="CODE", error=error, message=traceback.format_exc())
+            # parent = os.path.dirname(os.getcwd())
+            # try:
+            #     with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/logs/proxy_ip_user_agent.csv", "a") as f:
+            #         f.write(f"{failure.request.meta.get('proxy_ip')};{failure.request.meta.get('user_agent')};failed\n")
+            # except:
+            #     pass
 
         if failure.check(HttpError):
             response = failure.value.response
