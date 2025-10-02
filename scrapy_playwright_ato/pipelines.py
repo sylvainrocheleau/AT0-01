@@ -235,6 +235,31 @@ class ScrapersPipeline:
             except Exception:
                 pass
 
+            # Guard insert with existence filter for match_id
+            if odds_buf:
+                unique_match_ids = sorted({row[1] for row in odds_buf})
+                existing_ids = set()
+
+                # Query existing match_ids in chunks to avoid overly large IN lists
+                CHUNK = 1000
+                for i in range(0, len(unique_match_ids), CHUNK):
+                    chunk = unique_match_ids[i:i + CHUNK]
+                    placeholders = ", ".join(["%s"] * len(chunk))
+                    # Note: schema-qualified table as in the rest of the code
+                    cursor.execute(
+                        f"SELECT match_id FROM ATO_production.V2_Matches WHERE match_id IN ({placeholders})",
+                        tuple(chunk),
+                    )
+                    existing_ids.update(r[0] for r in cursor.fetchall())
+
+                if len(existing_ids) != len(unique_match_ids):
+                    before = len(odds_buf)
+                    # Keep only rows whose match_id exists in V2_Matches
+                    odds_buf[:] = [row for row in odds_buf if row[1] in existing_ids]
+                    dropped = before - len(odds_buf)
+                    if dropped and self.debug:
+                        print(f"[Worker] Dropped {dropped} odds rows due to non-existent match_id.")
+
             # Collect URLs to delete from both odds and url updates (when status indicates error)
             urls_from_odds = set(item[9] for item in odds_buf) if odds_buf else set()
             urls_from_updates = set()
@@ -259,12 +284,6 @@ class ScrapersPipeline:
                       ON vmo.bookie_id = vmu.bookie_id AND vmo.match_id = vmu.match_id
                     WHERE vmu.match_url_id = %s
                 """
-                # deleted_rows_count = 0
-                # for url in sorted(urls_to_delete):
-                #     cursor.execute(delete_query, (url,))
-                #     deleted_rows_count += cursor.rowcount
-                # if self.debug:
-                #     print(f"[Worker] Deleted {deleted_rows_count} old odds entries.")
                 params = [(url,) for url in sorted(urls_to_delete)]
                 safe_executemany(cursor, delete_query, params, chunk_size=200)
                 if self.debug:
@@ -293,7 +312,6 @@ class ScrapersPipeline:
                 """
                 for upd in unique_updates:
                     cursor.execute(query_update_match_urls, upd)
-                    # print(f"[Worker] URL update rowcount {cursor.rowcount} for {upd[2]}")
 
             if match_ids_buf:
                 query_insert_dutcher_queue = """
@@ -301,7 +319,6 @@ class ScrapersPipeline:
                     SET queue_dutcher = 1
                     WHERE match_id = %s AND queue_dutcher <> 1
                 """
-                # Use smaller chunks for dutcher updates to reduce lock contention
                 unique_match_ids = sorted(set(match_ids_buf))
                 safe_executemany(cursor, query_insert_dutcher_queue, unique_match_ids, chunk_size=200)
 
@@ -1059,8 +1076,8 @@ class ScrapersPipeline:
                 query_exchange = """
                   INSERT INTO ATO_production.V2_Exchanges
                   (bet_id, date, sport, competition, home_team, away_team, market, market_binary,
-                   result, exchange, lay_odds, liquidity, url, updated_time)
-                  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, UTC_TIMESTAMP())
+                   result, exchange, lay_odds, liquidity, url, match_id, updated_time)
+                  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, UTC_TIMESTAMP())
                   ON DUPLICATE KEY UPDATE result       = VALUES(result),
                                           lay_odds     = VALUES(lay_odds),
                                           liquidity    = VALUES(liquidity),
@@ -1075,7 +1092,7 @@ class ScrapersPipeline:
                                 value_02["bet_id"], value["date"], value["sport"], value["competition_name"],
                                 value["home_team"], value["away_team"], value_02["Market"], value_02["Market_Binary"],
                                 value_02["Result"],
-                                "Betfair Exchange", value_02["Odds"], value_02["Size"], value["url"],
+                                "Betfair Exchange", value_02["Odds"], value_02["Size"], value["url"], value["match_id"]
                             )
                             batch_insert_exchanges.append(values)
                 try:
@@ -1114,37 +1131,76 @@ class ScrapersPipeline:
                         print(traceback.format_exc())
                     raise
 
-
-                # Now delete and update V2_Oddsmatcher
+                # Now rebuild V2_Oddsmatcher using a SAVEPOINT so earlier work remains intact on failure
                 query_insert_odds_match_maker = """
                     INSERT INTO ATO_production.V2_Oddsmatcher (
-                      bet_id, match_id, bookie_id, back_odd, lay_odds, liquidity,
-                      rating_qualifying_bet, rating_free_bet, rating_refund_bet, url
+                        bet_id,
+                        match_id,
+                        bookie_id,
+                        back_odd,
+                        lay_odds,
+                        liquidity,
+                        rating_qualifying_bet,
+                        rating_free_bet,
+                        rating_refund_bet, url
                     )
-                    SELECT
-                      vmo.bet_id,
-                      vmo.match_id,
-                      vmo.bookie_id,
-                      vmo.back_odd,
-                      ve.lay_odds,
-                      ve.liquidity,
-                      ROUND((100 * vmo.back_odd * (1 - 0.02) / (ve.lay_odds - 0.02)), 2),
-                      ROUND((100 * (vmo.back_odd - 1) * (1 - 0.02) / (ve.lay_odds - 0.02)), 2),
-                      ROUND((100 * ((vmo.back_odd - 0.7) * (1 - 0.02) / (ve.lay_odds - 0.02) - 0.3)), 2),
-                      ve.url
+                    SELECT vmo.bet_id,
+                           vmo.match_id,
+                           vmo.bookie_id,
+                           vmo.back_odd,
+                           ve.lay_odds,
+                           ve.liquidity,
+                           ROUND((100 * vmo.back_odd * (1 - 0.02) / (ve.lay_odds - 0.02)), 2),
+                           ROUND( (100 * (vmo.back_odd - 1) * (1 - 0.02) / (ve.lay_odds - 0.02)), 2),
+                           ROUND( (100 * ((vmo.back_odd - 0.7) * (1 - 0.02) / (ve.lay_odds - 0.02) - 0.3)), 2),
+                           ve.url
                     FROM ATO_production.V2_Matches_Odds vmo
-                    JOIN ATO_production.V2_Exchanges ve ON vmo.bet_id = ve.bet_id
-                    JOIN ATO_production.V2_Matches vm ON vm.match_id = vmo.match_id
+                             JOIN ATO_production.V2_Exchanges ve ON vmo.bet_id = ve.bet_id
+                             JOIN ATO_production.V2_Matches vm ON vm.match_id = vmo.match_id
                     WHERE ve.lay_odds > 0.02
                       AND ve.liquidity > 0;
-                """
+                    """
+
+                # Ensure we are inside a transaction (required for SAVEPOINT)
+                started_tx = False
+                if not getattr(self.connection, "in_transaction", False):
+                    try:
+                        self.connection.start_transaction()
+                        started_tx = True
+                    except mysql.connector.errors.ProgrammingError:
+                        # Already in a transaction; continue
+                        pass
+
+                # Create a savepoint to isolate this block
+                self.cursor.execute("SAVEPOINT sp_v2_oddsmatcher")
+
                 try:
                     self.cursor.execute("DELETE FROM ATO_production.V2_Oddsmatcher")
                     self.cursor.execute(query_insert_odds_match_maker)
-                    self.connection.commit()
-                except Exception:
-                    self.connection.rollback()
-                    # Diagnostic: find the offending match_id(s)
+
+                    # Success: release the savepoint; commit only if this block started the transaction
+                    try:
+                        self.cursor.execute("RELEASE SAVEPOINT sp_v2_oddsmatcher")
+                    except Exception:
+                        # RELEASE SAVEPOINT is optional; ignore if the server doesn’t track it
+                        pass
+
+                    if started_tx:
+                        self.connection.commit()
+
+                except Exception as e:
+                    # Roll back only this step; keep earlier work intact
+                    try:
+                        self.cursor.execute("ROLLBACK TO SAVEPOINT sp_v2_oddsmatcher")
+                    except Exception:
+                        # If savepoint rollback failed, fall back to full rollback only if we started the transaction here
+                        if started_tx:
+                            try:
+                                self.connection.rollback()
+                            except Exception:
+                                pass
+
+                    # Optional diagnostics to find offending match_id(s)
                     if self.debug:
                         diag_sql = """
                                    SELECT DISTINCT vmo.match_id
@@ -1155,87 +1211,82 @@ class ScrapersPipeline:
                                                       ON vmo.match_id = vm.match_id
                                    WHERE ve.lay_odds > 0.02
                                      AND ve.liquidity > 0
-                                     AND vm.match_id IS NULL
+                                     AND vm.match_id IS NULL \
                                    """
                         try:
                             self.cursor.execute(diag_sql)
                             missing = [row[0] for row in self.cursor.fetchall()]
-                            print(f"Offending match_id(s) not present in V2_Matches: {missing}")
-                            Helpers().insert_log(
-                                level="CRITICAL",
-                                type="DATA",
-                                error="Oddsmatcher FK mismatch",
-                                message=f"Missing match_id in V2_Matches: {missing}"
-                            )
+                            if missing:
+                                print(f"Offending match_id(s) not present in V2_Matches: {missing}")
+                                Helpers().insert_log(
+                                    level="CRITICAL",
+                                    type="DATA",
+                                    error="Oddsmatcher FK mismatch",
+                                    message=f"Missing match_id in V2_Matches: {missing}"
+                                )
                         except Exception as diag_e:
                             print("Failed to run diagnostic for FK violation:", diag_e)
-                        raise
 
-                # Refresh V1_Oddsmatcher via staging-and-swap
+                    # If we started the transaction for this block, ensure we end it cleanly
+                    if started_tx:
+                        try:
+                            self.connection.rollback()
+                        except Exception:
+                            pass
+                    raise
+
+                # Refresh V1_Oddsmatcher without DDL (DML-only, atomic)
                 try:
                     self._ensure_connection()
 
-                    # 1) Ensure staging exists and is empty
-                    self.cursor.execute(
-                        """
-                        CREATE TABLE IF NOT EXISTS ATO_production.V1_Oddsmatcher_new
-                        LIKE ATO_production.V1_Oddsmatcher
-                        """
-                    )
-                    self.cursor.execute("TRUNCATE TABLE ATO_production.V1_Oddsmatcher_new")
+                    # Start a transaction if not already in one
+                    if not getattr(self.connection, "in_transaction", False):
+                        try:
+                            self.connection.start_transaction()
+                        except mysql.connector.errors.ProgrammingError:
+                            pass  # already in a transaction
 
-                    # 2) Build staging from the view
-                    query_insert_v1_staging = """
-                                              INSERT INTO ATO_production.V1_Oddsmatcher_new
-                                              SELECT Date,
-                                                     Sport,
-                                                     Competition,
-                                                     Event,
-                                                     RatingQualifyingBets,
-                                                     RatingFreeBets,
-                                                     RatingRefundBets,
-                                                     Market,
-                                                     Market_Binary,
-                                                     Result,
-                                                     Bookie,
-                                                     Back_Odds,
-                                                     Exchange,
-                                                     Lay_Odds,
-                                                     Liquidity,
-                                                     UrlBookie,
-                                                     UrlExchange,
-                                                     updated_time
-                                              FROM ATO_production.Oddsmatcher_with_clones \
-                                              """
-                    self.cursor.execute(query_insert_v1_staging)
-                    # Commit the staging build; if it fails, live table is untouched
-                    self.connection.commit()
-
-                    # 3) Atomically swap (implicit commit occurs)
-                    self.cursor.execute(
+                    # Delete then insert in one transaction
+                    self.cursor.execute("DELETE FROM ATO_production.V1_Oddsmatcher")
+                    query_insert_v1 = (
                         """
-                        RENAME TABLE
-                          ATO_production.V1_Oddsmatcher     TO ATO_production.V1_Oddsmatcher_old,
-                          ATO_production.V1_Oddsmatcher_new TO ATO_production.V1_Oddsmatcher
+                        INSERT INTO ATO_production.V1_Oddsmatcher
+                        SELECT Date,
+                               Sport,
+                               Competition,
+                               Event,
+                               RatingQualifyingBets,
+                               RatingFreeBets,
+                               RatingRefundBets,
+                               Market,
+                               Market_Binary,
+                               Result,
+                               Bookie,
+                               Back_Odds,
+                               Exchange,
+                               Lay_Odds,
+                               Liquidity,
+                               UrlBookie,
+                               UrlExchange,
+                               match_id,
+                               updated_time
+                        FROM ATO_production.Oddsmatcher_with_clones
                         """
                     )
-
-                    # 4) Drop the old table (optional: keep temporarily for rollback/inspection)
-                    self.cursor.execute("DROP TABLE ATO_production.V1_Oddsmatcher_old")
+                    self.cursor.execute(query_insert_v1)
                     self.connection.commit()
-
                     if self.debug:
-                        print("Swapped V1_Oddsmatcher via staging at", datetime.datetime.now())
+                        print("Rebuilt V1_Oddsmatcher via DELETE+INSERT at", datetime.datetime.now())
                 except Exception as e:
                     if self.debug:
-                        print("Failed to swap V1_Oddsmatcher:", e)
+                        print("Failed to rebuild V1_Oddsmatcher:", e)
                         print(traceback.format_exc())
                     try:
                         self.connection.rollback()
                     except Exception:
                         pass
-                    Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}",
-                                         message=traceback.format_exc())
+                    Helpers().insert_log(level="CRITICAL", type="CODE",
+                                         error=f"{spider.name} {str(e)}", message=traceback.format_exc())
                     raise
             finally:
                 try:
