@@ -72,7 +72,7 @@ class Connect():
             connection = mysql.connector.connect(**conn_params)
         except Exception as e:
             print(f"Error connecting to MariaDB Platform: {e} on {db} and {TEST_ENV}")
-            sys.exit(1)
+            raise
 
         return connection
 
@@ -859,7 +859,7 @@ class Helpers():
         connection = Connect().to_db(db="ATO_production", table="V2_Competitions")
         cursor = connection.cursor()
         query_competitions = """
-            SELECT competition_id,competition_name_es, competition_name_en, sport_id,start_date,end_date
+            SELECT competition_id,competition_name_es, competition_name_en, sport_id
             FROM V2_Competitions
             """
         cursor.execute(query_competitions)
@@ -1803,6 +1803,14 @@ class Helpers():
                 ]
                 }
                 )
+                if data["sport_id"] == "1":
+                    meta_request.update({"playwright_page_methods":[
+                        PageMethod(
+                            method="click",
+                            selector="//span[@class='market-name' and normalize-space(.)='Marcador exacto']",
+                        ),
+                    ]})
+
             elif data["bookie_id"] == "Bet777":
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
@@ -1810,6 +1818,16 @@ class Helpers():
                         selector="//div[@class='mt-0']",
                     ),
                 ],
+                }
+                )
+            elif data["bookie_id"] == "CasinoBarcelona":
+                meta_request.update({"playwright_page_methods": [
+                    PageMethod(
+                        method="wait_for_selector",
+                        selector="//div[@class='parent-container-event open']",
+                        # timeout=40000
+                    ),
+                    ]
                 }
                 )
             elif data["bookie_id"] == "Casumo":
@@ -1897,7 +1915,7 @@ class Helpers():
                         PageMethod(
                             "evaluate",
                             expression="""
-                                const element = document.evaluate("//*[text()='Resultado Exacto']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                                const element = document.evaluate("//*[text()='Resultado Exacto (0:0)']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
                                 if (element) {
                                     element.click();
                                 }
