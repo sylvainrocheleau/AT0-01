@@ -58,25 +58,39 @@ def teams_and_dates_from_response(bookie_id, competition_id, sport_id, normalize
         )
     print("Normalized match infos", match_infos)
 
-def get_odds_from_response(bookie_id, sport_id, parser  ):
+def get_odds_from_response(bookie_id, sport_id, parser ):
+    from pathlib import Path
+    from scrapy.http import TextResponse, Request
     from parsing_logic import parse_match as parse_match_logic
     from utilities import Helpers
     from parsel import Selector
     from bookies_configurations import list_of_markets_V2
 
+    file_path = '../logs/match_spider_01_g1_response.txt'
+    # Read file bytes; set encoding appropriately for your data
+    if parser == "response":
+        body = Path(file_path).read_bytes()
+        url = f"file://{Path(file_path).absolute()}"
+
+        # Build a dummy Request so response.request and response.url are set
+        req = Request(url=url)
+        response = TextResponse(url=url, body=body, encoding='utf-8', request=req)
+
+    else:
+        try:
+            with open(file_path) as f:
+                if parser == 'html':
+                    response = Selector(text=f.read())
+                if parser == 'json':
+                    response = f.read()
+
+        except FileNotFoundError:
+            print(f"File {file_path} not found. Please provide a valid response file.")
+            return []
+
+
     home_team = "Team A"
     away_team = "Team B"
-
-    try:
-        with open('../logs/match_spider_01_g1_response.txt') as f:
-            if parser == 'html':
-                response = Selector(text=f.read())
-            if parser == 'json':
-                response = f.read()
-
-    except FileNotFoundError:
-        print("File '../logs/match_spider_01_response.txt' not found. Please provide a valid response file.")
-        return []
 
     odds = parse_match_logic(
         bookie_id=bookie_id,
@@ -147,7 +161,7 @@ if __name__ == "__main__":
     # check_list_of_markets()
     # get_comps_for_bookie(bookie_id='Versus')
     # teams_and_dates_from_response(bookie_id='DaznBet', competition_id='BundesligaAlemana', sport_id='1', normalize=False)
-    get_odds_from_response(bookie_id="OlyBet", sport_id="1", parser="json")
+    get_odds_from_response(bookie_id="CasinoBarcelona", sport_id="1", parser="response") # parser can be response, html, json
     # get_matches_details_and_urls({"type": "bookie_id", "params": ["Betsson" ,1]})
     # get_sports_pages()
     # get_tournaments_from_sport_page(bookie_id="Bet777", sport_id="3", debug=True)
