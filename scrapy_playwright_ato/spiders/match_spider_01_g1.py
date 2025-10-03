@@ -28,6 +28,7 @@ class MetaSpider(scrapy.Spider):
     elif name == "match_spider_01_zyte_api":
         settings_used = "USING ZYTE API SETTINGS"
         allowed_scraping_tools = ["zyte_api"]
+        scraping_group = [1]
         custom_settings = get_custom_settings_for_zyte_api()
     try:
         if os.environ["USER"] in LOCAL_USERS:

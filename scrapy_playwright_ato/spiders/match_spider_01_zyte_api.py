@@ -28,6 +28,7 @@ class MetaSpider(scrapy.Spider):
     elif name == "match_spider_01_zyte_api":
         settings_used = "USING ZYTE API SETTINGS"
         allowed_scraping_tools = ["zyte_api"]
+        scraping_group = [1]
         custom_settings = get_custom_settings_for_zyte_api()
     try:
         if os.environ["USER"] in LOCAL_USERS:
@@ -43,7 +44,7 @@ class MetaSpider(scrapy.Spider):
             # match_filter = {"type": "bookie_and_comp", "params": ["1XBet", "LaLigaEspanola"]}
             # match_filter = {"type": "comp", "params":["UEFAEuropaLeague"]}
             match_filter = {"type": "match_url_id",
-                            "params":['https://apuestas.casinobarcelona.es/evento/8985891-rosario-central-river-plate']}
+                            "params":['https://apuestas.retabet.es/deportes/futbol/espana/segunda-division/ceuta-eibar/32634231']}
     except:
         match_filter_enabled = False
         match_filter = {}
