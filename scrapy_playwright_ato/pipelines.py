@@ -103,6 +103,65 @@ class ScrapersPipeline:
         except KeyError:
             self.debug = False
 
+    def _shrink_item_for_error(self, item, max_odds_per_event=0, keep_fields=None):
+        """Minimize the item in-place so that error logs remain small.
+        - max_odds_per_event=0 means drop odds completely.
+        - keep_fields can preserve a small set of fields per event.
+        """
+        try:
+            d = item.get("data_dict")
+            if not isinstance(d, dict):
+                return
+
+            slim = {}
+            for k, v in d.items():
+                if isinstance(v, dict):
+                    entry = {}
+                    # Preserve a few top-level identifiers for diagnostics
+                    for fld in (keep_fields or ("match_id", "competition_id", "sport", "date")):
+                        if fld in v:
+                            entry[fld] = v[fld]
+                    # Optionally keep a tiny slice of odds or drop entirely
+                    if max_odds_per_event and isinstance(v.get("odds"), list):
+                        entry["odds_count"] = len(v["odds"])
+                        entry["odds_preview"] = v["odds"][:max_odds_per_event]
+                    else:
+                        if "odds" in v:
+                            entry["odds_count"] = len(v["odds"]) if isinstance(v["odds"], list) else "?"
+                    # Keep URL for triage
+                    if "url" in v:
+                        entry["url"] = v["url"]
+                    slim[str(k)] = entry
+                else:
+                    # Non-dict event payload; just show type
+                    slim[str(k)] = {"type": type(v).__name__}
+
+            # Replace the heavy dict with slim summary
+            item["data_dict"] = slim
+            # Add a small overall summary
+            item["_log_summary"] = {
+                "events": len(slim),
+                "pipeline_type": item.get("pipeline_type"),
+            }
+        except Exception:
+            # Never let shrinking crash the pipeline
+            pass
+
+    def _truncate_item_for_return(self, item, max_chars=2000):
+        """Ensure returning the item won’t create huge logs if something later stringifies it."""
+        try:
+            s = repr(dict(item))  # create a safe serializable preview
+            if len(s) <= max_chars:
+                return
+            # If too big, replace data_dict by a short summary
+            dd = item.get("data_dict")
+            if isinstance(dd, dict):
+                keys = list(dd.keys())
+                item["data_dict"] = {"keys_count": len(keys), "preview_keys": keys[:10]}
+            item["_truncated"] = True
+        except Exception:
+            pass
+
     def _start_worker(self):
         """Start the background writer thread."""
         if self._worker_thread and self._worker_thread.is_alive():
@@ -1081,7 +1140,8 @@ class ScrapersPipeline:
                   ON DUPLICATE KEY UPDATE result       = VALUES(result),
                                           lay_odds     = VALUES(lay_odds),
                                           liquidity    = VALUES(liquidity),
-                                          updated_time = VALUES(updated_time)
+                                          updated_time = VALUES(updated_time),
+                                          match_id     = VALUES(match_id)
                 """
 
                 batch_insert_exchanges = []
@@ -1112,7 +1172,7 @@ class ScrapersPipeline:
                     delete_stale_sql = """
                                        DELETE
                                        FROM ATO_production.V2_Exchanges
-                                       WHERE updated_time < UTC_TIMESTAMP() - INTERVAL 1 MINUTE
+                                       WHERE updated_time < UTC_TIMESTAMP() - INTERVAL 5 MINUTE
                                        """
                     self.cursor.execute(delete_stale_sql)
                     deleted_count = self.cursor.rowcount
@@ -1129,6 +1189,7 @@ class ScrapersPipeline:
                     if self.debug:
                         print("Failed to refresh V2_Exchanges (insert + delete stale):", e)
                         print(traceback.format_exc())
+                    self._shrink_item_for_error(item)
                     raise
 
                 # Now rebuild V2_Oddsmatcher using a SAVEPOINT so earlier work remains intact on failure
@@ -1233,6 +1294,7 @@ class ScrapersPipeline:
                             self.connection.rollback()
                         except Exception:
                             pass
+                    self._shrink_item_for_error(item)
                     raise
 
                 # Refresh V1_Oddsmatcher without DDL (DML-only, atomic)
@@ -1287,6 +1349,7 @@ class ScrapersPipeline:
                         pass
                     Helpers().insert_log(level="CRITICAL", type="CODE",
                                          error=f"{spider.name} {str(e)}", message=traceback.format_exc())
+                    self._shrink_item_for_error(item)
                     raise
             finally:
                 try:
