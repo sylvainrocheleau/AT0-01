@@ -348,7 +348,7 @@ class MetaSpider(scrapy.Spider):
                     status = 1200
                     print("Unknown error on", request.url)
             except Exception as e:
-                Helpers().insert_log(level="CRITICAL", type="CODE", error=error, message=traceback.format_exc())
+                Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
         try:
             item["data_dict"] = {
                 "match_infos": [
@@ -365,7 +365,7 @@ class MetaSpider(scrapy.Spider):
                 print("Item error yielded", item)
             yield item
         except Exception as e:
-            Helpers().insert_log(level="CRITICAL", type="CODE", error=error, message=traceback.format_exc())
+            Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
 
         try:
             # TODO find a way to close the page and context only if they were opened by playwright
@@ -378,6 +378,6 @@ class MetaSpider(scrapy.Spider):
                 print("Closing context on error")
                 await page.context.close()
         except Exception as e:
-            Helpers().insert_log(level="CRITICAL", type="CODE", error=error, message=traceback.format_exc())
+            Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
             pass
 

@@ -43,7 +43,7 @@ class MetaSpider(scrapy.Spider):
             # match_filter = {"type": "bookie_and_comp", "params": ["1XBet", "LaLigaEspanola"]}
             # match_filter = {"type": "comp", "params":["UEFAEuropaLeague"]}
             match_filter = {"type": "match_url_id",
-                            "params":['https://apuestas.casinobarcelona.es/evento/8985891-rosario-central-river-plate']}
+                            "params":['https://www.efbet.es/ES/sports#bo-navigation=282241.1,490522.1,490881.1&action=market-group-list&event=38148757.1']}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -125,8 +125,6 @@ class MetaSpider(scrapy.Spider):
             for key, value in matches_details_and_urls.items():
                 count_of_matches_details_and_urls += 1
                 for data in value:
-                    if self.debug:
-                        print("data[bookie_id]", data["bookie_id"])
                     try:
                         if data["scraping_tool"] in ["requests", "playwright", "zyte_proxy_mode"]:
                             choices_of_contexts = []
@@ -154,8 +152,6 @@ class MetaSpider(scrapy.Spider):
                                     ),
                                 )
                                 continue
-                            if self.debug:
-                                print("choices_of_contexts", choices_of_contexts)
                             context_info = random.choice(choices_of_contexts)
                             context_info.update({"bookie_id": data["bookie_id"]})
                             data.update(context_info)
@@ -239,6 +235,8 @@ class MetaSpider(scrapy.Spider):
                 )
             }
         )
+        if self.debug:
+            print("Odds:", odds)
         if not odds:
             item["data_dict"] = {
                 "match_infos": [
@@ -352,7 +350,7 @@ class MetaSpider(scrapy.Spider):
                     status = 1200
                     print("Unknown error on", request.url)
             except Exception as e:
-                Helpers().insert_log(level="CRITICAL", type="CODE", error=error, message=traceback.format_exc())
+                Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
         try:
             item["data_dict"] = {
                 "match_infos": [
@@ -369,7 +367,7 @@ class MetaSpider(scrapy.Spider):
                 print("Item error yielded", item)
             yield item
         except Exception as e:
-            Helpers().insert_log(level="CRITICAL", type="CODE", error=error, message=traceback.format_exc())
+            Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
 
         try:
             # TODO find a way to close the page and context only if they were opened by playwright
@@ -382,6 +380,6 @@ class MetaSpider(scrapy.Spider):
                 print("Closing context on error")
                 await page.context.close()
         except Exception as e:
-            Helpers().insert_log(level="CRITICAL", type="CODE", error=error, message=traceback.format_exc())
+            Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
             pass
 
