@@ -160,42 +160,8 @@ def parse_sport(response, bookie_id, sport_id, competiton_names_and_variants, de
 
 
         elif bookie_id == "MarcaApuestas":
-
             try:
-            #     xpath_results = response.xpath("//li[@class='expander']").extract()
-            #     for xpath_result in xpath_results:
-            #         xpath_result = Selector(xpath_result)
-            #         try:
-            #             tournament_name = xpath_result.xpath("//h4[@class='expander-button']/text()").extract()[0].strip()
-            #             print("tournament name: ", tournament_name)
-            #             tournaments_found = []
-            #             for comp_id, variants in competiton_names_and_variants.items():
-            #                 for variant in variants:
-            #                     if any(variant in tournament_name for variant in variants):
-            #                         tournaments_found.append((comp_id, variant))
-            #             if tournaments_found:
-            #                 # Pick the comp_id with the longest matching variant (most specific)
-            #                 competition_id = max(tournaments_found, key=lambda x: len(x[1]))[0]
-            #                 for xpath_result_02 in xpath_result.xpath("//h4[@class='expander-button']/text()").extract():
-            #                     xpath_result_02 = Selector(xpath_result_02)
-            #                     print("xpath_result_02: ", xpath_result_02)
-            #                     url = xpath_result_02.xpath("//a[@href]/@href").extract()[0]
-            #                     print("url_02: ", url)
-            #                     url = "https://deportes.marcaapuestas.es" + url
-            #                     print(tournament_name, '>', competition_id, '>', url)
-            #                     tournaments_info.append(
-            #                         {
-            #                             'competition_url_id': url,
-            #                             'competition_id': competition_id,
-            #                             'bookie_id': bookie_id,
-            #                         }
-            #                     )
-            #         except IndexError as e:
-            #             continue
-
-
                 xpath_results = response.xpath("//li[@class='expander']").extract()
-                # print("x_results:", xpath_results)
                 for xpath_result in xpath_results:
                     xpath_result = Selector(xpath_result)
                     try:
@@ -207,6 +173,36 @@ def parse_sport(response, bookie_id, sport_id, competiton_names_and_variants, de
                                 for url in urls:
                                     print("url 02: ", url)
                                     url = "https://deportes.marcaapuestas.es/" + url
+                                    print(tournament_name, '>', comp_id, '>', url)
+                                    tournaments_info.append(
+                                        {
+                                            'competition_url_id': url,
+                                            'competition_id': comp_id,
+                                            'bookie_id': bookie_id,
+                                        }
+                                    )
+                    except IndexError as e:
+                        print(traceback.format_exc())
+                        continue
+            except Exception:
+                if debug:
+                    print(traceback.format_exc())
+
+
+        elif bookie_id == "PokerStars":
+            try:
+                xpath_results = response.xpath("//div[@class='_card_1kgtt_1']").extract()
+                for xpath_result in xpath_results:
+                    xpath_result = Selector(xpath_result)
+                    try:
+                        tournament_name = xpath_result.xpath("//div[@class='_21e1689']/text()").extract()[0]
+                        tournament_name = tournament_name.strip()
+                        for comp_id, variants in competiton_names_and_variants.items():
+                            if any(variant in tournament_name for variant in variants):
+                                urls = xpath_result.xpath("//a[@href]/@href").extract()
+                                for url in urls:
+                                    print("url 02: ", url)
+                                    url = "https://www.pokerstars.es/sports/" + url
                                     print(tournament_name, '>', comp_id, '>', url)
                                     tournaments_info.append(
                                         {
