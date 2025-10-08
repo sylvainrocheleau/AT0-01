@@ -1960,6 +1960,23 @@ class Helpers():
                 ],
                 }
                 )
+            # elif data["bookie_id"] == "MarcaApuestas":
+            #     if data["sport_id"] == "3":
+            #         meta_request.update(dict(playwright_page_methods=[
+            #             # PageMethod(
+            #             #     method="wait_for_selector",
+            #             #     selector="//div[@class='d-flex w-100 px-2 px-lg-0 ng-star-inserted']",
+            #             # ),
+            #             PageMethod(
+            #                 method="wait_for_selector",
+            #                 selector="//ul[@class='types expander-content']"
+            #             ),
+            #             # cliquer sur le premier tournoi dispo
+            #             PageMethod(
+            #                 method="click",
+            #                 selector="//ul[@class='types expander-content']//a"
+            #             )
+            #         ],))
             elif data["bookie_id"] == "RetaBet":
                 meta_request.update({"zyte_api_automap": {
                         "geolocation": "ES",
