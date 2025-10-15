@@ -738,9 +738,6 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
 
                         date = match["event"]["start"]
                         date = dateparser.parse(''.join(date))
-                        if debug:
-                            print(match["event"]["start"])
-                            print(date)
                         if url not in map_matches_urls:
                             match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id)
                             match_infos.append(match_info)
@@ -2296,7 +2293,7 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                         for bets in data:
                             if bets["odd"] != "-1":
                                 if sport_id == "1":
-                                    if "menos" in market.lower():
+                                    if "total de goles" in market.lower():
                                         odds.append(
                                             {"Market": market,
                                              "Result": bets["actor"]["label"],
@@ -2587,7 +2584,7 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                             and result != "empty"
                             and odd != "empty"
                         ):
-                            if market == "¿Resultado exacto?":
+                            if market == "Resultado exacto":
                                 result = result.replace(home_team, "").replace(away_team, "")
                             odds.append({"Market": market, "Result": result, "Odds": odd})
                             result = "empty"
@@ -3353,16 +3350,16 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
     elif bookie_id == "RetaBet":
         try:
-            selection_keys = response.xpath("//div[@class='bets__wrapper jbgroup jgroup']").extract()
+            selection_keys = response.xpath("//div[@class='bets__group']").extract()
             odds = []
             for selection_key in selection_keys:
                 selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t","")
                 clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
                 clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
-                # print(clean_selection_keys)
                 for selection_key02 in clean_selection_keys:
                     if clean_selection_keys[0] in list_of_markets:
                         market = clean_selection_keys[0]
+
                     else:
                         market = "empty"
                     if (
@@ -3474,9 +3471,9 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                 clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
                 clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
                 clean_selection_keys = list(filter(None, clean_selection_keys))
-                stopwords = ["Añadir al cupón"]
+                stopwords = ["Añadir al cupón", "Empate"]
                 for selection_key02 in clean_selection_keys:
-                    if clean_selection_keys[0] in list_of_markets:
+                    if clean_selection_keys[0] in list_of_markets and any(sw not in clean_selection_keys for sw in stopwords):
                         market = clean_selection_keys[0]
                     else:
                         market = "empty"

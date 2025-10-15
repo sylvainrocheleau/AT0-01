@@ -28,6 +28,7 @@ REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 ITEM_PIPELINES = {
    'scrapy_playwright_ato.pipelines.ScrapersPipeline': 300,
 }
+LOG_FORMATTER = 'scrapy_playwright_ato.logformatter.ShortItemLogFormatter'
 
 # ATO settings
 ###################
@@ -35,8 +36,8 @@ ITEM_PIPELINES = {
 LOCAL_USERS = ["sylvain","rickiel"]
 try:
     if os.environ["USER"] in LOCAL_USERS:
-        # TEST_ENV = "server"
-        TEST_ENV = "local"
+        TEST_ENV = "server"
+        # TEST_ENV = "local"
         PLAYWRIGHT_HEADLESS = False
 except KeyError:
     TEST_ENV = "server"

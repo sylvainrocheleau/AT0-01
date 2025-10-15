@@ -28,6 +28,7 @@ class MetaSpider(scrapy.Spider):
     elif name == "match_spider_01_zyte_api":
         settings_used = "USING ZYTE API SETTINGS"
         allowed_scraping_tools = ["zyte_api"]
+        scraping_group = [1]
         custom_settings = get_custom_settings_for_zyte_api()
     try:
         if os.environ["USER"] in LOCAL_USERS:
@@ -348,7 +349,7 @@ class MetaSpider(scrapy.Spider):
                     status = 1200
                     print("Unknown error on", request.url)
             except Exception as e:
-                Helpers().insert_log(level="CRITICAL", type="CODE", error=error, message=traceback.format_exc())
+                Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
         try:
             item["data_dict"] = {
                 "match_infos": [
@@ -365,7 +366,7 @@ class MetaSpider(scrapy.Spider):
                 print("Item error yielded", item)
             yield item
         except Exception as e:
-            Helpers().insert_log(level="CRITICAL", type="CODE", error=error, message=traceback.format_exc())
+            Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
 
         try:
             # TODO find a way to close the page and context only if they were opened by playwright
@@ -378,6 +379,6 @@ class MetaSpider(scrapy.Spider):
                 print("Closing context on error")
                 await page.context.close()
         except Exception as e:
-            Helpers().insert_log(level="CRITICAL", type="CODE", error=error, message=traceback.format_exc())
+            Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
             pass
 

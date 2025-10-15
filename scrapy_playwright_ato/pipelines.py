@@ -103,6 +103,65 @@ class ScrapersPipeline:
         except KeyError:
             self.debug = False
 
+    def _shrink_item_for_error(self, item, max_odds_per_event=0, keep_fields=None):
+        """Minimize the item in-place so that error logs remain small.
+        - max_odds_per_event=0 means drop odds completely.
+        - keep_fields can preserve a small set of fields per event.
+        """
+        try:
+            d = item.get("data_dict")
+            if not isinstance(d, dict):
+                return
+
+            slim = {}
+            for k, v in d.items():
+                if isinstance(v, dict):
+                    entry = {}
+                    # Preserve a few top-level identifiers for diagnostics
+                    for fld in (keep_fields or ("match_id", "competition_id", "sport", "date")):
+                        if fld in v:
+                            entry[fld] = v[fld]
+                    # Optionally keep a tiny slice of odds or drop entirely
+                    if max_odds_per_event and isinstance(v.get("odds"), list):
+                        entry["odds_count"] = len(v["odds"])
+                        entry["odds_preview"] = v["odds"][:max_odds_per_event]
+                    else:
+                        if "odds" in v:
+                            entry["odds_count"] = len(v["odds"]) if isinstance(v["odds"], list) else "?"
+                    # Keep URL for triage
+                    if "url" in v:
+                        entry["url"] = v["url"]
+                    slim[str(k)] = entry
+                else:
+                    # Non-dict event payload; just show type
+                    slim[str(k)] = {"type": type(v).__name__}
+
+            # Replace the heavy dict with slim summary
+            item["data_dict"] = slim
+            # Add a small overall summary
+            item["_log_summary"] = {
+                "events": len(slim),
+                "pipeline_type": item.get("pipeline_type"),
+            }
+        except Exception:
+            # Never let shrinking crash the pipeline
+            pass
+
+    def _truncate_item_for_return(self, item, max_chars=2000):
+        """Ensure returning the item won’t create huge logs if something later stringifies it."""
+        try:
+            s = repr(dict(item))  # create a safe serializable preview
+            if len(s) <= max_chars:
+                return
+            # If too big, replace data_dict by a short summary
+            dd = item.get("data_dict")
+            if isinstance(dd, dict):
+                keys = list(dd.keys())
+                item["data_dict"] = {"keys_count": len(keys), "preview_keys": keys[:10]}
+            item["_truncated"] = True
+        except Exception:
+            pass
+
     def _start_worker(self):
         """Start the background writer thread."""
         if self._worker_thread and self._worker_thread.is_alive():
@@ -929,15 +988,16 @@ class ScrapersPipeline:
             try:
                 connection = Connect().to_db(db="ATO_production", table=None)
                 cursor = connection.cursor()
-                # TODO: maybe nit such a good idea to KEY UPDATE numerical_team_id = VALUES(numerical_team_id)
                 competition_id = next(iter(item["data_dict"].values()))["competition_id"]
                 query_insert_teams = """
                     INSERT INTO ATO_production.V2_Teams
                     (team_id, bookie_id, competition_id, sport_id, bookie_team_name, normalized_team_name,
                     normalized_short_name, country, status, source, numerical_team_id, update_date)
                     VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    ON DUPLICATE KEY UPDATE numerical_team_id = VALUES(numerical_team_id), update_date = VALUES(update_date),
-                        country = VALUES(country)
+                    ON DUPLICATE KEY UPDATE normalized_team_name = VALUES(normalized_team_name),
+                                            update_date = VALUES(update_date),
+                                            normalized_short_name = VALUES(normalized_short_name),
+                                            country = VALUES(country)
                 """
                 for key, value in item["data_dict"].items():
                     values_home_team = (
@@ -1009,7 +1069,7 @@ class ScrapersPipeline:
                 try:
                     connection = Connect().to_db(db="ATO_production", table=None)
                     cursor = connection.cursor()
-                    if item["data_dict"]:
+                    if item["data_dict"] and 9 <= Helpers().get_time_now("UTC").hour < 10:
                         competition_id = next(iter(item["data_dict"].values()))["competition_id"]
                         scraped_match_ids = {value["match_id"] for value in item["data_dict"].values()}
                         query_fetch_db_matches = "SELECT match_id FROM ATO_production.V2_Matches WHERE competition_id = %s"
@@ -1031,7 +1091,6 @@ class ScrapersPipeline:
 
                         if matches_to_delete and delete_ratio < 0.5:
                             query_delete_match = "DELETE FROM ATO_production.V2_Matches WHERE match_id = %s"
-                            # executemany expects a list of tuples
                             cursor.executemany(query_delete_match, [(match_id,) for match_id in matches_to_delete])
                             connection.commit()
 
@@ -1039,7 +1098,9 @@ class ScrapersPipeline:
                         INSERT INTO ATO_production.V2_Matches
                         (match_id, home_team, away_team, date, sport_id, competition_id)
                         VALUES(%s, %s, %s, %s, %s, %s)
-                        ON DUPLICATE KEY UPDATE date = VALUES(date)
+                        ON DUPLICATE KEY UPDATE date = VALUES(date),
+                                                home_team = VALUES(home_team),
+                                                away_team = VALUES(away_team)
                     """
                     for key, value in item["data_dict"].items():
                         values = (
@@ -1081,11 +1142,14 @@ class ScrapersPipeline:
                   ON DUPLICATE KEY UPDATE result       = VALUES(result),
                                           lay_odds     = VALUES(lay_odds),
                                           liquidity    = VALUES(liquidity),
-                                          updated_time = VALUES(updated_time)
+                                          updated_time = VALUES(updated_time),
+                                          match_id     = VALUES(match_id)
                 """
 
                 batch_insert_exchanges = []
                 for key, value in item["data_dict"].items():
+                    if self.debug:
+                        print(value["match_id"], len(value["odds"]))
                     if "odds" in value.keys():
                         for value_02 in value["odds"]:
                             values = (
@@ -1108,11 +1172,11 @@ class ScrapersPipeline:
                         safe_executemany(self.cursor, query_exchange, batch_insert_exchanges)
                         inserted_count = len(batch_insert_exchanges)
 
-                    # Delete stale rows older than 1 minute (UTC‑aligned)
+                    # Delete stale rows older than 30 minute (UTC‑aligned)
                     delete_stale_sql = """
                                        DELETE
                                        FROM ATO_production.V2_Exchanges
-                                       WHERE updated_time < UTC_TIMESTAMP() - INTERVAL 1 MINUTE
+                                       WHERE updated_time < UTC_TIMESTAMP() - INTERVAL 60 MINUTE
                                        """
                     self.cursor.execute(delete_stale_sql)
                     deleted_count = self.cursor.rowcount
@@ -1129,6 +1193,7 @@ class ScrapersPipeline:
                     if self.debug:
                         print("Failed to refresh V2_Exchanges (insert + delete stale):", e)
                         print(traceback.format_exc())
+                    self._shrink_item_for_error(item)
                     raise
 
                 # Now rebuild V2_Oddsmatcher using a SAVEPOINT so earlier work remains intact on failure
@@ -1233,6 +1298,7 @@ class ScrapersPipeline:
                             self.connection.rollback()
                         except Exception:
                             pass
+                    self._shrink_item_for_error(item)
                     raise
 
                 # Refresh V1_Oddsmatcher without DDL (DML-only, atomic)
@@ -1287,6 +1353,7 @@ class ScrapersPipeline:
                         pass
                     Helpers().insert_log(level="CRITICAL", type="CODE",
                                          error=f"{spider.name} {str(e)}", message=traceback.format_exc())
+                    self._shrink_item_for_error(item)
                     raise
             finally:
                 try:
@@ -1295,5 +1362,5 @@ class ScrapersPipeline:
                           (end_time - start_time).total_seconds())
                 except:
                     pass
-            # return item
+        self._truncate_item_for_return(item, max_chars=1000)
         return item

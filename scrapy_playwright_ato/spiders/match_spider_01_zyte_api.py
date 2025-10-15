@@ -28,6 +28,7 @@ class MetaSpider(scrapy.Spider):
     elif name == "match_spider_01_zyte_api":
         settings_used = "USING ZYTE API SETTINGS"
         allowed_scraping_tools = ["zyte_api"]
+        scraping_group = [1]
         custom_settings = get_custom_settings_for_zyte_api()
     try:
         if os.environ["USER"] in LOCAL_USERS:
@@ -41,9 +42,9 @@ class MetaSpider(scrapy.Spider):
             # match_filter = {}
             # match_filter = {"type": "bookie_id", "params":["CasinoBarcelona", 1]}
             # match_filter = {"type": "bookie_and_comp", "params": ["1XBet", "LaLigaEspanola"]}
-            # match_filter = {"type": "comp", "params":["UEFAEuropaLeague"]}
+            # match_filter = {"type": "comp", "params":["Euroligamasculina"]}
             match_filter = {"type": "match_url_id",
-                            "params":['https://apuestas.casinobarcelona.es/evento/8985891-rosario-central-river-plate']}
+                            "params":['https://apuestas.retabet.es/deportes/futbol/internacional-selecciones/clasificacion-mundial-uefa/belgica-macedonia-del-norte/32755908']}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -202,17 +203,6 @@ class MetaSpider(scrapy.Spider):
                 print("Error closing playwright page/context:", e)
                 Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
                 pass
-        if self.debug:
-            # print proxy_ip and user agent used
-            print("working proxy_ip", response.meta.get("proxy_ip"))
-            print("working user_agent", response.meta.get("user_agent"))
-            # save proxy_ip, user_agent plus a third value "working"  to a csv file called proxy_ip_user_agent.csv
-            # parent = os.path.dirname(os.getcwd())
-            # try:
-            #     with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/logs/proxy_ip_user_agent.csv", "a") as f:
-            #         f.write(f"{response.meta.get('proxy_ip')};{response.meta.get('user_agent')};working\n")
-            # except:
-            #     pass
 
         odds = parse_match_logic(
             bookie_id=response.meta.get("bookie_id"),
@@ -235,6 +225,8 @@ class MetaSpider(scrapy.Spider):
                 )
             }
         )
+        if self.debug:
+            print(odds)
         if not odds:
             item["data_dict"] = {
                 "match_infos": [
@@ -348,7 +340,7 @@ class MetaSpider(scrapy.Spider):
                     status = 1200
                     print("Unknown error on", request.url)
             except Exception as e:
-                Helpers().insert_log(level="CRITICAL", type="CODE", error=error, message=traceback.format_exc())
+                Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
         try:
             item["data_dict"] = {
                 "match_infos": [
@@ -365,7 +357,7 @@ class MetaSpider(scrapy.Spider):
                 print("Item error yielded", item)
             yield item
         except Exception as e:
-            Helpers().insert_log(level="CRITICAL", type="CODE", error=error, message=traceback.format_exc())
+            Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
 
         try:
             # TODO find a way to close the page and context only if they were opened by playwright
@@ -378,6 +370,6 @@ class MetaSpider(scrapy.Spider):
                 print("Closing context on error")
                 await page.context.close()
         except Exception as e:
-            Helpers().insert_log(level="CRITICAL", type="CODE", error=error, message=traceback.format_exc())
+            Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
             pass
 

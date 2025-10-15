@@ -1,3 +1,4 @@
+import ast
 import datetime
 import numpy as np
 import pandas as pd
@@ -76,8 +77,8 @@ list_of_markets_V2 = {
     "3": ["1-2", "Más de/Menos de Juegos"],
 },
 "GoldenPark": {
-    "1": ["¿Quién ganará el partido?", "Total de Goles", "¿Resultado exacto?"],
-    "2": ["¿Quién ganará el partido? (Prórroga incluida)", "Totales", ],
+    "1": ["¿Quién ganará el partido?", "Total de Goles", "Resultado exacto"],
+    "2": ["¿Quién ganará el partido? (Prórroga incluida)", "Puntos totales", ],
     "3": ["¿Quién ganará el partido?"] + [
                 "¿Más o menos de " + str(x) + ".5 juegos ?" for x in tennis_intervals
             ],
@@ -101,7 +102,7 @@ list_of_markets_V2 = {
 },
 "RetaBet": {
     "1": ["1-X-2", "Más/menos Goles", "Resultado exacto"],
-    "2": ["Ganador partido", "Más/menos puntos"],
+    "2": ["Ganador partido", "Más/menos Puntos"],
     "3": ["Ganador del partido"] + [
                 "Menos/Más juegos " + str(x) + ",5" for x in tennis_intervals
             ],
@@ -177,7 +178,7 @@ list_of_markets_V2 = {
     "3": ["Ganador del partido",],
 },
 "LeoVegas": {
-    "1": ["Resultado Final", "Tiempo reglamentario", "Total de goles" ],
+    "1": ["Resultado Final", "Tiempo reglamentario", "Total de goles", "Resultado Correcto"],
     "2": ["Prórroga incluida", "Total de puntos - Prórroga incluida", ],
     "3": ["Cuotas del partido", "Total de juegos"],
 },
@@ -207,7 +208,8 @@ list_of_markets_V2 = {
         "Partido Más/Menos 2.5 goles", "Partido Más/Menos 3.5 goles", "Partido Más/Menos 4.5 goles",
         "Partido Más/Menos 5.5 goles", "Partido Más/Menos 6.5 goles", "Resultado Exacto",
     ],
-    "2": ["Ganador del partido", "Total de puntos"],
+    "2": ["Victoria sin empate (en caso de empate se anula la apuesta)", "Victoria sin empate", "Ganador del partido",
+          "Total de puntos"],
     "3": ["Cuotas del partido", "Total de juegos"],
 },
 "WinaMax": {
@@ -219,7 +221,7 @@ list_of_markets_V2 = {
     "1": [
         'Resultado del Partido', 'Total De Goles 0.5',  'Total De Goles 1', 'Total De Goles 1.5', 'Total De Goles 2',
         'Total De Goles 2.5', 'Total De Goles 3',  'Total De Goles 3.5', 'Total De Goles 4', 'Total De Goles 4.5',
-        'Total De Goles 5', 'Total De Goles 5.5','Resultado Exacto'
+        'Total De Goles 5', 'Total De Goles 5.5','Resultado Exacto', 'Resultado Exacto (0:0)',
     ],
     "2": ['Ganador del partido (Incl. Prórroga)', 'Ganador del partido (Incl. Prórroga) - 0% de Margen',]+
          ["Total De Puntos " + str(x) + " (Incl. Prórroga)" for x in basketball_intervals],
@@ -245,7 +247,7 @@ list_of_markets_V2 = {
     "3": ["Cuotas del partido", "Total de juegos"],
 },
 "CasinoBarcelona": {
-    "1": ['¿Quién ganará el partido?', 'Más/Menos Goles', '¿Resultado exacto?'],
+    "1": ['¿Quién ganará el partido?', 'Más/Menos Goles', 'Total de Goles', 'Resultado exacto'],
     "2": ['¿Quién ganará el partido? (Prórroga incluida)', 'Totales'],
     "3": ["Cuotas del partido", "Total de juegos"],
 },
@@ -255,7 +257,7 @@ list_of_markets_V2 = {
     "3": ["Ganador", "Juegos Totales"],
 },
 "Versus": {
-    "1": ["Resultado Del Partido", "1X2 Resultado del Partido", "Total Goles Más/Menos", "Resultado exacto"],
+    "1": ["Resultado Del Partido", "Resultado Del Partido - Cuotas Mejoradas", "Total Goles Más/Menos", "Resultado exacto"],
     "2": ['Ganador del partido', 'Total Puntos'],
     "3": ["Cuotas del partido", "Total de juegos"],
 },
@@ -319,12 +321,12 @@ def get_context_infos(bookie_name):
 def bookie_config(bookie):
     from scrapy_playwright_ato.utilities import Connect, Helpers
     if isinstance(bookie, dict):
-        list_of_sport_pages = []
         if (
             "output" in bookie and bookie["output"] == "tournaments"
             and bookie["name"] != "all_bookies"
             and bookie["http_errors"] is False
             ):
+            list_of_sport_pages = []
             query = """
                 SELECT vsu.sport_url_id, vsu.bookie_id, vsu.sport_id,
                     vb.scraping_tool, vb.render_js, vb.use_cookies, vb.v2_ready
@@ -349,8 +351,30 @@ def bookie_config(bookie):
                 )
             cursor.close()
             connection.close()
-
-        return list_of_sport_pages
+            return list_of_sport_pages
+        elif "output" in bookie and bookie["output"] == "burnt_ips":
+            dict_of_burnt_ips = {}
+            query = """
+                    SELECT vb.bookie_id, vb.burnt_ips
+                    FROM ATO_production.V2_Bookies vb
+                    WHERE vb.v2_ready = 1
+                    """
+            connection = Connect().to_db(db="ATO_production", table=None)
+            cursor = connection.cursor()
+            cursor.execute(query)
+            results = cursor.fetchall()
+            for result in results:
+                try:
+                    if isinstance(result[1], str):
+                        burnt_ips = ast.literal_eval(result[1])
+                    else:
+                        burnt_ips = []
+                    dict_of_burnt_ips.update({result[0]: burnt_ips})
+                except:
+                    print("Error getting burnt IPs", result)
+            cursor.close()
+            connection.close()
+            return dict_of_burnt_ips
 
     if isinstance(bookie, list):
         try:
@@ -373,7 +397,6 @@ def bookie_config(bookie):
         cursor = connection.cursor()
         if bookie[0] == "all_bookies" and comps_with_errors is False:
             print("All bookie without errors")
-            # WHERE vc.start_date < %s AND vc.end_date > %s
             query = """
                 SELECT vcu.competition_url_id, vc.competition_id, vc.sport_id,
                 vb.scraping_tool, vb.render_js, vb.use_cookies, vb.bookie_id, vb.v2_ready
@@ -395,7 +418,7 @@ def bookie_config(bookie):
                         INNER JOIN ATO_production.V2_Competitions_Urls vcu ON vc.competition_id = vcu.competition_id
                         INNER JOIN ATO_production.V2_Bookies vb ON vcu.bookie_id = vb.bookie_id
                         WHERE vc.active = 1
-                        AND vcu.http_status NOT IN (200, 404)
+                        AND vcu.http_status NOT IN (200, 404, 1500)
                         AND vcu.bookie_id NOT IN ('BetfairExchange', 'AllSportAPI')
                         AND vb.v2_ready = 1
                         ORDER BY vc.competition_id
@@ -408,7 +431,7 @@ def bookie_config(bookie):
                 FROM V2_Competitions vc
                 INNER JOIN V2_Competitions_Urls vcu ON vc.competition_id = vcu.competition_id
                 INNER JOIN V2_Bookies vb ON vcu.bookie_id = vb.bookie_id
-                WHERE vcu.bookie_id = %s
+                WHERE vcu.bookie_id = %s and vc.active != 2
                 ORDER BY vc.competition_id
             """
             cursor.execute(query, (bookie[0],))
@@ -489,6 +512,8 @@ def normalize_odds_variables(odds, sport, home_team, away_team):
         "Prórroga incluida", "Oferta básica", "Money Line", "Winner", "3-Way", "Local", "ganará", "Línea de Juego",
         "Apuestas a ganador", "Cuotas de partido", "Tiempo reglamentario", "Vencedor del partido",
         "TIEMPO REGULAR (INCL. TIEMPO EXTRA) - GANADOR", "Resultado final", "Resultado Final", "¿Quién ganará el partido?",
+        "Resultado Del Partido - Cuotas Mejoradas", "Victoria sin empate (en caso de empate se anula la apuesta)",
+        "Victoria sin empate",
     ]
     not_winners_keywords = ["Puntos", "puntos", "Menos", "menos", "Goals"]
     home_team_keywords = ["1", "HB_H", ".HB_H", "home", "Local", "W1"]

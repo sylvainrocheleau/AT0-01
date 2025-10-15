@@ -131,6 +131,28 @@ class Watchdog:
         else:
             print("No old cookies found in the database", self.debug)
 
+        # Check if every bookie has the minimum number of required cookies
+        query_low_number_of_cookies = """
+            SELECT
+              b.bookie_id,
+              b.bookie_name,
+              COALESCE(COUNT(c.user_agent_hash), 0) AS cookie_rows
+            FROM ATO_production.V2_Bookies b
+            LEFT JOIN ATO_production.V2_Cookies c
+              ON c.bookie = b.bookie_id
+            WHERE b.use_cookies = 1
+            GROUP BY b.bookie_id, b.bookie_name
+            HAVING cookie_rows < 5
+            ORDER BY cookie_rows;
+        """
+        results = self._execute(query_low_number_of_cookies, fetch='all')
+        if len(results) > 0:
+            alert_name = "low number of cookies"
+            status =  f"\n {'\n '.join(f'{row[0]}: {row[2]}' for row in results)}"
+            print(alert_name, status, self.debug)
+            self.log_messages(message_id=alert_name)
+            Helpers().send_email(status=status, alert_name=alert_name, debug=self.debug)
+
     def watch_normalised_team_names(self):
         # TODO: finish coding this alert
         query = """
@@ -191,13 +213,105 @@ class Watchdog:
             status =  f"\n {'\n '.join(f'{row[0]}: {row[1]}' for row in results)}"
             print(alert_name, status, self.debug)
             self.log_messages(message_id=alert_name)
-            Helpers().send_email(status=status, alert_name=alert_name, debug=self.debug )
+            Helpers().send_email(status=status, alert_name=alert_name, debug=self.debug)
+
+    def watch_allsport_conflicts(self):
+        """
+        Return AllSportAPI conflicts where more than one distinct numerical_team_id exists, with country-name
+        teams treated per (sport_id, competition_id) and non-country teams per (normalized_team_name, competition_id).
+
+        Returns a list of dicts with keys:
+          - normalized_team_name
+          - sport_id (may be None for non-country teams)
+          - competition_id
+          - distinct_ids (int)
+          - ids (comma-separated list of numerical_team_id)
+        """
+        sql_conflicts = """
+                        SELECT *
+                        FROM (
+                                 -- Country-name teams: conflicts within same sport and competition
+                                 SELECT normalized_team_name,
+                                        sport_id,
+                                        competition_id,
+                                        COUNT(DISTINCT numerical_team_id) AS distinct_ids,
+                                        GROUP_CONCAT(DISTINCT numerical_team_id ORDER BY numerical_team_id SEPARATOR
+                                                     ',')                 AS ids
+                                 FROM ATO_production.V2_Teams
+                                 WHERE bookie_id = 'AllSportAPI'
+                                   AND normalized_team_name IS NOT NULL
+                                   AND numerical_team_id IS NOT NULL
+                                   AND country IS NOT NULL
+                                   AND normalized_team_name = country
+                                 GROUP BY normalized_team_name, sport_id, competition_id
+                                 HAVING COUNT(DISTINCT numerical_team_id) > 1
+
+                                 UNION ALL
+
+                                 -- Non-country teams: conflicts across the name but within the same competition
+                                 SELECT normalized_team_name,
+                                        NULL                              AS sport_id,
+                                        competition_id,
+                                        COUNT(DISTINCT numerical_team_id) AS distinct_ids,
+                                        GROUP_CONCAT(DISTINCT numerical_team_id ORDER BY numerical_team_id SEPARATOR
+                                                     ',')                 AS ids
+                                 FROM ATO_production.V2_Teams
+                                 WHERE bookie_id = 'AllSportAPI'
+                                   AND normalized_team_name IS NOT NULL
+                                   AND numerical_team_id IS NOT NULL
+                                   AND (country IS NULL OR normalized_team_name <> country)
+                                 GROUP BY normalized_team_name, competition_id
+                                 HAVING COUNT(DISTINCT numerical_team_id) > 1) x
+                        ORDER BY x.distinct_ids DESC, x.normalized_team_name, x.competition_id, x.sport_id
+                        """
+        # conn = Connect().to_db(db="ATO_production", table=None)
+        results = self._execute(sql_conflicts, fetch='all')
+        if len(results) > 0:
+            alert_name = "allsport conflicts"
+            status =  f"\n {'\n '.join(f'{row[0]}: {row[1]}' for row in results)}"
+            print(alert_name, status, self.debug)
+            self.log_messages(message_id=alert_name)
+            Helpers().send_email(status=status, alert_name=alert_name, debug=self.debug)
+
+    def watch_exchange_whitout_ganador(self):
+        query_exchange_whitout_ganador = """
+            SELECT DISTINCT ve.match_id, ve.competition
+                FROM ATO_production.V2_Exchanges AS ve
+                WHERE ve.match_id IS NOT NULL
+                  AND NOT EXISTS (
+                    SELECT 1
+                    FROM ATO_production.V2_Exchanges AS ve2
+                    WHERE ve2.match_id = ve.match_id
+                      AND ve2.market IN ('Ganador sin empate', 'Ganador del partido')
+                    )
+        """
+        results = self._execute(query_exchange_whitout_ganador, fetch='all')
+        if len(results) > 0:
+            alert_name = "exchange whitout ganador"
+            status =  f"\n {'\n '.join(f'{row[0]}' for row in results)}"
+            print(alert_name, status, self.debug)
+            self.log_messages(message_id=alert_name)
+            Helpers().send_email(status=status, alert_name=alert_name, debug=self.debug)
 
     def main(self):
-        watches_to_run = [
-            'check old cookies', 'dutcher with rating_qualifying_bets > 120',
-            'oddsmatcher with rating_qualifying_bets > 120', 'outdated match url'
-        ]
+        try:
+            if os.environ.get("USER") in LOCAL_USERS:
+                watches_to_run = [
+                    'exchange whitout ganador'
+                ]
+            else:
+                watches_to_run = [
+                    'check old cookies', 'dutcher with rating_qualifying_bets > 120',
+                    'oddsmatcher with rating_qualifying_bets > 120', 'outdated match url', "allsport conflicts",
+                    "exchange whitout ganador"
+                ]
+        except KeyError:
+            watches_to_run = [
+                'check old cookies', 'dutcher with rating_qualifying_bets > 120',
+                'oddsmatcher with rating_qualifying_bets > 120', 'outdated match url', "allsport conflicts",
+                "exchange whitout ganador"
+            ]
+
         log_messages = self.retrieve_log_messages()
         if log_messages:
             now = Helpers().get_time_now(country="UTC")
@@ -207,13 +321,22 @@ class Watchdog:
 
         print("Watches to run:", watches_to_run)
         if 'dutcher with rating_qualifying_bets > 120' in watches_to_run:
+            print("running dutcher with rating_qualifying_bets > 120")
             self.watch_dutcher()
         if 'check old cookies' in watches_to_run:
+            print("running check old cookies")
             self.watch_cookies()
         if 'oddsmatcher with rating_qualifying_bets > 120' in watches_to_run:
+            print("running oddsmatcher with rating_qualifying_bets > 120")
             self.watch_oddsmatcher()
         if 'outdated match url' in watches_to_run:
+            print("running outdated match url")
             self.watch_match_url_update_date()
+        if 'allsport conflicts' in watches_to_run:
+            print("running all sport conflicts")
+            self.watch_allsport_conflicts()
+        if "exchange whitout ganador" in watches_to_run:
+            self.watch_exchange_whitout_ganador()
         self.cursor.close()
         self.connection.close()
 

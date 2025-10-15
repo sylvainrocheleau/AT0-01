@@ -45,17 +45,17 @@ class TwoStepsSpider(scrapy.Spider):
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
                 # No filters
-                competitions = bookie_config(bookie=["all_bookies"])
+                # competitions = bookie_config(bookie=["all_bookies"])
                 # Filter by bookie that have errors
-                # competitions = bookie_config(bookie=["all_bookies", "http_errors"])
+                # competitions = bookie_config(bookie=["888Sport", "http_errors"])
                 # Filter by bookie
-                # competitions = bookie_config(bookie=["1XBet"])
+                # competitions = bookie_config(bookie=["Casumo"])
                 # Filter by competition that have http_errors
                 # competitions = [x for x in bookie_config(bookie=["all_bookies", "http_errors" ]) if x["competition_id"] == "UEFAEuropaLeague"]
                 # Filter by competition
-                # competitions = [x for x in bookie_config(bookie=["all_bookies"]) if x["competition_id"] == "UEFAEuropaLeague"]
+                # competitions = [x for x in bookie_config(bookie=["all_bookies"]) if x["competition_id"] == "Argentina-PrimeraDivision"]
                 # Filter by bookie and competition
-                competitions = [x for x in bookie_config(bookie=["Bet777"]) if x["competition_id"] == "AmistososInternacionales"]
+                competitions = [x for x in bookie_config(bookie=["888Sport"]) if x["competition_id"] == "BundesligaAlemana"]
             else:
                 competitions = bookie_config(bookie=["all_bookies"])
 
@@ -65,7 +65,7 @@ class TwoStepsSpider(scrapy.Spider):
                 or 10 <= Helpers().get_time_now("UTC").hour < 11
             ):
                 print("PROCESSING ALL COMPETITIONS")
-                competitions = bookie_config(bookie=["all_bookies"]) #v2_competitions_url
+                competitions = bookie_config(bookie=["all_bookies"])
             else:
                 print("PROCESSING COMPETITIONS WITH HTTP ERRORS")
                 competitions = bookie_config(bookie=["all_bookies", "http_errors"])
@@ -89,7 +89,7 @@ class TwoStepsSpider(scrapy.Spider):
                     self.close_playwright = True
                 url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="competition", data=data, debug=self.debug)
                 if self.debug:
-                    print("url to scrape", url, "dont_filter", dont_filter, "meta_request", meta_request)
+                    print("url to scrape", url, "dont_filter", dont_filter, ) # "meta_request", meta_request
                 yield scrapy.Request(
                     dont_filter=dont_filter,
                     url=url,
@@ -193,11 +193,16 @@ class TwoStepsSpider(scrapy.Spider):
     async def errback(self, failure):
         item = ScrapersItem()
         print("### errback triggered")
-        print("proxy", failure.request.meta["proxy_ip"])
+        try:
+            print("proxy", failure.request.meta["proxy_ip"])
+        except KeyError:
+            print("no proxy ip")
         if self.debug:
-            print("failed proxy_ip", failure.request.meta["proxy_ip"])
-            # print("failed user_agent", failure.request.meta["user_agent"])
-            # Fix: correctly access headers through the appropriate objects
+            try:
+                print("failed proxy_ip", failure.request.meta["proxy_ip"])
+                print("failed user_agent", failure.request.meta["playwright_context_kwargs"]["user_agent"])
+            except Exception:
+                print("Error while retrieving proxy ip and user_agent:")
             if hasattr(failure, 'value') and hasattr(failure.value, 'response'):
                 print('response headers:', failure.value.response.headers)
             else:
@@ -270,7 +275,7 @@ class TwoStepsSpider(scrapy.Spider):
             self.close_playwright is True
             and any(s in response_playwright for s in [
             "Lo sentimos", "No hay apuestas disponibles", "Ningún evento", "no hay eventos", "Página en mantenimiento",
-            "No hay resultados",
+            "No hay resultados", "No hay nada"
         ]
                     )
         ):

@@ -173,25 +173,6 @@ class Helpers():
                     {"bet_id": bet_id})
             return data["odds"]
 
-    # def check_team_names_from_v1(self, team_name):
-    #     connection = Connect().to_db(db="ATO_production", table=None)
-    #     cursor = connection.cursor()
-    #     query_search_team_name = """
-    #         SELECT Team_Normalized
-    #         FROM ATO_production.Map_v2 mv
-    #         WHERE mv.Team_Original = %s
-    #         LIMIT 1
-    #     """
-    #     cursor.execute(query_search_team_name, (team_name,))
-    #     normalized_team = cursor.fetchall()
-    #     try:
-    #         normalized_team = normalized_team[0][0]
-    #         connection.close()
-    #         return normalized_team
-    #     except:
-    #         connection.close()
-    #         pass
-
     def normalize_team_names(self, match_infos=list, competition_id=str, bookie_id=str, debug=bool):
         # TODO add a check only on teams names
         from difflib import SequenceMatcher
@@ -211,67 +192,101 @@ class Helpers():
                     source = %s,numerical_team_id = %s,update_date = %s
                     WHERE team_id = %s
         """
-        query_team_names = """
-            SELECT team_id, bookie_id, competition_id, bookie_team_name, normalized_team_name, normalized_short_name, status, numerical_team_id
+        query_team_names_from_allsport = """
+            SELECT numerical_team_id
             FROM ATO_production.V2_Teams
             WHERE competition_id = %s
+            AND bookie_id = 'AllSportAPI'
             AND numerical_team_id IS NOT NULL
             AND normalized_short_name  IS NOT NULL
             AND status = 'confirmed'
         """
-        cursor.execute(query_team_names, (competition_id,))
+        cursor.execute(query_team_names_from_allsport, (competition_id,))
+        rows = cursor.fetchall()
+        numerical_ids = [r[0] for r in rows]
+        placeholders = ','.join(['%s'] * len(numerical_ids))
+        query_team_names = f"""
+                SELECT team_id, bookie_id, competition_id, bookie_team_name,
+                       normalized_team_name, normalized_short_name, status, numerical_team_id
+                FROM ATO_production.V2_Teams
+                WHERE normalized_short_name IS NOT NULL
+                  AND status = 'confirmed'
+                  AND numerical_team_id IN ({placeholders})
+            """
+        params = numerical_ids
+        cursor.execute(query_team_names, params)
         results = cursor.fetchall()
-        full_team_ids_and_normalized = {x[0]:x[4] for x in results if bookie_id in x }
-        full_team_ids_and_short_normalized = {x[0]: x[5] for x in results if bookie_id in x}
-        full_team_ids_and_numerical = {x[0]: x[7] for x in results}
+        # if debug:
+        #     for r in results:
+        #         if r[2] != competition_id:
+        #             print(r)
+        all_sport_infos = {
+            result[7]: {
+                "normalized_team_name": result[4],
+                "normalized_short_name": result[5],
+            }
+            for result in results if "AllSportAPI" == result[1]}
+        full_team_ids_and_normalized = {x[0]:x[4] for x in results if bookie_id in x } # ex: 'Bwin_Argentina-PrimeraDivision_ArgentinosJrs': 'Argentinos Juniors
+        full_team_ids_and_short_normalized = {x[0]: x[5] for x in results if bookie_id in x} # ex: 'Bwin_Argentina-PrimeraDivision_ArgentinosJrs': 'Argentinos Jrs.'
+        full_team_ids_and_numerical = {x[0]: x[7] for x in results} # ex: '1XBet_Argentina-PrimeraDivision_ArgentinosJuniors': '453739'
         full_short_team_ids_and_normalized = {Helpers().build_ids(
             id_type="team_id",
             data={
                 "bookie_id": x[1],
                 "competition_id": x[2],
                 "bookie_team_name": x[5]
-            }): x[4] for x in results}
+            }): x[4] for x in results} # ex: '1XBet_Argentina-PrimeraDivision_ArgentinosJrs.': 'Argentinos Juniors'
         full_short_team_ids_and_short_normalized = {Helpers().build_ids(
             id_type="team_id",
             data={
                 "bookie_id": x[1],
                 "competition_id": x[2],
                 "bookie_team_name": x[5]
-            }): x[5] for x in results}
+            }): x[5] for x in results} # ex: '1XBet_Argentina-PrimeraDivision_ArgentinosJrs.': 'Argentinos Jrs.'
         full_short_team_ids_and_numerical = {Helpers().build_ids(
                     id_type="team_id",
                     data={
                         "bookie_id": x[1],
                         "competition_id": x[2],
                         "bookie_team_name": x[5]
-                    }): x[7] for x in results } # if x[5] is not None and x[7] is not None}
+                    }): x[7] for x in results } # ex: '1XBet_Argentina-PrimeraDivision_ArgentinosJrs.': '453739'
 
-        partial_team_ids_and_normalized = {x[0].replace(x[0].split("_")[0], ""): x[4] for x in results}
-        partial_team_ids_and_short_normalized = {x[0].replace(x[0].split("_")[0], ""): x[5] for x in results}
-
-
-        partial_team_ids_and_numerical = {x[0].replace(x[0].split("_")[0], ""): x[7] for x in results}
+        partial_team_ids_and_normalized = {x[0].replace(x[0].split("_")[0], ""): x[4] for x in results} # ex: '_Argentina-PrimeraDivision_ArgentinosJuniors': 'Argentinos Juniors'
+        partial_team_ids_and_short_normalized = {x[0].replace(x[0].split("_")[0], ""): x[5] for x in results} # ex: '_Argentina-PrimeraDivision_ArgentinosJuniors': 'Argentinos Jrs.'
+        partial_team_ids_and_numerical = {x[0].replace(x[0].split("_")[0], ""): x[7] for x in results} # ex:'_Argentina-PrimeraDivision_ArgentinosJuniors': '453739'
         partial_short_team_ids_and_normalized = {Helpers().build_ids(
                     id_type="team_id",
                     data={
                         "bookie_id": x[1],
                         "competition_id": x[2],
                         "bookie_team_name": x[5]
-                    }).replace(x[0].split("_")[0], ""):x[4] for x in results}
+                    }).replace(x[0].split("_")[0], ""):x[4] for x in results} # ex: '_Argentina-PrimeraDivision_ArgentinosJrs.': 'Argentinos Juniors'
         partial_short_team_ids_and_short_normalized = {Helpers().build_ids(
                     id_type="team_id",
                     data={
                         "bookie_id": x[1],
                         "competition_id": x[2],
                         "bookie_team_name": x[5]
-                    }).replace(x[0].split("_")[0], ""):x[5] for x in results} #  if x[5] is not None
+                    }).replace(x[0].split("_")[0], ""):x[5] for x in results} #  ex: '_Argentina-PrimeraDivision_ArgentinosJrs.': 'Argentinos Jrs.'
         partial_short_team_ids_and_numerical = {Helpers().build_ids(
             id_type="team_id",
             data={
                 "bookie_id": x[1],
                 "competition_id": x[2],
                 "bookie_team_name": x[5]
-            }).replace(x[0].split("_")[0], ""): x[7] for x in results } # if x[5] is not None and x[7] is not None
+            }).replace(x[0].split("_")[0], ""): x[7] for x in results } # ex: '_Argentina-PrimeraDivision_ArgentinosJrs.': '453739',
+        # print("partial_short_team_ids_and_numerical", partial_short_team_ids_and_numerical)
+        # print("partial_short_team_ids_and_short_normalized", partial_short_team_ids_and_short_normalized)
+        # print("partial_team_ids_and_numerical", partial_team_ids_and_numerical)
+        # print("partial_short_team_ids_and_normalized", partial_short_team_ids_and_normalized)
+        # print("partial_team_ids_and_short_normalized", partial_team_ids_and_short_normalized)
+        # print("partial_team_ids_and_normalized", partial_team_ids_and_normalized)
+        # print("full_short_team_ids_and_numerical", full_short_team_ids_and_numerical)
+        # print("full_short_team_ids_and_short_normalized", full_short_team_ids_and_short_normalized)
+        # print("full_short_team_ids_and_normalized", full_short_team_ids_and_normalized)
+        # print("full_team_ids_and_numerical", full_team_ids_and_numerical)
+        # print("full_team_ids_and_short_normalized", full_team_ids_and_short_normalized)
+        # print("full_team_ids_and_normalized", full_team_ids_and_normalized)
 
         query_ignored_teams = """
             SELECT bookie_team_name
@@ -284,325 +299,340 @@ class Helpers():
         ignored_team_names = [x[0] for x in results_ignored ]
 
         for match_info in match_infos:
-            # NORMALIZE HOME TEAM
-            team_id_to_test = self.build_ids(
-                id_type="team_id", data={
-                    "bookie_id": match_info["bookie_id"],
-                    "competition_id": match_info["competition_id"],
-                    "bookie_team_name": match_info["home_team"]
-                }
-            )
-            match_info["home_team_id_to_test"] = team_id_to_test
-            partial_team_id_to_test = team_id_to_test.replace(team_id_to_test.split("_")[0], "")
-            if match_info["home_team"] in ignored_team_names:
-                match_info["home_team_status"] = "ignored"
-            elif team_id_to_test in full_team_ids_and_normalized.keys():
-                match_info["home_team_normalized"] = full_team_ids_and_normalized[team_id_to_test]
-                match_info["home_team_status"] = "confirmed"
-                if debug:
-                    print("confirmed with normalized_team_name", full_team_ids_and_normalized[team_id_to_test])
-                cursor.execute(
-                    partial_update_query,
-                    (
-                        full_team_ids_and_normalized[team_id_to_test],
-                        full_team_ids_and_short_normalized[team_id_to_test],
-                        "confirmed",
-                        "normalize_team_names(full team id)",
-                        full_team_ids_and_numerical[team_id_to_test],
-                        Helpers().get_time_now("UTC"),
-                        team_id_to_test
-                    )
+            try:
+                # NORMALIZE HOME TEAM
+                team_id_to_test = self.build_ids(
+                    id_type="team_id", data={
+                        "bookie_id": match_info["bookie_id"],
+                        "competition_id": match_info["competition_id"],
+                        "bookie_team_name": match_info["home_team"]
+                    }
                 )
-            elif team_id_to_test in full_short_team_ids_and_normalized.keys():
-                match_info["home_team_normalized"] = full_short_team_ids_and_normalized[team_id_to_test]
-                match_info["home_team_status"] = "confirmed"
-                if debug:
-                    print("confirmed with short_team_name", full_short_team_ids_and_normalized[team_id_to_test])
-                cursor.execute(
-                    partial_update_query,
-                    (
-                        full_short_team_ids_and_normalized[team_id_to_test],
-                        full_short_team_ids_and_short_normalized[team_id_to_test],
-                        "confirmed",
-                        "normalize_team_names(short team id)",
-                        full_short_team_ids_and_numerical[team_id_to_test],
-                        Helpers().get_time_now("UTC"),
-                        team_id_to_test
+                match_info["home_team_id_to_test"] = team_id_to_test
+                partial_team_id_to_test = team_id_to_test.replace(team_id_to_test.split("_")[0], "")
+                if match_info["home_team"] in ignored_team_names:
+                    match_info["home_team_status"] = "ignored"
+                elif team_id_to_test in full_team_ids_and_normalized.keys():
+                    numerical_id = full_team_ids_and_numerical[team_id_to_test]
+                    all_sport_info = all_sport_infos[numerical_id]
+                    match_info["home_team_normalized"] = all_sport_info["normalized_team_name"]
+                    match_info["home_team_status"] = "confirmed"
+                    if debug:
+                        print("confirmed with normalized_team_name", full_team_ids_and_normalized[team_id_to_test])
+                    cursor.execute(
+                        partial_update_query,
+                        (
+                            all_sport_info["normalized_team_name"],
+                            all_sport_info["normalized_short_name"],
+                            "confirmed",
+                            "normalize_team_names(full team id)",
+                            numerical_id,
+                            Helpers().get_time_now("UTC"),
+                            team_id_to_test
+                        )
                     )
-                )
-            elif partial_team_id_to_test in partial_team_ids_and_normalized.keys():
-                match_info["home_team_normalized"] = partial_team_ids_and_normalized[partial_team_id_to_test]
-                match_info["home_team_status"] = "confirmed"
-                if debug:
-                    print("partial match", partial_team_ids_and_normalized[partial_team_id_to_test], "saving with key:", match_info["home_team_id_to_test"])
-                cursor.execute(
-                    update_query,
-                    (
-                        match_info["home_team_id_to_test"],
-                        match_info["bookie_id"],
-                        match_info["competition_id"],
-                        match_info["sport_id"],
-                        match_info["home_team"],
-                        partial_team_ids_and_normalized[partial_team_id_to_test],
-                        partial_team_ids_and_short_normalized[partial_team_id_to_test],
-                        "confirmed",
-                        "normalize_team_names(partial)",
-                        partial_team_ids_and_numerical[partial_team_id_to_test],
-                        Helpers().get_time_now("UTC"),
-                        # on duplicate key update normalized_team_name,normalized_short_name,status,source,numerical_team_id,update_date
-                        partial_team_ids_and_normalized[partial_team_id_to_test],
-                        partial_team_ids_and_short_normalized[partial_team_id_to_test],
-                        "confirmed",
-                        "normalize_team_names(partial)",
-                        partial_team_ids_and_numerical[partial_team_id_to_test],
-                        Helpers().get_time_now("UTC"),
+                elif team_id_to_test in full_short_team_ids_and_normalized.keys():
+                    numerical_id = full_short_team_ids_and_numerical[team_id_to_test]
+                    all_sport_info = all_sport_infos[numerical_id]
+                    match_info["home_team_normalized"] = all_sport_info["normalized_team_name"]
+                    match_info["home_team_status"] = "confirmed"
+                    if debug:
+                        print("confirmed with short_team_name", full_short_team_ids_and_normalized[team_id_to_test])
+                    cursor.execute(
+                        partial_update_query,
+                        (
+                            all_sport_info["normalized_team_name"],
+                            all_sport_info["normalized_short_name"],
+                            "confirmed",
+                            "normalize_team_names(short team id)",
+                            numerical_id,
+                            Helpers().get_time_now("UTC"),
+                            team_id_to_test
+                        )
                     )
-                )
-            elif partial_team_id_to_test in partial_short_team_ids_and_normalized.keys():
-                match_info["home_team_normalized"] = partial_short_team_ids_and_normalized[partial_team_id_to_test]
-                match_info["home_team_status"] = "confirmed"
-                if debug:
-                    print("partial short match", partial_short_team_ids_and_normalized[partial_team_id_to_test], "saving with key:", team_id_to_test)
-                cursor.execute(
-                    update_query,
-                    (
-                        match_info["home_team_id_to_test"],
-                        match_info["bookie_id"],
-                        match_info["competition_id"],
-                        match_info["sport_id"],
-                        match_info["home_team"],
-                        partial_short_team_ids_and_normalized[partial_team_id_to_test],
-                        partial_short_team_ids_and_short_normalized[partial_team_id_to_test],
-                        "confirmed",
-                        "normalize_team_names(partial short)",
-                        partial_short_team_ids_and_numerical[partial_team_id_to_test],
-                        Helpers().get_time_now("UTC"),
-                        # on duplicate key update normalized_team_name,normalized_short_name,status,source,numerical_team_id,update_date
-                        partial_short_team_ids_and_normalized[partial_team_id_to_test],
-                        partial_short_team_ids_and_short_normalized[partial_team_id_to_test],
-                        "confirmed",
-                        "normalize_team_names(partial short)",
-                        partial_short_team_ids_and_numerical[partial_team_id_to_test],
-                        Helpers().get_time_now("UTC"),
+                elif partial_team_id_to_test in partial_team_ids_and_normalized.keys():
+                    numerical_id = partial_team_ids_and_numerical[partial_team_id_to_test]
+                    all_sport_info = all_sport_infos[numerical_id]
+                    match_info["home_team_normalized"] = all_sport_info["normalized_team_name"]
+                    match_info["home_team_status"] = "confirmed"
+                    if debug:
+                        print("partial match", partial_team_ids_and_normalized[partial_team_id_to_test], "saving with key:", match_info["home_team_id_to_test"])
+                    cursor.execute(
+                        update_query,
+                        (
+                            match_info["home_team_id_to_test"],
+                            match_info["bookie_id"],
+                            match_info["competition_id"],
+                            match_info["sport_id"],
+                            match_info["home_team"],
+                            all_sport_info["normalized_team_name"],
+                            all_sport_info["normalized_short_name"],
+                            "confirmed",
+                            "normalize_team_names(partial)",
+                            numerical_id,
+                            Helpers().get_time_now("UTC"),
+                            # on duplicate key update normalized_team_name,normalized_short_name,status,source,numerical_team_id,update_date
+                            all_sport_info["normalized_team_name"],
+                            all_sport_info["normalized_short_name"],
+                            "confirmed",
+                            "normalize_team_names(partial)",
+                            numerical_id,
+                            Helpers().get_time_now("UTC"),
+                        )
+                    )
+                elif partial_team_id_to_test in partial_short_team_ids_and_normalized.keys():
+                    numerical_id = partial_short_team_ids_and_numerical[partial_team_id_to_test]
+                    all_sport_info = all_sport_infos[numerical_id]
+                    match_info["home_team_normalized"] = all_sport_info["normalized_team_name"]
+                    match_info["home_team_status"] = "confirmed"
+                    if debug:
+                        print("partial short match", partial_short_team_ids_and_normalized[partial_team_id_to_test], "saving with key:", team_id_to_test)
+                    cursor.execute(
+                        update_query,
+                        (
+                            match_info["home_team_id_to_test"],
+                            match_info["bookie_id"],
+                            match_info["competition_id"],
+                            match_info["sport_id"],
+                            match_info["home_team"],
+                            all_sport_info["normalized_team_name"],
+                            all_sport_info["normalized_short_name"],
+                            "confirmed",
+                            "normalize_team_names(partial short)",
+                            numerical_id,
+                            Helpers().get_time_now("UTC"),
+                            # on duplicate key update normalized_team_name,normalized_short_name,status,source,numerical_team_id,update_date
+                            all_sport_info["normalized_team_name"],
+                            all_sport_info["normalized_short_name"],
+                            "confirmed",
+                            "normalize_team_names(partial short)",
+                            numerical_id,
+                            Helpers().get_time_now("UTC"),
 
+                        )
                     )
-                )
 
-            elif match_info["home_team_status"] != "confirmed":
-                home_ratios = {}
-                for key, value in partial_team_ids_and_normalized.items():
-                    home_ratios.update({key+"_normalized": round(
-                        SequenceMatcher(None, str(value).lower(), str(match_info["home_team"]).lower()).ratio(), 2)})
-                    if "," in match_info["home_team"]:
-                        home_team_reversed = f"{match_info['home_team'].split(', ')[1]} {match_info['home_team'].split(', ')[0]}"
-                        home_ratios.update({key+"_normalized-reversed": round(
-                            SequenceMatcher(None, str(value).lower(), str(home_team_reversed).lower()).ratio(), 2)})
-                for key, value in partial_team_ids_and_short_normalized.items():
-                    home_ratios.update({key+"_short": round(
-                        SequenceMatcher(None, str(value).lower(), str(match_info["home_team"]).lower()).ratio(), 2)})
-                    if "," in match_info["home_team"]:
-                        home_team_reversed = f"{match_info['home_team'].split(', ')[1]} {match_info['home_team'].split(', ')[0]}"
-                        home_ratios.update({key+"_short-reversed": round(
-                            SequenceMatcher(None, str(value).lower(), str(home_team_reversed).lower()).ratio(), 2)})
-                if len(home_ratios) > 0:
-                    home_ratios = {max(home_ratios, key=home_ratios.get): max(home_ratios.values())}
-                    for key, home_ratio in home_ratios.items():
-                        key = key.rsplit("_", 1)[0]
-                        if home_ratio > 0.70:
-                            sequence_message = f"normalize_team_names(sequence>{home_ratio})"
-                            match_info["home_team_normalized"] = partial_team_ids_and_normalized[key]
-                            if home_ratio > 0.9:
-                                match_info["home_team_status"] = "confirmed"
-                            else:
-                                match_info["home_team_status"] = "to_be_reviewed"
-                            if debug:
-                                print(sequence_message, match_info["home_team_status"], "original",match_info["home_team"], "normalized key", partial_team_ids_and_normalized[key],
-                                  "tested key", key, "saving with key:", team_id_to_test)
-                            cursor.execute(
-                                update_query,
-                                (
-                                    match_info["home_team_id_to_test"],
-                                    match_info["bookie_id"],
-                                    match_info["competition_id"],
-                                    match_info["sport_id"],
-                                    match_info["home_team"],
-                                    partial_team_ids_and_normalized[key],
-                                    partial_team_ids_and_short_normalized[key],
-                                    match_info["home_team_status"],
-                                    sequence_message,
-                                    partial_team_ids_and_numerical[key],
-                                    Helpers().get_time_now("UTC"),
-                                    # on duplicate key update normalized_team_name,normalized_short_name,status,source,numerical_team_id,update_date
-                                    partial_team_ids_and_normalized[key],
-                                    partial_team_ids_and_short_normalized[key],
-                                    match_info["home_team_status"],
-                                    sequence_message,
-                                    partial_team_ids_and_numerical[key],
-                                    Helpers().get_time_now("UTC"),
+                elif match_info["home_team_status"] != "confirmed":
+                    home_ratios = {}
+                    for key, value in partial_team_ids_and_normalized.items():
+                        home_ratios.update({key+"_normalized": round(
+                            SequenceMatcher(None, str(value).lower(), str(match_info["home_team"]).lower()).ratio(), 2)})
+                        if "," in match_info["home_team"]:
+                            home_team_reversed = f"{match_info['home_team'].split(', ')[1]} {match_info['home_team'].split(', ')[0]}"
+                            home_ratios.update({key+"_normalized-reversed": round(
+                                SequenceMatcher(None, str(value).lower(), str(home_team_reversed).lower()).ratio(), 2)})
+                    for key, value in partial_team_ids_and_short_normalized.items():
+                        home_ratios.update({key+"_short": round(
+                            SequenceMatcher(None, str(value).lower(), str(match_info["home_team"]).lower()).ratio(), 2)})
+                        if "," in match_info["home_team"]:
+                            home_team_reversed = f"{match_info['home_team'].split(', ')[1]} {match_info['home_team'].split(', ')[0]}"
+                            home_ratios.update({key+"_short-reversed": round(
+                                SequenceMatcher(None, str(value).lower(), str(home_team_reversed).lower()).ratio(), 2)})
+                    if len(home_ratios) > 0:
+                        home_ratios = {max(home_ratios, key=home_ratios.get): max(home_ratios.values())}
+                        for key, home_ratio in home_ratios.items():
+                            key = key.rsplit("_", 1)[0]
+                            if home_ratio > 0.70:
+                                sequence_message = f"normalize_team_names(sequence>{home_ratio})"
+                                numerical_id = partial_team_ids_and_numerical[key]
+                                all_sport_info = all_sport_infos[numerical_id]
+                                match_info["home_team_normalized"] = all_sport_info["normalized_team_name"]
+                                if home_ratio > 0.9:
+                                    match_info["home_team_status"] = "confirmed"
+                                else:
+                                    match_info["home_team_status"] = "to_be_reviewed"
+                                if debug:
+                                    print(sequence_message, match_info["home_team_status"], "original",match_info["home_team"], "normalized key", partial_team_ids_and_normalized[key],
+                                      "tested key", key, "saving with key:", team_id_to_test)
+                                cursor.execute(
+                                    update_query,
+                                    (
+                                        match_info["home_team_id_to_test"],
+                                        match_info["bookie_id"],
+                                        match_info["competition_id"],
+                                        match_info["sport_id"],
+                                        match_info["home_team"],
+                                        all_sport_info["normalized_team_name"],
+                                        all_sport_info["normalized_short_name"],
+                                        match_info["home_team_status"],
+                                        sequence_message,
+                                        partial_team_ids_and_numerical[key],
+                                        Helpers().get_time_now("UTC"),
+                                        # on duplicate key update normalized_team_name,normalized_short_name,status,source,numerical_team_id,update_date
+                                        all_sport_info["normalized_team_name"],
+                                        all_sport_info["normalized_short_name"],
+                                        match_info["home_team_status"],
+                                        sequence_message,
+                                        numerical_id,
+                                        Helpers().get_time_now("UTC"),
+                                    )
                                 )
-                            )
-                            break
+                                break
 
 
-            # NORMALIZE AWAY TEAM
-            team_id_to_test = self.build_ids(
-                id_type="team_id", data={
-                    "bookie_id": match_info["bookie_id"],
-                    "competition_id": match_info["competition_id"],
-                    "bookie_team_name": match_info["away_team"]})
-            match_info["away_team_id_to_test"] = team_id_to_test
-            partial_team_id_to_test = team_id_to_test.replace(team_id_to_test.split("_")[0], "")
-            if match_info["away_team"] in ignored_team_names:
-                match_info["away_team_status"] = "ignored"
-            elif team_id_to_test in full_team_ids_and_normalized.keys():
-                match_info["away_team_normalized"] = full_team_ids_and_normalized[team_id_to_test]
-                match_info["away_team_status"] = "confirmed"
-                if debug:
-                    print("confirmed", full_team_ids_and_normalized[team_id_to_test])
-                cursor.execute(
-                    partial_update_query,
-                    (
-                        full_team_ids_and_normalized[team_id_to_test],
-                        full_team_ids_and_short_normalized[team_id_to_test],
-                        "confirmed",
-                        "normalize_team_names(full team id)",
-                        full_team_ids_and_numerical[team_id_to_test],
-                        Helpers().get_time_now("UTC"),
-                        team_id_to_test
+                # NORMALIZE AWAY TEAM
+                team_id_to_test = self.build_ids(
+                    id_type="team_id", data={
+                        "bookie_id": match_info["bookie_id"],
+                        "competition_id": match_info["competition_id"],
+                        "bookie_team_name": match_info["away_team"]})
+                match_info["away_team_id_to_test"] = team_id_to_test
+                partial_team_id_to_test = team_id_to_test.replace(team_id_to_test.split("_")[0], "")
+                if match_info["away_team"] in ignored_team_names:
+                    match_info["away_team_status"] = "ignored"
+                elif team_id_to_test in full_team_ids_and_normalized.keys():
+                    match_info["away_team_normalized"] = full_team_ids_and_normalized[team_id_to_test]
+                    match_info["away_team_status"] = "confirmed"
+                    if debug:
+                        print("confirmed", full_team_ids_and_normalized[team_id_to_test])
+                    cursor.execute(
+                        partial_update_query,
+                        (
+                            full_team_ids_and_normalized[team_id_to_test],
+                            full_team_ids_and_short_normalized[team_id_to_test],
+                            "confirmed",
+                            "normalize_team_names(full team id)",
+                            full_team_ids_and_numerical[team_id_to_test],
+                            Helpers().get_time_now("UTC"),
+                            team_id_to_test
+                        )
                     )
-                )
-            elif team_id_to_test in full_short_team_ids_and_normalized.keys():
-                match_info["away_team_normalized"] = full_short_team_ids_and_normalized[team_id_to_test]
-                match_info["away_team_status"] = "confirmed"
-                if debug:
-                    print("confirmed with short_team_name", full_short_team_ids_and_normalized[team_id_to_test])
-                cursor.execute(
-                    partial_update_query,
-                    (
-                        full_short_team_ids_and_normalized[team_id_to_test],
-                        full_short_team_ids_and_short_normalized[team_id_to_test],
-                        "confirmed",
-                        "normalize_team_names(short team id)",
-                        full_short_team_ids_and_numerical[team_id_to_test],
-                        Helpers().get_time_now("UTC"),
-                        team_id_to_test
+                elif team_id_to_test in full_short_team_ids_and_normalized.keys():
+                    match_info["away_team_normalized"] = full_short_team_ids_and_normalized[team_id_to_test]
+                    match_info["away_team_status"] = "confirmed"
+                    if debug:
+                        print("confirmed with short_team_name", full_short_team_ids_and_normalized[team_id_to_test])
+                    cursor.execute(
+                        partial_update_query,
+                        (
+                            full_short_team_ids_and_normalized[team_id_to_test],
+                            full_short_team_ids_and_short_normalized[team_id_to_test],
+                            "confirmed",
+                            "normalize_team_names(short team id)",
+                            full_short_team_ids_and_numerical[team_id_to_test],
+                            Helpers().get_time_now("UTC"),
+                            team_id_to_test
+                        )
                     )
-                )
-            elif partial_team_id_to_test in partial_team_ids_and_normalized.keys():
-                match_info["away_team_normalized"] = partial_team_ids_and_normalized[partial_team_id_to_test]
-                match_info["away_team_status"] = "confirmed"
-                if debug:
-                    print("confirmed with partial match", partial_team_ids_and_normalized[partial_team_id_to_test],
-                      "saving with key:", match_info["away_team_id_to_test"])
-                cursor.execute(
-                    update_query,
-                    (
-                        match_info["away_team_id_to_test"],
-                        match_info["bookie_id"],
-                        match_info["competition_id"],
-                        match_info["sport_id"],
-                        match_info["away_team"],
-                        partial_team_ids_and_normalized[partial_team_id_to_test],
-                        partial_team_ids_and_short_normalized[partial_team_id_to_test],
-                        "confirmed",
-                        "normalize_team_names(partial)",
-                        partial_team_ids_and_numerical[partial_team_id_to_test],
-                        Helpers().get_time_now("UTC"),
-                        # on duplicate key update normalized_team_name,normalized_short_name,status,source,numerical_team_id,update_date
-                        partial_team_ids_and_normalized[partial_team_id_to_test],
-                        partial_team_ids_and_short_normalized[partial_team_id_to_test],
-                        "confirmed",
-                        "normalize_team_names(partial)",
-                        partial_team_ids_and_numerical[partial_team_id_to_test],
-                        Helpers().get_time_now("UTC"),
+                elif partial_team_id_to_test in partial_team_ids_and_normalized.keys():
+                    match_info["away_team_normalized"] = partial_team_ids_and_normalized[partial_team_id_to_test]
+                    match_info["away_team_status"] = "confirmed"
+                    if debug:
+                        print("confirmed with partial match", partial_team_ids_and_normalized[partial_team_id_to_test],
+                          "saving with key:", match_info["away_team_id_to_test"])
+                    cursor.execute(
+                        update_query,
+                        (
+                            match_info["away_team_id_to_test"],
+                            match_info["bookie_id"],
+                            match_info["competition_id"],
+                            match_info["sport_id"],
+                            match_info["away_team"],
+                            partial_team_ids_and_normalized[partial_team_id_to_test],
+                            partial_team_ids_and_short_normalized[partial_team_id_to_test],
+                            "confirmed",
+                            "normalize_team_names(partial)",
+                            partial_team_ids_and_numerical[partial_team_id_to_test],
+                            Helpers().get_time_now("UTC"),
+                            # on duplicate key update normalized_team_name,normalized_short_name,status,source,numerical_team_id,update_date
+                            partial_team_ids_and_normalized[partial_team_id_to_test],
+                            partial_team_ids_and_short_normalized[partial_team_id_to_test],
+                            "confirmed",
+                            "normalize_team_names(partial)",
+                            partial_team_ids_and_numerical[partial_team_id_to_test],
+                            Helpers().get_time_now("UTC"),
 
+                        )
                     )
-                )
-            elif partial_team_id_to_test in partial_short_team_ids_and_normalized.keys():
-                match_info["away_team_normalized"] = partial_short_team_ids_and_normalized[partial_team_id_to_test]
-                match_info["away_team_status"] = "confirmed"
-                if debug:
-                    print("partial short match", partial_short_team_ids_and_normalized[partial_team_id_to_test], "saving with key:",
-                      team_id_to_test)
-                cursor.execute(
-                    update_query,
-                    (
-                        match_info["away_team_id_to_test"],
-                        match_info["bookie_id"],
-                        match_info["competition_id"],
-                        match_info["sport_id"],
-                        match_info["away_team"],
-                        partial_short_team_ids_and_normalized[partial_team_id_to_test],
-                        partial_short_team_ids_and_short_normalized[partial_team_id_to_test],
-                        "confirmed",
-                        "normalize_team_names(partial short)",
-                        partial_short_team_ids_and_numerical[partial_team_id_to_test],
-                        Helpers().get_time_now("UTC"),
-                        # on duplicate key update normalized_team_name,normalized_short_name,status,source,numerical_team_id,update_date
-                        partial_short_team_ids_and_normalized[partial_team_id_to_test],
-                        partial_short_team_ids_and_short_normalized[partial_team_id_to_test],
-                        "confirmed",
-                        "normalize_team_names(partial short)",
-                        partial_short_team_ids_and_numerical[partial_team_id_to_test],
-                        Helpers().get_time_now("UTC"),
+                elif partial_team_id_to_test in partial_short_team_ids_and_normalized.keys():
+                    match_info["away_team_normalized"] = partial_short_team_ids_and_normalized[partial_team_id_to_test]
+                    match_info["away_team_status"] = "confirmed"
+                    if debug:
+                        print("partial short match", partial_short_team_ids_and_normalized[partial_team_id_to_test], "saving with key:",
+                          team_id_to_test)
+                    cursor.execute(
+                        update_query,
+                        (
+                            match_info["away_team_id_to_test"],
+                            match_info["bookie_id"],
+                            match_info["competition_id"],
+                            match_info["sport_id"],
+                            match_info["away_team"],
+                            partial_short_team_ids_and_normalized[partial_team_id_to_test],
+                            partial_short_team_ids_and_short_normalized[partial_team_id_to_test],
+                            "confirmed",
+                            "normalize_team_names(partial short)",
+                            partial_short_team_ids_and_numerical[partial_team_id_to_test],
+                            Helpers().get_time_now("UTC"),
+                            # on duplicate key update normalized_team_name,normalized_short_name,status,source,numerical_team_id,update_date
+                            partial_short_team_ids_and_normalized[partial_team_id_to_test],
+                            partial_short_team_ids_and_short_normalized[partial_team_id_to_test],
+                            "confirmed",
+                            "normalize_team_names(partial short)",
+                            partial_short_team_ids_and_numerical[partial_team_id_to_test],
+                            Helpers().get_time_now("UTC"),
+                        )
                     )
-                )
-            elif match_info["away_team_status"] != "confirmed":
-                away_ratios = {}
-                for key, value in partial_team_ids_and_normalized.items():
-                    away_ratios.update({key+"_normalized": round(
-                        SequenceMatcher(None, str(value).lower(), str(match_info["away_team"]).lower()).ratio(), 2)})
-                    if "," in match_info["away_team"]:
-                        away_team_reversed = f"{match_info['away_team'].split(', ')[1]} {match_info['away_team'].split(', ')[0]}"
-                        away_ratios.update({key+"_normalized-reversed": round(
-                            SequenceMatcher(None, str(value).lower(), str(away_team_reversed).lower()).ratio(), 2)})
-                for key, value in partial_team_ids_and_short_normalized.items():
-                    away_ratios.update({key+"_short": round(
-                        SequenceMatcher(None, str(value).lower(), str(match_info["away_team"]).lower()).ratio(), 2)})
-                    if "," in match_info["away_team"]:
-                        away_team_reversed = f"{match_info['away_team'].split(', ')[1]} {match_info['away_team'].split(', ')[0]}"
-                        away_ratios.update({key+"_short-reversed": round(
-                            SequenceMatcher(None, str(value).lower(), str(away_team_reversed).lower()).ratio(), 2)})
-                if len(away_ratios) > 0:
-                    away_ratios = {max(away_ratios, key=away_ratios.get): max(away_ratios.values())}
-                    for key, away_ratio in away_ratios.items():
-                        key = key.rsplit("_", 1)[0]
-                        if away_ratio > 0.70:
-                            sequence_message = f"normalize_team_names(sequence>{away_ratio})"
-                            match_info["away_team_normalized"] = partial_team_ids_and_normalized[key]
-                            if away_ratio > 0.9:
-                                match_info["away_team_status"] = "confirmed"
-                            else:
-                                match_info["away_team_status"] = "to_be_reviewed"
-                                print(
-                                    sequence_message, match_info["away_team_status"], "original:",match_info["away_team"],
-                                    "tested key:", key, "normalized:", partial_team_ids_and_normalized[key],"saving with key:", team_id_to_test
+                elif match_info["away_team_status"] != "confirmed":
+                    away_ratios = {}
+                    for key, value in partial_team_ids_and_normalized.items():
+                        away_ratios.update({key+"_normalized": round(
+                            SequenceMatcher(None, str(value).lower(), str(match_info["away_team"]).lower()).ratio(), 2)})
+                        if "," in match_info["away_team"]:
+                            away_team_reversed = f"{match_info['away_team'].split(', ')[1]} {match_info['away_team'].split(', ')[0]}"
+                            away_ratios.update({key+"_normalized-reversed": round(
+                                SequenceMatcher(None, str(value).lower(), str(away_team_reversed).lower()).ratio(), 2)})
+                    for key, value in partial_team_ids_and_short_normalized.items():
+                        away_ratios.update({key+"_short": round(
+                            SequenceMatcher(None, str(value).lower(), str(match_info["away_team"]).lower()).ratio(), 2)})
+                        if "," in match_info["away_team"]:
+                            away_team_reversed = f"{match_info['away_team'].split(', ')[1]} {match_info['away_team'].split(', ')[0]}"
+                            away_ratios.update({key+"_short-reversed": round(
+                                SequenceMatcher(None, str(value).lower(), str(away_team_reversed).lower()).ratio(), 2)})
+                    if len(away_ratios) > 0:
+                        away_ratios = {max(away_ratios, key=away_ratios.get): max(away_ratios.values())}
+                        for key, away_ratio in away_ratios.items():
+                            key = key.rsplit("_", 1)[0]
+                            if away_ratio > 0.70:
+                                sequence_message = f"normalize_team_names(sequence>{away_ratio})"
+                                match_info["away_team_normalized"] = partial_team_ids_and_normalized[key]
+                                if away_ratio > 0.9:
+                                    match_info["away_team_status"] = "confirmed"
+                                else:
+                                    match_info["away_team_status"] = "to_be_reviewed"
+                                    print(
+                                        sequence_message, match_info["away_team_status"], "original:",match_info["away_team"],
+                                        "tested key:", key, "normalized:", partial_team_ids_and_normalized[key],"saving with key:", team_id_to_test
+                                    )
+                                cursor.execute(
+                                    update_query,
+                                    (
+                                        match_info["away_team_id_to_test"],
+                                        match_info["bookie_id"],
+                                        match_info["competition_id"],
+                                        match_info["sport_id"],
+                                        match_info["away_team"],
+                                        partial_team_ids_and_normalized[key],
+                                        partial_team_ids_and_short_normalized[key],
+                                        match_info["away_team_status"],
+                                        sequence_message,
+                                        partial_team_ids_and_numerical[key],
+                                        Helpers().get_time_now("UTC"),
+                                        # on duplicate key update normalized_team_name,normalized_short_name,status,source,numerical_team_id,update_date
+                                        partial_team_ids_and_normalized[key],
+                                        partial_team_ids_and_short_normalized[key],
+                                        match_info["away_team_status"],
+                                        sequence_message,
+                                        partial_team_ids_and_numerical[key],
+                                        Helpers().get_time_now("UTC"),
+                                    )
                                 )
-                            cursor.execute(
-                                update_query,
-                                (
-                                    match_info["away_team_id_to_test"],
-                                    match_info["bookie_id"],
-                                    match_info["competition_id"],
-                                    match_info["sport_id"],
-                                    match_info["away_team"],
-                                    partial_team_ids_and_normalized[key],
-                                    partial_team_ids_and_short_normalized[key],
-                                    match_info["away_team_status"],
-                                    sequence_message,
-                                    partial_team_ids_and_numerical[key],
-                                    Helpers().get_time_now("UTC"),
-                                    # on duplicate key update normalized_team_name,normalized_short_name,status,source,numerical_team_id,update_date
-                                    partial_team_ids_and_normalized[key],
-                                    partial_team_ids_and_short_normalized[key],
-                                    match_info["away_team_status"],
-                                    sequence_message,
-                                    partial_team_ids_and_numerical[key],
-                                    Helpers().get_time_now("UTC"),
-                                )
-                            )
-                            break
-
+                                break
+            except Exception as e:
+                if debug:
+                    print(traceback.format_exc())
+                Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
+                continue
 
             # CREATE MATCH IDS
             if (
@@ -1221,7 +1251,7 @@ class Helpers():
                                     "password": soltia_password,
                                 },
                             },
-                            "extra_http_headers": self.ua_to_client_hints(data["user_agent"], url),
+                            "extra_http_headers": self.ua_to_client_hints(data["user_agent"],data["cookies"], url),
                             "playwright_accept_request_predicate":
                                 {
                                     'activate': True,
@@ -1278,6 +1308,14 @@ class Helpers():
                 )
             elif data["bookie_id"] == "888Sport":
                 pass
+                # meta_request.update({"playwright_page_methods": [
+                #     PageMethod(
+                #         method="wait_for_timeout",
+                #         timeout=20000,
+                #     ),
+                # ],
+                # }
+                # )
 
                 # meta_request["playwright_accept_request_predicate"] = {
                 #     'activate': False
@@ -1391,23 +1429,31 @@ class Helpers():
                 }
                 )
             elif data["bookie_id"] == "RetaBet":
-                meta_request.update({"zyte_api_automap": {
-                        "geolocation": "ES",
-                        "browserHtml": True,
-                        "session": {"id": str(uuid4())},
-                        "actions":[
-                            {
-                              "action": "waitForSelector",
-                              "selector": {
-                                  "type": "xpath",
-                                  "value": "//article[@class='module__list-events']",
-                                  "state": "visible",
-                              }
-                            }
-                        ]
-                    }
+                meta_request.update({"playwright_page_methods": [
+                    PageMethod(
+                        method="wait_for_selector",
+                        selector="//ul[@class='event__list jbgroup']",
+                    ),
+                ],
                 }
                 )
+                # meta_request.update({"zyte_api_automap": {
+                #         "geolocation": "ES",
+                #         # "browserHtml": True,
+                #         "session": {"id": str(uuid4())},
+                #         "actions":[
+                #             {
+                #               "action": "waitForSelector",
+                #               "selector": {
+                #                   "type": "xpath",
+                #                   "value": "//div[@class='bets__group']",
+                #                   "state": "visible",
+                #               }
+                #             }
+                #         ]
+                #     }
+                # }
+                # )
             elif data["bookie_id"] == "Sportium":
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
@@ -1515,7 +1561,7 @@ class Helpers():
                                     "password": soltia_password,
                                 },
                             },
-                        "extra_http_headers": self.ua_to_client_hints(data["user_agent"], url),
+                        "extra_http_headers": self.ua_to_client_hints(data["user_agent"], data["cookies"], url),
                         "playwright_accept_request_predicate":
                             {
                                 'activate': True,
@@ -2109,17 +2155,218 @@ class Helpers():
 
         return url, dont_filter, meta_request
 
-    def ua_to_client_hints(self, user_agent: str, url: str) -> dict:
+    def ua_to_client_hints(self, user_agent: str, cookies: str, url: str) -> dict:
         """
-        Build the complete extra_http_headers from a legacy Chrome UA string and a target URL.
-        - Chrome-only: we only consider Google Chrome/Chromium; no Edge/Opera/Samsung/etc. branches.
-        - Referer is derived from the given url (no hard-coded value).
+        Build extra_http_headers from a UA string, cookies data, and target URL.
+        - Prefer deriving Referer from cookies (generic + known patterns).
+        - Improve Accept-Language from cookie hints.
+        - Compute Sec-Fetch-Site dynamically from Referer vs URL.
+        - Enrich CH headers with Full-Version-List.
         Returns a dict suitable for Playwright's extra_http_headers.
         """
         import re
+        import json
+        from urllib.parse import urlparse, urlunparse, unquote
+
         ua = user_agent or ""
 
-        # Platform mapping
+        # Config-driven cookie -> referer hints (checked first)
+        COOKIE_REFERER_HINTS = [
+            {"name": "lastKnownProduct", "json_keys": ["url"]},
+            {"name": "888TestData", "json_keys": ["orig-lp", "orig_lp"]},
+            {"name": "tracking", "json_keys": ["origUrl", "ref"]},
+        ]
+
+        # ------------------------
+        # Helpers: cookies parsing
+        # ------------------------
+        def _to_cookie_list(cookies_input):
+            # Accepts: None, JSON string, list[dict], dict[name->value]
+            if not cookies_input:
+                return []
+            try:
+                if isinstance(cookies_input, str):
+                    parsed = json.loads(cookies_input)
+                else:
+                    parsed = cookies_input
+            except Exception:
+                return []
+            if isinstance(parsed, dict):
+                return [{"name": k, "value": v} for k, v in parsed.items()]
+            if isinstance(parsed, list):
+                out = []
+                for item in parsed:
+                    if isinstance(item, dict) and "name" in item and "value" in item:
+                        out.append({"name": item.get("name"), "value": item.get("value")})
+                return out
+            return []
+
+        def _safe_json_decode(value: str):
+            if not value:
+                return None
+            try:
+                return json.loads(value)
+            except Exception:
+                pass
+            try:
+                return json.loads(unquote(value))
+            except Exception:
+                return None
+
+        def _normalize_url(u: str):
+            if not u or not isinstance(u, str):
+                return None
+            u = u.strip().strip("\"'")
+            try:
+                pu = urlparse(u)
+                if pu.scheme in ("http", "https") and pu.netloc:
+                    return urlunparse((pu.scheme, pu.netloc, pu.path or "/", "", "", ""))
+            except Exception:
+                return None
+            return None
+
+        def _extract_referer_from_cookies(cookies_input, target_url: str):
+            cookie_list = _to_cookie_list(cookies_input)
+            if not cookie_list:
+                return None
+
+            # Build a lowercase lookup from config hints
+            hints_lookup = {}
+            try:
+                for entry in COOKIE_REFERER_HINTS:
+                    n = (entry.get("name") or "").lower()
+                    keys = entry.get("json_keys") or []
+                    if n and isinstance(keys, list):
+                        hints_lookup[n] = [str(k) for k in keys]
+            except Exception:
+                hints_lookup = {}
+
+            candidates = []
+            for c in cookie_list:
+                name = (c.get("name") or "").lower()
+                val = c.get("value") or ""
+
+                # 1) Config-driven mapping first: name match -> try listed json keys in order
+                if name in hints_lookup:
+                    j = _safe_json_decode(val)
+                    if isinstance(j, dict):
+                        for k in hints_lookup[name]:
+                            cand = j.get(k)
+                            if cand:
+                                candidates.append(cand)
+                                break  # first matching key is enough
+                    # continue scanning other cookies as there could be stronger candidates
+                    continue
+
+                # 2) Known non-JSON direct URL cookie
+                if name == "redirex-original":
+                    candidates.append(val)
+                    continue
+
+                # 3) Generic JSON keys seen widely
+                j = _safe_json_decode(val)
+                if isinstance(j, dict):
+                    for key in ("orig-lp", "orig_lp", "original_landing_page", "referer", "referrer", "url"):
+                        if key in j and j.get(key):
+                            candidates.append(j.get(key))
+                            break
+
+                # 4) Raw URL-like value
+                if isinstance(val, str) and (val.startswith("http://") or val.startswith("https://")):
+                    candidates.append(val)
+
+            # Choose the first valid normalized candidate
+            for cand in candidates:
+                norm = _normalize_url(cand)
+                if norm:
+                    # Upgrade http->https if target is https and hosts look compatible
+                    try:
+                        tu = urlparse(target_url or "")
+                        cu = urlparse(norm)
+                        if tu.scheme == "https" and cu.scheme == "http" and (
+                            tu.netloc == cu.netloc or tu.netloc.endswith(cu.netloc) or cu.netloc.endswith(tu.netloc)):
+                            norm = urlunparse(("https", cu.netloc, cu.path or "/", "", "", ""))
+                    except Exception:
+                        pass
+                    # Ensure trailing slash for directory-like paths
+                    try:
+                        pu = urlparse(norm)
+                        path = pu.path or "/"
+                        if not path.endswith("/") and "." not in path.rsplit("/", 1)[-1]:
+                            norm = urlunparse((pu.scheme, pu.netloc, path + "/", "", "", ""))
+                    except Exception:
+                        pass
+                    return norm
+            return None
+
+        def _extract_language_from_cookies(cookies_input):
+            """Return a BCP 47 language tag like 'es-ES,es;q=0.9,en;q=0.8' or None."""
+            cookie_list = _to_cookie_list(cookies_input)
+            if not cookie_list:
+                return None
+            lang = None
+            # pass 1: explicit language cookie keys often used by bookies
+            for c in cookie_list:
+                name = (c.get("name") or "").lower()
+                val = (c.get("value") or "").strip()
+                if name in ("lang", "language", "locale") and val:
+                    # normalize basic forms like 'es' or 'es-ES'
+                    lang = val.replace("_", "-")
+                    break
+                if name == "usersettings":
+                    j = _safe_json_decode(val)
+                    if isinstance(j, dict):
+                        cid = j.get("cid")  # e.g., 'es-ES'
+                        if isinstance(cid, str) and cid:
+                            lang = cid.replace("_", "-")
+                            break
+                if name == "devicedetails":
+                    j = _safe_json_decode(val)
+                    if isinstance(j, dict):
+                        bl = j.get("bl")  # e.g., 'es-ES'
+                        if isinstance(bl, str) and bl:
+                            lang = bl.replace("_", "-")
+                            break
+            if not lang:
+                return None
+            # Construct a realistic Accept-Language preference list
+            primary = lang
+            base = lang.split("-")[0]
+            extras = []
+            if base and base.lower() != primary.lower():
+                extras.append(f"{base};q=0.9")
+            # modest English fallback often present in real browsers
+            extras.append("en;q=0.8")
+            return ",".join([primary] + extras)
+
+        def _classify_site_context(referer: str, target: str) -> str:
+            """Return one of 'same-origin', 'same-site', 'cross-site' by comparing registrable-ish domains.
+            Simple heuristic without public suffix list: compare last two labels.
+            """
+            try:
+                if not referer:
+                    return "none"
+                ru = urlparse(referer)
+                tu = urlparse(target or "")
+                if not ru.netloc or not tu.netloc:
+                    return "none"
+                if (ru.scheme, ru.netloc) == (tu.scheme, tu.netloc):
+                    return "same-origin"
+
+                # crude same-site test: last two labels
+                def base(netloc: str):
+                    parts = netloc.split(":")[0].split(".")
+                    return ".".join(parts[-2:]) if len(parts) >= 2 else netloc
+
+                if base(ru.netloc).lower() == base(tu.netloc).lower():
+                    return "same-site"
+                return "cross-site"
+            except Exception:
+                return "none"
+
+        # ------------------------
+        # Platform mapping (unchanged)
+        # ------------------------
         if "Windows NT" in ua:
             platform = "Windows"
         elif "CrOS" in ua or "Chrome OS" in ua:
@@ -2135,55 +2382,91 @@ class Helpers():
         else:
             platform = ""
 
-        # Mobile flag
-        is_mobile = False
+        is_mobile = False  # you can flip based on UA if you add a mobile UA
 
-        # Chrome major version
-        m = re.search(r"Chrome/(\d+)", ua) or re.search(r"Chromium/(\d+)", ua)
-        chrome_major = int(m.group(1)) if m else 99
+        # Chrome version(s)
+        m_major = re.search(r"(?:Chrome|Chromium)/(\d+)", ua)
+        m_full = re.search(r"(?:Chrome|Chromium)/(\d+\.\d+\.\d+\.\d+)", ua)
+        chrome_major = int(m_major.group(1)) if m_major else 99
+        chrome_full = m_full.group(1) if m_full else f"{chrome_major}.0.0.0"
 
         # Brands list: Chromium + GREASE + Google Chrome
         grease_brand = ("Not.A/Brand", 24)
         brands = [("Chromium", chrome_major), grease_brand, ("Google Chrome", chrome_major)]
         sec_ch_ua = ", ".join([f'"{name}";v="{ver}"' for name, ver in brands])
+        sec_ch_ua_full_list = ", ".join(
+            [f'"{name}";v="{chrome_full if name != grease_brand[0] else grease_brand[1]}"' for name, _ in brands])
         sec_ch_ua_mobile = "?1" if is_mobile else "?0"
         sec_ch_ua_platform = f'"{platform}"'
 
-        # Derive a realistic parent Referer from the URL (drop last path segment)
-        try:
-            from urllib.parse import urlparse, urlunparse
-            parsed = urlparse(url or "")
-            path = parsed.path or "/"
-            # Ensure we remove only the last non-empty segment
-            segments = [seg for seg in path.split("/") if seg != ""]
-            if len(segments) > 0:
-                # remove last segment and rebuild path
-                parent_segments = segments[:-1]
-                parent_path = "/" + "/".join(parent_segments)
-                if not parent_path.endswith("/"):
-                    parent_path += "/"
-                derived_referer = urlunparse((parsed.scheme, parsed.netloc, parent_path, "", "", ""))
-            else:
+        # ------------------------
+        # Referer derivation (existing, with cookies preference)
+        # ------------------------
+        cookie_referer = _extract_referer_from_cookies(cookies, url)
+        if cookie_referer:
+            derived_referer = cookie_referer
+        else:
+            try:
+                parsed = urlparse(url or "")
+                path = parsed.path or "/"
+                segments = [seg for seg in path.split("/") if seg != ""]
+                if len(segments) > 0:
+                    parent_segments = segments[:-1]
+                    parent_path = "/" + "/".join(parent_segments)
+                    if not parent_path.endswith("/"):
+                        parent_path += "/"
+                    derived_referer = urlunparse((parsed.scheme, parsed.netloc, parent_path, "", "", ""))
+                else:
+                    derived_referer = url
+            except Exception:
                 derived_referer = url
-        except Exception:
-            derived_referer = url
 
-        # Compose full headers
+        # ------------------------
+        # Accept-Language from cookies (fallback to Spanish -> English)
+        # ------------------------
+        accept_language = _extract_language_from_cookies(cookies) or "es-ES,es;q=0.9,en;q=0.8"
+
+        # ------------------------
+        # Sec-Fetch-Site based on referer vs target
+        # ------------------------
+        site_ctx = _classify_site_context(derived_referer, url)
+        if site_ctx == "same-origin":
+            sec_fetch_site = "same-origin"
+        elif site_ctx == "same-site":
+            sec_fetch_site = "same-site"
+        elif site_ctx == "cross-site":
+            sec_fetch_site = "cross-site"
+        else:
+            # no referer available or unparsable; browsers often send 'none' for top-level with no referrer
+            sec_fetch_site = "none"
+
+        # ------------------------
+        # Build headers
+        # ------------------------
         headers = {
+            # Navigation-like defaults (safe for most GETs)
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-            "Accept-Language": "es-ES,es;q=0.9,en;q=0.8",
+            "Accept-Language": accept_language,
             "Referer": derived_referer,
             "DNT": "1",
             "Upgrade-Insecure-Requests": "1",
             "Cache-Control": "max-age=0",
+            # Fetch metadata
             "Sec-Fetch-Dest": "document",
             "Sec-Fetch-Mode": "navigate",
-            "Sec-Fetch-Site": "same-origin",
+            "Sec-Fetch-Site": sec_fetch_site,
             "Sec-Fetch-User": "?1",
+            # Client Hints (subset commonly echoed by Chrome)
             "Sec-CH-UA": sec_ch_ua,
+            "Sec-CH-UA-Full-Version-List": sec_ch_ua_full_list,
             "Sec-CH-UA-Mobile": sec_ch_ua_mobile,
             "Sec-CH-UA-Platform": sec_ch_ua_platform,
         }
+
+        # Optionally include UA if provided (does not conflict with Playwright unless you override per-context).
+        if ua:
+            headers["User-Agent"] = ua
+
         return headers
     def build_web_url(self, url):
         url_prefix = "https://href.li/?"

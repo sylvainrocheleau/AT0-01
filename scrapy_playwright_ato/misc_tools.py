@@ -65,8 +65,10 @@ def get_odds_from_response(bookie_id, sport_id, parser ):
     from utilities import Helpers
     from parsel import Selector
     from bookies_configurations import list_of_markets_V2
-
-    file_path = '../logs/match_spider_01_g1_response.txt'
+    if bookie_id == "RetaBet":
+        file_path = Path("../logs/match_spider_01_zyte_api_response.txt")
+    else:
+        file_path = '../logs/match_spider_01_g1_response.txt'
     # Read file bytes; set encoding appropriately for your data
     if parser == "response":
         body = Path(file_path).read_bytes()
@@ -161,7 +163,7 @@ if __name__ == "__main__":
     # check_list_of_markets()
     # get_comps_for_bookie(bookie_id='Versus')
     # teams_and_dates_from_response(bookie_id='DaznBet', competition_id='BundesligaAlemana', sport_id='1', normalize=False)
-    get_odds_from_response(bookie_id="CasinoBarcelona", sport_id="1", parser="response") # parser can be response, html, json
+    get_odds_from_response(bookie_id="RetaBet", sport_id="1", parser="response") # parser can be response, html, json
     # get_matches_details_and_urls({"type": "bookie_id", "params": ["Betsson" ,1]})
     # get_sports_pages()
     # get_tournaments_from_sport_page(bookie_id="Bet777", sport_id="3", debug=True)
