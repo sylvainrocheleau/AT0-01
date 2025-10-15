@@ -35,9 +35,9 @@ ITEM_PIPELINES = {
 LOCAL_USERS = ["sylvain","rickiel"]
 try:
     if os.environ["USER"] in LOCAL_USERS:
-        TEST_ENV = "server"
-        # TEST_ENV = "local"
-        PLAYWRIGHT_HEADLESS = True
+        # TEST_ENV = "server"
+        TEST_ENV = "local"
+        PLAYWRIGHT_HEADLESS = False
 except KeyError:
     TEST_ENV = "server"
     PLAYWRIGHT_HEADLESS = True
