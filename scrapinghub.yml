@@ -1,6 +1,6 @@
 endpoint: https://dash.scrapinghub.com/api/
 image: true
-project: 643480
+project: 592160
 requirements:
   file: requirements.txt
 version: 2.0.0
