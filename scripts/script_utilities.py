@@ -13,14 +13,13 @@ class Connect():
     def to_db(self, db, table):
         try:
             if os.environ["USER"] in LOCAL_USERS:
-
-                host_ip = "127.0.0.1"
-                # host_ip = "164.92.191.102"
+                # host_ip = "127.0.0.1"
+                host_ip = "164.92.191.102"
                 print(f"Connecting to {host_ip}")
             else:
-                host_ip = "192.168.127.12"
+                host_ip = "164.92.191.102"
         except:
-            host_ip = "192.168.127.12"
+            host_ip = "164.92.191.102"
         SQL_USER = "spider_rw_03"
         SQL_PWD = "43&trdGhqLlM"
         conn_params = {
@@ -165,43 +164,6 @@ class CreateViews:
             cursor.close()
             self.connection.close()
 
-    def create_view_Dash_MatchUrlCounts_per_Bookie(self):
-        cursor = self.connection.cursor()
-        try:
-            generator_query = """
-                SELECT CONCAT(
-                    'CREATE OR REPLACE VIEW ATO_production.Dash_MatchUrlCounts_per_Bookie AS SELECT b.bookie_id ',
-                    GROUP_CONCAT(
-                        CONCAT(
-                            ', (SELECT COUNT(DISTINCT mu.match_url_id) ',
-                            'FROM ATO_production.V2_Matches_Urls mu ',
-                            'JOIN ATO_production.V2_Matches m ON mu.match_id = m.match_id ',
-                            'WHERE mu.bookie_id = b.bookie_id AND m.competition_id = ''', c.competition_id, ''') AS `', c.competition_id, '`'
-                        )
-                        ORDER BY c.competition_id
-                        SEPARATOR ''
-                    ),
-                    ' FROM ATO_production.V2_Bookies b WHERE b.V2_ready = 1 AND b.bookie_id NOT IN (''BetfairExchange'', ''AllSportAPI'');'
-                ) AS view_sql
-                FROM ATO_production.V2_Competitions c
-                WHERE c.start_date <= NOW()
-                AND c.end_date >= NOW()
-            """
-            cursor.execute(generator_query)
-            view_sql = cursor.fetchone()[0]
-            if not view_sql:
-                print("No competitions found for the current date range.")
-                return
-
-            cursor.execute(view_sql)
-            self.connection.commit()
-            print("MatchUrlCounts view created or updated successfully.")
-        except Exception as e:
-            print("Error creating/updating MatchUrlCounts view:", e)
-            print(traceback.format_exc())
-        finally:
-            cursor.close()
-            self.connection.close()
 
     def create_view_Dash_Competitions_and_MatchUrlCounts_per_Bookie(self):
         cursor = self.connection.cursor()
@@ -218,10 +180,9 @@ class CreateViews:
                         ORDER BY c.competition_id
                         SEPARATOR ''
                     ),
-                    ' FROM ATO_production.V2_Bookies b WHERE b.V2_ready = 1 AND b.bookie_id NOT IN (''AllSportAPI'');'
+                    ' FROM ATO_production.V2_Bookies b WHERE b.V2_ready = 1 AND b.bookie_id NOT IN (''BetfairExchange'', ''AllSportAPI'');'
                 ) AS view_sql
                 FROM ATO_production.V2_Competitions c
-                # WHERE c.start_date <= NOW() AND c.end_date >= NOW();
                 WHERE c.active = 1
             """
             cursor.execute(generator_query)
