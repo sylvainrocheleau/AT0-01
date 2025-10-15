@@ -41,10 +41,10 @@ class MetaSpider(scrapy.Spider):
             # FILTER OPTIONS
             # match_filter = {}
             # match_filter = {"type": "bookie_id", "params":["CasinoBarcelona", 1]}
-            # match_filter = {"type": "bookie_and_comp", "params": ["1XBet", "LaLigaEspanola"]}
+            match_filter = {"type": "bookie_and_comp", "params": ["WilliamHill", "Euroligamasculina"]}
             # match_filter = {"type": "comp", "params":["UEFAEuropaLeague"]}
-            match_filter = {"type": "match_url_id",
-                            "params":['https://www.efbet.es/ES/sports#bo-navigation=282241.1,490522.1,490881.1&action=market-group-list&event=38148757.1']}
+            # match_filter = {"type": "match_url_id",
+            #                 "params":['https://sports.williamhill.es/betting/es-es/baloncesto/OB_EV37324454/olympiacos-%E2%82%8B-anadolu-efes']}
     except:
         match_filter_enabled = False
         match_filter = {}

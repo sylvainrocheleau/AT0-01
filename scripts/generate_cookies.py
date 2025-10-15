@@ -5,12 +5,225 @@ import datetime
 import mysql.connector
 import traceback
 import random
+import os
 import ast
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 from script_utilities import Connect
+import re
 
+# Source to check https://github.com/omkarcloud/botasaurus, https://github.com/VeNoMouS/cloudscraper
+
+# Utility to ensure DB-safe log length (<100 chars as required)
+def _shorten_log(msg, max_len=99):
+    try:
+        s = "" if msg is None else str(msg)
+    except Exception:
+        s = ""
+    try:
+        s = re.sub(r"\s+", " ", s).strip()
+    except Exception:
+        try:
+            s = s.strip()
+        except Exception:
+            pass
+    return s[:max_len] if len(s) > max_len else s
+
+# Discover and cache the DB column length for V2_Cookies.log_message to avoid overflow
+_LOG_MESSAGE_DB_MAXLEN = None
+
+def _get_log_message_db_maxlen(conn, cur, default_fallback=64):
+    """Return the CHARACTER_MAXIMUM_LENGTH for ATO_production.V2_Cookies.log_message.
+    On failure, return default_fallback.
+    """
+    global _LOG_MESSAGE_DB_MAXLEN
+    if _LOG_MESSAGE_DB_MAXLEN is not None:
+        return _LOG_MESSAGE_DB_MAXLEN
+    try:
+        q = (
+            "SELECT CHARACTER_MAXIMUM_LENGTH "
+            "FROM INFORMATION_SCHEMA.COLUMNS "
+            "WHERE TABLE_SCHEMA=%s AND TABLE_NAME=%s AND COLUMN_NAME=%s"
+        )
+        cur.execute(q, ("ATO_production", "V2_Cookies", "log_message"))
+        row = cur.fetchone()
+        if row and row[0]:
+            _LOG_MESSAGE_DB_MAXLEN = int(row[0])
+        else:
+            _LOG_MESSAGE_DB_MAXLEN = default_fallback
+    except Exception:
+        _LOG_MESSAGE_DB_MAXLEN = default_fallback
+    return _LOG_MESSAGE_DB_MAXLEN
+
+
+def _get_safe_log_len(conn, cur):
+    """Return a safe max length strictly less than the DB column length, capped at 99.
+    If the DB reports N, we use min(99, max(1, N-1)). If detection fails, return 49.
+    """
+    try:
+        db_len = _get_log_message_db_maxlen(conn, cur, default_fallback=64)
+        safe = min(99, max(1, int(db_len) - 1))
+        return safe
+    except Exception:
+        return 49
+
+LOCAL_USERS = ["sylvain","rickiel"]
 connection = Connect().to_db(db="ATO_production", table=None)
 cursor = connection.cursor()
+
+
+def click_if_exists(page, selector, *, name=None, wait_state="visible", wait_timeout=25000, click_timeout=25000):
+    """Try to click selector if it exists.
+    Returns a tuple (clicked: bool, log_message: str).
+    - Waits up to wait_timeout for the element to exist/appear.
+    - Prints concise logs; no stack traces for normal timeouts.
+    """
+    label = name or selector
+    try:
+        loc = page.locator(selector).first
+
+        # 1) Wait for the element to appear in the DOM (attached); if `visible` is requested, try that too
+        try:
+            if wait_state == "visible":
+                # Prefer visible first; if that times out, try attached as a fallback
+                try:
+                    loc.wait_for(state="visible", timeout=wait_timeout)
+                except PlaywrightTimeoutError:
+                    loc.wait_for(state="attached", timeout=wait_timeout)
+            else:
+                # For other states explicitly requested
+                loc.wait_for(state=wait_state, timeout=wait_timeout)
+        except PlaywrightTimeoutError:
+            msg = f"[SKIP] Not found (within timeout): {label}"
+            print(msg)
+            return False, msg
+
+        # 2) Attempt the click
+        try:
+            loc.click(timeout=click_timeout)
+            msg = f"[OK] Clicked: {label}"
+            print(msg)
+            return True, msg
+        except PlaywrightTimeoutError:
+            msg = f"[FAIL] Found but not clickable in time: {label}"
+            print(msg)
+            return False, msg
+    except Exception as e:
+        msg = f"[FAIL] Error clicking {label}: {e}"
+        print(msg)
+        return False, msg
+
+
+def click_any_accept_cookie(page, *, name="cookie button", timeout=25000):
+    """Try to click any button that looks like an accept/consent cookie button.
+    Returns (clicked: bool, log_message: str).
+    """
+    patterns = [
+        r"accept|agree|allow|ok|got\s*it|consent",
+        r"acept(ar|o)|aceptar\s*todas|permitir",
+        r"accepter|tout\s*accepter",
+        r"akzeptieren|alle\s*akzeptieren",
+        r"accetta|accetta\s*tutto",
+        r"aceitar|aceitar\s*todos",
+    ]
+    for pat in patterns:
+        try:
+            loc = page.get_by_role("button", name=re.compile(pat, re.I)).first
+            try:
+                count = loc.count()
+            except Exception:
+                count = 0
+            if count == 0:
+                continue
+            try:
+                loc.click(timeout=timeout)
+                msg = f"[OK] Clicked: {name} via pattern /{pat}/"
+                print(msg)
+                return True, msg
+            except PlaywrightTimeoutError:
+                continue
+        except Exception:
+            continue
+    msg = f"[SKIP] No generic cookie button matched"
+    print(msg)
+    return False, msg
+
+
+def click_any_accept_cookie_in_iframes(page, *, name="cookie button (iframe)", timeout=25000):
+    """Search likely consent iframes and try the same generic button patterns inside them.
+    Returns (clicked: bool, log_message: str).
+    """
+    patterns = [
+        r"accept|agree|allow|ok|got\s*it|consent",
+        r"acept(ar|o)|aceptar\s*todas|permitir",
+        r"accepter|tout\s*accepter",
+        r"akzeptieren|alle\s*akzeptieren",
+        r"accetta|accetta\s*tutto",
+        r"aceitar|aceitar\s*todos",
+    ]
+    iframe_hints = (
+        "iframe[title*='cookie' i]",
+        "iframe[title*='consent' i]",
+        "iframe[title*='privacy' i]",
+        "iframe[id*='cookie' i]",
+        "iframe[id*='consent' i]",
+        "iframe[id*='onetrust' i]",
+        "iframe[id*='cookiebot' i]",
+        "iframe[id*='usercentrics' i]",
+        "iframe[id*='didomi' i]",
+        "iframe[id*='sp_message_iframe' i]",
+        "iframe[src*='cookie' i]",
+        "iframe[src*='consent' i]",
+    )
+    try:
+        # collect candidate frame locators
+        candidates = []
+        for sel in iframe_hints:
+            try:
+                n = page.locator(sel).count()
+            except Exception:
+                n = 0
+            if n and n > 0:
+                for idx in range(min(n, 6)):
+                    try:
+                        candidates.append(page.frame_locator(f"{sel} >> nth={idx}"))
+                    except Exception:
+                        continue
+        # de-duplicate by repr
+        seen = set()
+        unique_frames = []
+        for fr in candidates:
+            key = str(fr)
+            if key in seen:
+                continue
+            seen.add(key)
+            unique_frames.append(fr)
+
+        for fr in unique_frames:
+            for pat in patterns:
+                try:
+                    loc = fr.get_by_role("button", name=re.compile(pat, re.I)).first
+                    try:
+                        cnt = loc.count()
+                    except Exception:
+                        cnt = 0
+                    if cnt == 0:
+                        continue
+                    try:
+                        loc.click(timeout=timeout)
+                        msg = f"[OK] Clicked: {name} via pattern /{pat}/"
+                        print(msg)
+                        return True, msg
+                    except PlaywrightTimeoutError:
+                        continue
+                except Exception:
+                    continue
+        msg = "[SKIP] No generic cookie button matched in iframes"
+        print(msg)
+        return False, msg
+    except Exception as e:
+        msg = f"[FAIL] Error searching consent iframes: {e}"
+        print(msg)
+        return False, msg
 
 
 def safe_execute_with_commit(connection, cursor, query, params=None, retries=5, base_delay=0.5):
@@ -295,7 +508,6 @@ def get_cookies(test_mode, headless, pause_time, filters):
                         FROM ATO_production.V2_Bookies
                         WHERE v2_ready = 1 \
                         """
-        # cursor = connection.cursor()
         cursor.execute(query_bookies)
         bookies_infos = cursor.fetchall()
         bookies_infos = [
@@ -323,7 +535,6 @@ def get_cookies(test_mode, headless, pause_time, filters):
                             print(f"Skipping burnt IP {proxy_ip} for bookie {bookie_info['bookie_name']}")
                             continue
                         print(f"Deleting burnt IP {proxy_ip} for bookie {bookie_info['bookie_name']}")
-
                         try:
                             delete_query = """
                                            DELETE
@@ -413,23 +624,23 @@ def get_cookies(test_mode, headless, pause_time, filters):
                     color_scheme="light",
                 )
                 # Hide common automation signals as early as possible
-                context.add_init_script(
-                    """
-                    Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
-                    Object.defineProperty(navigator, 'languages', { get: () => ['es-ES', 'es', 'en'] });
-                    // Provide a non-empty plugins array
-                    Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3, 4, 5] });
-                    // Mimic proper permissions API behavior
-                    const originalQuery = window.navigator.permissions && window.navigator.permissions.query;
-                    if (originalQuery) {
-                        window.navigator.permissions.query = (parameters) => (
-                            parameters && parameters.name === 'notifications'
-                        )
-                            ? Promise.resolve({ state: Notification.permission })
-                            : originalQuery(parameters);
-                    }
-                    """
-                )
+                # context.add_init_script(
+                #     """
+                #     Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+                #     Object.defineProperty(navigator, 'languages', { get: () => ['es-ES', 'es', 'en'] });
+                #     // Provide a non-empty plugins array
+                #     Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3, 4, 5] });
+                #     // Mimic proper permissions API behavior
+                #     const originalQuery = window.navigator.permissions && window.navigator.permissions.query;
+                #     if (originalQuery) {
+                #         window.navigator.permissions.query = (parameters) => (
+                #             parameters && parameters.name === 'notifications'
+                #         )
+                #             ? Promise.resolve({ state: Notification.permission })
+                #             : originalQuery(parameters);
+                #     }
+                #     """
+                # )
 
                 page = context.new_page()
                 real_user_agent = None
@@ -443,25 +654,77 @@ def get_cookies(test_mode, headless, pause_time, filters):
 
                 try:
                     page.goto(bookie_url, wait_until="domcontentloaded")
-                    # If target is protected by Cloudflare (e.g., 888Sport), wait for clearance cookie
-                    # is_888 = ("888sport.es" in (bookie_url or '').lower()) or (bookie_name.lower() == "888sport")
-                    # if is_888:
-                    #     try:
-                    #         # First, ensure we are past the interstitial title if present
-                    #         page.wait_for_function("document.title !== 'Just a moment...'", timeout=30000)
-                    #     except Exception:
-                    #         pass
-                    # try:
-                    #     page.wait_for_function("document.cookie.includes('cf_clearance')", timeout=30000)
-                    # except PlaywrightTimeoutError:
-                    #     # Try one reload and wait again (some challenges resolve on reload)
-                    #     try:
-                    #         page.reload(wait_until="domcontentloaded")
-                    #         page.wait_for_function("document.cookie.includes('cf_clearance')", timeout=20000)
-                    #     except Exception:
-                    #         pass
+                    # Page methods per bookie
+                    last_log_message = None
+                    if bookie_name == '888Sport':
+                        clicked, log = click_if_exists(page, 'xpath=//button[@id="onetrust-accept-btn-handler"]', name=f"{bookie_name} onetrust", wait_timeout=25000, click_timeout=25000)
+                        last_log_message = log
+                        if not clicked:
+                            clicked2, log2 = click_any_accept_cookie(page, name=f"{bookie_name} generic", timeout=25000)
+                            last_log_message = log2
+                            if not clicked2:
+                                clicked3, log3 = click_any_accept_cookie_in_iframes(page, name=f"{bookie_name} generic (iframe)", timeout=25000)
+                                last_log_message = log3
+                    # <button data-v-82444e70="" data-v-a117a8cd="" type="button" class="button u-ai_c u-max-w-100 u-rounded--br-size_d u-text--ta_c u-us--n button--size-m button--theme-ternary u-focusable u-fx-child--stretch" data-qa="button-accept-all-cookies"><!----><span data-v-82444e70="" class="button__inner u-flex--ai_c-jc_c"><span data-v-82444e70="" class="button__text u-text--crop">Aceptar seleccionadas</span></span><!----></button>
+                    elif bookie_name == '1XBet':
+                        clicked, log = click_if_exists(page, 'xpath=//button[@data-qa="button-accept-all-cookies"]', name=f"{bookie_name} qa", wait_timeout=25000, click_timeout=25000)
+                        last_log_message = log
+                        if not clicked:
+                            clicked2, log2 = click_any_accept_cookie(page, name=f"{bookie_name} generic", timeout=25000)
+                            last_log_message = log2
+                            if not clicked2:
+                                clicked3, log3 = click_any_accept_cookie_in_iframes(page, name=f"{bookie_name} generic (iframe)", timeout=25000)
+                                last_log_message = log3
+                    elif bookie_name == 'BetWay':
+                        clicked, log = click_if_exists(page, 'xpath=//button[@id="onetrust-accept-btn-handler"]', name=f"{bookie_name} onetrust", wait_timeout=25000, click_timeout=25000)
+                        last_log_message = log
+                        if not clicked:
+                            clicked2, log2 = click_any_accept_cookie(page, name=f"{bookie_name} generic", timeout=25000)
+                            last_log_message = log2
+                            if not clicked2:
+                                clicked3, log3 = click_any_accept_cookie_in_iframes(page, name=f"{bookie_name} generic (iframe)", timeout=25000)
+                                last_log_message = log3
+                    elif bookie_name == 'Bwin':
+                        clicked, log = click_if_exists(page, 'xpath=//button[@id="onetrust-accept-btn-handler"]', name=f"{bookie_name} onetrust", wait_timeout=25000, click_timeout=25000)
+                        last_log_message = log
+                        if not clicked:
+                            clicked2, log2 = click_any_accept_cookie(page, name=f"{bookie_name} generic", timeout=25000)
+                            last_log_message = log2
+                            if not clicked2:
+                                clicked3, log3 = click_any_accept_cookie_in_iframes(page, name=f"{bookie_name} generic (iframe)", timeout=25000)
+                                last_log_message = log3
+                    elif bookie_name == 'DaznBet':
+                        clicked, log = click_if_exists(page, 'xpath=//button[@id="onetrust-accept-btn-handler"]', name=f"{bookie_name} onetrust", wait_timeout=25000, click_timeout=25000)
+                        last_log_message = log
+                        if not clicked:
+                            clicked2, log2 = click_any_accept_cookie(page, name=f"{bookie_name} generic", timeout=25000)
+                            last_log_message = log2
+                            if not clicked2:
+                                clicked3, log3 = click_any_accept_cookie_in_iframes(page, name=f"{bookie_name} generic (iframe)", timeout=25000)
+                                last_log_message = log3
+                    elif bookie_name == 'OlyBet':
+                        clicked, log = click_if_exists(page, 'xpath=//button[@id="CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll"]', name=f"{bookie_name} cookiebot", wait_timeout=25000, click_timeout=25000)
+                        last_log_message = log
+                        if not clicked:
+                            clicked2, log2 = click_if_exists(page, 'xpath=//button[contains(@id, "CybotCookiebot")]', name=f"{bookie_name} cookiebot any", wait_timeout=25000, click_timeout=25000)
+                            last_log_message = log2
+                            if not clicked2:
+                                clicked3, log3 = click_any_accept_cookie(page, name=f"{bookie_name} generic", timeout=25000)
+                                last_log_message = log3
+                                if not clicked3:
+                                    clicked4, log4 = click_any_accept_cookie_in_iframes(page, name=f"{bookie_name} generic (iframe)", timeout=25000)
+                                    last_log_message = log4
+                    elif bookie_name == 'RetaBet':
+                        clicked, log = click_if_exists(page, 'xpath=//button[@class="btn btn__secondary jaccept"]', name=f"{bookie_name} onetrust", wait_timeout=25000, click_timeout=25000)
+                        last_log_message = log
+                        if not clicked:
+                            clicked2, log2 = click_any_accept_cookie(page, name=f"{bookie_name} generic", timeout=25000)
+                            last_log_message = log2
+                            if not clicked2:
+                                clicked3, log3 = click_any_accept_cookie_in_iframes(page, name=f"{bookie_name} generic (iframe)", timeout=25000)
+                                last_log_message = log3
 
-                    # Add a small random human-like jitter to the pause time
+                    # jitter to the pause time
                     try:
                         import random
                         jitter = random.uniform(0.2, 1.1)
@@ -476,13 +739,23 @@ def get_cookies(test_mode, headless, pause_time, filters):
                         print("No cookies found for", bookie_name, "with proxy", proxy_ip)
                         continue
 
+                    # Default log if none was produced by consent attempts
+                    if not last_log_message or (isinstance(last_log_message, str) and not last_log_message.strip()):
+                        last_log_message = "[SKIP] Consent not found/clicked"
+
+                    # ensure log_message fits DB: truncate to strictly less than column length (and <=99)
+                    _safe_len = _get_safe_log_len(connection, cursor)
+                    lm = _shorten_log(last_log_message, _safe_len)
+                    print("lm", lm)
+
                     data_to_update = {
                         "bookie": bookie_name,
                         "cookies": json.dumps(cookies),
                         "proxy_ip": proxy_ip,
                         "browser_type": browser_type,
                         "user_agent": real_user_agent,
-                        "timestamp": datetime.datetime.now(tz=datetime.timezone.utc)
+                        "timestamp": datetime.datetime.now(tz=datetime.timezone.utc),
+                        "log_message": lm,
                     }
                 except PlaywrightTimeoutError:
                     print("timeout error on", bookie_url)
@@ -499,7 +772,8 @@ def get_cookies(test_mode, headless, pause_time, filters):
                 "proxy_ip": proxy_ip,
                 "browser_type": browser_type,
                 "user_agent": headers_per_browser,
-                "timestamp": datetime.datetime.now(tz=datetime.timezone.utc)
+                "timestamp": datetime.datetime.now(tz=datetime.timezone.utc),
+                "log_message": None,
             }
         try:
             if (
@@ -518,8 +792,7 @@ def get_cookies(test_mode, headless, pause_time, filters):
                     data_to_update["proxy_ip"],
                     data_to_update["timestamp"],
                     data_to_update["user_agent"],
-                    data_to_update["cookies"],
-                    data_to_update["timestamp"],
+                    data_to_update["log_message"],
                 )
         except TypeError as e:
             print(traceback.format_exc())
@@ -528,13 +801,15 @@ def get_cookies(test_mode, headless, pause_time, filters):
         try:
             query_cookies = """
                             INSERT INTO ATO_production.V2_Cookies
-                            (user_agent_hash, bookie, browser_type, cookies, proxy_ip, timestamp, user_agent)
-                            VALUES (%s, %s, %s, %s, %s, %s, %s)
-                            ON DUPLICATE KEY UPDATE cookies   = %s, \
-                                                    timestamp = %s \
+                            (user_agent_hash, bookie, browser_type, cookies, proxy_ip, timestamp, user_agent, log_message)
+                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                            ON DUPLICATE KEY UPDATE cookies   = VALUES(cookies),
+                                                    timestamp = VALUES(timestamp),
+                                                    log_message = VALUES(log_message)
                             """
+
             # cursor = connection.cursor()
-            print("data_to_update_mysql", data_to_update_mysql)
+            # print("data_to_update_mysql", data_to_update_mysql)
             connection, cursor = safe_execute_with_commit(
                 connection,
                 cursor,
@@ -608,8 +883,11 @@ def test(filters):
 
 
 if __name__ == "__main__":
-    # get_cookies(test_mode=False, headless=False, pause_time=5,  filters={"bookie_name": "1XBet", "only_cookies": True})
-    get_cookies(test_mode=False, headless=True, pause_time=5, filters={"bookie_name": "all_bookies", "only_cookies": True})
+    try:
+        if os.environ["USER"] in LOCAL_USERS:
+            get_cookies(test_mode=False, headless=False, pause_time=5,  filters={"bookie_name": "888Sport", "only_cookies": True})
+    except:
+        get_cookies(test_mode=False, headless=True, pause_time=5, filters={"bookie_name": "all_bookies", "only_cookies": True})
     # test(filters={"bookie_name": "all_bookies", "only_cookies": True})
     # use_cookies()
 

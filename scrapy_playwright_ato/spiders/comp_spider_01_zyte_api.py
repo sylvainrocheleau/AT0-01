@@ -45,13 +45,13 @@ class TwoStepsSpider(scrapy.Spider):
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
                 # No filters
-                competitions = bookie_config(bookie=["all_bookies"])
+                # competitions = bookie_config(bookie=["all_bookies"])
                 # Filter by bookie that have errors
                 # competitions = bookie_config(bookie=["Bwin", "http_errors"])
                 # Filter by bookie
                 # competitions = bookie_config(bookie=["Bet777"])
                 # Filter by competition
-                # competitions = [x for x in bookie_config(bookie=["RetaBet"]) if x["competition_id"] == "UEFAEuropaLeague"]
+                competitions = [x for x in bookie_config(bookie=["RetaBet"]) if x["competition_id"] == "Euroligamasculina"]
                 # Filter by boookie and competition
                 # competitions = [x for x in bookie_config(bookie=["RetaBet"]) if
                 #                 x["competition_id"] == "FIFAClubWorldCup"]

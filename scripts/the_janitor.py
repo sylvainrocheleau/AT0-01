@@ -108,8 +108,6 @@ def safe_executemany(cursor, query, data, retries=6, delay=0.5):
 
 def stop_hanging_spiders():
     try:
-        import traceback
-        import datetime
         from scrapinghub import ScrapinghubClient
         client = ScrapinghubClient("326353deca9e4efe8ed9a8c1f5caf3ae")
 
@@ -156,7 +154,7 @@ def stop_hanging_spiders():
                     elif spider_name in spiders_under_60_minutes and difference_in_minutes > 60:
                         print(f"Cancel job {value['job']}")
                         job.cancel()
-                    elif spider_name not in spiders_under_60_minutes and difference_in_minutes > 30:
+                    elif spider_name not in spiders_under_60_minutes+spiders_under_90_minutes and difference_in_minutes > 30:
                         print(f"Cancel job {value['job']}")
                         job.cancel()
                 except Exception:
@@ -170,36 +168,35 @@ def stop_hanging_spiders():
 def delete_old_cookies():
     try:
         connection = get_db_connection()
-        cursor = connection.cursor()
-        query = """
-            DELETE vc
-            FROM ATO_production.V2_Cookies vc
-            JOIN V2_Bookies vb ON vc.bookie = vb.bookie_id
-            WHERE vb.use_cookies IS TRUE
-            AND vc.timestamp < DATE_SUB(NOW(), INTERVAL 6 DAY)
-        """
-        safe_execute(cursor, query)
-        deleted_count = cursor.rowcount
-        connection.commit()
-        cursor.close()
+        with connection.cursor() as cursor:
+            query = """
+                DELETE vc
+                FROM ATO_production.V2_Cookies vc
+                JOIN V2_Bookies vb ON vc.bookie = vb.bookie_id
+                WHERE vb.use_cookies IS TRUE
+                AND vc.timestamp < DATE_SUB(NOW(), INTERVAL 6 DAY)
+            """
+            safe_execute(cursor, query)
+            deleted_count = cursor.rowcount
+            connection.commit()
         print(f"{deleted_count} old cookies  removed")
     except Exception as e:
         print("Error deleting old cookies:", e)
         Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
 
+
 def delete_old_logs():
     try:
         connection = get_db_connection()
-        cursor = connection.cursor()
-        query = """
-            DELETE FROM ATO_production.V2_Logs
-            WHERE date < DATE_SUB(NOW(), INTERVAL 7 DAY)
-        """
-        safe_execute(cursor, query)
-        deleted_count = cursor.rowcount
-        connection.commit()
-        cursor.close()
-        print(f"{deleted_count} old logs deleted successfully")
+        with connection.cursor() as cursor:
+            query = """
+                DELETE FROM ATO_production.V2_Logs
+                WHERE date < DATE_SUB(NOW(), INTERVAL 7 DAY)
+            """
+            safe_execute(cursor, query)
+            deleted_count = cursor.rowcount
+            connection.commit()
+            print(f"{deleted_count} old logs deleted successfully")
     except Exception as e:
         print("Error deleting old logs:", e)
         Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
@@ -207,16 +204,15 @@ def delete_old_logs():
 def delete_old_matches():
     try:
         connection = get_db_connection()
-        cursor = connection.cursor()
-        query = """
-            DELETE FROM ATO_production.V2_Matches
-            WHERE UTC_TIMESTAMP() > `date`
-        """
-        safe_execute(cursor, query)
-        deleted_count = cursor.rowcount
-        connection.commit()
-        cursor.close()
-        print(f"{deleted_count} old matches deleted successfully")
+        with connection.cursor() as cursor:
+            query = """
+                DELETE FROM ATO_production.V2_Matches
+                WHERE UTC_TIMESTAMP() > `date`
+            """
+            safe_execute(cursor, query)
+            deleted_count = cursor.rowcount
+            connection.commit()
+            print(f"{deleted_count} old matches deleted successfully")
     except Exception as e:
         print("Error deleting old matches:", e)
         Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
@@ -224,16 +220,15 @@ def delete_old_matches():
 def delete_old_matches_with_no_id():
     try:
         connection = get_db_connection()
-        cursor = connection.cursor()
-        query = """
-            DELETE FROM ATO_production.V2_Matches_Urls_No_Ids
-            WHERE `date` < (NOW() - INTERVAL 1 MONTH)
-        """
-        safe_execute(cursor, query)
-        deleted_count = cursor.rowcount
-        connection.commit()
-        cursor.close()
-        print(f"{deleted_count} old matches with no ID deleted successfully")
+        with connection.cursor() as cursor:
+            query = """
+                DELETE FROM ATO_production.V2_Matches_Urls_No_Ids
+                WHERE `date` < (NOW() - INTERVAL 1 MONTH)
+            """
+            safe_execute(cursor, query)
+            deleted_count = cursor.rowcount
+            connection.commit()
+            print(f"{deleted_count} old matches with no ID deleted successfully")
     except Exception as e:
         print("Error deleting old matches with no ID:", e)
         Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
@@ -241,19 +236,18 @@ def delete_old_matches_with_no_id():
 def delete_matches_odds_with_bad_http_status():
     try:
         connection = get_db_connection()
-        cursor = connection.cursor()
-        query = """
-            DELETE vmo
-            FROM ATO_production.V2_Matches_Odds AS vmo
-            JOIN ATO_production.V2_Matches_Urls AS vmu
-            ON vmo.bookie_id = vmu.bookie_id AND vmo.match_id = vmu.match_id
-            WHERE vmu.http_status != 200
-        """
-        safe_execute(cursor, query)
-        deleted_count = cursor.rowcount
-        connection.commit()
-        cursor.close()
-        print(f"{deleted_count} matches odds with bad HTTP status deleted successfully")
+        with connection.cursor() as cursor:
+            query = """
+                DELETE vmo
+                FROM ATO_production.V2_Matches_Odds AS vmo
+                JOIN ATO_production.V2_Matches_Urls AS vmu
+                ON vmo.bookie_id = vmu.bookie_id AND vmo.match_id = vmu.match_id
+                WHERE vmu.http_status != 200
+            """
+            safe_execute(cursor, query)
+            deleted_count = cursor.rowcount
+            connection.commit()
+            print(f"{deleted_count} matches odds with bad HTTP status deleted successfully")
     except Exception as e:
         print("Error deleting matches odds with bad HTTP status:", e)
         Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
@@ -261,16 +255,15 @@ def delete_matches_odds_with_bad_http_status():
 def delete_matches_urls_with_bad_http_status():
     try:
         connection = get_db_connection()
-        cursor = connection.cursor()
-        query = """
-            DELETE FROM ATO_production.V2_Matches_Urls
-            WHERE http_status IN (301, 404)
-        """
-        safe_execute(cursor, query)
-        deleted_count = cursor.rowcount
-        connection.commit()
-        cursor.close()
-        print(f"{deleted_count} matches URLs with 301 or 404 status deleted successfully")
+        with connection.cursor() as cursor:
+            query = """
+                DELETE FROM ATO_production.V2_Matches_Urls
+                WHERE http_status IN (301, 404)
+            """
+            safe_execute(cursor, query)
+            deleted_count = cursor.rowcount
+            connection.commit()
+            print(f"{deleted_count} matches URLs with 301 or 404 status deleted successfully")
     except Exception as e:
         print("Error deleting matches URLs with 301 or 404 HTTP status:", e)
         Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
@@ -278,18 +271,17 @@ def delete_matches_urls_with_bad_http_status():
 def delete_old_dutcher_entries():
     try:
         connection = get_db_connection()
-        cursor = connection.cursor()
-        query = """
-            DELETE vd
-            FROM ATO_production.V2_Dutcher vd
-            JOIN ATO_production.V2_Matches vm ON vd.match_id = vm.match_id
-            WHERE UTC_TIMESTAMP() > vm.`date`
-        """
-        safe_execute(cursor, query)
-        deleted_count = cursor.rowcount
-        connection.commit()
-        cursor.close()
-        print(f"{deleted_count} old dutcher entries deleted successfully")
+        with connection.cursor() as cursor:
+            query = """
+                DELETE vd
+                FROM ATO_production.V2_Dutcher vd
+                JOIN ATO_production.V2_Matches vm ON vd.match_id = vm.match_id
+                WHERE UTC_TIMESTAMP() > vm.`date`
+            """
+            safe_execute(cursor, query)
+            deleted_count = cursor.rowcount
+            connection.commit()
+            print(f"{deleted_count} old dutcher entries deleted successfully")
     except Exception as e:
         print("Error deleting old dutcher entries:", e)
         Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
@@ -297,72 +289,249 @@ def delete_old_dutcher_entries():
 def select_next_match_date():
     try:
         connection = get_db_connection()
-        cursor = connection.cursor()
-        query = """
-            SELECT
-                competition_id,
-                MIN(`date`) AS next_match_date
-            FROM
-                ATO_production.V2_Matches
-            WHERE
-                `date` > NOW()
-            GROUP BY
-                competition_id
-        """
-        safe_execute(cursor, query)
-        results = cursor.fetchall()
-        next_match_update = []
-        for result in results:
-            try:
-                match_date = result[1]
-                if match_date.tzinfo is None:
-                    match_date = match_date.replace(tzinfo=datetime.timezone.utc)
-                now_utc = datetime.datetime.now(tz=datetime.timezone.utc)
-                if match_date < now_utc + datetime.timedelta(days=15):
-                    next_match_update.append((match_date, True, result[0]))
-                else:
-                    next_match_update.append((match_date, False, result[0]))
-            except Exception as e:
-                print(f"Error processing result {result}: {e}")
-                continue
-        print("Setting all competitions to inactive")
-        query_set_inactive = """
-            UPDATE ATO_production.V2_Competitions
-            SET next_match_date = NULL, active = FALSE
-            WHERE competition_id NOT IN (SELECT competition_id FROM ATO_production.V2_Matches WHERE `date` > NOW())
-        """
+        with connection.cursor() as cursor:
+            query = """
+                SELECT
+                    competition_id,
+                    MIN(`date`) AS next_match_date
+                FROM
+                    ATO_production.V2_Matches
+                WHERE
+                    `date` > NOW()
+                GROUP BY
+                    competition_id
+            """
+            safe_execute(cursor, query)
+            results = cursor.fetchall()
+            next_match_update = []
+            for result in results:
+                try:
+                    match_date = result[1]
+                    if match_date.tzinfo is None:
+                        match_date = match_date.replace(tzinfo=datetime.timezone.utc)
+                    now_utc = datetime.datetime.now(tz=datetime.timezone.utc)
+                    if match_date < now_utc + datetime.timedelta(days=15):
+                        next_match_update.append((match_date, True, result[0]))
+                    else:
+                        next_match_update.append((match_date, False, result[0]))
+                except Exception as e:
+                    print(f"Error processing result {result}: {e}")
+                    continue
+            print("Setting competitions to inactive")
+            query_set_inactive = """
+                UPDATE ATO_production.V2_Competitions
+                SET next_match_date = NULL, active = FALSE
+                WHERE competition_id NOT IN (SELECT competition_id FROM ATO_production.V2_Matches WHERE `date` > NOW())
+                    AND active != 2
+            """
 
-        safe_execute(cursor, query_set_inactive)
-        connection.commit()
+            safe_execute(cursor, query_set_inactive)
+            connection.commit()
 
-        print(f"Setting next match dates for {len(next_match_update)} competitions")
-        query_update_next_matches = """
-            UPDATE ATO_production.V2_Competitions
-            SET next_match_date = %s, active = %s
-            WHERE competition_id = %s
-        """
-        safe_executemany(cursor, query_update_next_matches, next_match_update)
-        connection.commit()
-        cursor.close()
-        print(f"Next match dates updated successfully for {len(next_match_update)} competitions")
+            print(f"Setting next match dates for {len(next_match_update)} competitions")
+            query_update_next_matches = """
+                UPDATE ATO_production.V2_Competitions
+                SET next_match_date = %s, active = %s
+                WHERE competition_id = %s AND active != 2
+            """
+            safe_executemany(cursor, query_update_next_matches, next_match_update)
+            connection.commit()
+            print(f"Next match dates updated successfully for {len(next_match_update)} competitions")
     except Exception as e:
         print("Error selecting next match date:", e)
         Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
         return None
+
+def sync_numerical_ids_from_allsport(dry_run: bool = False) -> int:
+    """
+    Align V2_Teams.numerical_team_id to the value used by AllSportAPI for each normalized_team_name.
+
+    Rules:
+    - Build the truth mapping only from rows where bookie_id = 'AllSportAPI'.
+    - If normalized_team_name is a country-name (identified when normalized_team_name = country in AllSportAPI rows),
+      ensure uniqueness and alignment per (normalized_team_name, sport_id, competition_id).
+    - Otherwise (non-country names), ensure uniqueness and alignment per (normalized_team_name, competition_id).
+    - For any row with the same normalized_team_name and bookie_id != 'AllSportAPI',
+      if numerical_team_id is NULL or different, update it to the AllSportAPI value (matching same competition and same sport when applicable).
+
+    Args:
+        dry_run: If True, no changes are committed; returns the would-be affected row count.
+
+    Returns:
+        Number of rows updated (or that would be updated if dry_run=True).
+    """
+    try:
+        sql_preview = """
+            SELECT COUNT(1) AS cnt
+            FROM ATO_production.V2_Teams t
+            JOIN (
+                -- Branch A: country-name teams -> unique per (name, sport_id, competition_id)
+                SELECT normalized_team_name,
+                       sport_id,
+                       competition_id,
+                       MIN(numerical_team_id) AS numerical_team_id
+                FROM ATO_production.V2_Teams
+                WHERE bookie_id = 'AllSportAPI'
+                  AND normalized_team_name IS NOT NULL
+                  AND numerical_team_id IS NOT NULL
+                  AND country IS NOT NULL
+                  AND normalized_team_name = country
+                GROUP BY normalized_team_name, sport_id, competition_id
+                HAVING COUNT(DISTINCT numerical_team_id) = 1
+                UNION ALL
+                -- Branch B: non-country teams -> unique per (name, competition_id)
+                SELECT normalized_team_name,
+                       NULL AS sport_id,
+                       competition_id,
+                       MIN(numerical_team_id) AS numerical_team_id
+                FROM ATO_production.V2_Teams
+                WHERE bookie_id = 'AllSportAPI'
+                  AND normalized_team_name IS NOT NULL
+                  AND numerical_team_id IS NOT NULL
+                  AND (country IS NULL OR normalized_team_name <> country)
+                GROUP BY normalized_team_name, competition_id
+                HAVING COUNT(DISTINCT numerical_team_id) = 1
+            ) a ON a.normalized_team_name = t.normalized_team_name
+                AND a.competition_id = t.competition_id
+                AND (a.sport_id IS NULL OR a.sport_id = t.sport_id)
+            WHERE t.bookie_id <> 'AllSportAPI'
+              AND (
+                    t.numerical_team_id IS NULL
+                 OR t.numerical_team_id <> a.numerical_team_id
+              );
+        """
+
+        sql_preview_rows = """
+            SELECT
+                t.team_id,
+                t.bookie_id,
+                t.competition_id,
+                t.sport_id,
+                t.bookie_team_name,
+                t.normalized_team_name,
+                t.numerical_team_id AS current_numerical_team_id,
+                a.numerical_team_id AS new_numerical_team_id
+            FROM ATO_production.V2_Teams t
+            JOIN (
+                -- Branch A: country-name teams -> unique per (name, sport_id, competition_id)
+                SELECT normalized_team_name,
+                       sport_id,
+                       competition_id,
+                       MIN(numerical_team_id) AS numerical_team_id
+                FROM ATO_production.V2_Teams
+                WHERE bookie_id = 'AllSportAPI'
+                  AND normalized_team_name IS NOT NULL
+                  AND numerical_team_id IS NOT NULL
+                  AND country IS NOT NULL
+                  AND normalized_team_name = country
+                GROUP BY normalized_team_name, sport_id, competition_id
+                HAVING COUNT(DISTINCT numerical_team_id) = 1
+                UNION ALL
+                -- Branch B: non-country teams -> unique per (name, competition_id)
+                SELECT normalized_team_name,
+                       NULL AS sport_id,
+                       competition_id,
+                       MIN(numerical_team_id) AS numerical_team_id
+                FROM ATO_production.V2_Teams
+                WHERE bookie_id = 'AllSportAPI'
+                  AND normalized_team_name IS NOT NULL
+                  AND numerical_team_id IS NOT NULL
+                  AND (country IS NULL OR normalized_team_name <> country)
+                GROUP BY normalized_team_name, competition_id
+                HAVING COUNT(DISTINCT numerical_team_id) = 1
+            ) a ON a.normalized_team_name = t.normalized_team_name
+                AND a.competition_id = t.competition_id
+                AND (a.sport_id IS NULL OR a.sport_id = t.sport_id)
+            WHERE t.bookie_id <> 'AllSportAPI'
+              AND (
+                    t.numerical_team_id IS NULL
+                 OR t.numerical_team_id <> a.numerical_team_id
+              )
+            ORDER BY t.normalized_team_name, t.competition_id, t.sport_id, t.bookie_id, t.team_id;
+        """
+
+        sql_update = """
+            UPDATE ATO_production.V2_Teams t
+            JOIN (
+                -- Branch A: country-name teams -> unique per (name, sport_id, competition_id)
+                SELECT normalized_team_name,
+                       sport_id,
+                       competition_id,
+                       MIN(numerical_team_id) AS numerical_team_id
+                FROM ATO_production.V2_Teams
+                WHERE bookie_id = 'AllSportAPI'
+                  AND normalized_team_name IS NOT NULL
+                  AND numerical_team_id IS NOT NULL
+                  AND country IS NOT NULL
+                  AND normalized_team_name = country
+                GROUP BY normalized_team_name, sport_id, competition_id
+                HAVING COUNT(DISTINCT numerical_team_id) = 1
+                UNION ALL
+                -- Branch B: non-country teams -> unique per (name, competition_id)
+                SELECT normalized_team_name,
+                       NULL AS sport_id,
+                       competition_id,
+                       MIN(numerical_team_id) AS numerical_team_id
+                FROM ATO_production.V2_Teams
+                WHERE bookie_id = 'AllSportAPI'
+                  AND normalized_team_name IS NOT NULL
+                  AND numerical_team_id IS NOT NULL
+                  AND (country IS NULL OR normalized_team_name <> country)
+                GROUP BY normalized_team_name, competition_id
+                HAVING COUNT(DISTINCT numerical_team_id) = 1
+            ) a ON a.normalized_team_name = t.normalized_team_name
+                AND a.competition_id = t.competition_id
+                AND (a.sport_id IS NULL OR a.sport_id = t.sport_id)
+            SET t.numerical_team_id = a.numerical_team_id,
+                t.update_date = NOW()
+            WHERE t.bookie_id <> 'AllSportAPI'
+              AND (
+                    t.numerical_team_id IS NULL
+                 OR t.numerical_team_id <> a.numerical_team_id
+              );
+        """
+
+        connection = get_db_connection()
+        with connection.cursor() as cursor:
+            # Preview affected rows
+            safe_execute(cursor, sql_preview)
+            row = cursor.fetchone()
+            to_change = (row["cnt"] if isinstance(row, dict) else row[0]) if row else 0
+
+
+            if dry_run:
+                # Print the detailed list of rows that would change
+                print("rows that would be updated", to_change)
+                safe_execute(cursor, sql_preview_rows)
+                rows = cursor.fetchall() or []
+                print("Rows that would be updated (detailed preview):")
+                for r in rows:
+                    print(r)
+                return int(to_change or 0)
+
+            # Apply update
+            safe_execute(cursor, sql_update)
+            connection.commit()
+            print(cursor.rowcount if cursor.rowcount is not None else int(to_change or 0), "rows updated")
+    except Exception as e:
+        print("sync_numerical_ids_from_allsport:", e)
+        Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
+        return 0
 
 if __name__ == "__main__":
     try:
         if os.environ["USER"] in LOCAL_USERS:
             print("Processing debug")
             # stop_hanging_spiders()
-            select_next_match_date()
-            delete_old_matches()
-            delete_old_matches_with_no_id()
-            delete_old_dutcher_entries()
-            delete_matches_odds_with_bad_http_status()
-            delete_matches_urls_with_bad_http_status()
-            delete_old_cookies()
-            delete_old_logs()
+            # select_next_match_date()
+            # delete_old_matches()
+            # delete_old_matches_with_no_id()
+            # delete_old_dutcher_entries()
+            # delete_matches_odds_with_bad_http_status()
+            # delete_old_cookies()
+            # delete_old_logs()
+            sync_numerical_ids_from_allsport(dry_run=False)
+
 
             # process_all_the_time = False
             # if datetime.datetime.now().minute == 0 or process_all_the_time:
@@ -375,13 +544,13 @@ if __name__ == "__main__":
             delete_old_matches_with_no_id()
             delete_old_dutcher_entries()
             delete_matches_odds_with_bad_http_status()
-            delete_matches_urls_with_bad_http_status()
             delete_old_cookies()
             delete_old_logs()
 
             process_all_the_time = False
             if datetime.datetime.now().minute == 0 or process_all_the_time:
                 CreateViews().create_view_Dash_Competitions_and_MatchUrlCounts_per_Bookie()
+                sync_numerical_ids_from_allsport(dry_run=False)
 
     except:
         stop_hanging_spiders()
@@ -390,21 +559,19 @@ if __name__ == "__main__":
         delete_old_matches_with_no_id()
         delete_old_dutcher_entries()
         delete_matches_odds_with_bad_http_status()
-        delete_matches_urls_with_bad_http_status()
         delete_old_cookies()
         delete_old_logs()
 
         process_all_the_time = False
         if datetime.datetime.now().minute == 0 or process_all_the_time:
             CreateViews().create_view_Dash_Competitions_and_MatchUrlCounts_per_Bookie()
-
-
+            sync_numerical_ids_from_allsport(dry_run=False)
 
     # Close the shared DB connection at the end
     try:
-        conn = get_db_connection()
-        if conn and conn.is_connected():
-            conn.close()
+        connection = get_db_connection()
+        if connection and connection.is_connected():
+            connection.close()
     except Exception:
         pass
 

@@ -42,9 +42,9 @@ class MetaSpider(scrapy.Spider):
             # match_filter = {}
             # match_filter = {"type": "bookie_id", "params":["CasinoBarcelona", 1]}
             # match_filter = {"type": "bookie_and_comp", "params": ["1XBet", "LaLigaEspanola"]}
-            # match_filter = {"type": "comp", "params":["UEFAEuropaLeague"]}
+            # match_filter = {"type": "comp", "params":["Euroligamasculina"]}
             match_filter = {"type": "match_url_id",
-                            "params":['https://apuestas.retabet.es/deportes/futbol/espana/segunda-division/ceuta-eibar/32634231']}
+                            "params":['https://apuestas.retabet.es/deportes/futbol/internacional-selecciones/clasificacion-mundial-uefa/belgica-macedonia-del-norte/32755908']}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -203,17 +203,6 @@ class MetaSpider(scrapy.Spider):
                 print("Error closing playwright page/context:", e)
                 Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
                 pass
-        if self.debug:
-            # print proxy_ip and user agent used
-            print("working proxy_ip", response.meta.get("proxy_ip"))
-            print("working user_agent", response.meta.get("user_agent"))
-            # save proxy_ip, user_agent plus a third value "working"  to a csv file called proxy_ip_user_agent.csv
-            # parent = os.path.dirname(os.getcwd())
-            # try:
-            #     with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/logs/proxy_ip_user_agent.csv", "a") as f:
-            #         f.write(f"{response.meta.get('proxy_ip')};{response.meta.get('user_agent')};working\n")
-            # except:
-            #     pass
 
         odds = parse_match_logic(
             bookie_id=response.meta.get("bookie_id"),
@@ -236,6 +225,8 @@ class MetaSpider(scrapy.Spider):
                 )
             }
         )
+        if self.debug:
+            print(odds)
         if not odds:
             item["data_dict"] = {
                 "match_infos": [

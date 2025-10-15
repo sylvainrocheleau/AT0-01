@@ -24,8 +24,8 @@ class WebsocketsSpider(Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                self.competitions = [x for x in bookie_config(bookie=["Sportium"]) if x["competition_id"] == "UEFAEuropaLeague"]
-                self.match_filter = {"type": "bookie_and_comp", "params": ["Sportium", "UEFAEuropaLeague"]}
+                self.competitions = [x for x in bookie_config(bookie=["Sportium"]) if x["competition_id"] == "CopadelRey"]
+                self.match_filter = {"type": "bookie_and_comp", "params": ["Sportium", "CopadelRey"]}
 
                 #
                 # self.competitions = bookie_config(bookie=["Sportium"])
@@ -654,11 +654,7 @@ destination:/api/markets/multi
                 await self.ws.close()
 
     def closed(self, reason):
-        if self.debug:
-            pass
-        else:
-            requests.post(
-            "https://data.againsttheodds.es/Zyte.php?bookie=" + "Sportium" + "&project_id=643480")
+        pass
 
     def start_requests(self):
         try:

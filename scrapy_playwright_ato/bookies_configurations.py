@@ -208,7 +208,8 @@ list_of_markets_V2 = {
         "Partido Más/Menos 2.5 goles", "Partido Más/Menos 3.5 goles", "Partido Más/Menos 4.5 goles",
         "Partido Más/Menos 5.5 goles", "Partido Más/Menos 6.5 goles", "Resultado Exacto",
     ],
-    "2": ["Victoria sin empate (en caso de empate se anula la apuesta)", "Victoria sin empate", "Total de puntos"],
+    "2": ["Victoria sin empate (en caso de empate se anula la apuesta)", "Victoria sin empate", "Ganador del partido",
+          "Total de puntos"],
     "3": ["Cuotas del partido", "Total de juegos"],
 },
 "WinaMax": {
@@ -417,7 +418,7 @@ def bookie_config(bookie):
                         INNER JOIN ATO_production.V2_Competitions_Urls vcu ON vc.competition_id = vcu.competition_id
                         INNER JOIN ATO_production.V2_Bookies vb ON vcu.bookie_id = vb.bookie_id
                         WHERE vc.active = 1
-                        AND vcu.http_status NOT IN (200, 404)
+                        AND vcu.http_status NOT IN (200, 404, 1500)
                         AND vcu.bookie_id NOT IN ('BetfairExchange', 'AllSportAPI')
                         AND vb.v2_ready = 1
                         ORDER BY vc.competition_id
@@ -511,7 +512,8 @@ def normalize_odds_variables(odds, sport, home_team, away_team):
         "Prórroga incluida", "Oferta básica", "Money Line", "Winner", "3-Way", "Local", "ganará", "Línea de Juego",
         "Apuestas a ganador", "Cuotas de partido", "Tiempo reglamentario", "Vencedor del partido",
         "TIEMPO REGULAR (INCL. TIEMPO EXTRA) - GANADOR", "Resultado final", "Resultado Final", "¿Quién ganará el partido?",
-        "Resultado Del Partido - Cuotas Mejoradas",
+        "Resultado Del Partido - Cuotas Mejoradas", "Victoria sin empate (en caso de empate se anula la apuesta)",
+        "Victoria sin empate",
     ]
     not_winners_keywords = ["Puntos", "puntos", "Menos", "menos", "Goals"]
     home_team_keywords = ["1", "HB_H", ".HB_H", "home", "Local", "W1"]
