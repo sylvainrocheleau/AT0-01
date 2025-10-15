@@ -1,6 +1,6 @@
 # scrapy_playwright_ato/logformatter.py
 from scrapy.logformatter import LogFormatter
-# comment
+
 class ShortItemLogFormatter(LogFormatter):
     def _format_item(self, item):
         # Return a concise representation of the item to avoid giant logs
