@@ -801,9 +801,9 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                             away_team = xpath_result_02.xpath(
                                 "//div[contains(@class, 'event-text event-text-margin text-ellipsis')]/text()").extract()[1]
                             away_team = away_team.strip()
-                            url = xpath_result_02.xpath("//a/@href").extract()[0]
-                            url = "https://sb-pp-esfe.daznbet.es" + url + "?tab=todo"
-                            web_url = "https://www.daznbet.es/es-es/deportes" + url
+                            relative_url = xpath_result_02.xpath("//a/@href").extract()[0]
+                            url = "https://sb-pp-esfe.daznbet.es" + relative_url + "?tab=todo"
+                            web_url = "https://www.daznbet.es/es-es/deportes" + relative_url
 
                             # date = None
 
@@ -3356,6 +3356,7 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                 selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t","")
                 clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
                 clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
+                # print(clean_selection_keys)
                 for selection_key02 in clean_selection_keys:
                     if clean_selection_keys[0] in list_of_markets:
                         market = clean_selection_keys[0]
@@ -3472,62 +3473,64 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                 clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
                 clean_selection_keys = list(filter(None, clean_selection_keys))
                 stopwords = ["Añadir al cupón", "Empate"]
-                for selection_key02 in clean_selection_keys:
-                    if clean_selection_keys[0] in list_of_markets and any(sw not in clean_selection_keys for sw in stopwords):
-                        market = clean_selection_keys[0]
-                    else:
-                        market = "empty"
-                        odd = "empty"
-                        result = "empty"
-                        continue
-                    if (
-                        selection_key02 != market
-                        and market in list_of_markets
-                        and re.search('[a-zA-Z]', selection_key02) is not None
-                        and selection_key02 not in stopwords
-                        or "-" in selection_key02
-                        or "Menos" in selection_key02
-                        or "Más de" in selection_key02
-                    ):
-                        result = selection_key02
-                    elif (
-                        sport_id == "2"
-                        and ("(" in selection_key02 or selection_key02.endswith(".5"))
-                        and result != "empty"
-                    ):
-                        result = result + selection_key02.replace("(", " ").replace(")", "")
-                    elif (
-                        "/" in selection_key02
-                        and re.search('[a-zA-Z]', selection_key02) is None
-                        and market in list_of_markets
-                    ):
-                        num, denom = selection_key02.split('/')
-                        odd = round(float(num) / float(denom) + 1, 3)
-                    elif (
-                        re.search('[a-zA-Z]', selection_key02) is None
-                        and market in list_of_markets
-                    ):
-                        odd = selection_key02
-                    try:
-                        if (
-                            market in list_of_markets
-                            and result != "empty"
-                            and odd != "empty"
-                        ):
-                            if (
-                                result in results
-                                and market == "Resultado Exacto"
-                            ):
-                                result = result[2] + result[1] + result[0]
-
-                            odds.append({"Market": market, "Result": result, "Odds": odd})
-                            results.append(result)
-                            result = "empty"
+                print("clean selection key", clean_selection_keys)
+                if "Empate" not in clean_selection_keys:
+                    for selection_key02 in clean_selection_keys:
+                        if clean_selection_keys[0] in list_of_markets:
+                            market = clean_selection_keys[0]
+                        else:
+                            market = "empty"
                             odd = "empty"
-                    except UnboundLocalError:
-                        continue
-                    except NameError:
-                        continue
+                            result = "empty"
+                            continue
+                        if (
+                            selection_key02 != market
+                            and market in list_of_markets
+                            and re.search('[a-zA-Z]', selection_key02) is not None
+                            and selection_key02 not in stopwords
+                            or "-" in selection_key02
+                            or "Menos" in selection_key02
+                            or "Más de" in selection_key02
+                        ):
+                            result = selection_key02
+                        elif (
+                            sport_id == "2"
+                            and ("(" in selection_key02 or selection_key02.endswith(".5"))
+                            and result != "empty"
+                        ):
+                            result = result + selection_key02.replace("(", " ").replace(")", "")
+                        elif (
+                            "/" in selection_key02
+                            and re.search('[a-zA-Z]', selection_key02) is None
+                            and market in list_of_markets
+                        ):
+                            num, denom = selection_key02.split('/')
+                            odd = round(float(num) / float(denom) + 1, 3)
+                        elif (
+                            re.search('[a-zA-Z]', selection_key02) is None
+                            and market in list_of_markets
+                        ):
+                            odd = selection_key02
+                        try:
+                            if (
+                                market in list_of_markets
+                                and result != "empty"
+                                and odd != "empty"
+                            ):
+                                if (
+                                    result in results
+                                    and market == "Resultado Exacto"
+                                ):
+                                    result = result[2] + result[1] + result[0]
+
+                                odds.append({"Market": market, "Result": result, "Odds": odd})
+                                results.append(result)
+                                result = "empty"
+                                odd = "empty"
+                        except UnboundLocalError:
+                            continue
+                        except NameError:
+                            continue
         except Exception as e:
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
     elif bookie_id == "YaassCasino ":
