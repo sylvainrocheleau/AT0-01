@@ -24,11 +24,11 @@ class WebsocketsSpider(Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                # self.competitions = [x for x in bookie_config(bookie=["Versus"]) if x["competition_id"] == "UEFAEuropaLeague"]
-                # self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", "UEFAEuropaLeague"]}
+                self.competitions = [x for x in bookie_config(bookie=["Versus"]) if x["competition_id"] == "BundesligaAlemana"]
+                self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", "BundesligaAlemana"]}
 
-                self.match_filter = {"type": "match_url_id", "params": [
-                    "https://www.versus.es/apuestas/sports/soccer/events/23193588"]}
+                # self.match_filter = {"type": "match_url_id", "params": [
+                #     "https://www.versus.es/apuestas/sports/basketball/events/22387658"]} # https://www.versus.es/apuestas/sports/soccer/events/23162434
 
                 # self.competitions = bookie_config(bookie=["Versus"])
                 # self.match_filter = {"type": "bookie_id", "params": ["Versus", 1]}
@@ -280,7 +280,6 @@ destination:/api/marketgroup/{data['match_url_id'].split('/')[-1]}{suffix}
                             msg = None
 
                         expected_id = f"{data['match_url_id'].split('/')[-1]}{suffix}"
-
                         if not (isinstance(msg, dict) and str(msg.get('id')) == expected_id):
                             # Drain a bit more until we find the correct message
                             loop = asyncio.get_event_loop()
@@ -316,15 +315,23 @@ destination:/api/marketgroup/{data['match_url_id'].split('/')[-1]}{suffix}
                         match_market_ids = msg
                         # if self.debug:
                         #     print("match_market_ids: ", match_market_ids)
-                        if isinstance(match_market_ids, dict) and len(match_market_ids) > 0 and "aggregatedMarkets" in match_market_ids.keys():
+                        if (
+                            isinstance(match_market_ids, dict)
+                            and len(match_market_ids) > 0
+                            and "aggregatedMarkets" in match_market_ids.keys()
+                        ):
                             filtered_match_market_ids = []
                             for x in match_market_ids["aggregatedMarkets"]:
                                 if x["name"] in list_of_markets_V2[data["bookie_id"]][data["sport_id"]]:
-                                    filtered_match_market_ids.append(x["marketIds"])
+                                    for market in x["markets"]:
+                                        filtered_match_market_ids.append(market["id"])
                                 else:
                                     pass
+                            # filtered_match_market_ids = ';'.join(
+                            #     [item for sublist in filtered_match_market_ids for item in sublist])
                             filtered_match_market_ids = ';'.join(
-                                [item for sublist in filtered_match_market_ids for item in sublist])
+                                [item for item in filtered_match_market_ids])
+
                             await self.ws.send(f"""SUBSCRIBE
 id:/api/markets/multi
 locale:es
@@ -334,14 +341,13 @@ destination:/api/markets/multi
 
 \x00""")
                             response_odds = await self.ws.recv()
-                            # if self.debug:
-                            #     print(f"response_odds: {response_odds}")
                             if response_odds is not None:
+
                                 response_odds = re.search(r'\{.*\}', response_odds, re.DOTALL).group()
                                 response_odds = json.loads(response_odds)
-                                if self.debug:
-                                    print(f"response_odds keys, {response_odds.keys()}")
-                                    print("filtered_match_market_ids", filtered_match_market_ids)
+                                # if self.debug:
+                                #     print(f"response_odds keys, {response_odds.keys()}")
+                                #     print("filtered_match_market_ids", filtered_match_market_ids)
 
                                 # Normalize to sets of strings (ignore order and whitespace)
                                 resp_ids = {str(k).strip() for k in response_odds.keys()}
@@ -353,6 +359,7 @@ destination:/api/markets/multi
 
                                 valid_superset = len(missing) == 0
                                 if valid_superset:
+
                                     odds = parse_match(
                                         bookie_id=data["bookie_id"],
                                         response=response_odds,
