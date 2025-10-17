@@ -321,6 +321,8 @@ def get_context_infos(bookie_name):
 def bookie_config(bookie):
     from scrapy_playwright_ato.utilities import Connect, Helpers
     if isinstance(bookie, dict):
+        connection = Connect().to_db(db="ATO_production", table=None)
+        cursor = connection.cursor()
         if (
             "output" in bookie and bookie["output"] == "tournaments"
             and bookie["name"] != "all_bookies"
@@ -334,8 +336,7 @@ def bookie_config(bookie):
                 INNER JOIN V2_Bookies vb ON vsu.bookie_id = vb.bookie_id
                 WHERE vsu.bookie_id = %s AND vb.v2_ready = 1
             """
-            connection = Connect().to_db(db="ATO_production", table=None)
-            cursor = connection.cursor()
+
             cursor.execute(query, (bookie["name"],))
             results = cursor.fetchall()
             for result in results:
@@ -375,6 +376,74 @@ def bookie_config(bookie):
             cursor.close()
             connection.close()
             return dict_of_burnt_ips
+
+        elif "output" in bookie and bookie["output"] == "competitions_with_errors_or_not_updated":
+            print("All competitions with errors or not updated in last 12 hours")
+            query = """
+                        SELECT vcu.competition_url_id, vc.competition_id, vc.sport_id,
+                        vb.scraping_tool, vb.render_js, vb.use_cookies, vb.bookie_id, vb.v2_ready
+                        FROM ATO_production.V2_Competitions vc
+                        INNER JOIN ATO_production.V2_Competitions_Urls vcu ON vc.competition_id = vcu.competition_id
+                        INNER JOIN ATO_production.V2_Bookies vb ON vcu.bookie_id = vb.bookie_id
+                        WHERE vc.active = 1
+                        AND vcu.bookie_id NOT IN ('BetfairExchange', 'AllSportAPI')
+                        AND vb.v2_ready = 1
+                        AND (
+                                vcu.http_status NOT IN (200, 404, 1500)
+                                OR vcu.updated_date IS NULL
+                                OR vcu.updated_date <= (UTC_TIMESTAMP() - INTERVAL 12 HOUR)
+                        )
+                        ORDER BY vc.competition_id
+                    """
+            cursor.execute(query)
+            results = cursor.fetchall()
+            list_of_competitions = []
+            for result in results:
+                list_of_competitions.append(
+                    {
+                        "competition_url_id": result[0],
+                        "competition_id": result[1],
+                        "sport_id": result[2],
+                        "scraping_tool": result[3],
+                        "render_js": result[4],
+                        "use_cookies": result[5],
+                        "bookie_id": result[6],
+                    }
+                )
+            cursor.close()
+            connection.close()
+            return list_of_competitions
+        elif "output" in bookie and bookie["output"] == "all_competitions":
+            print("All competitions")
+            query = """
+                        SELECT vcu.competition_url_id, vc.competition_id, vc.sport_id,
+                        vb.scraping_tool, vb.render_js, vb.use_cookies, vb.bookie_id, vb.v2_ready
+                        FROM ATO_production.V2_Competitions vc
+                        INNER JOIN ATO_production.V2_Competitions_Urls vcu ON vc.competition_id = vcu.competition_id
+                        INNER JOIN ATO_production.V2_Bookies vb ON vcu.bookie_id = vb.bookie_id
+                        WHERE vc.active = 1
+                        AND vcu.bookie_id NOT IN ('BetfairExchange', 'AllSportAPI')
+                        AND vb.v2_ready = 1
+                        ORDER BY vc.competition_id
+                    """
+            cursor.execute(query)
+            results = cursor.fetchall()
+            list_of_competitions = []
+            for result in results:
+                list_of_competitions.append(
+                    {
+                        "competition_url_id": result[0],
+                        "competition_id": result[1],
+                        "sport_id": result[2],
+                        "scraping_tool": result[3],
+                        "render_js": result[4],
+                        "use_cookies": result[5],
+                        "bookie_id": result[6],
+                    }
+                )
+            cursor.close()
+            connection.close()
+            return list_of_competitions
 
     if isinstance(bookie, list):
         try:
