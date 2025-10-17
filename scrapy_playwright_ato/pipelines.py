@@ -14,11 +14,12 @@ from scrapy_playwright_ato.utilities import Connect, Helpers
 from scrapy_playwright_ato.settings import LOCAL_USERS
 
 
-def safe_executemany(cursor, query, data, chunk_size=300, retries=6, delay=0.5):
+def safe_executemany(cursor, query, data, chunk_size=300, retries=6, delay=0.5, split_on_deadlock=True, _depth=0):
     """
     - Splits into chunks to avoid large packets/timeouts
     - Retries on deadlocks (1213), lock wait timeouts (1205), and lost connection (2006/2013) with reconnect
     - Uses exponential backoff with jitter; performs rollback before retrying
+    - Optionally splits a problematic chunk into halves after a few retries to isolate hot rows.
     """
     import time
     import random
@@ -48,16 +49,26 @@ def safe_executemany(cursor, query, data, chunk_size=300, retries=6, delay=0.5):
             except (InternalError, OperationalError, DatabaseError) as e:
                 errno = getattr(e, "errno", None)
                 # Deadlock (1213) or Lock wait timeout (1205)
-                if errno in (1213, 1205) and attempt < retries - 1:
-                    attempt += 1
-                    try:
-                        conn.rollback()
-                    except Exception:
-                        pass
-                    sleep_for = min(delay * (2 ** (attempt - 1)) + random.uniform(0, 0.3), 5)
-                    print(f"Retryable DB error ({errno}) on chunk [{start}:{start+len(chunk)}], retry {attempt}/{retries} after {sleep_for:.2f}s...")
-                    time.sleep(sleep_for)
-                    continue
+                if errno in (1213, 1205):
+                    # After a couple of attempts, split the chunk to isolate hot rows
+                    if split_on_deadlock and len(chunk) > 1 and attempt >= 2:
+                        mid = len(chunk) // 2
+                        left = chunk[:mid]
+                        right = chunk[mid:]
+                        # Recurse on halves with smaller chunk sizes; propagate same retry policy
+                        safe_executemany(cursor, query, left, chunk_size=max(1, chunk_size // 2), retries=retries, delay=delay, split_on_deadlock=split_on_deadlock, _depth=_depth + 1)
+                        safe_executemany(cursor, query, right, chunk_size=max(1, chunk_size // 2), retries=retries, delay=delay, split_on_deadlock=split_on_deadlock, _depth=_depth + 1)
+                        break
+                    if attempt < retries - 1:
+                        attempt += 1
+                        try:
+                            conn.rollback()
+                        except Exception:
+                            pass
+                        sleep_for = min(delay * (2 ** (attempt - 1)) + random.uniform(0, 0.3), 5)
+                        print(f"Retryable DB error ({errno}) on chunk [{start}:{start+len(chunk)}], retry {attempt}/{retries} after {sleep_for:.2f}s...")
+                        time.sleep(sleep_for)
+                        continue
                 # Lost connection / server has gone away
                 if errno in (2006, 2013) and attempt < retries - 1:
                     attempt += 1
@@ -170,7 +181,7 @@ class ScrapersPipeline:
         self._worker_thread = threading.Thread(
             target=self._worker_loop,
             name="DBWriterThread",
-            daemon=True,
+            daemon=False,  # ensure it’s not killed by interpreter shutdown
         )
         self._worker_thread.start()
 
@@ -256,6 +267,13 @@ class ScrapersPipeline:
                             pass
                         conn, cur = self._worker_connect_db()
 
+                # Mark the processed message as done (queue barrier)
+                if msg is not None:
+                    try:
+                        self._work_q.task_done()
+                    except Exception:
+                        pass
+
             # After stop signal and queue drained: final flush
             try:
                 self._worker_flush(cur, conn, worker_odds_buf, worker_url_updates_buf, worker_match_ids_buf)
@@ -335,55 +353,95 @@ class ScrapersPipeline:
 
             urls_to_delete = urls_from_odds | urls_from_updates
 
-            if urls_to_delete:
-                delete_query = """
-                    DELETE vmo
-                    FROM ATO_production.V2_Matches_Odds AS vmo
-                    JOIN ATO_production.V2_Matches_Urls AS vmu
-                      ON vmo.bookie_id = vmu.bookie_id AND vmo.match_id = vmu.match_id
-                    WHERE vmu.match_url_id = %s
-                """
-                params = [(url,) for url in sorted(urls_to_delete)]
-                safe_executemany(cursor, delete_query, params, chunk_size=200)
+            # Phase A: delete old odds for affected match_url_id's and commit
+            try:
+                if urls_to_delete:
+                    delete_query = """
+                        DELETE vmo
+                        FROM ATO_production.V2_Matches_Odds AS vmo
+                        JOIN ATO_production.V2_Matches_Urls AS vmu
+                          ON vmo.bookie_id = vmu.bookie_id AND vmo.match_id = vmu.match_id
+                        WHERE vmu.match_url_id = %s
+                    """
+                    params = [(url,) for url in sorted(urls_to_delete)]
+                    # smaller chunks reduce lock footprint on join-delete
+                    safe_executemany(cursor, delete_query, params, chunk_size=100)
+                    if self.debug:
+                        print(f"[Worker] Deleted {cursor.rowcount} old odds entries.")
+                connection.commit()
+            except Exception as e:
+                try:
+                    connection.rollback()
+                except Exception:
+                    pass
                 if self.debug:
-                    print(f"[Worker] Deleted {cursor.rowcount} old odds entries.")
+                    print(f"[Worker] Delete phase failed: {e}")
 
-            # Insert odds only if we have them
-            if odds_buf:
-                query_insert_match_odds = """
-                    INSERT INTO ATO_production.V2_Matches_Odds
-                    (bet_id, match_id, bookie_id, market, market_binary, result, back_odd, web_url, updated_date)
-                    VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    ON DUPLICATE KEY UPDATE
-                      back_odd = VALUES(back_odd),
-                      web_url = VALUES(web_url),
-                      updated_date = VALUES(updated_date)
-                """
-                odds_to_insert = [item[:-1] for item in odds_buf]  # strip match_url_id
-                safe_executemany(cursor, query_insert_match_odds, odds_to_insert)
+            # Phase B: upsert odds and commit
+            try:
+                if odds_buf:
+                    query_insert_match_odds = """
+                        INSERT INTO ATO_production.V2_Matches_Odds
+                        (bet_id, match_id, bookie_id, market, market_binary, result, back_odd, web_url, updated_date)
+                        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        ON DUPLICATE KEY UPDATE
+                          back_odd = VALUES(back_odd),
+                          web_url = VALUES(web_url),
+                          updated_date = VALUES(updated_date)
+                    """
+                    odds_to_insert = [item[:-1] for item in odds_buf]  # strip match_url_id
+                    safe_executemany(cursor, query_insert_match_odds, odds_to_insert)
+                connection.commit()
+            except Exception as e:
+                try:
+                    connection.rollback()
+                except Exception:
+                    pass
+                if self.debug:
+                    print(f"[Worker] Odds phase failed: {e}")
 
-            if url_updates_buf:
-                unique_updates = list(set(url_updates_buf))
-                query_update_match_urls = """
-                    UPDATE ATO_production.V2_Matches_Urls
-                    SET updated_date = %s, http_status = %s
-                    WHERE match_url_id = %s
-                """
-                for upd in unique_updates:
-                    cursor.execute(query_update_match_urls, upd)
+            # Phase C: update V2_Matches_Urls and commit
+            try:
+                if url_updates_buf:
+                    unique_updates = list(set(url_updates_buf))
+                    query_update_match_urls = """
+                      UPDATE ATO_production.V2_Matches_Urls
+                      SET updated_date = %s,
+                          http_status  = %s
+                      WHERE match_url_id = %s
+                    """
+                    safe_executemany(cursor, query_update_match_urls, unique_updates, chunk_size=200)
+                connection.commit()
+            except Exception as e:
+                try:
+                    connection.rollback()
+                except Exception:
+                    pass
+                if self.debug:
+                    print(f"[Worker] URL update phase failed: {e}")
 
-            if match_ids_buf:
-                query_insert_dutcher_queue = """
-                    UPDATE ATO_production.V2_Matches
-                    SET queue_dutcher = 1
-                    WHERE match_id = %s AND queue_dutcher <> 1
-                """
-                unique_match_ids = sorted(set(match_ids_buf))
-                safe_executemany(cursor, query_insert_dutcher_queue, unique_match_ids, chunk_size=200)
+            # Phase D: set dutcher flags last; use smaller chunks, sorted order, and narrow predicate; tolerate failure
+            try:
+                if match_ids_buf:
+                    query_insert_dutcher_queue = """
+                        UPDATE ATO_production.V2_Matches
+                        SET queue_dutcher = 1
+                        WHERE match_id = %s AND queue_dutcher = 0
+                    """
+                    unique_match_ids = sorted(set(match_ids_buf))
+                    safe_executemany(cursor, query_insert_dutcher_queue, unique_match_ids, chunk_size=50)
+                connection.commit()
+            except Exception as e:
+                try:
+                    connection.rollback()
+                except Exception:
+                    pass
+                # Do not re-raise; odds and URL updates already committed
+                if self.debug:
+                    print(f"[Worker] Dutcher phase failed (tolerated): {e}")
 
-            connection.commit()
             if self.debug:
-                print(f"[Worker] Flushed {len(odds_buf)} odds, {len(url_updates_buf)} URL updates, {len(match_ids_buf)} dutcher flags.")
+                print(f"[Worker] Flushed {len(odds_buf)} odds, {len(url_updates_buf)} URL updates, {len(match_ids_buf)} dutcher flags (dutcher may be partial).")
 
         except mysql.connector.Error as e:
             if self.debug:
@@ -504,14 +562,18 @@ class ScrapersPipeline:
     def close_spider(self, spider):
         """Stop the background worker after a final flush and close the main-thread connection."""
         print(f"Closing spider {spider.name}: stopping DB writer thread with final flush...")
-        # Ask worker for final flush and stop
         try:
+            # Enqueue a flush and wait until all queued work is processed
             self._work_q.put({"type": "flush"})
+            self._work_q.join()
         except Exception:
             pass
+        # Signal stop and wait for worker to exit cleanly
         self._stop_evt.set()
         if self._worker_thread:
-            self._worker_thread.join(timeout=30)
+            self._worker_thread.join()
+
+        # Then close the main-thread connection
         if self.connection and self.connection.is_connected():
             try:
                 self.cursor.close()
