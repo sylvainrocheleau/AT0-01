@@ -3473,7 +3473,6 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                 clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
                 clean_selection_keys = list(filter(None, clean_selection_keys))
                 stopwords = ["Añadir al cupón", "Empate"]
-                print("clean selection key", clean_selection_keys)
                 if "Empate" not in clean_selection_keys:
                     for selection_key02 in clean_selection_keys:
                         if clean_selection_keys[0] in list_of_markets:
