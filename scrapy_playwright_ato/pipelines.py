@@ -1258,9 +1258,10 @@ class ScrapersPipeline:
                     self._shrink_item_for_error(item)
                     raise
 
-                # Now rebuild V2_Oddsmatcher using a SAVEPOINT so earlier work remains intact on failure
-                query_insert_odds_match_maker = """
-                    INSERT INTO ATO_production.V2_Oddsmatcher (
+                # Stage-and-swap rebuild of V2_Oddsmatcher to avoid FK lock conflicts with V2_Matches_Odds
+                # 1) Build into stage table (no FKs) using the same SELECT as before
+                query_insert_odds_match_maker_stage = """
+                    INSERT INTO ATO_production.V2_Oddsmatcher_stage (
                         bet_id,
                         match_id,
                         bookie_id,
@@ -1285,81 +1286,98 @@ class ScrapersPipeline:
                              JOIN ATO_production.V2_Exchanges ve ON vmo.bet_id = ve.bet_id
                              JOIN ATO_production.V2_Matches vm ON vm.match_id = vmo.match_id
                     WHERE ve.lay_odds > 0.02
-                      AND ve.liquidity > 0;
-                    """
-
-                # Ensure we are inside a transaction (required for SAVEPOINT)
-                started_tx = False
-                if not getattr(self.connection, "in_transaction", False):
-                    try:
-                        self.connection.start_transaction()
-                        started_tx = True
-                    except mysql.connector.errors.ProgrammingError:
-                        # Already in a transaction; continue
-                        pass
-
-                # Create a savepoint to isolate this block
-                self.cursor.execute("SAVEPOINT sp_v2_oddsmatcher")
+                      AND ve.liquidity > 0
+                """
 
                 try:
-                    self.cursor.execute("DELETE FROM ATO_production.V2_Oddsmatcher")
-                    self.cursor.execute(query_insert_odds_match_maker)
-
-                    # Success: release the savepoint; commit only if this block started the transaction
+                    # TRUNCATE stage (fast DDL; independent of live oddsmatcher locks)
+                    self.cursor.execute("TRUNCATE TABLE ATO_production.V2_Oddsmatcher_stage")
+                    # Populate stage
+                    self.cursor.execute(query_insert_odds_match_maker_stage)
+                    # 2) Atomically swap stage with live table (implicit commit)
+                    self.cursor.execute(
+                        """
+                        RENAME TABLE
+                          ATO_production.V2_Oddsmatcher TO ATO_production.V2_Oddsmatcher_old,
+                          ATO_production.V2_Oddsmatcher_stage TO ATO_production.V2_Oddsmatcher,
+                          ATO_production.V2_Oddsmatcher_old TO ATO_production.V2_Oddsmatcher_stage
+                        """
+                    )
+                    # Explicit commit for clarity (RENAME TABLE implies commit in MariaDB)
                     try:
-                        self.cursor.execute("RELEASE SAVEPOINT sp_v2_oddsmatcher")
-                    except Exception:
-                        # RELEASE SAVEPOINT is optional; ignore if the server doesn’t track it
-                        pass
-
-                    if started_tx:
                         self.connection.commit()
-
-                except Exception as e:
-                    # Roll back only this step; keep earlier work intact
-                    try:
-                        self.cursor.execute("ROLLBACK TO SAVEPOINT sp_v2_oddsmatcher")
                     except Exception:
-                        # If savepoint rollback failed, fall back to full rollback only if we started the transaction here
-                        if started_tx:
+                        pass
+                    # After successful swap: ensure live has the intended FKs (if you want DB-enforced integrity)
+                    try:
+                        self.cursor.execute(
+                            """
+                            SELECT rc.CONSTRAINT_NAME
+                            FROM information_schema.REFERENTIAL_CONSTRAINTS rc
+                            WHERE rc.CONSTRAINT_SCHEMA = 'ATO_production'
+                              AND rc.TABLE_NAME = 'V2_Oddsmatcher'
+                            """
+                        )
+                        live_fk_names = [row[0] for row in self.cursor.fetchall()]
+                        if not live_fk_names:
+                            self.cursor.execute(
+                                """
+                                ALTER TABLE ATO_production.V2_Oddsmatcher
+                                    ADD CONSTRAINT fk_vo_matches_live
+                                        FOREIGN KEY (match_id)
+                                            REFERENCES ATO_production.V2_Matches (match_id)
+                                            ON DELETE CASCADE,
+                                    ADD CONSTRAINT fk_vo_vmo_live
+                                        FOREIGN KEY (bet_id, bookie_id)
+                                            REFERENCES ATO_production.V2_Matches_Odds (bet_id, bookie_id)
+                                            ON DELETE CASCADE
+                                """
+                            )
                             try:
-                                self.connection.rollback()
+                                self.connection.commit()
                             except Exception:
                                 pass
-
-                    # Optional diagnostics to find offending match_id(s)
-                    if self.debug:
-                        diag_sql = """
-                                   SELECT DISTINCT vmo.match_id
-                                   FROM ATO_production.V2_Matches_Odds vmo
-                                            INNER JOIN ATO_production.V2_Exchanges ve
-                                                       ON vmo.bet_id = ve.bet_id
-                                            LEFT JOIN ATO_production.V2_Matches vm
-                                                      ON vmo.match_id = vm.match_id
-                                   WHERE ve.lay_odds > 0.02
-                                     AND ve.liquidity > 0
-                                     AND vm.match_id IS NULL \
-                                   """
-                        try:
-                            self.cursor.execute(diag_sql)
-                            missing = [row[0] for row in self.cursor.fetchall()]
-                            if missing:
-                                print(f"Offending match_id(s) not present in V2_Matches: {missing}")
-                                Helpers().insert_log(
-                                    level="CRITICAL",
-                                    type="DATA",
-                                    error="Oddsmatcher FK mismatch",
-                                    message=f"Missing match_id in V2_Matches: {missing}"
+                    except Exception as add_fk_err:
+                        if self.debug:
+                            print("Post-swap FK ensure on live failed:", add_fk_err)
+                    # After successful swap, ensure the table now named ..._stage is FK-free
+                    try:
+                        # Discover any FKs on the stage table and drop them
+                        self.cursor.execute(
+                            """
+                            SELECT rc.CONSTRAINT_NAME
+                            FROM information_schema.REFERENTIAL_CONSTRAINTS rc
+                            WHERE rc.CONSTRAINT_SCHEMA = 'ATO_production'
+                              AND rc.TABLE_NAME = 'V2_Oddsmatcher_stage'
+                            """
+                        )
+                        fk_names = [row[0] for row in self.cursor.fetchall()]
+                        for fk in fk_names:
+                            try:
+                                self.cursor.execute(
+                                    f"ALTER TABLE ATO_production.V2_Oddsmatcher_stage DROP FOREIGN KEY {fk}"
                                 )
-                        except Exception as diag_e:
-                            print("Failed to run diagnostic for FK violation:", diag_e)
-
-                    # If we started the transaction for this block, ensure we end it cleanly
-                    if started_tx:
+                            except Exception as drop_fk_err:
+                                if self.debug:
+                                    print(f"Warning: could not drop FK {fk} on V2_Oddsmatcher_stage: {drop_fk_err}")
+                        # Commit housekeeping (RENAME TABLE already implied a commit, this is additive)
                         try:
-                            self.connection.rollback()
+                            self.connection.commit()
                         except Exception:
                             pass
+                    except Exception as cleanup_e:
+                        if self.debug:
+                            print("Post-swap FK cleanup on stage failed:", cleanup_e)
+                except Exception as e:
+                    # If anything fails before the swap, no changes to the live table occurred
+                    if self.debug:
+                        print("Oddsmatcher stage-and-swap failed:", e)
+                        print(traceback.format_exc())
+                    # Best-effort rollback of any pending transactional work
+                    try:
+                        self.connection.rollback()
+                    except Exception:
+                        pass
                     self._shrink_item_for_error(item)
                     raise
 

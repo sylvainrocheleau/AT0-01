@@ -1429,31 +1429,23 @@ class Helpers():
                 }
                 )
             elif data["bookie_id"] == "RetaBet":
-                meta_request.update({"playwright_page_methods": [
-                    PageMethod(
-                        method="wait_for_selector",
-                        selector="//ul[@class='event__list jbgroup']",
-                    ),
-                ],
+                meta_request.update({"zyte_api_automap": {
+                        "geolocation": "ES",
+                        "browserHtml": True,
+                        "session": {"id": str(uuid4())},
+                        "actions":[
+                            {
+                              "action": "waitForSelector",
+                              "selector": {
+                                  "type": "xpath",
+                                  "value": "//li[@class='jlink jev event__item']",
+                                  "state": "visible",
+                              }
+                            }
+                        ]
+                    }
                 }
                 )
-                # meta_request.update({"zyte_api_automap": {
-                #         "geolocation": "ES",
-                #         # "browserHtml": True,
-                #         "session": {"id": str(uuid4())},
-                #         "actions":[
-                #             {
-                #               "action": "waitForSelector",
-                #               "selector": {
-                #                   "type": "xpath",
-                #                   "value": "//div[@class='bets__group']",
-                #                   "state": "visible",
-                #               }
-                #             }
-                #         ]
-                #     }
-                # }
-                # )
             elif data["bookie_id"] == "Sportium":
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
@@ -1794,7 +1786,6 @@ class Helpers():
                     ],
                     )
                     )
-
             elif data["bookie_id"] == "Bet777":
                 if data["sport_id"] == "1":
                     meta_request.update(dict(playwright_page_methods=[
@@ -1822,8 +1813,6 @@ class Helpers():
                     ]
                     )
                     )
-
-
             elif data["bookie_id"] == "BetWay":
                 if data["sport_id"] == "1":
                     meta_request.update({"playwright_page_methods":[
@@ -1844,7 +1833,7 @@ class Helpers():
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
                         method="wait_for_selector",
-                        selector="div.participants-pair-game",
+                        selector="//ms-option-panel[@class='option-panel']",
                     ),
                 ]
                 }
@@ -1853,10 +1842,9 @@ class Helpers():
                     meta_request.update({"playwright_page_methods":[
                         PageMethod(
                             method="click",
-                            selector="//span[@class='market-name' and normalize-space(.)='Marcador exacto']",
+                            selector="//div[@slot='title' and normalize-space(.)='Marcador exacto']",
                         ),
                     ]})
-
             elif data["bookie_id"] == "Bet777":
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
@@ -1946,7 +1934,8 @@ class Helpers():
                         PageMethod(
                             "evaluate",
                             expression="""
-                                const element = document.evaluate("//div[contains(@class, 'container')]", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                                const element = document.evaluate("//div[contains(@class, 'container')]", document, null,
+                                XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
                                 if (element) {
                                     element.click();
                                 }
@@ -2055,7 +2044,14 @@ class Helpers():
                                     "value": "//div[@class='bets__wrapper jbgroup jgroup']",
                                     "state": "visible",
                                 }
-                            }
+                            },
+                            # {
+                            #     "action": "click",
+                            #     "selector": {
+                            #         "type": "xpath",
+                            #         "value":
+                            #     }
+                            # }
                         ]
                 }
                 }
