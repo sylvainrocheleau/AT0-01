@@ -23,6 +23,7 @@ TABLES = [
     {'name': 'V2_Matches_Urls_No_Ids', 'key': 'match_url_id'},
     {'name': 'V2_Dutcher', 'key': ['bet_id', 'bookie_id', 'bookie_2']},
     {'name': 'V2_Oddsmatcher', 'key': ['bet_id', 'bookie_id', 'lay_odds']},
+    {'name': 'V2_Oddsmatcher_stage', 'key': ['bet_id', 'bookie_id', 'lay_odds']},
     {'name': 'V2_Sports_Urls', 'key': ['sport_url_id']},
     {'name': 'V2_Teams', 'key': ['team_id']},
 ]
