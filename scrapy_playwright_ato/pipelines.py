@@ -181,7 +181,7 @@ class ScrapersPipeline:
         self._worker_thread = threading.Thread(
             target=self._worker_loop,
             name="DBWriterThread",
-            daemon=False,  # ensure it’s not killed by interpreter shutdown
+            daemon=True,  # safety net: don’t block interpreter exit
         )
         self._worker_thread.start()
 
@@ -560,21 +560,34 @@ class ScrapersPipeline:
         # self._get_cloned_bookies()
 
     def close_spider(self, spider):
-        """Stop the background worker after a final flush and close the main-thread connection."""
+        """Stop the background worker after giving it time to flush; never hang indefinitely."""
         print(f"Closing spider {spider.name}: stopping DB writer thread with final flush...")
+
+        # 1) Signal the worker we’re closing. It will continue consuming until the queue is empty,
+        #    then perform a final flush before exiting the loop.
+        self._stop_evt.set()
+
+        # 2) Bounded wait for the queue to drain (respects Queue.task_done accounting)
+        #    This allows late items (produced during shutdown) to still be written.
+        drain_deadline = time.time() + 120  # give up to 30s to finish DB updates
         try:
-            # Enqueue a flush and wait until all queued work is processed
-            self._work_q.put({"type": "flush"})
-            self._work_q.join()
+            while self._work_q.unfinished_tasks > 0 and time.time() < drain_deadline:
+                time.sleep(0.2)
         except Exception:
             pass
-        # Signal stop and wait for worker to exit cleanly
-        self._stop_evt.set()
-        if self._worker_thread:
-            self._worker_thread.join()
 
-        # Then close the main-thread connection
-        if self.connection and self.connection.is_connected():
+        # 3) Join the worker thread with a timeout (don’t block forever)
+        if self._worker_thread:
+            self._worker_thread.join(timeout=30)
+            if self._worker_thread.is_alive():
+                try:
+                    print(
+                        "[Pipeline] Warning: DBWriterThread did not exit cleanly within timeout; proceeding with shutdown.")
+                except Exception:
+                    pass
+
+        # 4) Close the main-thread connection
+        if self.connection and getattr(self.connection, "is_connected", lambda: False)():
             try:
                 self.cursor.close()
             except Exception:

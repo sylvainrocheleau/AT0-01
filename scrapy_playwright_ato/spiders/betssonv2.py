@@ -26,27 +26,27 @@ class WebsocketsSpider(Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                self.competitions = [x for x in bookie_config(bookie=["Betsson"]) if x["competition_id"] == "UEFAEuropaLeague"]
-                self.match_filter = {"type": "bookie_and_comp", "params": ["Betsson", "UEFAEuropaLeague"]}
-
-                # self.competitions = bookie_config(bookie=["Betsson"])
-                # self.match_filter = {"type": "bookie_id", "params": ["Betsson", 0]}
-                # self.match_filter = {"type": "match_url_id", "params": [
-                #     'https://sportsbook.betsson.es/#/sport/?type=0&region=20001&competition=538&sport=1&game=27808634']}
-
-                print(self.competitions)
+                # NO FILTERS
+                # self.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
+                #                     if x["bookie_id"] == "Betsson"]
+                # FILTER BY BOOKIE THAT HAVE ERRORS
+                # self.competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
+                #                 if x["bookie_id"] == "Betsson"]
+                # self.match_filter = {}
+                # FILTER BY COMPETITION THAT HAVE HTTP_ERRORS
+                # comp_to_filter = "NBA"
+                # self.competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
+                #                 if x["bookie_id"] == "Betsson" and x["competition_id"] == comp_to_filter]
+                # self.match_filter = {"type": "bookie_and_comp", "params": ["Betsson", comp_to_filter]}
+                # FILTER BY MATCH
+                self.match_filter = {"type": "match_url_id", "params": [
+                    "https://sportsbook.betsson.es/#/sport/?type=0&region=20001&competition=756&sport=3&game=28278665"]}
             else:
                 self.debug = False
         except:
-            if (
-                0 <= Helpers().get_time_now("UTC").hour < 1
-                or 10 <= Helpers().get_time_now("UTC").hour < 11
-            ):
-                print("PROCESSING ALL COMPETITIONS")
-                self.competitions = bookie_config(bookie=["Betsson"])  # v2_competitions_url
-            else:
-                print("PROCESSING COMPETITIONS WITH HTTP ERRORS")
-                self.competitions = bookie_config(bookie=["Betsson", "http_errors"])
+            print("PROCESSING COMPETITIONS WITH HTTP ERRORS OR NOT UPDATED (12 HOURS)")
+            self.competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
+                                 if x["bookie_id"] == "Betsson"]
             self.match_filter = {"type": "bookie_id", "params": ["Betsson", 1]}
             self.debug = False
     name = "Betssonv2"
@@ -287,9 +287,6 @@ class WebsocketsSpider(Spider):
         )
         matches_details_and_urls = {k: [v for v in lst if v['to_delete'] != 1] for k, lst in
                                     matches_details_and_urls.items() if any(v['to_delete'] != 1 for v in lst)}
-        if self.debug:
-            print("matches_details_and_urls", matches_details_and_urls)
-
         for key, value in matches_details_and_urls.items():
             for data in value:
                 flag_error = True
@@ -370,20 +367,37 @@ class WebsocketsSpider(Spider):
                             away_team=data["away_team"],
                             debug=self.debug
                         )
-                        odds = Helpers().build_ids(
-                            id_type="bet_id",
-                            data={
-                                "match_id": data["match_id"],
-                                "odds": normalize_odds_variables(
-                                    odds,
-                                    data["sport_id"],
-                                    data["home_team"],
-                                    data["away_team"],
-                                )
-                            }
-                        )
+                        if data["competition_id"] == "NBA":
+                            # This bookie switches home and away teams for NBA
+                            odds = Helpers().build_ids(
+                                id_type="bet_id",
+                                data={
+                                    "match_id": data["match_id"],
+                                    "odds": normalize_odds_variables(
+                                        odds=odds,
+                                        sport=data["sport_id"],
+                                        home_team=data["away_team"],
+                                        away_team=data["home_team"],
+                                    )
+                                }
+                            )
+                        else:
+                            odds = Helpers().build_ids(
+                                id_type="bet_id",
+                                data={
+                                    "match_id": data["match_id"],
+                                    "odds": normalize_odds_variables(
+                                        odds=odds,
+                                        sport=data["sport_id"],
+                                        home_team=data["home_team"],
+                                        away_team=data["away_team"],
+                                    )
+                                }
+                            )
                         if odds:
                             flag_error = False
+                            if self.debug:
+                                print("odds", odds)
 
                 except Exception:
                     if self.debug:
