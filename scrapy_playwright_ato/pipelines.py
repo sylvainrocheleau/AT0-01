@@ -569,7 +569,7 @@ class ScrapersPipeline:
 
         # 2) Bounded wait for the queue to drain (respects Queue.task_done accounting)
         #    This allows late items (produced during shutdown) to still be written.
-        drain_deadline = time.time() + 30  # give up to 30s to finish DB updates
+        drain_deadline = time.time() + 120  # give up to 30s to finish DB updates
         try:
             while self._work_q.unfinished_tasks > 0 and time.time() < drain_deadline:
                 time.sleep(0.2)
@@ -578,7 +578,7 @@ class ScrapersPipeline:
 
         # 3) Join the worker thread with a timeout (don’t block forever)
         if self._worker_thread:
-            self._worker_thread.join(timeout=5)
+            self._worker_thread.join(timeout=30)
             if self._worker_thread.is_alive():
                 try:
                     print(
