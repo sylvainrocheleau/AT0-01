@@ -849,7 +849,7 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                             away_team = xpath_result_02.xpath("//span[@class='text-ellipsis']/text()").extract()[1]
                             away_team = away_team.strip()
                             relative_url = xpath_result_02.xpath("//a/@href").extract()[0]
-                            url = "https://sb-pp-esfe.daznbet.es" + relative_url + "?tab=todo"
+                            url = "https://sb-pp-esfe.daznbet.es" + relative_url + "?tab=tiempo-regular"
                             web_url = "https://www.daznbet.es/es-es/deportes" + relative_url
 
                             # date = None
@@ -2014,7 +2014,8 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                 data = response
             if not isinstance(data, dict):
                 return []
-
+            # if debug:
+            #     print("data", data)
             root = data.get("data", {}).get("data", {})
             games_map = root.get("game", {}) if isinstance(root, dict) else {}
             if not isinstance(games_map, dict):
@@ -2028,12 +2029,16 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                 if not isinstance(markets, dict):
                     continue
                 for _mid, market_obj in markets.items():
+                    # if debug:
+                    #     print("mid", _mid, "market_obj", market_obj)
                     if not isinstance(market_obj, dict):
                         continue
                     name_template = market_obj.get("name_template")
                     if name_template in list_of_markets:
                         events = market_obj.get("event", {})
                         if isinstance(events, dict):
+                            # if debug:
+                            #     print("events", events)
                             for _eid, event_obj in events.items():
                                 if not isinstance(event_obj, dict):
                                     continue
@@ -3780,6 +3785,7 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
 
     if debug:
+        # print("printing odds is off in parsing_logic (line 3780-4000)")
         try:
             print("Odds for",bookie_id, "sport", sport_id, odds)
         except Exception as e:

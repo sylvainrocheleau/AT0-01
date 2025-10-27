@@ -18,17 +18,18 @@ CONCURRENT_ITEMS = 1500
 LOG_LEVEL = "INFO"
 DOWNLOAD_DELAY = 2
 RANDOMIZE_DOWNLOAD_DELAY = True
-DOWNLOAD_TIMEOUT = 200
-# TODO reduce this value for V2
-CLOSESPIDER_TIMEOUT = 60*80
+DOWNLOAD_TIMEOUT = 120
+CLOSESPIDER_TIMEOUT = 60*30
 COOKIES_ENABLED = True
 COOKIES_DEBUG = False
 REDIRECT_ENABLED = False
-REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
+# REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 ITEM_PIPELINES = {
    'scrapy_playwright_ato.pipelines.ScrapersPipeline': 300,
 }
 LOG_FORMATTER = 'scrapy_playwright_ato.logformatter.ShortItemLogFormatter'
+DUPEFILTER_DEBUG = True
+DUPEFILTER_CLASS = 'scrapy.dupefilters.BaseDupeFilter'
 
 # ATO settings
 ###################
@@ -45,8 +46,10 @@ except KeyError:
 
 # ALL_SPORTS_API_KEY = "uNqyISH2ausxwgyW2rhoRZHUWIMd7GYU"
 ALL_SPORTS_API_KEY = "2b8a801f7dmshabee8de6884c434p14d1dfjsnd5a9a6bb9c3f"
-SQL_USER = "spider_rw_03"
-SQL_PWD = "43&trdGhqLlM"
+# SQL_USER = "spider_rw_03"
+SQL_USER = "admin-ATO"
+SQL_PWD = "2#Roght905Dt"
+# SQL_PWD = "43&trdGhqLlM"
 list_of_proxies = [
     "115.124.36.119", "185.106.126.109", "185.107.152.14", "185.105.15.160", "85.115.193.157",
     "185.159.43.180", "185.166.172.76", "194.38.59.88", "185.118.52.126", "212.80.210.193"
