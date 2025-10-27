@@ -13,7 +13,7 @@ from websockets_proxy import Proxy, proxy_connect
 from scrapy import Spider
 from ..items import ScrapersItem
 from ..parsing_logic import parse_competition, parse_match
-from ..bookies_configurations import normalize_odds_variables, bookie_config, list_of_markets_V2, get_context_infos
+from ..bookies_configurations import normalize_odds_variables, bookie_config, list_of_markets_V2, get_context_infos, normalize_odds_variables_temp
 from ..utilities import Helpers
 from ..settings import proxy_prefix_http, proxy_suffix, LOCAL_USERS
 
@@ -24,24 +24,29 @@ class WebsocketsSpider(Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                self.competitions = [x for x in bookie_config(bookie=["Versus"]) if x["competition_id"] == "BundesligaAlemana"]
-                self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", "BundesligaAlemana"]}
-
+                # NO FILTERS
+                # self.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
+                #                     if x["bookie_id"] == "Versus"]
+                # FILTER BY BOOKIE THAT HAVE ERRORS
+                # self.competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
+                #                 if x["bookie_id"] == "Versus"]
+                # self.match_filter = {}
+                # FILTER BY COMPETITION THAT HAVE HTTP_ERRORS
+                # self.competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
+                #                 if x["bookie_id"] == "Versus" and x["competition_id"] == comp_to_filter]
+                # self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", comp_to_filter]}
+                # FILTER BY COMPETITION
+                # competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
+                #                 if x["bookie_id"] == "Versus" and x["competition_id"] == "BundesligaAlemana"]
+                # FILTER BY MATCH
+                self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", "SegundaDivisionEspanola"]}
                 # self.match_filter = {"type": "match_url_id", "params": [
                 #     "https://www.versus.es/apuestas/sports/basketball/events/22387658"]} # https://www.versus.es/apuestas/sports/soccer/events/23162434
 
-                # self.competitions = bookie_config(bookie=["Versus"])
-                # self.match_filter = {"type": "bookie_id", "params": ["Versus", 1]}
         except:
-            if (
-                0 <= Helpers().get_time_now("UTC").hour < 1
-                or 10 <= Helpers().get_time_now("UTC").hour < 11
-            ):
-                print("PROCESSING ALL COMPETITIONS")
-                self.competitions = bookie_config(bookie=["Versus"])  # v2_competitions_url
-            else:
-                print("PROCESSING COMPETITIONS WITH HTTP ERRORS")
-                self.competitions = bookie_config(bookie=["Versus", "http_errors"])
+            print("PROCESSING COMPETITIONS WITH HTTP ERRORS OR NOT UPDATED (12 HOURS)")
+            self.competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
+                                 if x["bookie_id"] == "Versus"]
             self.match_filter = {"type": "bookie_id", "params": ["Versus",1]}
             self.debug = False
     name = "Versusv2"
@@ -313,8 +318,6 @@ destination:/api/marketgroup/{data['match_url_id'].split('/')[-1]}{suffix}
                                     break
 
                         match_market_ids = msg
-                        # if self.debug:
-                        #     print("match_market_ids: ", match_market_ids)
                         if (
                             isinstance(match_market_ids, dict)
                             and len(match_market_ids) > 0
@@ -327,8 +330,6 @@ destination:/api/marketgroup/{data['match_url_id'].split('/')[-1]}{suffix}
                                         filtered_match_market_ids.append(market["id"])
                                 else:
                                     pass
-                            # filtered_match_market_ids = ';'.join(
-                            #     [item for sublist in filtered_match_market_ids for item in sublist])
                             filtered_match_market_ids = ';'.join(
                                 [item for item in filtered_match_market_ids])
 
@@ -373,11 +374,13 @@ destination:/api/markets/multi
                                         id_type="bet_id",
                                         data={
                                             "match_id": data["match_id"],
-                                            "odds": normalize_odds_variables(
-                                                odds,
-                                                data["sport_id"],
-                                                data["home_team"],
-                                                data["away_team"],
+                                            "odds": normalize_odds_variables_temp(
+                                                odds=odds,
+                                                sport=data["sport_id"],
+                                                home_team=data["home_team"],
+                                                away_team=data["away_team"],
+                                                orig_home_team=data["orig_home_team"],
+                                                orig_away_team=data["orig_away_team"],
                                             )
                                         }
                                     )

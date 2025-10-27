@@ -11,7 +11,7 @@ from scrapy.exceptions import DontCloseSpider
 from twisted.internet.error import DNSLookupError, TimeoutError, TCPTimedOutError
 from ..items import ScrapersItem
 from ..settings import get_custom_playwright_settings, get_custom_settings_for_zyte_api, LOCAL_USERS
-from ..bookies_configurations import get_context_infos, normalize_odds_variables, list_of_markets_V2, bookie_config
+from ..bookies_configurations import get_context_infos, normalize_odds_variables, list_of_markets_V2, bookie_config, normalize_odds_variables_temp
 from ..parsing_logic import parse_match as parse_match_logic
 from ..utilities import Helpers
 
@@ -41,10 +41,10 @@ class MetaSpider(scrapy.Spider):
             # FILTER OPTIONS
             # match_filter = {}
             # match_filter = {"type": "bookie_id", "params":["CasinoBarcelona", 1]}
-            # match_filter = {"type": "bookie_and_comp", "params": ["1XBet", "LaLigaEspanola"]}
+            match_filter = {"type": "bookie_and_comp", "params": ["RetaBet", "Argentina-PrimeraDivision"]}
             # match_filter = {"type": "comp", "params":["Euroligamasculina"]}
-            match_filter = {"type": "match_url_id",
-                            "params":['https://apuestas.retabet.es/deportes/futbol/internacional-selecciones/clasificacion-mundial-uefa/belgica-macedonia-del-norte/32755908']}
+            # match_filter = {"type": "match_url_id",
+            #                 "params":['https://apuestas.retabet.es/deportes/futbol/alemania/bundesliga/leipzig-hamburgo/32738344']}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -217,11 +217,13 @@ class MetaSpider(scrapy.Spider):
             id_type="bet_id",
             data={
                 "match_id": response.meta.get("match_id"),
-                "odds": normalize_odds_variables(
-                    odds,
-                    response.meta.get("sport_id"),
-                    response.meta.get("home_team"),
-                    response.meta.get("away_team"),
+                "odds": normalize_odds_variables_temp(
+                    odds=odds,
+                    sport=response.meta.get("sport_id"),
+                    home_team=response.meta.get("home_team"),
+                    away_team=response.meta.get("away_team"),
+                    orig_home_team=response.meta.get("orig_home_team"),
+                    orig_away_team=response.meta.get("orig_away_team"),
                 )
             }
         )

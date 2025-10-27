@@ -12,7 +12,7 @@ from requests.exceptions import ProxyError, ConnectionError, Timeout, RequestExc
 from json import JSONDecodeError
 from ..items import ScrapersItem
 from ..settings import proxy_prefix, proxy_suffix, LOCAL_USERS
-from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables, list_of_markets_V2
+from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables, list_of_markets_V2, normalize_odds_variables_temp
 from ..utilities import Helpers, Connect
 
 
@@ -74,7 +74,7 @@ class TwoStepsJsonSpider(scrapy.Spider):
                 # pass
                 # FILTER BY COMPETITION
                 self.map_competitions_urls = {key: value for key, value in self.map_competitions_urls.items()
-                                              if value["competition_id"] == "WorldChampionshipQualUEFA"}
+                                              if value["competition_id"] == "Ligue1Francesa"}
         except:
             pass
 
@@ -221,8 +221,10 @@ class TwoStepsJsonSpider(scrapy.Spider):
                                 "betfair_competition_id": data["competitionId"],
                                 "competition_name": self.map_competitions_urls[data['competitionId']]['competition_name_es'],
                                 "home_team": match_infos[0]["home_team_normalized"],
+                                "orig_home_team": match_infos[0]["home_team"],
                                 "home_team_id": home_team_id,
                                 "away_team": match_infos[0]["away_team_normalized"],
+                                "orig_away_team": match_infos[0]["away_team"],
                                 "away_team_id": away_team_id,
                                 "date": match_infos[0]["date"],
                                 "market_ids": [],
@@ -373,11 +375,13 @@ class TwoStepsJsonSpider(scrapy.Spider):
                         id_type="bet_id",
                         data={
                             "match_id": self.events[key]["match_id"],
-                            "odds": normalize_odds_variables(
+                            "odds": normalize_odds_variables_temp(
                                 odds=self.events[key]["odds"],
                                 sport=self.events[key]["sport"],
                                 home_team=self.events[key]["home_team"],
                                 away_team=self.events[key]["away_team"],
+                                orig_home_team=self.events[key]["orig_home_team"],
+                                orig_away_team=self.events[key]["orig_away_team"],
                             )
                         }
                     )
