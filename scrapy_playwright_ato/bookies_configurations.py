@@ -253,11 +253,11 @@ list_of_markets_V2 = {
 },
 "DaznBet": {
     "1": ["1X2", "Goles Totales", "Marcador Exacto"],
-    "2": ["TIEMPO REGULAR (INCL. TIEMPO EXTRA) - GANADOR", "Puntos Totales"],
+    "2": ["Ganador Sin Empate (Tiempo Regular)", "Puntos Totales"],
     "3": ["Ganador", "Juegos Totales"],
 },
 "Versus": {
-    "1": ["Resultado Del Partido", "Resultado Del Partido - Cuotas Mejoradas", "Total Goles Más/Menos", "Resultado exacto"],
+    "1": ["Resultado final", "Resultado Del Partido - Cuotas Mejoradas", "Total Goles Más/Menos", "Resultado exacto"],
     "2": ['Ganador del partido', 'Total Puntos'],
     "3": ["Cuotas del partido", "Total de juegos"],
 },
@@ -272,7 +272,6 @@ list_of_markets_V2 = {
 },
 }
 
-# TODO: find ways to reduce the size of the data maybe pass the scraping_group
 def get_context_infos(bookie_name):
     from scrapy_playwright_ato.utilities import Connect, Helpers
     connection = Connect().to_db(db="ATO_production", table=None)
@@ -561,7 +560,6 @@ def bookie_config(bookie):
 
 def normalize_odds_variables(odds, sport, home_team, away_team):
     # Standardized variables names
-
     market_correct_score = "Marcador Exacto"
     if sport == "Football" or sport == "Fútbol" or sport == "1":
         market_over_under = {"prefix":"Más/Menos de ", "suffix":" goles"}
@@ -580,9 +578,9 @@ def normalize_odds_variables(odds, sport, home_team, away_team):
         "Partido", "partido", "Match_Result", "Match Result", "Ganador", "1x2", "1X2", "1-2", "Normal_Time_Result", "1-X-2",
         "Prórroga incluida", "Oferta básica", "Money Line", "Winner", "3-Way", "Local", "ganará", "Línea de Juego",
         "Apuestas a ganador", "Cuotas de partido", "Tiempo reglamentario", "Vencedor del partido",
-        "TIEMPO REGULAR (INCL. TIEMPO EXTRA) - GANADOR", "Resultado final", "Resultado Final", "¿Quién ganará el partido?",
+        "Resultado final", "Resultado Final", "¿Quién ganará el partido?",
         "Resultado Del Partido - Cuotas Mejoradas", "Victoria sin empate (en caso de empate se anula la apuesta)",
-        "Victoria sin empate",
+        "Victoria sin empate", "Match Winner", "Ganador Sin Empate (Tiempo Regular)"
     ]
     not_winners_keywords = ["Puntos", "puntos", "Menos", "menos", "Goals"]
     home_team_keywords = ["1", "HB_H", ".HB_H", "home", "Local", "W1"]
@@ -716,6 +714,183 @@ def normalize_odds_variables(odds, sport, home_team, away_team):
             print(traceback.format_exc())
     return odds_02
 
+def normalize_odds_variables_temp(odds, sport, home_team, away_team, orig_home_team, orig_away_team):
+    # Standardized variables names
+    market_correct_score = "Marcador Exacto"
+    if sport == "Football" or sport == "Fútbol" or sport == "1":
+        market_over_under = {"prefix":"Más/Menos de ", "suffix":" goles"}
+        market_winner = "Ganador del partido"
+    elif sport == "Basketball" or sport == "Baloncesto" or sport == "2":
+        market_over_under = {"prefix": "Más/Menos de ", "suffix": " puntos"}
+        market_winner = "Ganador sin empate"
+    elif sport == "Tennis" or sport == "Tenis" or sport == "3":
+        market_over_under = {"prefix": "Más/Menos de ", "suffix": " juegos"}
+        market_winner = "Ganador del partido"
+    result_over = "Más de "
+    result_under = "Menos de "
+
+    # Keywords to look for
+    winners_keywords = [
+        "Partido", "partido", "Match_Result", "Match Result", "Ganador", "1x2", "1X2", "1-2", "Normal_Time_Result", "1-X-2",
+        "Prórroga incluida", "Oferta básica", "Money Line", "Winner", "3-Way", "Local", "ganará", "Línea de Juego",
+        "Apuestas a ganador", "Cuotas de partido", "Tiempo reglamentario", "Vencedor del partido",
+        "Resultado final", "Resultado Final", "¿Quién ganará el partido?",
+        "Resultado Del Partido - Cuotas Mejoradas", "Victoria sin empate (en caso de empate se anula la apuesta)",
+        "Victoria sin empate", "Match Winner", "Ganador Sin Empate (Tiempo Regular)"
+    ]
+    not_winners_keywords = ["Puntos", "puntos", "Menos", "menos", "Goals"]
+    home_team_keywords = ["1", "HB_H", ".HB_H", "home", "Local", "W1"]
+    away_team_keywords = ["Visitante", "2", "HB_AWAY", ".HB_AWAY", "W2", "HB_A" ]
+    draw_keywords = ["draw", "Draw", "x", "X", "Empate", "empate", ]
+    market_correct_score_keywords = [
+        "Correct", "correct", "Correct Score", "Marcador exacto", "Resultado exacto", "Resultado Exacto",
+        "Resultado Correcto", "Resultado correcto", "¿Resultado exacto?",  "Correct_Score_(Dynamic_Type)",
+        "Marcador Exacto", "Resul. Exacto", "MARCADOR EXACTO", "Puntuación exacta", "Resultado"
+    ]
+    not_market_result_correct_score_keywords = ["Cualquier otro resultado", "Otros"]
+
+    over_keywords = ["Más", "Más de", "más", "Mas", "mas", "Over", "over", "+", "yes"]
+    under_keywords = ["Menos", "menos", "Menos de", "Under", "under", "-", "no"]
+
+    odds_02 = []
+    for bet in odds:
+        try:
+            if isinstance(bet["Odds"], int) or isinstance(bet["Odds"], float):
+                pass
+            else:
+                bet["Odds"] = float(bet["Odds"].replace(",", "."))
+        except Exception:
+            bet["Odds"] = 0
+            continue
+        if (
+                any(ext in bet["Market"] for ext in winners_keywords)
+                and not any(ext in bet["Market"] for ext in not_winners_keywords)
+            ):
+            bet["Market"] = market_winner
+            print("testing", bet["Result"])
+            # print("away_team", away_team, SequenceMatcher(None, bet["Result"].lower(), away_team.lower()).ratio())
+            # print("org_away", orig_away_team, SequenceMatcher(None, bet["Result"].lower(), orig_away_team.lower()).ratio())
+            # print("home", home_team, SequenceMatcher(None, bet["Result"].lower(), home_team.lower()).ratio())
+            # print("orig_home", orig_home_team, SequenceMatcher(None, bet["Result"].lower(), orig_home_team.lower()).ratio())
+            # print("max home", max(
+            #                     SequenceMatcher(None, bet["Result"].lower(), home_team.lower()).ratio(),
+            #                     SequenceMatcher(None, bet["Result"].lower(), orig_home_team.lower()).ratio()
+            #                 ))
+            # print("max away", max(
+            #                     SequenceMatcher(None, bet["Result"].lower(), away_team.lower()).ratio(),
+            #                     SequenceMatcher(None, bet["Result"].lower(), orig_away_team.lower()).ratio()
+            #                 )
+            #       )
+            if (
+                    bet["Result"] != away_team
+                    and not any(ext == bet["Result"] for ext in draw_keywords)
+                    and not any(ext == bet["Result"] for ext in away_team_keywords)
+                    and (
+                            any(ext == bet["Result"] for ext in home_team_keywords)
+                        or (
+                            max(
+                                SequenceMatcher(None, bet["Result"].lower(), home_team.lower()).ratio(),
+                                SequenceMatcher(None, bet["Result"].lower(), orig_home_team.lower()).ratio()
+                            )
+                            >
+                            max(
+                                SequenceMatcher(None, bet["Result"].lower(), away_team.lower()).ratio(),
+                                SequenceMatcher(None, bet["Result"].lower(), orig_away_team.lower()).ratio()
+                            )
+                        )
+                        )
+
+                ):
+                    bet["Result"] = home_team
+            elif (
+                    any(ext == bet["Result"] for ext in draw_keywords)
+                    and (
+                            bet["Result"] not in away_team
+                            or away_team not in bet["Result"]
+
+                        )
+                    and (
+                            bet["Result"] not in home_team
+                            or home_team not in bet["Result"]
+                        )
+                    and SequenceMatcher(None, bet["Result"], home_team).ratio() < 0.55
+                    and SequenceMatcher(None, bet["Result"], away_team).ratio() < 0.55
+                ):
+                bet["Result"] = "Empate"
+            else:
+                bet["Result"] = away_team
+            print("final choice = ", bet["Result"])
+        elif (
+                any(ext in bet["Market"] for ext in market_correct_score_keywords)
+                and not any(ext in bet["Result"] for ext in not_market_result_correct_score_keywords)
+        ):
+            bet["Market"] = market_correct_score
+            bet["Result"] = bet["Result"].replace(" M", "").replace(" ", "")
+            bet["Result"] = re.sub(r'[^0-9]', ' - ', bet["Result"])
+            if "-  - " in bet["Result"]:
+                bet["Result"] = "unable_to_normalize"
+
+        else:
+            try:
+                x = float(re.findall(r"[-+]?(?:\d*\.\d+|\d+)", bet["Result"].replace(",", "."))[0])
+            except IndexError as e:
+                # print("error on result", bet["Result"] )
+                pass
+            try:
+                x = float(re.findall(r"[-+]?(?:\d*\.\d+|\d+)", bet["Market"].replace(",", "."))[0])
+            except IndexError as e:
+                # print("error on market", bet["Market"])
+                pass
+            try:
+                if any(ext in bet["Result"] for ext in over_keywords):
+                    bet["Result"] = result_over+str(x)
+                elif any(ext in bet["Result"] for ext in under_keywords):
+                    bet["Result"] = result_under+str(x)
+                # if  ".0" not in str(x):
+                bet["Market"] = market_over_under["prefix"] + str(x) + market_over_under["suffix"]
+            except UnboundLocalError as e:
+                pass
+        if (
+            (sport == "Football" or sport == "Fútbol" or sport == "1")
+            and bet["Market"] == market_winner
+        ):
+            bet["Market_Binary"] = False
+            bet["Market_Tertiary"] = True
+        elif (
+            (sport == "Football" or sport == "Fútbol" or sport == "1")
+            and bet["Market"] == market_correct_score
+        ):
+                bet["Market_Binary"] = False
+                bet["Market_Tertiary"] = False
+        else:
+            bet["Market_Binary"] = True
+            bet["Market_Tertiary"] = False
+
+        try:
+            # Quality checks
+            if market_over_under["prefix"] in bet["Market"] and ".5" not in str(x):
+                pass
+            elif "otro" in bet["Result"].lower() and bet["Market"] != market_winner:
+                bet["Result"] = "unable_to_normalize"
+            elif bet["Odds"] < 50 and bet["Result"] != "unable_to_normalize" and "Size" not in bet.keys():
+                odds_02.append(
+                    {
+                        "Market": bet["Market"], "Market_Binary": bet["Market_Binary"],
+                        "Result": bet["Result"], "Market_Tertiary": bet["Market_Tertiary"], "Odds": bet["Odds"],
+                    }
+                )
+            elif bet["Odds"] < 50 and bet["Result"] != "unable_to_normalize" and "Size" in bet.keys():
+                odds_02.append(
+                    {
+                        "Market": bet["Market"], "Market_Binary": bet["Market_Binary"],
+                        "Result": bet["Result"], "Market_Tertiary": bet["Market_Tertiary"],
+                        "Odds": bet["Odds"], "Size": bet["Size"],
+                    }
+                )
+        except Exception as e:
+            import traceback
+            print(traceback.format_exc())
+    return odds_02
 #
 if __name__ == "__main__":
     print("main from bookies_config")
