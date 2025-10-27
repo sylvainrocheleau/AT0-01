@@ -13,7 +13,8 @@ from websockets.exceptions import ConnectionClosed
 from websockets_proxy import Proxy, proxy_connect
 from scrapy import Spider
 from ..items import ScrapersItem
-from ..bookies_configurations import normalize_odds_variables, bookie_config, get_context_infos, list_of_markets_V2
+from ..bookies_configurations import normalize_odds_variables, bookie_config, get_context_infos, list_of_markets_V2, \
+    normalize_odds_variables_temp
 from ..parsing_logic import parse_competition, parse_match
 from ..settings import proxy_prefix_http, proxy_suffix, LOCAL_USERS
 from ..utilities import Helpers
@@ -34,13 +35,12 @@ class WebsocketsSpider(Spider):
                 #                 if x["bookie_id"] == "Betsson"]
                 # self.match_filter = {}
                 # FILTER BY COMPETITION THAT HAVE HTTP_ERRORS
-                # comp_to_filter = "NBA"
                 # self.competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
-                #                 if x["bookie_id"] == "Betsson" and x["competition_id"] == comp_to_filter]
-                # self.match_filter = {"type": "bookie_and_comp", "params": ["Betsson", comp_to_filter]}
+                #                 if x["bookie_id"] == "Betsson" and x["competition_id"] == "NBA"]
                 # FILTER BY MATCH
-                self.match_filter = {"type": "match_url_id", "params": [
-                    "https://sportsbook.betsson.es/#/sport/?type=0&region=20001&competition=756&sport=3&game=28278665"]}
+                self.match_filter = {"type": "bookie_and_comp", "params": ["Betsson", "NBA"]}
+                # self.match_filter = {"type": "match_url_id", "params": [
+                #     "https://sportsbook.betsson.es/#/sport/?type=0&region=20001&competition=756&sport=3&game=28278665"]}
             else:
                 self.debug = False
         except:
@@ -373,11 +373,13 @@ class WebsocketsSpider(Spider):
                                 id_type="bet_id",
                                 data={
                                     "match_id": data["match_id"],
-                                    "odds": normalize_odds_variables(
+                                    "odds": normalize_odds_variables_temp(
                                         odds=odds,
                                         sport=data["sport_id"],
                                         home_team=data["away_team"],
                                         away_team=data["home_team"],
+                                        orig_home_team=data["orig_away_team"],
+                                        orig_away_team=data["orig_home_team"],
                                     )
                                 }
                             )
@@ -386,11 +388,13 @@ class WebsocketsSpider(Spider):
                                 id_type="bet_id",
                                 data={
                                     "match_id": data["match_id"],
-                                    "odds": normalize_odds_variables(
+                                    "odds": normalize_odds_variables_temp(
                                         odds=odds,
                                         sport=data["sport_id"],
                                         home_team=data["home_team"],
                                         away_team=data["away_team"],
+                                        orig_home_team=data["orig_home_team"],
+                                        orig_away_team=data["orig_away_team"],
                                     )
                                 }
                             )
