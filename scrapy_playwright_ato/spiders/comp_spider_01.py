@@ -32,9 +32,9 @@ class TwoStepsSpider(scrapy.Spider):
     map_matches = {}
     for match in Helpers().load_matches():
         try:
-            map_matches[match[6]].append(match[0])
+            map_matches[match[5]].append(match[0])
         except KeyError:
-            map_matches.update({match[6]: [match[0]]})
+            map_matches.update({match[5]: [match[0]]})
     map_matches_urls = [x[0] for x in Helpers().load_matches_urls(name)]
     close_playwright = False
 
@@ -46,10 +46,12 @@ class TwoStepsSpider(scrapy.Spider):
                 self.debug = True
                 # NO FILTERS
                 # competitions = bookie_config(bookie={"output": "all_competitions"})
-                # FILTER BY BOOKIE THAT HAVE ERRORS
+                # FILTER BY NOT UPDATED
+                # competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})]
+                # FILTER BY BOOKIE THAT HAVE ERRORS OR NOT UPDATED
                 # competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
                 #                 if x["bookie_id"] == "GoldenPark"]
-                # FILTER BY COMPETITION THAT HAVE HTTP_ERRORS
+                # FILTER BY COMPETITION THAT HAVE HTTP_ERRORS OR NOT UPDATED
                 # competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
                 #                 if x["competition_id"] == "BundesligaAlemana"]
                 # Filter by bookie
@@ -60,7 +62,7 @@ class TwoStepsSpider(scrapy.Spider):
                 #                 if x["competition_id"] == "BundesligaAlemana"]
                 # Filter by bookie and competition
                 competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
-                                if x["competition_id"] == "Euroligamasculina" and x["bookie_id"] == "DaznBet"]
+                                if x["competition_id"] == "LaLigaEspanola" and x["bookie_id"] == "ZeBet"]
 
             else:
                 competitions = bookie_config(bookie={"output": "all_competitions"})
@@ -68,15 +70,6 @@ class TwoStepsSpider(scrapy.Spider):
         except Exception as e:
             print("PROCESSING COMPETITIONS WITH HTTP ERRORS OR NOT UPDATED (12 HOURS)")
             competitions = bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
-            # if (
-            #     0 <= Helpers().get_time_now("UTC").hour < 1
-            #     or 10 <= Helpers().get_time_now("UTC").hour < 11
-            # ):
-            #     print("PROCESSING ALL COMPETITIONS")
-            #     competitions = bookie_config(bookie=["all_bookies"])
-            # else:
-            #     print("PROCESSING COMPETITIONS WITH HTTP ERRORS")
-            #     competitions = bookie_config(bookie=["all_bookies", "http_errors"])
 
         competitions = [x for x in competitions if x["scraping_tool"] in self.allowed_scraping_tools]
         if self.debug:

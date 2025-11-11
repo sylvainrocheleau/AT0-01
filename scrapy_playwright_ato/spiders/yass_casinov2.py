@@ -19,8 +19,8 @@ class OneStepJsonSpider(scrapy.Spider):
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
                 # NO FILTERS
-                # self.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
-                #                     if x["bookie_id"] == "YaassCasino"]
+                self.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
+                                    if x["bookie_id"] == "YaassCasino"]
                 # FILTER BY BOOKIE THAT HAVE ERRORS
                 # self.competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
                 #                 if x["bookie_id"] == "YaassCasino"]
@@ -29,10 +29,11 @@ class OneStepJsonSpider(scrapy.Spider):
                 # self.competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
                 #                 if x["bookie_id"] == "YaassCasino" and x["competition_id"] == "NBA"]
                 # FILTER BY COMPETITIONS
-                self.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
-                                if x["bookie_id"] == "YaassCasino" and x["competition_id"] == "SerieABrasil"]
+                # self.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
+                #                 if x["bookie_id"] == "YaassCasino" and x["competition_id"] == "SerieABrasil"]
                 # FILTER BY MATCH
                 self.match_filter = {"type": "bookie_id", "params": ["YaassCasino", 2]}
+                # self.match_filter = {"type": "bookie_id", "params": ["YaassCasino", 2]}
                 # self.match_filter = {"type": "match_url_id", "params": [
                 #     "https://sportsbook.betsson.es/#/sport/?type=0&region=20001&competition=756&sport=3&game=28278665"]}
             else:
@@ -54,9 +55,9 @@ class OneStepJsonSpider(scrapy.Spider):
     map_matches = {}
     for match in Helpers().load_matches():
         try:
-            map_matches[match[6]].append(match[0])
+            map_matches[match[5]].append(match[0])
         except KeyError:
-            map_matches.update({match[6]: [match[0]]})
+            map_matches.update({match[5]: [match[0]]})
     all_competitions = Helpers().load_competitions_urls_and_sports()
     all_competitions = {x[1]: {"competition_name_es": x[2], "competition_url_id": x[0]} for x in all_competitions if
                         x[4] == "YaassCasino"}
@@ -267,6 +268,7 @@ class OneStepJsonSpider(scrapy.Spider):
                     error = f"{response.meta.get('bookie_id')} {response.meta.get('competition_id')} comp not in map_matches "
                     if self.debug:
                         print(error)
+                        print("map_keys", self.map_matches.keys())
                     Helpers().insert_log(level="INFO", type="CODE", error=error, message=None)
             else:
                 item["data_dict"] = {

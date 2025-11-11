@@ -1,5 +1,6 @@
 import random
 from math import frexp
+from collections import deque, defaultdict
 
 import scrapy
 import os
@@ -55,6 +56,57 @@ class MetaSpider(scrapy.Spider):
     frequency_group_being_processed = ''
     lenght_of_matches_details_and_urls = 1
     burnt_ips_per_bookie = bookie_config(bookie={"name": "all_bookies", "http_errors": False, "output": "burnt_ips"})
+    # Round-robin context rotation per (bookie_id, use_cookies) key
+    _ctx_rr = None  # dict[(bookie_id, use_cookies)] -> deque of context dicts
+
+    def _build_context_rr(self, context_infos):
+        """Build shuffled deques of contexts per (bookie_id, use_cookies) key.
+        For no-cookies rows, the key is ("no_cookies_bookies", 0).
+        """
+        if self._ctx_rr is not None:
+            return
+        buckets = defaultdict(list)
+        for x in context_infos:
+            # Derive use_cookies from profile when possible; assume no_cookies_bookies implies 0
+            use_cookies = 1
+            if x.get("bookie_id") == "no_cookies_bookies":
+                use_cookies = 0
+            key = (x.get("bookie_id"), use_cookies)
+            buckets[key].append(x)
+        self._ctx_rr = {}
+        for key, lst in buckets.items():
+            random.shuffle(lst)  # randomized start
+            self._ctx_rr[key] = deque(lst)
+
+    def _next_context(self, bookie_id: str, use_cookies: int):
+        """Pick next context in round-robin for the given (bookie_id, use_cookies).
+        - For use_cookies == 0, we draw from ("no_cookies_bookies", 0), but we still check burnt list under the real bookie_id.
+        - Skips burnt proxies; prunes them dynamically from the deque when encountered repeatedly.
+        Returns: context dict with bookie_id overwritten to the real one, or None if none available.
+        """
+        if self._ctx_rr is None:
+            return None
+        # Normalize key: map no-cookies to the shared pool
+        key = ("no_cookies_bookies", 0) if use_cookies == 0 else (bookie_id, 1)
+        dq = self._ctx_rr.get(key)
+        if not dq:
+            return None
+        # Try up to len(dq) rotations to find a non-burnt context
+        n = len(dq)
+        for _ in range(n):
+            ctx = dq[0]
+            proxy_ip = ctx.get("proxy_ip")
+            burnt_set = self.burnt_ips_per_bookie.get(bookie_id, set())
+            if proxy_ip not in burnt_set:
+                dq.rotate(-1)  # advance for next call
+                # Overwrite bookie_id to the real target
+                picked = dict(ctx)
+                picked["bookie_id"] = bookie_id
+                return picked
+            # If burnt, rotate away and continue; optionally prune after rotation window
+            dq.rotate(-1)
+        # All contexts appear burnt for this key
+        return None
 
     def get_schedule(self):
         """
@@ -122,6 +174,7 @@ class MetaSpider(scrapy.Spider):
     def start_requests(self):
         print(self.settings_used)
         context_infos = get_context_infos(bookie_name=["all_bookies"])
+        self._build_context_rr(context_infos)
         count_of_matches_details_and_urls = 0
         matches_details_and_urls, self.lenght_of_matches_details_and_urls, frequency_group = self.get_schedule()
         print("First Matches details and URLs lenght:", self.lenght_of_matches_details_and_urls)
@@ -134,21 +187,9 @@ class MetaSpider(scrapy.Spider):
                 for data in value:
                     try:
                         if data["scraping_tool"] in ["requests", "playwright", "zyte_proxy_mode"]:
-                            choices_of_contexts = []
-                            for x in context_infos:
-                                if (
-                                    x["bookie_id"] == data["bookie_id"]
-                                    and data["use_cookies"] == 1
-                                    and x["proxy_ip"] not in self.burnt_ips_per_bookie[data["bookie_id"]]
-                                ):
-                                    choices_of_contexts.append(x)
-                                elif (
-                                    "no_cookies_bookies" == x["bookie_id"]
-                                    and data["use_cookies"] == 0
-                                    and x["proxy_ip"] not in self.burnt_ips_per_bookie[data["bookie_id"]]
-                                ):
-                                    choices_of_contexts.append(x)
-                            if not choices_of_contexts:
+                            # Use per-(bookie_id, use_cookies) round-robin selection instead of random.choice
+                            context_info = self._next_context(data["bookie_id"], data["use_cookies"])
+                            if not context_info:
                                 Helpers().insert_log(
                                     level="WARNING",
                                     type="CONFIG",
@@ -159,14 +200,10 @@ class MetaSpider(scrapy.Spider):
                                     ),
                                 )
                                 continue
-                            context_info = random.choice(choices_of_contexts)
-                            context_info.update({"bookie_id": data["bookie_id"]})
                             data.update(context_info)
                         if data["scraping_tool"] == "playwright":
                             self.close_playwright = True
                         url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="match", data=data, debug=self.debug)
-                        # if self.debug:
-                        #     print("Meta request:", meta_request)
 
                         yield scrapy.Request(
                             dont_filter=dont_filter,
@@ -183,7 +220,6 @@ class MetaSpider(scrapy.Spider):
                         print("General exception on", data["bookie_id"], "from start request")
                         print(traceback.format_exc())
                         Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
-
             if (
                 not self.debug
                 and count_of_matches_details_and_urls == self.lenght_of_matches_details_and_urls

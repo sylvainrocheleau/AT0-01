@@ -58,9 +58,9 @@ class WebsocketsSpider(Spider):
     map_matches = {}
     for match in Helpers().load_matches():
         try:
-            map_matches[match[6]].append(match[0])
+            map_matches[match[5]].append(match[0])
         except KeyError:
-            map_matches.update({match[6]: [match[0]]})
+            map_matches.update({match[5]: [match[0]]})
     all_competitions = Helpers().load_competitions_urls_and_sports()
     all_competitions = {x[1]: {"competition_name_es": x[2], "competition_url_id": x[0]} for x in all_competitions if
                         x[4] == "Betsson"}

@@ -43,12 +43,12 @@ class APISpider(scrapy.Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 # No filters
-                # list_of_competitions = bookie_config(bookie=["AllSportAPI"])
+                list_of_competitions = bookie_config(bookie=["AllSportAPI"])
                 # Filter by active competitions
                 # list_of_competitions = [x for x in bookie_config(bookie=["AllSportAPI", "only_active"])]
                 # Filter by competition
-                list_of_competitions = [x for x in bookie_config(bookie=["AllSportAPI"])
-                                        if x["competition_id"] == "Argentina-PrimeraDivision"]
+                # list_of_competitions = [x for x in bookie_config(bookie=["AllSportAPI"])
+                #                         if x["competition_id"] == "Argentina-PrimeraDivision"]
                 # if self.debug:
                 #     print("list of competitions", list_of_competitions)
                 pass
@@ -182,9 +182,9 @@ class APISpider(scrapy.Spider):
                                     "teams": [data["homeTeam"]["name"], data["awayTeam"]["name"]]
                                 }
                             )
-                        print(f"comp: {response.meta.get('competition_id')} match_id {match_id} "
-                              f"for {data['homeTeam']['name']} vs {data['awayTeam']['name']} "
-                              f"computed date {date} original date {data['startTimestamp']}")
+                        # print(f"comp: {response.meta.get('competition_id')} match_id {match_id} "
+                        #       f"for {data['homeTeam']['name']} vs {data['awayTeam']['name']} "
+                        #       f"computed date {date} original date {data['startTimestamp']}")
                         self.data_dict[competition_id][data["id"]] = {
                             "bookie_id": self.name,
                             "sport_id": response.meta.get("sport_id"),
