@@ -54,9 +54,9 @@ class TwoStepsJsonSpider(scrapy.Spider):
     map_matches = {}
     for match in Helpers().load_matches():
         try:
-            map_matches[match[6]].append(match[0])
+            map_matches[match[5]].append(match[0])
         except KeyError:
-            map_matches.update({match[6]: [match[0]]})
+            map_matches.update({match[5]: [match[0]]})
 
     def end_loop(self, sig, frame):
         raise CloseSpider('Signal handler')
@@ -71,10 +71,10 @@ class TwoStepsJsonSpider(scrapy.Spider):
 
             if os.environ["USER"] in LOCAL_USERS:
                 # NO FILTERS
-                # pass
+                pass
                 # FILTER BY COMPETITION
-                self.map_competitions_urls = {key: value for key, value in self.map_competitions_urls.items()
-                                              if value["competition_id"] == "Ligue1Francesa"}
+                # self.map_competitions_urls = {key: value for key, value in self.map_competitions_urls.items()
+                #                               if value["competition_id"] == "Ligue1Francesa"}
         except:
             pass
 
@@ -177,9 +177,6 @@ class TwoStepsJsonSpider(scrapy.Spider):
                         home_team_id = str(data["runners"]["runner1SelectionId"])
                         away_team_id = str(data["runners"]["runner2SelectionId"])
                     gmt_time = datetime.datetime.strptime(data["startTime"], "%Y-%m-%dT%H:%M:%S.%fZ")
-                    if self.debug:
-                        print("date", gmt_time, "start_time", data["startTime"])
-
                     url = f"https://www.betfair.es/exchange/plus/es/{self.map_competitions_urls[data['competitionId']]['sport_name_es'].lower()}/{data['competitionId']}/{home_team}-{away_team}-apuestas-"+str(data["eventId"])
                     # print("url for match", url)
                     url = "https://href.li/?" + url.replace(" ", "-").lower()
@@ -202,14 +199,28 @@ class TwoStepsJsonSpider(scrapy.Spider):
                     ]
                     if self.debug:
                         print(f"Normalize matches for {self.map_competitions_urls[data['competitionId']]['competition_id']}")
+
                     match_infos = Helpers().normalize_team_names(
                         match_infos=match_infos,
                         competition_id=self.map_competitions_urls[data['competitionId']]['competition_id'],
                         bookie_id=self.name,
                         debug=self.debug
                     )
-                    # if self.debug:
-                    #     print("match_infos", match_infos)
+                    # TEMP TEST FOR TIME COMPARISON
+                    temp_connection = Connect().to_db(db="ATO_production", table=None)
+                    temp_cursor = temp_connection.cursor()
+                    for match_info in match_infos:
+                        try:
+                            query_update_time = """
+                                UPDATE ATO_production.Time_Comparison
+                                SET BetfairExchange = %s
+                                WHERE match_id = %s
+                            """
+                            temp_cursor.execute(query_update_time, (gmt_time, match_info["match_id"],))
+                            temp_connection.commit()
+                        except Exception as e:
+                            pass
+                    temp_connection.close()
                     if len(match_infos[0]["match_id"]) > 0:
                         competiton_id = self.map_competitions_urls[data['competitionId']]['competition_id']
                         if match_infos[0]["match_id"] in self.map_matches[competiton_id]:
@@ -367,10 +378,6 @@ class TwoStepsJsonSpider(scrapy.Spider):
                                 # else:
                                 #     print(data_03["runners"])
                 for key, value in self.events.items():
-                    # bon
-                    # if "10-10SWED-SWIT" == self.events[key]["match_id"]:
-                    #     print("result for 10-10SWED-SWIT", self.events[key]["match_id"], self.events[key]["home_team"],
-                    #           self.events[key]["away_team"], self.events[key]["odds"])
                     self.events[key]["odds"] = Helpers().build_ids(
                         id_type="bet_id",
                         data={
