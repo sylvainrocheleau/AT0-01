@@ -296,7 +296,7 @@ class Helpers():
         """
         cursor.execute(query_ignored_teams, (competition_id,))
         results_ignored = cursor.fetchall()
-        ignored_team_names = [x[0] for x in results_ignored ]
+        ignored_team_names = [x[0] for x in results_ignored]
 
         for match_info in match_infos:
             try:
@@ -308,8 +308,12 @@ class Helpers():
                         "bookie_team_name": match_info["home_team"]
                     }
                 )
+                if debug and match_info["home_team"] == "St Albans City":
+                    print("team_id_to_test for home", team_id_to_test)
                 match_info["home_team_id_to_test"] = team_id_to_test
                 partial_team_id_to_test = team_id_to_test.replace(team_id_to_test.split("_")[0], "")
+                if debug and match_info["home_team"] == "St Albans City":
+                    print("partial team_id_to_test for home", partial_team_id_to_test)
                 if match_info["home_team"] in ignored_team_names:
                     match_info["home_team_status"] = "ignored"
                 elif team_id_to_test in full_team_ids_and_normalized.keys():
@@ -415,6 +419,8 @@ class Helpers():
                 elif match_info["home_team_status"] != "confirmed":
                     home_ratios = {}
                     for key, value in partial_team_ids_and_normalized.items():
+                        if debug and match_info["home_team"] == "St Albans City":
+                            print("value of ", partial_team_ids_and_normalized)
                         home_ratios.update({key+"_normalized": round(
                             SequenceMatcher(None, str(value).lower(), str(match_info["home_team"]).lower()).ratio(), 2)})
                         if "," in match_info["home_team"]:
@@ -468,7 +474,9 @@ class Helpers():
                                     )
                                 )
                                 break
-
+                            else:
+                                if debug and match_info["home_team"] == "St Albans City":
+                                    print("home_ratio", home_ratio, "key", key, "value", partial_team_ids_and_normalized[key], "match_info['home_team']", match_info["home_team"])
 
                 # NORMALIZE AWAY TEAM
                 team_id_to_test = self.build_ids(
@@ -476,6 +484,8 @@ class Helpers():
                         "bookie_id": match_info["bookie_id"],
                         "competition_id": match_info["competition_id"],
                         "bookie_team_name": match_info["away_team"]})
+                if debug:
+                    print("team_id_to_test for away", team_id_to_test)
                 match_info["away_team_id_to_test"] = team_id_to_test
                 partial_team_id_to_test = team_id_to_test.replace(team_id_to_test.split("_")[0], "")
                 if match_info["away_team"] in ignored_team_names:
@@ -679,8 +689,7 @@ class Helpers():
                 if debug:
                     print("unmatched away", match_info["away_team"])
             if len(match_info["home_team_status"]) == 0:
-                if debug:
-                    print("team_id_to_test", team_id_to_test)
+
                 cursor.execute(
                     update_query,
                     (
@@ -948,7 +957,7 @@ class Helpers():
     def load_matches(self):
         connection = Connect().to_db(db="ATO_production", table="V2_Matches")
         cursor = connection.cursor()
-        query_matches = "SELECT * FROM V2_Matches"
+        query_matches = "SELECT match_id,home_team,away_team,`date`,sport_id,competition_id,queue_dutcher FROM V2_Matches"
         cursor.execute(query_matches)
         matches = cursor.fetchall()
         connection.close()
@@ -974,15 +983,17 @@ class Helpers():
         cursor = connection.cursor()
         if filter is False:
             query_matches = """
-                SELECT match_url_id,match_id,`date`,updated_date,to_scrape,to_delete,competition_id,sport_id,bookie_id,
-                scraping_tool,render_js,use_cookies,home_team,away_team,web_url, scraping_group, frequency_group
+                SELECT match_url_id, match_id,`date`,updated_date,to_scrape,to_delete,competition_id,sport_id,bookie_id,
+                scraping_tool,render_js,use_cookies,home_team,away_team,web_url, scraping_group, frequency_group,
+                orig_home_team, orig_away_team
                 FROM ATO_production.V2_Scraping_Schedules vss
                 WHERE vss.to_scrape = 1
             """
         else:
             query_matches = """
                 SELECT match_url_id,match_id,`date`,updated_date,to_scrape,to_delete,competition_id,sport_id,bookie_id,
-                scraping_tool,render_js,use_cookies,home_team,away_team,web_url, scraping_group, frequency_group
+                scraping_tool,render_js,use_cookies,home_team,away_team,web_url, scraping_group, frequency_group,
+                orig_home_team, orig_away_team
                 FROM ATO_production.V2_Scraping_Schedules vss
             """
         cursor.execute(query_matches)
@@ -1012,6 +1023,8 @@ class Helpers():
                         "web_url": match[14],
                         "scraping_group": match[15],
                         "frequency_group": match[16],
+                        "orig_home_team": match[17],
+                        "orig_away_team": match[18]
                     }
                 )
 
@@ -1476,19 +1489,22 @@ class Helpers():
                 )
         elif meta_type == "match":
             url = data["match_url_id"]
-            dont_filter = False
+            # dont_filter = dont_filter = (data.get('frequency_group') == 'A')
+            dont_filter = True
             meta_request = dict(
                 match_id=data["match_id"],
                 sport_id=data["sport_id"],
                 competition_id=data["competition_id"],
                 home_team=data["home_team"],
+                orig_home_team=data["orig_home_team"],
                 away_team=data["away_team"],
+                orig_away_team=data["orig_away_team"],
                 url=url,
                 web_url=self.build_web_url(data["web_url"]),
                 bookie_id=data["bookie_id"],
                 date=data["date"],
                 scraping_tool=data["scraping_tool"],
-                dutcher=False,
+                # dutcher=False,
             )
             if data["scraping_tool"] == "requests":
                 meta_request.update(
@@ -1897,17 +1913,18 @@ class Helpers():
                     )
                 elif data["sport_id"] == "2":
                     meta_request.update({"playwright_page_methods":[
+
                         PageMethod(
                             method="wait_for_selector",
                             selector="//div[@class='accordion-container ']",
                             # timeout=40000
                         ),
+                        # PageMethod(
+                        #     method="click",
+                        #     selector="//*[translate(normalize-space(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZÁÉÍÓÚÜÑ', 'abcdefghijklmnopqrstuvwxyzáéíóúüñ') = 'puntos totales']",
+                        #     # timeout=40000
+                        # ),
 
-                        PageMethod(
-                            method="click",
-                            selector=f"//*[translate(normalize-space(), {uppercase_alphabet} , {lowercase_alpabet}) = 'puntos totales']",
-                            # timeout=40000
-                        ),
                     ],
                     }
                     )
@@ -1928,7 +1945,6 @@ class Helpers():
                     }
                     )
             elif data["bookie_id"] == "EfBet":
-                dont_filter = True
                 if data["sport_id"] == "1":
                     repeated_clicks = [
                         PageMethod(
@@ -1941,7 +1957,7 @@ class Helpers():
                                 }
                             """
                         )
-                        for _ in range(5)
+                        for _ in range(15)
                     ]
 
                     page_methods = [
