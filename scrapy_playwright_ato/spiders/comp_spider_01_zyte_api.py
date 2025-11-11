@@ -44,28 +44,37 @@ class TwoStepsSpider(scrapy.Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                # No filters
-                # competitions = bookie_config(bookie=["all_bookies"])
-                # Filter by bookie that have errors
-                # competitions = bookie_config(bookie=["Bwin", "http_errors"])
+                # NO FILTERS
+                # competitions = bookie_config(bookie={"output": "all_competitions"})
+                # FILTER BY BOOKIE THAT HAVE ERRORS
+                # competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
+                #                 if x["bookie_id"] == "RetaBet"]
+                # FILTER BY COMPETITION THAT HAVE HTTP_ERRORS
+                # competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
+                #                 if x["competition_id"] == "BundesligaAlemana"]
                 # Filter by bookie
-                # competitions = bookie_config(bookie=["Bet777"])
+                # competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
+                #                 if x["bookie_id"] == "RetaBet"]
                 # Filter by competition
-                competitions = [x for x in bookie_config(bookie=["RetaBet"]) if x["competition_id"] == "Euroligamasculina"]
-                # Filter by boookie and competition
-                # competitions = [x for x in bookie_config(bookie=["RetaBet"]) if
-                #                 x["competition_id"] == "FIFAClubWorldCup"]
+                # competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
+                #                 if x["competition_id"] == "Argentina-PrimeraDivision"]
+                # Filter by bookie and competition
+                competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
+                                if x["competition_id"] == "Argentina-PrimeraDivision" and x["bookie_id"] == "RetaBet"]
 
         except Exception as e:
-            if (
-                0 <= Helpers().get_time_now("UTC").hour < 2
-                or 10 <= Helpers().get_time_now("UTC").hour < 12
-            ):
-                print("PROCESSING ALL COMPETITIONS")
-                competitions = bookie_config(bookie=["all_bookies"])  # v2_competitions_url
-            else:
-                print("PROCESSING COMPETITIONS WITH HTTP ERRORS")
-                competitions = bookie_config(bookie=["all_bookies", "http_errors"])
+            print("PROCESSING COMPETITIONS WITH HTTP ERRORS OR NOT UPDATED (12 HOURS)")
+            competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
+                            if x["bookie_id"] == "RetaBet"]
+            # if (
+            #     0 <= Helpers().get_time_now("UTC").hour < 2
+            #     or 10 <= Helpers().get_time_now("UTC").hour < 12
+            # ):
+            #     print("PROCESSING ALL COMPETITIONS")
+            #     competitions = bookie_config(bookie=["all_bookies"])  # v2_competitions_url
+            # else:
+            #     print("PROCESSING COMPETITIONS WITH HTTP ERRORS")
+            #     competitions = bookie_config(bookie=["all_bookies", "http_errors"])
 
         competitions = [x for x in competitions if x["scraping_tool"] in self.allowed_scraping_tools]
         if self.debug:

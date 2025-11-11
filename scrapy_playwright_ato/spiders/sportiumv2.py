@@ -13,7 +13,7 @@ from websockets_proxy import Proxy, proxy_connect
 from scrapy import Spider
 from ..items import ScrapersItem
 from ..parsing_logic import parse_competition, parse_match
-from ..bookies_configurations import normalize_odds_variables, bookie_config, list_of_markets_V2, get_context_infos
+from ..bookies_configurations import normalize_odds_variables, bookie_config, list_of_markets_V2, get_context_infos,normalize_odds_variables_temp
 from ..utilities import Helpers
 from ..settings import proxy_prefix_http, proxy_suffix, LOCAL_USERS
 
@@ -24,27 +24,32 @@ class WebsocketsSpider(Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                self.competitions = [x for x in bookie_config(bookie=["Sportium"]) if x["competition_id"] == "CopadelRey"]
-                self.match_filter = {"type": "bookie_and_comp", "params": ["Sportium", "CopadelRey"]}
-
-                #
-                # self.competitions = bookie_config(bookie=["Sportium"])
+                # NO FILTERS ON COMPS
+                # self.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
+                #                     if x["bookie_id"] == "Sportium"]
+                # NO FILTERS ON MATCHES
                 # self.match_filter = {"type": "bookie_id", "params": ["Sportium", 1]}
-                # https://href.li/?https://www.sportium.es/apuestas/sports/soccer/events/16931943
+                # FILTER BY BOOKIE THAT HAVE ERRORS
+                # self.competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
+                #                 if x["bookie_id"] == "Sportium"]
+                # self.match_filter = {}
+                # FILTER BY COMPETITION THAT HAVE HTTP_ERRORS
+                # self.competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
+                #                 if x["bookie_id"] == "Sportium" and x["competition_id"] == "UEFAConferenceLeague"]
+                # FILTER BY COMPETITION
+                # self.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
+                #                 if x["bookie_id"] == "Sportium" and x["competition_id"] == "UEFAConferenceLeague"]
+
+                # FILTER BY MATCH
+                self.match_filter = {"type": "bookie_and_comp", "params": ["Sportium", "NBA"]}
                 # self.match_filter = {"type": "match_url_id", "params": [
-                #     "https://www.sportium.es/apuestas/sports/soccer/events/16997048"]}
+                #     "https://www.sportium.es/apuestas/sports/soccer/events/17435924"]}
         except:
-            if (
-                0 <= Helpers().get_time_now("UTC").hour < 1
-                or 10 <= Helpers().get_time_now("UTC").hour < 11
-            ):
-                print("PROCESSING ALL COMPETITIONS")
-                self.competitions = bookie_config(bookie=["Sportium"])
-            else:
-                print("PROCESSING COMPETITIONS WITH HTTP ERRORS")
-                self.competitions = bookie_config(bookie=["Sportium", "http_errors"])
-            self.debug = False
+            print("PROCESSING COMPETITIONS WITH HTTP ERRORS OR NOT UPDATED (12 HOURS)")
+            self.competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
+                                 if x["bookie_id"] == "Sportium"]
             self.match_filter = {"type": "bookie_id", "params": ["Sportium", 1]}
+            self.debug = False
     name = "Sportiumv2"
     start_urls = ["data:,"]
     custom_settings = {"TWISTED_REACTOR": "twisted.internet.asyncioreactor.AsyncioSelectorReactor"}
@@ -561,13 +566,13 @@ destination:/api/marketgroup/{data['match_url_id'].split('/')[-1]}{suffix}
                                     filtered_match_market_ids = []
                                     for x in match_market_ids["aggregatedMarkets"]:
                                         if x["name"] in list_of_markets_V2[data["bookie_id"]][data["sport_id"]]:
-                                            filtered_match_market_ids.append(x["marketIds"])
+                                            for market in x["markets"]:
+                                                filtered_match_market_ids.append(market["id"])
                                         else:
                                             continue
 
                                     filtered_match_market_ids = ';'.join(
-                                        [x for sublist in filtered_match_market_ids for x in sublist])
-
+                                        [x for x in filtered_match_market_ids])
                                     await self.ws.send(f"""SUBSCRIBE
 id:/api/markets/multi
 locale:es
@@ -596,11 +601,13 @@ destination:/api/markets/multi
                                             id_type="bet_id",
                                             data={
                                                 "match_id": data["match_id"],
-                                                "odds": normalize_odds_variables(
-                                                    odds,
-                                                    data["sport_id"],
-                                                    data["home_team"],
-                                                    data["away_team"],
+                                                "odds": normalize_odds_variables_temp(
+                                                    odds=odds,
+                                                    sport=data["sport_id"],
+                                                    home_team=data["home_team"],
+                                                    away_team=data["away_team"],
+                                                    orig_home_team=data["orig_home_team"],
+                                                    orig_away_team=data["orig_away_team"],
                                                 )
                                             }
                                         )

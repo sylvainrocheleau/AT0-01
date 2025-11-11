@@ -7,7 +7,7 @@ import traceback
 import os
 from ..items import ScrapersItem
 from ..settings import proxy_prefix, proxy_suffix, list_of_proxies, LOCAL_USERS
-from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables, list_of_markets_V2
+from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables, list_of_markets_V2, normalize_odds_variables_temp
 from ..parsing_logic import parse_competition, parse_match
 from ..utilities import Helpers
 
@@ -18,18 +18,31 @@ class OneStepJsonSpider(scrapy.Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
-                print("PROCESSING IN DEBUG MODE")
-                self.competitions = [x for x in bookie_config(bookie=["YaassCasino"]) if x["competition_id"] == "UEFANationsLeague"]
-                # self.competitions = bookie_config(bookie=["YaassCasino"])
-
-                # self.match_filter = {"type": "bookie_and_comp", "params": ["YaassCasino", "UEFAConferenceLeague"]}
+                # NO FILTERS
+                # self.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
+                #                     if x["bookie_id"] == "YaassCasino"]
+                # FILTER BY BOOKIE THAT HAVE ERRORS
+                # self.competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
+                #                 if x["bookie_id"] == "YaassCasino"]
+                # self.match_filter = {}
+                # FILTER BY COMPETITION THAT HAVE HTTP_ERRORS
+                # self.competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
+                #                 if x["bookie_id"] == "YaassCasino" and x["competition_id"] == "NBA"]
+                # FILTER BY COMPETITIONS
+                self.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
+                                if x["bookie_id"] == "YaassCasino" and x["competition_id"] == "SerieABrasil"]
+                # FILTER BY MATCH
                 self.match_filter = {"type": "bookie_id", "params": ["YaassCasino", 2]}
                 # self.match_filter = {"type": "match_url_id", "params": [
-                #     "https://www.yaasscasino.es/apuestas/event/70dab40d-99d3-4bfa-a8ee-dd0f31a4a4d9"]}
+                #     "https://sportsbook.betsson.es/#/sport/?type=0&region=20001&competition=756&sport=3&game=28278665"]}
+            else:
+                self.debug = False
         except:
-            self.debug = False
-            self.competitions = bookie_config(bookie=["YaassCasino"])
+            print("PROCESSING COMPETITIONS WITH HTTP ERRORS OR NOT UPDATED (12 HOURS)")
+            self.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
+                                 if x["bookie_id"] == "YaassCasino"]
             self.match_filter = {"type": "bookie_id", "params": ["YaassCasino", 2]}
+            self.debug = False
 
     name = "YaassCasinov2"
     custom_settings = {
@@ -335,11 +348,13 @@ class OneStepJsonSpider(scrapy.Spider):
                                     id_type="bet_id",
                                     data={
                                         "match_id": match_id,
-                                        "odds": normalize_odds_variables(
-                                            odds,
-                                            response.meta.get("sport_id"),
-                                            home_team_normalised,
-                                            away_team_normalised,
+                                        "odds": normalize_odds_variables_temp(
+                                            odds=odds,
+                                            sport=response.meta.get("sport_id"),
+                                            home_team=home_team_normalised,
+                                            away_team=away_team_normalised,
+                                            orig_home_team=home_team,
+                                            orig_away_team=away_team,
                                         )
                                     }
                                 )
