@@ -14,7 +14,7 @@ from scrapy_playwright_ato.utilities import Connect, Helpers
 from scrapy_playwright_ato.settings import LOCAL_USERS
 
 
-def safe_executemany(cursor, query, data, chunk_size=300, retries=6, delay=0.5, split_on_deadlock=True, _depth=0):
+def safe_executemany(cursor, query, data, chunk_size=100, retries=6, delay=0.5, split_on_deadlock=True, _depth=0):
     """
     - Splits into chunks to avoid large packets/timeouts
     - Retries on deadlocks (1213), lock wait timeouts (1205), and lost connection (2006/2013) with reconnect
@@ -48,6 +48,32 @@ def safe_executemany(cursor, query, data, chunk_size=300, retries=6, delay=0.5, 
                 break  # success for this chunk
             except (InternalError, OperationalError, DatabaseError) as e:
                 errno = getattr(e, "errno", None)
+                print(f"Got error {errno} from safe_executemany")
+
+                # Handle FK violations explicitly
+                if errno == 1452:  # Cannot add/update child row (FK)
+                    # Roll back the failed statement before proceeding
+                    try:
+                        conn.rollback()
+                    except Exception:
+                        pass
+
+                    if len(chunk) > 1 and split_on_deadlock:
+                        # Split to isolate the bad row(s)
+                        mid = len(chunk) // 2
+                        left = chunk[:mid]
+                        right = chunk[mid:]
+                        safe_executemany(cursor, query, left, chunk_size=max(1, chunk_size // 2),
+                                         retries=retries, delay=delay, split_on_deadlock=split_on_deadlock,
+                                         _depth=_depth + 1)
+                        safe_executemany(cursor, query, right, chunk_size=max(1, chunk_size // 2),
+                                         retries=retries, delay=delay, split_on_deadlock=split_on_deadlock,
+                                         _depth=_depth + 1)
+                        break
+                    else:
+                        print(f"Skipping row due to FK 1452: {chunk[0]}")
+                        break  # continue with next chunk
+
                 # Deadlock (1213) or Lock wait timeout (1205)
                 if errno in (1213, 1205):
                     # After a couple of attempts, split the chunk to isolate hot rows
@@ -85,6 +111,7 @@ def safe_executemany(cursor, query, data, chunk_size=300, retries=6, delay=0.5, 
                     continue
                 raise
             except InterfaceError:
+                print("interface error", traceback.format_exc())
                 # Interface errors are usually not retryable unless due to connection; propagate
                 raise
         start += len(chunk)
@@ -365,7 +392,7 @@ class ScrapersPipeline:
                     """
                     params = [(url,) for url in sorted(urls_to_delete)]
                     # smaller chunks reduce lock footprint on join-delete
-                    safe_executemany(cursor, delete_query, params, chunk_size=100)
+                    safe_executemany(cursor, delete_query, params, chunk_size=25)
                     if self.debug:
                         print(f"[Worker] Deleted {cursor.rowcount} old odds entries.")
                 connection.commit()
@@ -410,7 +437,7 @@ class ScrapersPipeline:
                           http_status  = %s
                       WHERE match_url_id = %s
                     """
-                    safe_executemany(cursor, query_update_match_urls, unique_updates, chunk_size=200)
+                    safe_executemany(cursor, query_update_match_urls, unique_updates, chunk_size=100)
                 connection.commit()
             except Exception as e:
                 try:
@@ -441,7 +468,8 @@ class ScrapersPipeline:
                     print(f"[Worker] Dutcher phase failed (tolerated): {e}")
 
             if self.debug:
-                print(f"[Worker] Flushed {len(odds_buf)} odds, {len(url_updates_buf)} URL updates, {len(match_ids_buf)} dutcher flags (dutcher may be partial).")
+                print(f"[Worker] Flushed {len(odds_buf)} odds, {len(url_updates_buf)} URL updates, {len(match_ids_buf)} "
+                      f"dutcher flags (dutcher may be partial).")
 
         except mysql.connector.Error as e:
             if self.debug:
@@ -466,8 +494,7 @@ class ScrapersPipeline:
                 pass
         finally:
             end_time = datetime.datetime.now()
-            if self.debug:
-                print(f"[Worker] Time taken for batch flush: {(end_time - start_time).total_seconds()}s")
+            print(f"[Worker] Time taken for batch flush: {(end_time - start_time).total_seconds()}s")
 
     def _connect_db(self):
         """Establishes or re-establishes the database connection."""
@@ -561,7 +588,7 @@ class ScrapersPipeline:
 
     def close_spider(self, spider):
         """Stop the background worker after giving it time to flush; never hang indefinitely."""
-        print(f"Closing spider {spider.name}: stopping DB writer thread with final flush...")
+        print(f"Closing {spider.name}: stopping DB writer thread with final flush...")
 
         # 1) Signal the worker we’re closing. It will continue consuming until the queue is empty,
         #    then perform a final flush before exiting the loop.
@@ -601,83 +628,11 @@ class ScrapersPipeline:
         query_insert_dutcher_queue = """
              UPDATE ATO_production.V2_Matches
              SET queue_dutcher = 1
-             WHERE match_id = %s \
+             WHERE match_id = %s
          """
         safe_executemany(self.cursor, query_insert_dutcher_queue, match_ids)
         if self.debug:
             print(f"Queue dutcher on : {match_ids}")
-
-    def _flush_match_odds_batch(self):
-        """Write the buffered items to the database."""
-        if not self.match_odds_buffer and not self.match_urls_update_buffer:
-            return
-
-        start_time = datetime.datetime.now()
-        try:
-            self._ensure_connection()
-
-            if self.match_odds_buffer:
-                # The 10th element (index 9) is match_url_id
-                unique_urls = list(set(item[9] for item in self.match_odds_buffer))
-
-                delete_query = """
-                    DELETE vmo
-                    FROM ATO_production.V2_Matches_Odds AS vmo
-                    JOIN ATO_production.V2_Matches_Urls AS vmu ON vmo.bookie_id = vmu.bookie_id AND vmo.match_id = vmu.match_id
-                    WHERE vmu.match_url_id = %s
-                """
-                deleted_rows_count = 0
-                for url in unique_urls:
-                    self.cursor.execute(delete_query, (url,))
-                    deleted_rows_count += self.cursor.rowcount
-                if self.debug:
-                    print(f"Deleted {deleted_rows_count} old odds entries.")
-
-                query_insert_match_odds = """
-                    INSERT INTO ATO_production.V2_Matches_Odds
-                    (bet_id, match_id, bookie_id, market, market_binary, result, back_odd, web_url, updated_date)
-                    VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    ON DUPLICATE KEY UPDATE back_odd = VALUES(back_odd), web_url = VALUES(web_url), updated_date = VALUES(updated_date)
-                """
-                # Create a new list of tuples with the last element removed for insertion
-                odds_to_insert = [item[:-1] for item in self.match_odds_buffer]
-                safe_executemany(self.cursor, query_insert_match_odds, odds_to_insert)
-
-            if self.match_urls_update_buffer:
-                unique_updates = list(set(self.match_urls_update_buffer))
-                query_update_match_urls = """
-                    UPDATE ATO_production.V2_Matches_Urls
-                    SET updated_date = %s, http_status = %s
-                    WHERE match_url_id = %s
-                """
-                # self.cursor.executemany(query_update_match_urls, unique_updates)
-                safe_executemany(self.cursor, query_update_match_urls, unique_updates)
-
-            if self.match_ids_buffer:
-                self._queue_dutcher(self.match_ids_buffer)
-
-
-            self.connection.commit()
-            print(f"Flushed {len(self.match_odds_buffer)} odds and {len(self.match_urls_update_buffer)} URL updates.")
-        except mysql.connector.Error as e:
-            if self.debug:
-                print(f"Database error during flush: {e}")
-                print(traceback.format_exc())
-            Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{self.spider_name} DB_FLUSH_ERROR: {str(e)}",
-                                 message=traceback.format_exc())
-            if self.connection and self.connection.is_connected():
-                self.connection.rollback()
-        except Exception as e:
-            if self.debug:
-                print(traceback.format_exc())
-            Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{self.spider_name} {str(e)}",
-                                 message=traceback.format_exc())
-            self.connection.rollback()
-        finally:
-            self.match_odds_buffer.clear()
-            self.match_urls_update_buffer.clear()
-            end_time = datetime.datetime.now()
-            print(f"Time taken for batch flush: {(end_time - start_time).total_seconds()}s")
 
     def process_item(self, item, spider):
         # spain = pytz.timezone("Europe/Madrid")
@@ -748,10 +703,29 @@ class ScrapersPipeline:
             # return item
 
         elif "pipeline_type" in item.keys() and "match_urls" in item["pipeline_type"]:
+            connection = Connect().to_db(db="ATO_production", table=None)
+            cursor = connection.cursor()
+
+            # TEMP TEST FOR TIME COMPARISON
+            try:
+                create_match_time_diff = [[x["date"], x["match_id"]] for x in item["data_dict"]["match_infos"]]
+                bookie_id = list(set([x['bookie_id'] for x in item["data_dict"]["match_infos"]]))
+                query_match_time_diff = f"""
+                    UPDATE ATO_production.Time_Comparison
+                    SET {bookie_id[0]} = %s
+                    WHERE match_id = %s
+                """
+                safe_executemany(cursor, query_match_time_diff, create_match_time_diff)
+                connection.commit()
+            except Exception as e:
+                print(traceback.format_exc())
+                pass
 
             # TODO if there is a mismatch between UTC and Spain time, we need to report it
             try:
                 print(f"UPDATING V2_Matches_Urls and competitions status ")
+                if self.debug:
+                    print("item[data_dict][match_infos", item["data_dict"]["match_infos"])
                 start_time = datetime.datetime.now()
                 for key, value in item["data_dict"].items():
                     if key == "match_infos":
@@ -761,8 +735,6 @@ class ScrapersPipeline:
                     if key == "comp_infos":
                         print("competition_url_id", value[0]["competition_url_id"])
 
-                connection = Connect().to_db(db="ATO_production", table=None)
-                cursor = connection.cursor()
                 create_match_urls = []
                 create_match_urls_with_no_ids = []
                 for data in item["data_dict"]["match_infos"]:
@@ -858,14 +830,12 @@ class ScrapersPipeline:
                     ON DUPLICATE KEY UPDATE match_url_id = VALUES(match_url_id), web_url = VALUES(web_url)
                     """
                 )
-
                 print("create_match_urls", create_match_urls)
                 print("create_match_urls_with_no_ids", create_match_urls_with_no_ids)
                 # cursor.executemany(query_create_match_urls, create_match_urls)
                 safe_executemany(cursor, query_create_match_urls, create_match_urls)
                 connection.commit()
 
-                # TODO add competition_id
                 query_create_match_urls_with_no_ids = """
                     INSERT IGNORE INTO ATO_production.V2_Matches_Urls_No_Ids
                     (message, match_url_id, match_id, bookie_id, competition_id, home_team, home_team_normalized, home_team_status,
@@ -1130,7 +1100,7 @@ class ScrapersPipeline:
             finally:
                 try:
                     end_time = datetime.datetime.now()
-                    print(f"Time taken to insert {len(batch_insert_teams)} teams in V2_Teams for {competition_id}:", (end_time - start_time).total_seconds())
+                    print(f"Time taken to insert {len(batch_insert_teams)} teams in V2_Teams (excluding duplicates) for {competition_id}:", (end_time - start_time).total_seconds())
                     cursor.close()
                     connection.close()
                 except Exception:
@@ -1141,11 +1111,12 @@ class ScrapersPipeline:
                 competition_id = None
                 updated_matches_count = 0
                 list_of_matches = []
+                list_of_matches_for_time_diff = []
                 try:
                     connection = Connect().to_db(db="ATO_production", table=None)
                     cursor = connection.cursor()
+                    competition_id = next(iter(item["data_dict"].values()))["competition_id"]
                     if item["data_dict"] and 9 <= Helpers().get_time_now("UTC").hour < 10:
-                        competition_id = next(iter(item["data_dict"].values()))["competition_id"]
                         scraped_match_ids = {value["match_id"] for value in item["data_dict"].values()}
                         query_fetch_db_matches = "SELECT match_id FROM ATO_production.V2_Matches WHERE competition_id = %s"
                         cursor.execute(query_fetch_db_matches, (competition_id,))
@@ -1188,8 +1159,26 @@ class ScrapersPipeline:
                         )
                         list_of_matches.append(values)
                         # cursor.execute(query_insert_matches, values)
-                        safe_executemany(cursor, query_insert_matches, list_of_matches)
                         updated_matches_count += 1
+                    safe_executemany(cursor, query_insert_matches, list_of_matches)
+                    connection.commit()
+
+                    # TEMP TEST FOR TIME COMPARISON
+                    query_insert_matches_for_time_diff = """
+                        INSERT INTO ATO_production.Time_Comparison
+                        (match_id, competition_id, date)
+                        VALUES(%s, %s, %s)
+                        ON DUPLICATE KEY UPDATE date = VALUES(date)
+                    """
+                    for key, value in item["data_dict"].items():
+                        values = (
+                            value["match_id"],
+                            value["competition_id"],
+                            value["date"].replace(tzinfo=pytz.UTC).replace(microsecond=0),
+                        )
+                        list_of_matches_for_time_diff.append(values)
+                        # cursor.execute(query_insert_matches, values)
+                    safe_executemany(cursor, query_insert_matches_for_time_diff, list_of_matches_for_time_diff)
                     connection.commit()
                 except Exception as e:
                     if self.debug:
@@ -1321,7 +1310,38 @@ class ScrapersPipeline:
                         self.connection.commit()
                     except Exception:
                         pass
-                    # After successful swap: ensure live has the intended FKs (if you want DB-enforced integrity)
+                    # After successful swap: first remove FKs from the table that is NOW the stage table
+                    # Rationale: FK names must be unique per schema in MySQL/MariaDB. After the swap, the table
+                    # that became V2_Oddsmatcher_stage may still hold the same FK names we want to add on live.
+                    # Drop them on stage first to avoid errno:121 (Duplicate key on write or update).
+                    try:
+                        # Discover any FKs on the stage table and drop them
+                        self.cursor.execute(
+                            """
+                            SELECT rc.CONSTRAINT_NAME
+                            FROM information_schema.REFERENTIAL_CONSTRAINTS rc
+                            WHERE rc.CONSTRAINT_SCHEMA = 'ATO_production'
+                              AND rc.TABLE_NAME = 'V2_Oddsmatcher_stage'
+                            """
+                        )
+                        fk_names = [row[0] for row in self.cursor.fetchall()]
+                        for fk in fk_names:
+                            try:
+                                self.cursor.execute(
+                                    f"ALTER TABLE ATO_production.V2_Oddsmatcher_stage DROP FOREIGN KEY {fk}"
+                                )
+                            except Exception as drop_fk_err:
+                                if self.debug:
+                                    print(f"Warning: could not drop FK {fk} on V2_Oddsmatcher_stage: {drop_fk_err}")
+                        try:
+                            self.connection.commit()
+                        except Exception:
+                            pass
+                    except Exception as cleanup_e:
+                        if self.debug:
+                            print("Post-swap FK cleanup on stage failed:", cleanup_e)
+
+                    # Then ensure live has the intended FKs (if you want DB-enforced integrity)
                     try:
                         self.cursor.execute(
                             """
@@ -1353,34 +1373,6 @@ class ScrapersPipeline:
                     except Exception as add_fk_err:
                         if self.debug:
                             print("Post-swap FK ensure on live failed:", add_fk_err)
-                    # After successful swap, ensure the table now named ..._stage is FK-free
-                    try:
-                        # Discover any FKs on the stage table and drop them
-                        self.cursor.execute(
-                            """
-                            SELECT rc.CONSTRAINT_NAME
-                            FROM information_schema.REFERENTIAL_CONSTRAINTS rc
-                            WHERE rc.CONSTRAINT_SCHEMA = 'ATO_production'
-                              AND rc.TABLE_NAME = 'V2_Oddsmatcher_stage'
-                            """
-                        )
-                        fk_names = [row[0] for row in self.cursor.fetchall()]
-                        for fk in fk_names:
-                            try:
-                                self.cursor.execute(
-                                    f"ALTER TABLE ATO_production.V2_Oddsmatcher_stage DROP FOREIGN KEY {fk}"
-                                )
-                            except Exception as drop_fk_err:
-                                if self.debug:
-                                    print(f"Warning: could not drop FK {fk} on V2_Oddsmatcher_stage: {drop_fk_err}")
-                        # Commit housekeeping (RENAME TABLE already implied a commit, this is additive)
-                        try:
-                            self.connection.commit()
-                        except Exception:
-                            pass
-                    except Exception as cleanup_e:
-                        if self.debug:
-                            print("Post-swap FK cleanup on stage failed:", cleanup_e)
                 except Exception as e:
                     # If anything fails before the swap, no changes to the live table occurred
                     if self.debug:
