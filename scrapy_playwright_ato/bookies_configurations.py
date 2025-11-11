@@ -85,7 +85,7 @@ list_of_markets_V2 = {
 },
 "AdmiralBet": {
     "1": ["Resultado final", "Más/Menos", "Resultado"],
-    "2": ["Ganador (incl. prórroga)", "Total de puntos - Prórroga incluida", ],
+    "2": ["Ganador (incl. prórroga)", "Más/Menos (incl. tiempo extra)", ],
     "3": ["Resultado final (con empate)", "Juegos Más/Menos"],
 },
 "Luckia": {
@@ -204,7 +204,7 @@ list_of_markets_V2 = {
 },
 "WilliamHill": {
     "1": [
-        "Ganador del partido", "Partido Más/Menos 0.5 goles", "Partido Más/Menos 1.5 goles",
+        "Ganador del partido", "Ganador del partido - Cuotas mejoradas", "Partido Más/Menos 0.5 goles", "Partido Más/Menos 1.5 goles",
         "Partido Más/Menos 2.5 goles", "Partido Más/Menos 3.5 goles", "Partido Más/Menos 4.5 goles",
         "Partido Más/Menos 5.5 goles", "Partido Más/Menos 6.5 goles", "Resultado Exacto",
     ],
@@ -243,12 +243,12 @@ list_of_markets_V2 = {
 },
 "OlyBet": {
     "1": ['¿Quién ganará el partido?', 'Total de Goles', 'Resultado exacto'],
-    "2": ['¿Quién ganará el partido? (Prórroga incluida)', 'Totales'],
+    "2": ['¿Quién ganará el partido? (Prórroga incluida)', 'Puntos totales'],
     "3": ["Cuotas del partido", "Total de juegos"],
 },
 "CasinoBarcelona": {
     "1": ['¿Quién ganará el partido?', 'Más/Menos Goles', 'Total de Goles', 'Resultado exacto'],
-    "2": ['¿Quién ganará el partido? (Prórroga incluida)', 'Totales'],
+    "2": ['¿Quién ganará el partido? (Prórroga incluida)', 'Puntos totales'],
     "3": ["Cuotas del partido", "Total de juegos"],
 },
 "DaznBet": {
@@ -257,8 +257,9 @@ list_of_markets_V2 = {
     "3": ["Ganador", "Juegos Totales"],
 },
 "Versus": {
-    "1": ["Resultado final", "Resultado Del Partido - Cuotas Mejoradas", "Total Goles Más/Menos", "Resultado exacto"],
-    "2": ['Ganador del partido', 'Total Puntos'],
+    "1": ["Resultado final", "Resultado Del Partido", "Resultado Del Partido - Cuotas Mejoradas",
+          "Total Goles Más/Menos", "Resultado exacto"],
+    "2": ['Ganador del partido', 'Total Puntos', 'Total de Puntos Alternativo'],
     "3": ["Cuotas del partido", "Total de juegos"],
 },
 "BetfairExchange": {
@@ -580,7 +581,7 @@ def normalize_odds_variables(odds, sport, home_team, away_team):
         "Apuestas a ganador", "Cuotas de partido", "Tiempo reglamentario", "Vencedor del partido",
         "Resultado final", "Resultado Final", "¿Quién ganará el partido?",
         "Resultado Del Partido - Cuotas Mejoradas", "Victoria sin empate (en caso de empate se anula la apuesta)",
-        "Victoria sin empate", "Match Winner", "Ganador Sin Empate (Tiempo Regular)"
+        "Victoria sin empate", "Match Winner", "Ganador Sin Empate (Tiempo Regular)", "Ganador del partido",
     ]
     not_winners_keywords = ["Puntos", "puntos", "Menos", "menos", "Goals"]
     home_team_keywords = ["1", "HB_H", ".HB_H", "home", "Local", "W1"]
@@ -735,8 +736,9 @@ def normalize_odds_variables_temp(odds, sport, home_team, away_team, orig_home_t
         "Prórroga incluida", "Oferta básica", "Money Line", "Winner", "3-Way", "Local", "ganará", "Línea de Juego",
         "Apuestas a ganador", "Cuotas de partido", "Tiempo reglamentario", "Vencedor del partido",
         "Resultado final", "Resultado Final", "¿Quién ganará el partido?",
-        "Resultado Del Partido - Cuotas Mejoradas", "Victoria sin empate (en caso de empate se anula la apuesta)",
-        "Victoria sin empate", "Match Winner", "Ganador Sin Empate (Tiempo Regular)"
+        "Resultado Del Partido - Cuotas Mejoradas", "Ganador del partido - Cuotas mejoradas",
+        "Victoria sin empate (en caso de empate se anula la apuesta)", "Victoria sin empate", "Match Winner",
+        "Ganador Sin Empate (Tiempo Regular)"
     ]
     not_winners_keywords = ["Puntos", "puntos", "Menos", "menos", "Goals"]
     home_team_keywords = ["1", "HB_H", ".HB_H", "home", "Local", "W1"]
@@ -767,7 +769,7 @@ def normalize_odds_variables_temp(odds, sport, home_team, away_team, orig_home_t
                 and not any(ext in bet["Market"] for ext in not_winners_keywords)
             ):
             bet["Market"] = market_winner
-            print("testing", bet["Result"])
+            # print("testing", bet["Result"])
             # print("away_team", away_team, SequenceMatcher(None, bet["Result"].lower(), away_team.lower()).ratio())
             # print("org_away", orig_away_team, SequenceMatcher(None, bet["Result"].lower(), orig_away_team.lower()).ratio())
             # print("home", home_team, SequenceMatcher(None, bet["Result"].lower(), home_team.lower()).ratio())
@@ -790,12 +792,12 @@ def normalize_odds_variables_temp(odds, sport, home_team, away_team, orig_home_t
                         or (
                             max(
                                 SequenceMatcher(None, bet["Result"].lower(), home_team.lower()).ratio(),
-                                SequenceMatcher(None, bet["Result"].lower(), orig_home_team.lower()).ratio()
+                                SequenceMatcher(None, (bet["Result"] or "").lower(), (orig_home_team or "").lower()).ratio()
                             )
                             >
                             max(
                                 SequenceMatcher(None, bet["Result"].lower(), away_team.lower()).ratio(),
-                                SequenceMatcher(None, bet["Result"].lower(), orig_away_team.lower()).ratio()
+                                SequenceMatcher(None, (bet["Result"] or "").lower(), (orig_away_team or "").lower()).ratio()
                             )
                         )
                         )
@@ -819,7 +821,7 @@ def normalize_odds_variables_temp(odds, sport, home_team, away_team, orig_home_t
                 bet["Result"] = "Empate"
             else:
                 bet["Result"] = away_team
-            print("final choice = ", bet["Result"])
+            # print("final choice = ", bet["Result"])
         elif (
                 any(ext in bet["Market"] for ext in market_correct_score_keywords)
                 and not any(ext in bet["Result"] for ext in not_market_result_correct_score_keywords)

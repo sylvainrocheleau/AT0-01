@@ -20,27 +20,29 @@ def get_sports_pages(bookie_id=None, http_errors=False, output="tournaments"):
         }
     )
     print(sport_page)
-def teams_and_dates_from_response(bookie_id, competition_id, sport_id, normalize=False):
+def teams_and_dates_from_response(bookie_id, competition_id, sport_id, parser, normalize=False):
+    from pathlib import Path
+    from scrapy.http import TextResponse, Request, HtmlResponse
     from scrapy.http import HtmlResponse
     from parsing_logic import parse_competition
     from utilities import Helpers
     from parsel import Selector
+    if bookie_id == "RetaBet":
+        file_path = Path("../logs/comp_spider_01_zyte_api_response.txt")
+    else:
+        file_path = '../logs/comp_spider_01_response.txt'
+    if parser == "response":
+        body = Path(file_path).read_bytes()
+        url = f"file://{Path(file_path).absolute()}"
 
-    # VARIABLES TO CHANGE
-    # bookie_id = str(input("enter bookie_id "))
-    # competition_id = str(input("enter competition_id "))
-    # sport_id = str(input("enter sport_id "))
-    # normalize = bool(input("normalize team names? (True/False) "))
-    # bookie_id = "KirolBet"
-    # competition_id = 'UEFAConferenceLeague'
-    # sport_id = "1"
-    # normalize = False
-    # END VARIABLES TO CHANGE
+        # Build a dummy Request so response.request and response.url are set
+        req = Request(url=url)
+        response = TextResponse(url=url, body=body, encoding='utf-8', request=req)
 
     map_matches_urls = []
     try:
-        with open('../logs/comp_spider_01_response.txt') as f:
-            response = Selector(text=f.read())
+        # with open('../logs/comp_spider_01_response.txt') as f:
+        #     response = Selector(text=f.read())
             # response = f.read()
         match_infos = parse_competition(response=response, bookie_id=bookie_id, competition_id=competition_id,
                                         competition_url_id="", sport_id=sport_id, map_matches_urls=map_matches_urls,
@@ -48,15 +50,20 @@ def teams_and_dates_from_response(bookie_id, competition_id, sport_id, normalize
     except FileNotFoundError:
         print("File 'logs/comp_spider_01_response.txt' not found. Please provide a valid response file.")
         return []
-    print("RAW match infos", match_infos)
-    if normalize is True:
+    print("RAW match infos")
+    for match_info in match_infos:
+        print(match_info)
+    if normalize:
         match_infos = Helpers().normalize_team_names(
             match_infos=match_infos,
             competition_id=competition_id,
             bookie_id=bookie_id,
             debug=True
         )
-    print("Normalized match infos", match_infos)
+    print("Normalized match infos")
+    for match_info in match_infos:
+        print(match_info)
+    return None
 
 def get_odds_from_response(bookie_id, sport_id, parser ):
     from pathlib import Path
@@ -162,8 +169,8 @@ def get_tournaments_from_sport_page(bookie_id, sport_id, debug):
 if __name__ == "__main__":
     # check_list_of_markets()
     # get_comps_for_bookie(bookie_id='Versus')
-    # teams_and_dates_from_response(bookie_id='DaznBet', competition_id='BundesligaAlemana', sport_id='1', normalize=False)
-    get_odds_from_response(bookie_id="RetaBet", sport_id="1", parser="response") # parser can be response, html, json
-    # get_matches_details_and_urls({"type": "bookie_id", "params": ["Betsson" ,1]})
+    teams_and_dates_from_response(bookie_id='RetaBet', competition_id='LaLigaEspanola', parser="response", sport_id='1', normalize=False)
+    # get_odds_from_response(bookie_id="WilliamHill", sport_id="2", parser="response") # parser can be response, html, json
+    # get_matches_details_and_urls({"type": "bookie_and_comp", "params": ["WinaMax", "MajorLeagueSoccerUSA"]})
     # get_sports_pages()
     # get_tournaments_from_sport_page(bookie_id="Bet777", sport_id="3", debug=True)
