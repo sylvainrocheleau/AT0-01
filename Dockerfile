@@ -5,11 +5,9 @@ COPY . /app
 
 ENV PLAYWRIGHT_BROWSERS_PATH=/playwright-browsers
 
-RUN apt-get update \
-#    && pip install --no-cache-dir --upgrade pip \
-    && pip install pip\
-#    && pip install --no-cache-dir -r requirements.txt \
-    && pip install -r requirements.txt \
+RUN apt-get update -y || (sleep 5 && apt-get update -y) \
+    && pip install --upgrade pip --default-timeout=100 \
+    && pip install -r requirements.txt --default-timeout=100 \
     && playwright install --with-deps chromium \
     && chmod -Rf 777 $PLAYWRIGHT_BROWSERS_PATH
 
