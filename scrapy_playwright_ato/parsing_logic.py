@@ -811,12 +811,10 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
             match_infos = []
             if sport_id == '1':
                 xpath_results = response.xpath("//div[@class='accordion-container competition-accordion-container ']").extract()
-                # xpath_results = response.xpath("//div[@class ='accordion-container competition-accordion-container mmv-competition-accordion-container']").extract()
                 for xpath_result in xpath_results:
                     try:
                         xpath_result = Selector(xpath_result)
-                        date = xpath_result.xpath("//div[@class='competition-header-title ']/span/text()").extract()[0]
-                        date = dateparser.parse(date, languages=["es"])
+                        day = xpath_result.xpath("//div[@class='competition-header-title ']/span/text()").extract()
                         xpath_results_02 = xpath_result.xpath("//div[@class='main-container']").extract()
                     except IndexError as e:
                         if debug:
@@ -834,14 +832,18 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                             relative_url = xpath_result_02.xpath("//a/@href").extract()[0]
                             url = "https://sb-pp-esfe.daznbet.es" + relative_url + "?tab=todo"
                             web_url = "https://www.daznbet.es/es-es/deportes" + relative_url
-
-                            # date = None
-
+                            time = xpath_result_02.xpath("//span[@class='game-timer-text']/text()").extract()
+                            date = dateparser.parse(
+                                '' . join(day) + ", " + time[0],
+                                languages=["es"],
+                                settings={
+                                    'TIMEZONE': 'Europe/Madrid',
+                                    'TO_TIMEZONE': 'UTC',
+                                    'RETURN_AS_TIMEZONE_AWARE': False}
+                            )
                             if url not in map_matches_urls:
                                 match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id)
                                 match_infos.append(match_info)
-                                if debug:
-                                    print("match_info for DaznBet", match_info)
                             else:
                                 if debug:
                                     print("match already in map_matches_urls", home_team, away_team)
@@ -859,8 +861,7 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                 for xpath_result in xpath_results:
                     try:
                         xpath_result = Selector(xpath_result)
-                        date = xpath_result.xpath("//div[@class='competition-header-title ']/span/text()").extract()[0]
-                        date = dateparser.parse(date, languages=["es"])
+                        day = xpath_result.xpath("//div[@class='competition-header-title ']/span/text()").extract()
                         xpath_results_02 = xpath_result.xpath("//div[@class='main-container']").extract()
                     except IndexError as e:
                         if debug:
@@ -880,8 +881,15 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                             relative_url = xpath_result_02.xpath("//a/@href").extract()[0]
                             url = "https://sb-pp-esfe.daznbet.es" + relative_url + "?tab=tiempo-regular"
                             web_url = "https://www.daznbet.es/es-es/deportes" + relative_url
-
-                            # date = None
+                            time = xpath_result_02.xpath("//span[@class='game-timer-text']/text()").extract()
+                            date = dateparser.parse(
+                                ''.join(day) + ", " + time[0],
+                                languages=["es"],
+                                settings={
+                                    'TIMEZONE': 'Europe/Madrid',
+                                    'TO_TIMEZONE': 'UTC',
+                                    'RETURN_AS_TIMEZONE_AWARE': False}
+                            )
 
                             if url not in map_matches_urls:
                                 match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id)
@@ -905,7 +913,15 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                     try:
                         xpath_result = Selector(xpath_result)
                         date = xpath_result.xpath("//div[@class='event-timestamp']/div/text()").extract()
-                        date = dateparser.parse(''.join(date), languages=["es"])
+                        date = dateparser.parse(
+                            ''.join(date),
+                            languages=["es"],
+                            settings={
+                                'TIMEZONE': 'Europe/Madrid',
+                                'TO_TIMEZONE': 'UTC',
+                                'RETURN_AS_TIMEZONE_AWARE': False,
+                            }
+                        )
                         home_team = xpath_result.xpath(
                             "//div[contains(@class, 'event-text event-text-margin text-ellipsis')]/text()").extract()[
                             0]
@@ -3205,7 +3221,7 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                 traceback.print_exc()
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
     elif bookie_id == "MarcaApuestas":
-        # This spider needs to make a third request to get Resultado Exacto.
+        # This spider needs to make an extra request to get Resultado Exacto.
         # Cliking on Resultado Exacto did not work, because for some odd reasons, when using Playwright, a match page is redirected
         # to its comp page. The JS script ending with 'desktop/js/jquery-3.6.0.min.js' is responsible for redirection, but it
         # is also the script that makes Resultado Exacto clickable.
@@ -3213,50 +3229,154 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
         import random
         from scrapy_playwright_ato.settings import proxy_prefix, proxy_suffix, list_of_proxies, list_of_headers
         odds = []
-        markets = response.css('div.expander.mkt')
-
+        markets = response.xpath("//div[contains(@class, 'expander') and contains(@class, 'mkt')]")
         for market in markets:
             try:
-                if market.css('span.mkt-name::text').get() is not None:
-                    market_name = market.css('span.mkt-name::text').get().strip()
-                else:
+                market_name = market.xpath(".//span[contains(@class, 'mkt-name')]/text()").get()
+                if market_name is None:
                     continue
+                market_name = market_name.strip()
                 if market_name in list_of_markets:
-                    if market_name == "Línea de Juego" and sport_id == "1":
-                        for bet in market.css('tbody').css('tr'):
-                            # print("bet", bet)
-                            result = bet.css('div.team-name').css('a::text').get().strip()
-                            odd = bet.css('td.mkt-sort')[-1].css('span.price.dec::text').get().strip()
-                            odds.append({'Market': market_name, 'Result': result, 'Odds': odd})
+                    # Footbal
+                    if market_name in ["Ganador (1X2)", "Ganador (1X2) - Cuotas Mejoradas"] and sport_id == "1":
+                        for bet in market.xpath(".//tbody//tr//td"):
+
+                            seln_name = bet.xpath(".//span[contains(@class,'seln-name')]/text()").get()
+                            price_dec = bet.xpath(
+                                ".//span[contains(@class,'price') and contains(@class,'dec')]/text()").get()
+                            if seln_name is not None:
+                                seln_name = seln_name.strip()
+                            if price_dec is not None:
+                                try:
+                                    odd = float(price_dec)
+                                except Exception:
+                                    odd = None
+                            else:
+                                odd = None
+                            if seln_name and odd:
+                                odds.append({"Market": market_name, "Result": seln_name, "Odds": odd})
+                            elif not seln_name and odd:
+                                odds.append({"Market": market_name, "Result": "Empate", "Odds": odd})
+
+                    # Basket
+                    elif market_name in ["Línea de Juego"] and sport_id == "2":
+                        for bet in market.xpath(".//tbody//tr"):
+                            result = bet.xpath(".//div[contains(@class,'team-name')]//a/text()").get()
+                            if result:
+                                result = result.strip()
+                            odd = bet.xpath(
+                                "(./td[contains(@class,'mkt-sort')])[last()]//span[contains(@class,'price') and contains(@class,'dec')]/text()"
+                            ).get()
+                            if result and odd:
+                                odd = odd.strip()
+                            odds.append({"Market": market_name, "Result": result, "Odds": odd})
+
                     else:
-                        for bet in market.css('button[name="add-to-slip"]'):
-                            # print("else bet", bet)
+                        for bet in market.xpath(".//span[contains(@class,'seln')]/button[@name='add-to-slip']"):
+                            result = None
+                            seln_name = bet.xpath( ".//span[contains(@class,'seln-name')]/text()").get()
+                            seln_hcap = bet.xpath(".//span[contains(@class,'seln-hcap')]/text()").get()
+                            price_dec = bet.xpath(".//span[contains(@class,'price') and contains(@class,'dec')]/text()").get()
+                            if seln_name is not None:
+                                seln_name = seln_name.strip()
+                            if seln_hcap is not None:
+                                seln_hcap = seln_hcap.strip()
+
+                            if price_dec is not None:
+                                try:
+                                    odd = float(price_dec)
+                                except Exception:
+                                    odd = None
+                            else:
+                                odd = None
                             if (
                                 "Total" in market_name
-                                and bet.css('span.seln-name::text').get() is not None
-                                and (
-                                "Menos" in bet.css('span.seln-name::text').get()
-                                or "Más" in bet.css('span.seln-name::text').get()
-                            )
+                                and seln_name
+                                and ("Menos" in seln_name or "Más" in seln_name)
                             ):
-                                result = bet.css('span.seln-name::text').get() + " " + bet.css(
-                                    'span.seln-hcap::text').get()
-                                odd = float(bet.css('span.price.dec::text').get())
+                                result = f"{seln_name} {seln_hcap}" if seln_hcap else seln_name
                                 odds.append({"Market": market_name, "Result": result, "Odds": odd})
 
-                            elif bet.css('span.seln-name::text').get() is not None:
-                                result = bet.css('span.seln-name::text').get()
-                                odd = float(bet.css('span.price.dec::text').get())
+                            # Otherwise, if we have a selection name, use it
+                            elif seln_name:
+                                result = seln_name
                                 odds.append({"Market": market_name, "Result": result, "Odds": odd})
-                            if result is None and "Total" not in market_name:
-                                result = "draw"
-                                odd = float(bet.css('span.price.dec::text').get())
-                                odds.append({"Market": market_name, "Result": result, "Odds": odd})
+
+                    # If improved market exists, remove the plain one
+                    if any(o.get("Market") == "Ganador (1X2) - Cuotas Mejoradas" for o in odds):
+                        odds = [o for o in odds if o.get("Market") != "Ganador (1X2)"]
             except Exception as e:
                 if debug:
                     print("Error in parsing odds:", e)
                     traceback.print_exc()
                 Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
+        # selection_keys = response.xpath("//div[contains(@class, 'efav-section')]").extract()
+        # odds = []
+        # for selection_key in selection_keys:
+        #     # print(selection_key)
+        #     selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace(
+        #         "\t", "")
+        #     clean_selection_key = re.sub(html_cleaner, '@', selection_key).split("@")
+        #     clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
+        #     print(clean_selection_keys)
+
+        # markets = response.css('div.expander.mkt')
+        #
+        # for market in markets:
+        #     # if debug:
+        #     #     print("market css", market)
+        #     try:
+        #         if market.css('span.mkt-name::text').get() is not None:
+        #             market_name = market.css('span.mkt-name::text').get().strip()
+        #         else:
+        #             continue
+        #         if market_name in list_of_markets:
+        #             if debug:
+        #                 print("market name", market_name)
+        #             if market_name == "Línea de Juego" and sport_id == "1":
+        #                 for bet in market.css('tbody').css('tr'):
+        #                     if debug:
+        #                         print("css bet 1 ", bet)
+        #                     result = bet.css('div.team-name').css('a::text').get().strip()
+        #                     odd = bet.css('td.mkt-sort')[-1].css('span.price.dec::text').get().strip()
+        #                     odds.append({'Market': market_name, 'Result': result, 'Odds': odd})
+        #             if market_name == "Línea de Juego" and sport_id == "2":
+        #
+        #                 print("market css for basket linea de Juego", market)
+        #
+        #             else:
+        #                 # for bet in market.css('button[name="add-to-slip"]'):
+        #                 for bet in market.css('.seln > button[name="add-to-slip"]'):
+        #                     if debug:
+        #                         print("css bet 2", bet)
+        #                     # result = None
+        #
+        #                     if (
+        #                         "Total" in market_name
+        #                         and bet.css('span.seln-name::text').get() is not None
+        #                         and (
+        #                         "Menos" in bet.css('span.seln-name::text').get()
+        #                         or "Más" in bet.css('span.seln-name::text').get()
+        #                     )
+        #                     ):
+        #                         result = bet.css('span.seln-name::text').get() + " " + bet.css(
+        #                             'span.seln-hcap::text').get()
+        #                         odd = float(bet.css('span.price.dec::text').get())
+        #                         odds.append({"Market": market_name, "Result": result, "Odds": odd})
+        #
+        #                     elif bet.css('span.seln-name::text').get() is not None:
+        #                         result = bet.css('span.seln-name::text').get()
+        #                         odd = float(bet.css('span.price.dec::text').get())
+        #                         odds.append({"Market": market_name, "Result": result, "Odds": odd})
+        #                     if result is None and "Total" not in market_name:
+        #                         result = "draw"
+        #                         odd = float(bet.css('span.price.dec::text').get())
+        #                         odds.append({"Market": market_name, "Result": result, "Odds": odd})
+        #     except Exception as e:
+        #         if debug:
+        #             print("Error in parsing odds:", e)
+        #             traceback.print_exc()
+        #         Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
         if sport_id == "1":
             response_xpath = response.xpath(
                 "//div[contains(@class, 'expander expander-collapsed fetch-on-expand no-child-update efav-section')]").extract()

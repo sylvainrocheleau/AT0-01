@@ -3,7 +3,6 @@ import scrapy
 import datetime
 import time
 import os
-# import requests
 import asyncio
 import dateparser
 import json_repair
@@ -11,10 +10,10 @@ import traceback
 from playwright.sync_api import Error, TimeoutError as PlaywrightTimeoutError
 from scrapy_playwright.page import PageMethod
 from scrapy.spidermiddlewares.httperror import HttpError
-from twisted.internet.error import DNSLookupError, TimeoutError
+from twisted.internet.error import DNSLookupError, TimeoutError, TCPTimedOutError
 from ..items import ScrapersItem
 from ..settings import get_custom_playwright_settings, soltia_user_name, soltia_password, LOCAL_USERS
-from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables, list_of_markets_V2
+from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables, list_of_markets_V2, normalize_odds_variables_temp
 from ..utilities import Helpers
 from ..parsing_logic import build_match_infos
 
@@ -26,44 +25,40 @@ class TwoStepsSpider(scrapy.Spider):
         spider.parser = kwargs.get('parser', '')
         try:
             if os.environ["USER"] in LOCAL_USERS:
-                spider.debug = False
-                debug = False
+                spider.debug = True
+                debug = True
                 if spider.parser == "comp":
                     print("PROCESSING COMPETITIONS DEBUG MODE")
-                    spider.competitions = [x for x in bookie_config(bookie=["WinaMax"]) if x["competition_id"] == "UEFAEuropaLeague"]
-                    spider.competitions = bookie_config(bookie=["WinaMax"])
+                    spider.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
+                                if x["bookie_id"] == "WinaMax" and x["competition_id"] == "BundesligaAlemana"]
                 else:
                     print("PROCESSING MATCHES DEBUG MODE")
-                    # spider.match_filter = {"type": "bookie_and_comp", "params": ["WinaMax", "SerieABrasil"]}
-                    spider.match_filter = {"type": "bookie_id", "params": ["WinaMax", 1]}
-                    # spider.match_filter = {"type": "match_url_id", "params": [
-                    #     "https://www.winamax.es/apuestas-deportivas/match/58052645"]}
+                    # spider.match_filter = {"type": "bookie_and_comp", "params": ["WinaMax", "MajorLeagueSoccerUSA"]}
+                    # spider.match_filter = {"type": "bookie_id", "params": ["WinaMax", 1]}
+                    spider.match_filter = {"type": "match_url_id", "params": [
+                        "https://www.winamax.es/apuestas-deportivas/match/61513782"]}
+                return spider
         except:
             spider.debug = False
-            debug = False
             if spider.parser == "comp":
-                if (
-                    0 <= Helpers().get_time_now("UTC").hour < 1
-                    or 10 <= Helpers().get_time_now("UTC").hour < 11
-                ):
-                    print("PROCESSING ALL COMPETITIONS")
-                    spider.competitions = bookie_config(bookie=["WinaMax"])
-                else:
-                    print("PROCESSING COMPETITIONS WITH HTTP ERRORS")
-                    spider.competitions = bookie_config(bookie=["WinaMax", "http_errors"])
+                print("PROCESSING COMPETITIONS WITH HTTP ERRORS OR NOT UPDATED (12 HOURS)")
+                spider.competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
+                                 if x["bookie_id"] == "WinaMax"]
             else:
                 print("PROCESSING ALL MATCHES")
                 spider.match_filter = {"type": "bookie_id", "params": ["WinaMax", 1]}
-        return spider
+            return spider
     debug = False
     name = "WinaMaxv2"
     proxy_ip = str
     user_agent_hash = int
+    close_playwright = True
     custom_settings = get_custom_playwright_settings(browser="Chrome", rotate_headers=False)
     custom_settings.update({
         "CONCURRENT_REQUESTS_PER_DOMAIN": 2,
         "HTTPCACHE_ENABLED": False,
         "PLAYWRIGHT_MAX_CONTEXTS": 2,
+        "CLOSESPIDER_TIMEOUT": 60*60,
     })
 
     def should_block_request(self, request):
@@ -92,9 +87,9 @@ class TwoStepsSpider(scrapy.Spider):
     map_matches = {}
     for match in Helpers().load_matches():
         try:
-            map_matches[match[6]].append(match[0])
+            map_matches[match[5]].append(match[0])
         except KeyError:
-            map_matches.update({match[6]: [match[0]]})
+            map_matches.update({match[5]: [match[0]]})
     map_matches_urls = [x[0] for x in Helpers().load_matches_urls(name)]
     match_filter_enabled = True
     frequency_groups = ['A']
@@ -228,12 +223,13 @@ class TwoStepsSpider(scrapy.Spider):
                             competition_id=data["competition_id"],
                             home_team=data["home_team"],
                             away_team=data["away_team"],
+                            orig_home_team=data["orig_home_team"],
+                            orig_away_team=data["orig_away_team"],
                             url=data["match_url_id"],
                             web_url=data["web_url"],
                             bookie_id=data["bookie_id"],
                             date=data["date"],
                             scraping_tool=data["scraping_tool"],
-                            dutcher=False,
                             playwright=True,
                             playwright_include_page=True,
                             playwright_context=data["match_url_id"],
@@ -293,6 +289,7 @@ class TwoStepsSpider(scrapy.Spider):
         competition = response.meta.get("competition")
         list_of_markets = response.meta.get("list_of_markets")
         competition_url = response.meta.get("competition_url_id")
+        print("playwright_context_kwargs", response.meta.get("playwright_context_kwargs"))
         self.match_infos.update({competition_url: []})
         self.found_no_matches_count.update({competition_url: 0})
         self.custom_timeout.update({competition_url: datetime.datetime.now() + datetime.timedelta(seconds=30)})
@@ -478,6 +475,8 @@ class TwoStepsSpider(scrapy.Spider):
         match_id = response.meta.get("match_id")
         home_team = response.meta.get("home_team")
         away_team = response.meta.get("away_team")
+        orig_home_team = response.meta.get("orig_home_team")
+        orig_away_team = response.meta.get("orig_away_team")
         bookie_id = response.meta.get("bookie_id")
         web_url = response.meta.get("web_url")
         match_url = response.meta.get("url")
@@ -599,14 +598,18 @@ class TwoStepsSpider(scrapy.Spider):
                     id_type="bet_id",
                     data={
                         "match_id": match_id,
-                        "odds": normalize_odds_variables(
-                            self.odds[match_url],
-                            sport_id,
-                            home_team,
-                            away_team,
+                        "odds": normalize_odds_variables_temp(
+                            odds=self.odds[match_url],
+                            sport=sport_id,
+                            home_team=home_team,
+                            away_team=away_team,
+                            orig_home_team=orig_home_team,
+                            orig_away_team=orig_away_team,
                         )
                     }
                 )
+                if self.debug:
+                    print(odds)
                 if not odds:
                     item["data_dict"] = {
                         "match_infos": [
@@ -677,49 +680,109 @@ class TwoStepsSpider(scrapy.Spider):
 
     async def errback(self, failure):
         item = ScrapersItem()
-        print("### errback triggered")
-        item["proxy_ip"] = failure.request.meta.get("proxy_ip")
-        try:
-            item["Competition_Url"] = failure.request.meta.get("competition_url")
-        except:
-            pass
-        try:
-            item["Match_Url"] = failure.request.meta.get("match_url")
-        except:
-            pass
-        item["extraction_time_utc"] = datetime.datetime.now().replace(microsecond=0)
-        try:
-            error = "UnknownError"
-            if failure.check(HttpError):
-                response = failure.value.response
-                error = "HttpError_" + str(response.status)
-
-            elif failure.check(TimeoutError):
-                error = "Timeout"
-
-            elif failure.check(DNSLookupError):
-                error = "DNSLookupError"
-
-            elif failure.check(TimeoutError):
-                error = "TimeoutError"
+        print("### err back triggered")
+        if self.debug:
             try:
-                error = failure.value.response
-            except:
-                error = "UnknownError"
-            item["error_message"] = error
+                print("failed proxy_ip", failure.request.meta["proxy_ip"])
+                print("failed user_agent", failure.request.meta["user_agent"])
+            except Exception:
+                print("Error while retrieving proxy ip and user_agent:")
+            # Fix: correctly access headers through the appropriate objects
+            if hasattr(failure, 'value') and hasattr(failure.value, 'response'):
+                resp = getattr(getattr(failure, 'value', None), 'response', None)
+                if resp is not None:
+                    print('response headers:', resp.headers)
+                else:
+                    print('response headers: N/A - No response object available')
+            else:
+                print('response headers: N/A - No response object available')
+
+            print("request headers:", failure.request.headers)
+            # Also show the Playwright extra_http_headers (actual browser-like headers) if present
+            try:
+                if failure.request.meta.get("extra_http_headers"):
+                    print("playwright extra_http_headers:", failure.request.meta.get("extra_http_headers"))
+                else:
+                    print("playwright extra_http_headers: N/A")
+            except Exception:
+                print("playwright extra_http_headers: error while retrieving")
+            # Playwright page diagnostics: title and cf_clearance cookie presence + save DOM snapshot
+            try:
+                page = failure.request.meta.get("playwright_page")
+                if page is not None:
+                    try:
+                        title = await page.title()
+                    except Exception:
+                        title = "N/A"
+                    print("playwright page title:", title)
+                    try:
+                        cookies = await page.context.cookies()
+                        has_cf = any((c.get("name") == "cf_clearance") for c in cookies)
+                        print("cf_clearance cookie present:", has_cf)
+                    except Exception:
+                        print("cf_clearance cookie present: error while retrieving")
+            except Exception:
+                # do not break errback on diagnostics
+                pass
+
+        if failure.check(HttpError):
+            response = failure.value.response
+            status = response.status
+            url = response.url
+            print("HttpError on", response.status, response.url)
+        elif failure.check(DNSLookupError):
+            # this is the original request
+            request = failure.request
+            url = request.url
+            status = 1000
+            print("DNSLookupError on %s", request.url)
+        elif failure.check(TimeoutError, TCPTimedOutError):
+            request = failure.request
+            url = request.url
+            status = 501
+            print("TimeoutError on %s", request.url)
+        else:
+            try:
+                request = failure.request
+                url = request.url
+                if "net::ERR_HTTP_RESPONSE_CODE_FAILURE" in str(failure.value):
+                    status = 1300
+                    print(f"Playwright HTTP response failure on {url}")
+                else:
+                    status = 1200
+                    print("Unknown error on", request.url)
+            except Exception as e:
+                Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
+        try:
+            item["data_dict"] = {
+                "match_infos": [
+                    {
+                        "match_url_id": url,
+                        "http_status": status,
+                        "match_id": failure.request.meta["match_id"],
+                        # "updated_date": Helpers().get_time_now("UTC")
+                    },
+                ]
+            }
+            item["pipeline_type"] = ["error_on_match_url"]
+            if self.debug:
+                print("Item error yielded", item)
+            yield item
         except Exception as e:
-            item["error_message"] = "error on the function errback " + str(e)
+            Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
 
         try:
-            page = failure.request.meta["playwright_page"]
-            print("Closing page on error")
-            await page.close()
-            print("closing context on error")
-            await page.context.close()
-        except Exception:
-            print("Unable to close page or context")
+            if self.close_playwright:
+                page = failure.request.meta.get("playwright_page")
+                if page is not None:
+                    print("Closing page on error")
+                    await page.close()
+                    print("Closing context on error")
+                    await page.context.close()
+        except Exception as e:
+            Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
             pass
-        yield item
+
 
 
 

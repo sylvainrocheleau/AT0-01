@@ -20,6 +20,8 @@ DOWNLOAD_DELAY = 2
 RANDOMIZE_DOWNLOAD_DELAY = True
 DOWNLOAD_TIMEOUT = 120
 CLOSESPIDER_TIMEOUT = 60*30
+RETRY_TIMES = 5
+RETRY_HTTP_CODES = [500, 502, 503, 504, 520, 522, 524]
 COOKIES_ENABLED = True
 COOKIES_DEBUG = False
 REDIRECT_ENABLED = False
@@ -28,11 +30,13 @@ ITEM_PIPELINES = {
    'scrapy_playwright_ato.pipelines.ScrapersPipeline': 300,
 }
 LOG_FORMATTER = 'scrapy_playwright_ato.logformatter.ShortItemLogFormatter'
-DUPEFILTER_DEBUG = True
+# DUPEFILTER_DEBUG = True
 DUPEFILTER_CLASS = 'scrapy.dupefilters.BaseDupeFilter'
+JOBDIR = ''
 
 # ATO settings
 ###################
+
 # custom status 1200=timeout, 1300=Playwright HTTP response failure, 1500=Lo sentimos, 1600=200 but no odds
 LOCAL_USERS = ["sylvain","rickiel"]
 try:

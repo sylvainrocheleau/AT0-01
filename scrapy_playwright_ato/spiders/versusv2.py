@@ -36,12 +36,13 @@ class WebsocketsSpider(Spider):
                 #                 if x["bookie_id"] == "Versus" and x["competition_id"] == comp_to_filter]
                 # self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", comp_to_filter]}
                 # FILTER BY COMPETITION
-                # competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
-                #                 if x["bookie_id"] == "Versus" and x["competition_id"] == "BundesligaAlemana"]
+                self.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
+                                if x["bookie_id"] == "Versus" and x["competition_id"] == "BundesligaAlemana"]
                 # FILTER BY MATCH
-                self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", "SegundaDivisionEspanola"]}
+                # self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", "SegundaDivisionEspanola"]}
                 # self.match_filter = {"type": "match_url_id", "params": [
-                #     "https://www.versus.es/apuestas/sports/basketball/events/22387658"]} # https://www.versus.es/apuestas/sports/soccer/events/23162434
+                #     "https://www.versus.es/apuestas/sports/basketball/events/23978239"
+                # ]}
 
         except:
             print("PROCESSING COMPETITIONS WITH HTTP ERRORS OR NOT UPDATED (12 HOURS)")
@@ -57,9 +58,9 @@ class WebsocketsSpider(Spider):
     map_matches = {}
     for match in Helpers().load_matches():
         try:
-            map_matches[match[6]].append(match[0])
+            map_matches[match[5]].append(match[0])
         except KeyError:
-            map_matches.update({match[6]: [match[0]]})
+            map_matches.update({match[5]: [match[0]]})
     all_competitions = Helpers().load_competitions_urls_and_sports()
     all_competitions = {x[1]: {"competition_name_es": x[2], "competition_url_id": x[0] } for x in all_competitions if x[4] == "Versus"}
     match_filter_enabled = True
@@ -161,7 +162,6 @@ destination:/api/events/{match_id}
                     map_matches_urls=self.map_matches_urls,
                     debug=self.debug
                 )
-
                 try:
                     if len(match_infos) > 0:
                         match_infos = Helpers().normalize_team_names(
@@ -183,7 +183,7 @@ destination:/api/events/{match_id}
                                 ]
                             }
                             item["pipeline_type"] = ["match_urls"]
-                            print("YIELDING item with match_infos 1", item["data_dict"]["match_infos"])
+                            # print("YIELDING item with match_infos 1", item["data_dict"]["match_infos"])
                             yield item
                         else:
                             error = f"{competition['bookie_id']} {competition['competition_id']} comp not in map_matches "
@@ -384,6 +384,8 @@ destination:/api/markets/multi
                                             )
                                         }
                                     )
+                                    if self.debug:
+                                        print("odds", odds)
                                     if odds:
                                         flag_error = False
 

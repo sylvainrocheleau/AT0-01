@@ -32,9 +32,9 @@ class TwoStepsSpider(scrapy.Spider):
     map_matches = {}
     for match in Helpers().load_matches():
         try:
-            map_matches[match[6]].append(match[0])
+            map_matches[match[5]].append(match[0])
         except KeyError:
-            map_matches.update({match[6]: [match[0]]})
+            map_matches.update({match[5]: [match[0]]})
     map_matches_urls = [x[0] for x in Helpers().load_matches_urls(name)]
     close_playwright = False
 
@@ -60,7 +60,7 @@ class TwoStepsSpider(scrapy.Spider):
                 #                 if x["competition_id"] == "Argentina-PrimeraDivision"]
                 # Filter by bookie and competition
                 competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
-                                if x["competition_id"] == "Argentina-PrimeraDivision" and x["bookie_id"] == "RetaBet"]
+                                if x["competition_id"] == "LaLigaEspanola" and x["bookie_id"] == "RetaBet"]
 
         except Exception as e:
             print("PROCESSING COMPETITIONS WITH HTTP ERRORS OR NOT UPDATED (12 HOURS)")
@@ -191,8 +191,7 @@ class TwoStepsSpider(scrapy.Spider):
         print("RAW HTML RESPONSE")
         parent = os.path.dirname(os.getcwd())
         try:
-            with open(parent + "/Scrapy_Playwright/scrapy_playwright_ato/" + self.name + "_response" + ".txt",
-                      "w") as f:
+            with open(parent + "/Scrapy_Playwright/logs/" + self.name + "_response" + ".txt", "w") as f:
                 f.write(response.text)  # response.meta["playwright_page"]
         except Exception as e:
             print(traceback.format_exc())
