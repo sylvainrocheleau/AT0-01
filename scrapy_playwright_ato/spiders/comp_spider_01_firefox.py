@@ -15,7 +15,7 @@ from ..normalization import Normalize
 
 class TwoStepsSpider(scrapy.Spider):
     # TODO move what need to be moved into init
-    name = "comp_spider_01"
+    name = "comp_spider_01_firefox"
     if name == "comp_spider_01":
         settings_used = "USING PLAYWRIGHT SETTINGS"
         custom_settings = get_custom_playwright_settings(browser="Chrome", rotate_headers=False)
@@ -56,19 +56,19 @@ class TwoStepsSpider(scrapy.Spider):
                 # competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})]
                 # FILTER BY BOOKIE THAT HAVE ERRORS OR NOT UPDATED
                 # competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
-                #                 if x["bookie_id"] == "BetfairSportsbook"]
+                #                 if x["bookie_id"] == "GoldenPark"]
                 # FILTER BY COMPETITION THAT HAVE HTTP_ERRORS OR NOT UPDATED
                 # competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
-                #                 if x["competition_id"] == "Bet777"]
+                #                 if x["competition_id"] == "BundesligaAlemana"]
                 # Filter by bookie
                 # competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
-                #                 if x["bookie_id"] == "Monopoly"]
+                #                 if x["bookie_id"] == "1XBet"]
                 # Filter by competition
                 # competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
                 #                 if x["competition_id"] == "NBA"]
                 # Filter by bookie and competition
                 competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
-                                if x["competition_id"] == "LaLigaEspanola" and x["bookie_id"] == "MarcaApuestas"]
+                                if x["competition_id"] == "LaLigaEspanola" and x["bookie_id"] == "RetaBet"]
 
             else:
                 competitions = bookie_config(bookie={"output": "all_competitions"})
@@ -113,12 +113,11 @@ class TwoStepsSpider(scrapy.Spider):
         item = ScrapersItem()
         if response.meta.get("scraping_tool") in ["playwright", "camoufox"]:
             try:
-                tool = response.meta.get("scraping_tool")
                 page = response.meta[f"{tool}_page"]
                 # proxy_ip = response.meta.get("proxy_ip")
                 # bookie_id = response.meta.get("bookie_id")
                 # user_agent_hash = Helpers().build_hash(proxy_ip, bookie_id)
-
+                # tool = response.meta.get("scraping_tool")
                 # cookies = await page.context.cookies()
                 # real_user_agent = runtime_config.get('user_agent') if runtime_config["user_agent"] else None
                 # if user_agent_hash not in self.cookies_info:

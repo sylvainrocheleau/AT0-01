@@ -36,15 +36,15 @@ class MetaSpider(scrapy.Spider):
             # custom_settings["CONCURRENT_REQUESTS"] = 50
             debug = True
             match_filter_enabled = True
-            scraping_group = [1,2,3,4,5]
+            scraping_group = [1]
 
             # FILTER OPTIONS
             # match_filter = {}
             # match_filter = {"type": "bookie_id", "params":["CasinoBarcelona", 1]}
-            match_filter = {"type": "bookie_and_comp", "params": ["RetaBet", "Argentina-PrimeraDivision"]}
+            # match_filter = {"type": "bookie_and_comp", "params": ["RetaBet", "Argentina-PrimeraDivision"]}
             # match_filter = {"type": "comp", "params":["Euroligamasculina"]}
-            # match_filter = {"type": "match_url_id",
-            #                 "params":['https://apuestas.retabet.es/deportes/futbol/alemania/bundesliga/leipzig-hamburgo/32738344']}
+            match_filter = {"type": "match_url_id",
+                            "params":['https://apuestas.retabet.es/deportes/futbol/espana/laliga/elche-osasuna/34901663']}
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -263,6 +263,16 @@ class MetaSpider(scrapy.Spider):
         try:
             with open(parent + "/Scrapy_Playwright/logs/" + self.name + "_response" + ".txt", "w") as f:
                 f.write(response.text) # response.meta["playwright_page"]
+        except Exception as e:
+            print(traceback.format_exc())
+        try:
+            import base64
+            screenshot_b64 = response.raw_api_response.get("screenshot")
+            if screenshot_b64:
+                screenshot_path = parent + "/Scrapy_Playwright/logs/" + self.name + "_screenshot.png"
+                with open(screenshot_path, "wb") as f:
+                    f.write(base64.b64decode(screenshot_b64))
+                print(f"Screenshot saved to: {screenshot_path}")
         except Exception as e:
             print(traceback.format_exc())
 

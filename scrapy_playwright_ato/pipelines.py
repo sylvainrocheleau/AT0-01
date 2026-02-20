@@ -63,6 +63,14 @@ def safe_executemany(cursor, query, data, chunk_size=100, retries=6, delay=0.5, 
                         mid = len(chunk) // 2
                         left = chunk[:mid]
                         right = chunk[mid:]
+                        # Log chunk-splitting details (FK violation)
+                        try:
+                            print(
+                                f"[safe_executemany] FK 1452 on chunk [{start}:{start+len(chunk)}] size={len(chunk)}; "
+                                f"splitting -> left [{start}:{start+mid}] size={len(left)}, right [{start+mid}:{start+len(chunk)}] size={len(right)}"
+                            )
+                        except Exception:
+                            pass
                         safe_executemany(cursor, query, left, chunk_size=max(1, chunk_size // 2),
                                          retries=retries, delay=delay, split_on_deadlock=split_on_deadlock,
                                          _depth=_depth + 1)
@@ -82,6 +90,13 @@ def safe_executemany(cursor, query, data, chunk_size=100, retries=6, delay=0.5, 
                         left = chunk[:mid]
                         right = chunk[mid:]
                         # Recurse on halves with smaller chunk sizes; propagate same retry policy
+                        try:
+                            print(
+                                f"[safe_executemany] {errno} deadlock/lock-timeout on chunk [{start}:{start+len(chunk)}] size={len(chunk)} at attempt {attempt}; "
+                                f"splitting -> left [{start}:{start+mid}] size={len(left)}, right [{start+mid}:{start+len(chunk)}] size={len(right)}"
+                            )
+                        except Exception:
+                            pass
                         safe_executemany(cursor, query, left, chunk_size=max(1, chunk_size // 2), retries=retries, delay=delay, split_on_deadlock=split_on_deadlock, _depth=_depth + 1)
                         safe_executemany(cursor, query, right, chunk_size=max(1, chunk_size // 2), retries=retries, delay=delay, split_on_deadlock=split_on_deadlock, _depth=_depth + 1)
                         break
@@ -91,23 +106,54 @@ def safe_executemany(cursor, query, data, chunk_size=100, retries=6, delay=0.5, 
                             conn.rollback()
                         except Exception:
                             pass
-                        sleep_for = min(delay * (2 ** (attempt - 1)) + random.uniform(0, 0.3), 5)
-                        print(f"Retryable DB error ({errno}) on chunk [{start}:{start+len(chunk)}], retry {attempt}/{retries} after {sleep_for:.2f}s...")
-                        time.sleep(sleep_for)
+                        planned_sleep = min(delay * (2 ** (attempt - 1)) + random.uniform(0, 0.3), 5)
+                        try:
+                            print(
+                                f"[safe_executemany] Retryable DB error ({errno}) on chunk [{start}:{start+len(chunk)}] size={len(chunk)}; "
+                                f"retry {attempt}/{retries} planned_sleep={planned_sleep:.2f}s"
+                            )
+                        except Exception:
+                            pass
+                        _t0 = time.monotonic()
+                        time.sleep(planned_sleep)
+                        _actual = time.monotonic() - _t0
+                        try:
+                            print(
+                                f"[safe_executemany] Slept actual={_actual:.2f}s before retry {attempt}/{retries} on chunk [{start}:{start+len(chunk)}]"
+                            )
+                        except Exception:
+                            pass
                         continue
                 # Lost connection / server has gone away
                 if errno in (2006, 2013) and attempt < retries - 1:
                     attempt += 1
-                    print(
-                        f"MySQL connection lost ({errno}) on chunk [{start}:{start+len(chunk)}], "
-                        f"reconnecting and retrying {attempt}/{retries}..."
-                    )
+                    try:
+                        print(
+                            f"[safe_executemany] MySQL connection lost ({errno}) on chunk [{start}:{start+len(chunk)}] size={len(chunk)}; "
+                            f"reconnecting and retrying {attempt}/{retries}..."
+                        )
+                    except Exception:
+                        pass
                     try:
                         conn.reconnect(attempts=3, delay=delay)
                     except Error:
                         pass
-                    sleep_for = min(delay * (2 ** (attempt - 1)), 5)
-                    time.sleep(sleep_for)
+                    planned_sleep = min(delay * (2 ** (attempt - 1)), 5)
+                    try:
+                        print(
+                            f"[safe_executemany] planned_sleep={planned_sleep:.2f}s after reconnect for retry {attempt}/{retries} on chunk [{start}:{start+len(chunk)}]"
+                        )
+                    except Exception:
+                        pass
+                    _t0 = time.monotonic()
+                    time.sleep(planned_sleep)
+                    _actual = time.monotonic() - _t0
+                    try:
+                        print(
+                            f"[safe_executemany] Slept actual={_actual:.2f}s after reconnect on chunk [{start}:{start+len(chunk)}]"
+                        )
+                    except Exception:
+                        pass
                     continue
                 raise
             except InterfaceError:
@@ -363,6 +409,10 @@ class ScrapersPipeline:
                     dropped = before - len(odds_buf)
                     if dropped and self.debug:
                         print(f"[Worker] Dropped {dropped} odds rows due to non-existent match_id.")
+                        Helpers().insert_log(level="WARNING", type="CODE",
+                                             error="Dropped odds rows due to non-existent match_id.",
+                                             message=f"{dropped}"
+                                             )
 
             # Collect URLs to delete from both odds and url updates (when status indicates error)
             urls_from_odds = set(item[9] for item in odds_buf) if odds_buf else set()
@@ -380,17 +430,19 @@ class ScrapersPipeline:
 
             urls_to_delete = urls_from_odds | urls_from_updates
 
-            # Phase A: delete old odds for affected match_url_id's and commit
+            # Phase A: delete old odds only for urls with odds
             try:
-                if urls_to_delete:
+                if urls_from_odds:
+                    if self.debug:
+                        print(f"[Worker] Deleting odds for URLs with odds: {urls_from_odds} ")
                     delete_query = """
-                        DELETE vmo
-                        FROM ATO_production.V2_Matches_Odds AS vmo
-                        JOIN ATO_production.V2_Matches_Urls AS vmu
-                          ON vmo.bookie_id = vmu.bookie_id AND vmo.match_id = vmu.match_id
-                        WHERE vmu.match_url_id = %s
-                    """
-                    params = [(url,) for url in sorted(urls_to_delete)]
+                                    DELETE vmo
+                                    FROM ATO_production.V2_Matches_Odds AS vmo
+                                    JOIN ATO_production.V2_Matches_Urls AS vmu
+                                      ON vmo.bookie_id = vmu.bookie_id AND vmo.match_id = vmu.match_id
+                                    WHERE vmu.match_url_id = %s
+                                """
+                    params = [(url,) for url in sorted(urls_from_odds)]
                     # smaller chunks reduce lock footprint on join-delete
                     safe_executemany(cursor, delete_query, params, chunk_size=25)
                     if self.debug:
@@ -537,8 +589,20 @@ class ScrapersPipeline:
                         pass
                     # reconnect and backoff
                     self._connect_db()
-                    delay = base_delay * (2 ** attempt)
-                    time.sleep(min(delay, 5.0))
+                    planned_sleep = min(base_delay * (2 ** attempt), 5.0)
+                    try:
+                        print(
+                            f"[_safe_execute_sql] transient op error {getattr(e, 'errno', None)}; retry attempt={attempt+1}/{retries} planned_sleep={planned_sleep:.2f}s"
+                        )
+                    except Exception:
+                        pass
+                    _t0 = time.monotonic()
+                    time.sleep(planned_sleep)
+                    _actual = time.monotonic() - _t0
+                    try:
+                        print(f"[_safe_execute_sql] Slept actual={_actual:.2f}s before retry attempt={attempt+1}/{retries}")
+                    except Exception:
+                        pass
                     attempt += 1
                     continue
                 else:
@@ -552,8 +616,20 @@ class ScrapersPipeline:
                             self.connection.rollback()
                     except Exception:
                         pass
-                    delay = base_delay * (2 ** attempt)
-                    time.sleep(min(delay, 5.0))
+                    planned_sleep = min(base_delay * (2 ** attempt), 5.0)
+                    try:
+                        print(
+                            f"[_safe_execute_sql] retryable DB error {getattr(e, 'errno', None)}; retry attempt={attempt+1}/{retries} planned_sleep={planned_sleep:.2f}s"
+                        )
+                    except Exception:
+                        pass
+                    _t0 = time.monotonic()
+                    time.sleep(planned_sleep)
+                    _actual = time.monotonic() - _t0
+                    try:
+                        print(f"[_safe_execute_sql] Slept actual={_actual:.2f}s before retry attempt={attempt+1}/{retries}")
+                    except Exception:
+                        pass
                     attempt += 1
                     continue
                 else:
@@ -710,22 +786,24 @@ class ScrapersPipeline:
             try:
                 create_match_time_diff = [[x["date"], x["match_id"]] for x in item["data_dict"]["match_infos"]]
                 bookie_id = list(set([x['bookie_id'] for x in item["data_dict"]["match_infos"]]))
-                query_match_time_diff = f"""
-                    UPDATE ATO_production.Time_Comparison
-                    SET {bookie_id[0]} = %s
-                    WHERE match_id = %s
-                """
-                safe_executemany(cursor, query_match_time_diff, create_match_time_diff)
-                connection.commit()
+                print(f"BOOKIE ID: {bookie_id}")
+                if len(bookie_id) == 1:
+                    query_match_time_diff = f"""
+                        UPDATE ATO_production.Time_Comparison
+                        SET {bookie_id[0]} = %s
+                        WHERE match_id = %s
+                    """
+                    if not self.debug:
+                        safe_executemany(cursor, query_match_time_diff, create_match_time_diff)
+                        connection.commit()
             except Exception as e:
                 print(traceback.format_exc())
                 pass
 
-            # TODO if there is a mismatch between UTC and Spain time, we need to report it
             try:
                 print(f"UPDATING V2_Matches_Urls and competitions status ")
-                if self.debug:
-                    print("item[data_dict][match_infos", item["data_dict"]["match_infos"])
+                # if self.debug:
+                #     print("item[data_dict][match_infos", item["data_dict"]["match_infos"])
                 start_time = datetime.datetime.now()
                 for key, value in item["data_dict"].items():
                     if key == "match_infos":
@@ -1116,37 +1194,38 @@ class ScrapersPipeline:
                     connection = Connect().to_db(db="ATO_production", table=None)
                     cursor = connection.cursor()
                     competition_id = next(iter(item["data_dict"].values()))["competition_id"]
-                    if item["data_dict"] and 9 <= Helpers().get_time_now("UTC").hour < 10:
-                        scraped_match_ids = {value["match_id"] for value in item["data_dict"].values()}
-                        query_fetch_db_matches = "SELECT match_id FROM ATO_production.V2_Matches WHERE competition_id = %s"
-                        cursor.execute(query_fetch_db_matches, (competition_id,))
-                        db_match_ids = {row[0] for row in cursor.fetchall()}
-                        matches_to_delete = db_match_ids - scraped_match_ids
-                        # check the ratio of matches to delete vs db_match_ids
-                        num_db_matches = len(db_match_ids)
-                        num_matches_to_delete = len(matches_to_delete)
-                        if num_db_matches > 0:
-                            delete_ratio = num_matches_to_delete / num_db_matches
-                        else:
-                            delete_ratio = 0 if num_db_matches == 0 else float('inf')
-                        if self.debug:
-                            print(f"DB-to-delete match ratio for competition {competition_id}: {delete_ratio:.2f}")
-                            print("matches to delele", matches_to_delete)
-                        print(
-                            f"Deleting {len(matches_to_delete)} obsolete matches for competition {competition_id}.")
-
-                        if matches_to_delete and delete_ratio < 0.5:
-                            query_delete_match = "DELETE FROM ATO_production.V2_Matches WHERE match_id = %s"
-                            cursor.executemany(query_delete_match, [(match_id,) for match_id in matches_to_delete])
-                            connection.commit()
+                    # if item["data_dict"] and 9 <= Helpers().get_time_now("UTC").hour < 10:
+                    #     scraped_match_ids = {value["match_id"] for value in item["data_dict"].values()}
+                    #     query_fetch_db_matches = "SELECT match_id FROM ATO_production.V2_Matches WHERE competition_id = %s"
+                    #     cursor.execute(query_fetch_db_matches, (competition_id,))
+                    #     db_match_ids = {row[0] for row in cursor.fetchall()}
+                    #     matches_to_delete = db_match_ids - scraped_match_ids
+                    #     # check the ratio of matches to delete vs db_match_ids
+                    #     num_db_matches = len(db_match_ids)
+                    #     num_matches_to_delete = len(matches_to_delete)
+                    #     if num_db_matches > 0:
+                    #         delete_ratio = num_matches_to_delete / num_db_matches
+                    #     else:
+                    #         delete_ratio = 0 if num_db_matches == 0 else float('inf')
+                    #     if self.debug:
+                    #         print(f"DB-to-delete match ratio for competition {competition_id}: {delete_ratio:.2f}")
+                    #         print("matches to delele", matches_to_delete)
+                    #     print(
+                    #         f"Deleting {len(matches_to_delete)} obsolete matches for competition {competition_id}.")
+                    #
+                    #     if matches_to_delete and delete_ratio < 0.5:
+                    #         query_delete_match = "DELETE FROM ATO_production.V2_Matches WHERE match_id = %s"
+                    #         cursor.executemany(query_delete_match, [(match_id,) for match_id in matches_to_delete])
+                    #         connection.commit()
 
                     query_insert_matches = """
                         INSERT INTO ATO_production.V2_Matches
-                        (match_id, home_team, away_team, date, sport_id, competition_id)
-                        VALUES(%s, %s, %s, %s, %s, %s)
-                        ON DUPLICATE KEY UPDATE date = VALUES(date),
-                                                home_team = VALUES(home_team),
-                                                away_team = VALUES(away_team)
+                        (match_id, home_team, away_team, date, event_status, sport_id, competition_id)
+                        VALUES(%s, %s, %s, %s, %s, %s, %s)
+                        ON DUPLICATE KEY UPDATE home_team = VALUES(home_team),
+                                                away_team = VALUES(away_team),
+                                                date = VALUES(date),
+                                                event_status = VALUES(event_status)
                     """
                     for key, value in item["data_dict"].items():
                         values = (
@@ -1154,6 +1233,7 @@ class ScrapersPipeline:
                             value["home_team"],
                             value["away_team"],
                             value["date"].replace(tzinfo=pytz.UTC).replace(microsecond=0),
+                            value["event_status"],
                             value["sport_id"],
                             value["competition_id"],
                         )
@@ -1178,8 +1258,9 @@ class ScrapersPipeline:
                         )
                         list_of_matches_for_time_diff.append(values)
                         # cursor.execute(query_insert_matches, values)
-                    safe_executemany(cursor, query_insert_matches_for_time_diff, list_of_matches_for_time_diff)
-                    connection.commit()
+                    if not self.debug:
+                        safe_executemany(cursor, query_insert_matches_for_time_diff, list_of_matches_for_time_diff)
+                        connection.commit()
                 except Exception as e:
                     if self.debug:
                         print(traceback.format_exc())
@@ -1195,7 +1276,6 @@ class ScrapersPipeline:
 
         if "pipeline_type" in item.keys() and "exchange_match_odds" in item["pipeline_type"]:
             start_time = datetime.datetime.now()
-            # connection = None  # Initialize connection to None
             try:
                 self._ensure_connection()
                 query_exchange = """
@@ -1211,9 +1291,8 @@ class ScrapersPipeline:
                 """
 
                 batch_insert_exchanges = []
+                match_ids = set()
                 for key, value in item["data_dict"].items():
-                    if self.debug:
-                        print(value["match_id"], len(value["odds"]))
                     if "odds" in value.keys():
                         for value_02 in value["odds"]:
                             values = (
@@ -1223,6 +1302,7 @@ class ScrapersPipeline:
                                 "Betfair Exchange", value_02["Odds"], value_02["Size"], value["url"], value["match_id"]
                             )
                             batch_insert_exchanges.append(values)
+                            match_ids.add(value["match_id"])
                 try:
                     # Start a transaction if not already in one
                     if not getattr(self.connection, "in_transaction", False):
@@ -1231,31 +1311,37 @@ class ScrapersPipeline:
                         except mysql.connector.errors.ProgrammingError:
                             pass  # already in a transaction
 
+                    # Delete records for the collected match_ids
+                    query_delete_by_match = (
+                        """
+                        DELETE
+                        FROM ATO_production.V2_Exchanges
+                        WHERE match_id = %s
+                          AND exchange = %s
+                        """
+                    )
+                    if match_ids:
+                        delete_params = [(mid, "Betfair Exchange") for mid in match_ids]
+                        safe_executemany(self.cursor, query_delete_by_match, delete_params)
+
+                    # Insert records for the match_ids we collected
                     inserted_count = 0
                     if batch_insert_exchanges:
                         safe_executemany(self.cursor, query_exchange, batch_insert_exchanges)
                         inserted_count = len(batch_insert_exchanges)
 
-                    # Delete stale rows older than 30 minute (UTC‑aligned)
-                    delete_stale_sql = """
-                                       DELETE
-                                       FROM ATO_production.V2_Exchanges
-                                       WHERE updated_time < UTC_TIMESTAMP() - INTERVAL 60 MINUTE
-                                       """
-                    self.cursor.execute(delete_stale_sql)
-                    deleted_count = self.cursor.rowcount
-
                     self.connection.commit()
                     print(
-                        f"V2_Exchanges: upserted {inserted_count} rows, deleted {deleted_count} stale rows at {datetime.datetime.now()}"
+                        f"V2_Exchanges: upserted {inserted_count} rows, at {datetime.datetime.now()}"
                     )
                 except Exception as e:
+                    Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
                     try:
                         self.connection.rollback()
                     except Exception:
                         pass
                     if self.debug:
-                        print("Failed to refresh V2_Exchanges (insert + delete stale):", e)
+                        print("Failed to refresh V2_Exchanges:", e)
                         print(traceback.format_exc())
                     self._shrink_item_for_error(item)
                     raise
@@ -1293,11 +1379,11 @@ class ScrapersPipeline:
 
                 try:
                     # TRUNCATE stage (fast DDL; independent of live oddsmatcher locks)
-                    self.cursor.execute("TRUNCATE TABLE ATO_production.V2_Oddsmatcher_stage")
+                    self._safe_execute_sql("TRUNCATE TABLE ATO_production.V2_Oddsmatcher_stage")
                     # Populate stage
-                    self.cursor.execute(query_insert_odds_match_maker_stage)
+                    self._safe_execute_sql(query_insert_odds_match_maker_stage)
                     # 2) Atomically swap stage with live table (implicit commit)
-                    self.cursor.execute(
+                    self._safe_execute_sql(
                         """
                         RENAME TABLE
                           ATO_production.V2_Oddsmatcher TO ATO_production.V2_Oddsmatcher_old,
@@ -1314,9 +1400,11 @@ class ScrapersPipeline:
                     # Rationale: FK names must be unique per schema in MySQL/MariaDB. After the swap, the table
                     # that became V2_Oddsmatcher_stage may still hold the same FK names we want to add on live.
                     # Drop them on stage first to avoid errno:121 (Duplicate key on write or update).
+
                     try:
+                        self._safe_execute_sql("SELECT GET_LOCK('oddsmatcher_swap', 15)")
                         # Discover any FKs on the stage table and drop them
-                        self.cursor.execute(
+                        self._safe_execute_sql(
                             """
                             SELECT rc.CONSTRAINT_NAME
                             FROM information_schema.REFERENTIAL_CONSTRAINTS rc
@@ -1327,23 +1415,44 @@ class ScrapersPipeline:
                         fk_names = [row[0] for row in self.cursor.fetchall()]
                         for fk in fk_names:
                             try:
-                                self.cursor.execute(
+                                self._safe_execute_sql(
                                     f"ALTER TABLE ATO_production.V2_Oddsmatcher_stage DROP FOREIGN KEY {fk}"
                                 )
                             except Exception as drop_fk_err:
+                                Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(drop_fk_err)}", message=traceback.format_exc())
                                 if self.debug:
                                     print(f"Warning: could not drop FK {fk} on V2_Oddsmatcher_stage: {drop_fk_err}")
+                        # Remove any rows that don’t resolve to V2_Matches to avoid 1452 errors
+                        self._safe_execute_sql("""
+                            DELETE vo
+                            FROM ATO_production.V2_Oddsmatcher vo
+                            LEFT JOIN ATO_production.V2_Matches vm
+                              ON vo.match_id = vm.match_id
+                            WHERE vm.match_id IS NULL
+                        """
+                        )
                         try:
                             self.connection.commit()
                         except Exception:
                             pass
                     except Exception as cleanup_e:
+                        Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(cleanup_e)}", message=traceback.format_exc())
                         if self.debug:
                             print("Post-swap FK cleanup on stage failed:", cleanup_e)
+                    finally:
+                        try:
+                            self._safe_execute_sql("SELECT RELEASE_LOCK('oddsmatcher_swap')")
+                        except Exception:
+                            pass
 
-                    # Then ensure live has the intended FKs (if you want DB-enforced integrity)
                     try:
-                        self.cursor.execute(
+                        self.connection.commit()
+                    except Exception:
+                        pass
+
+                    # Then ensure live has the intended FKs
+                    try:
+                        self._safe_execute_sql(
                             """
                             SELECT rc.CONSTRAINT_NAME
                             FROM information_schema.REFERENTIAL_CONSTRAINTS rc
@@ -1353,16 +1462,13 @@ class ScrapersPipeline:
                         )
                         live_fk_names = [row[0] for row in self.cursor.fetchall()]
                         if not live_fk_names:
-                            self.cursor.execute(
+                            # Only add the match_id FK; do NOT add fk_vo_vmo_live
+                            self._safe_execute_sql(
                                 """
                                 ALTER TABLE ATO_production.V2_Oddsmatcher
                                     ADD CONSTRAINT fk_vo_matches_live
                                         FOREIGN KEY (match_id)
                                             REFERENCES ATO_production.V2_Matches (match_id)
-                                            ON DELETE CASCADE,
-                                    ADD CONSTRAINT fk_vo_vmo_live
-                                        FOREIGN KEY (bet_id, bookie_id)
-                                            REFERENCES ATO_production.V2_Matches_Odds (bet_id, bookie_id)
                                             ON DELETE CASCADE
                                 """
                             )
@@ -1370,11 +1476,14 @@ class ScrapersPipeline:
                                 self.connection.commit()
                             except Exception:
                                 pass
-                    except Exception as add_fk_err:
+                    except Exception as e:
+                        Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}",
+                                             message=traceback.format_exc())
                         if self.debug:
-                            print("Post-swap FK ensure on live failed:", add_fk_err)
+                            print("Post-swap FK ensure on live failed:", e)
                 except Exception as e:
                     # If anything fails before the swap, no changes to the live table occurred
+                    Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
                     if self.debug:
                         print("Oddsmatcher stage-and-swap failed:", e)
                         print(traceback.format_exc())
@@ -1397,8 +1506,8 @@ class ScrapersPipeline:
                         except mysql.connector.errors.ProgrammingError:
                             pass  # already in a transaction
 
-                    # Delete then insert in one transaction
-                    self.cursor.execute("DELETE FROM ATO_production.V1_Oddsmatcher")
+                    # Using DELETE allows the code to refresh ATO_production.V1_Oddsmatcher atomically vs truncate
+                    self._safe_execute_sql("DELETE FROM ATO_production.V1_Oddsmatcher")
                     query_insert_v1 = (
                         """
                         INSERT INTO ATO_production.V1_Oddsmatcher
@@ -1424,11 +1533,12 @@ class ScrapersPipeline:
                         FROM ATO_production.Oddsmatcher_with_clones
                         """
                     )
-                    self.cursor.execute(query_insert_v1)
+                    self._safe_execute_sql(query_insert_v1)
                     self.connection.commit()
                     if self.debug:
                         print("Rebuilt V1_Oddsmatcher via DELETE+INSERT at", datetime.datetime.now())
                 except Exception as e:
+                    Helpers().insert_log(level="CRITICAL", type="CODE", error=f"{spider.name} {str(e)}", message=traceback.format_exc())
                     if self.debug:
                         print("Failed to rebuild V1_Oddsmatcher:", e)
                         print(traceback.format_exc())
@@ -1436,8 +1546,7 @@ class ScrapersPipeline:
                         self.connection.rollback()
                     except Exception:
                         pass
-                    Helpers().insert_log(level="CRITICAL", type="CODE",
-                                         error=f"{spider.name} {str(e)}", message=traceback.format_exc())
+
                     self._shrink_item_for_error(item)
                     raise
             finally:

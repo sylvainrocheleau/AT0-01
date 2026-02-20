@@ -37,12 +37,12 @@ class MetaSpider(scrapy.Spider):
             # custom_settings["CONCURRENT_REQUESTS"] = 50
             debug = True
             match_filter_enabled = True
-            scraping_group = [1,2,3,4,5]
+            scraping_group = [4]
 
             # FILTER OPTIONS
-            # match_filter = {}
+            match_filter = {}
             # match_filter = {"type": "bookie_id", "params":["CasinoBarcelona", 1]}
-            match_filter = {"type": "bookie_and_comp", "params": ["Bwin", "Ligue1Francesa"]}
+            # match_filter = {"type": "bookie_and_comp", "params": ["Bwin", "Ligue1Francesa"]}
             # match_filter = {"type": "comp", "params":["UEFAEuropaLeague"]}
             # match_filter = {"type": "match_url_id",
             #                 "params":['https://sb-pp-esfe.daznbet.es/baloncesto/evento/brooklyn-nets-v-cleveland-cavaliers-u-2817699?tab=tiempo-regular']}

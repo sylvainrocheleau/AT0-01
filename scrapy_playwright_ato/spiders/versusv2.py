@@ -8,6 +8,8 @@ import time
 import traceback
 import asyncio
 import scrapy
+import ssl
+import certifi
 from websockets_proxy import Proxy, proxy_connect
 # from websockets.exceptions import ConnectionClosedError
 from scrapy import Spider
@@ -15,6 +17,7 @@ from ..items import ScrapersItem
 from ..parsing_logic import parse_competition, parse_match
 from ..bookies_configurations import normalize_odds_variables, bookie_config, list_of_markets_V2, get_context_infos, normalize_odds_variables_temp
 from ..utilities import Helpers
+from ..normalization import Normalize
 from ..settings import proxy_prefix_http, proxy_suffix, LOCAL_USERS
 
 
@@ -27,21 +30,22 @@ class WebsocketsSpider(Spider):
                 # NO FILTERS
                 # self.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
                 #                     if x["bookie_id"] == "Versus"]
+                # self.match_filter = {"type": "bookie_id", "params": ["Versus",1]}
                 # FILTER BY BOOKIE THAT HAVE ERRORS
                 # self.competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
                 #                 if x["bookie_id"] == "Versus"]
-                # self.match_filter = {}
+                # self.match_filter = {"type": "bookie_id", "params": ["Versus",1]}
                 # FILTER BY COMPETITION THAT HAVE HTTP_ERRORS
                 # self.competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
                 #                 if x["bookie_id"] == "Versus" and x["competition_id"] == comp_to_filter]
                 # self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", comp_to_filter]}
                 # FILTER BY COMPETITION
                 self.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
-                                if x["bookie_id"] == "Versus" and x["competition_id"] == "BundesligaAlemana"]
+                                if x["bookie_id"] == "Versus" and x["competition_id"] == "NBA"]
                 # FILTER BY MATCH
-                # self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", "SegundaDivisionEspanola"]}
+                # self.match_filter = {"type": "bookie_and_comp", "params": ["Versus", "UEFAChampionsLeague"]}
                 # self.match_filter = {"type": "match_url_id", "params": [
-                #     "https://www.versus.es/apuestas/sports/basketball/events/23978239"
+                #     "https://www.versus.es/apuestas/sports/soccer/events/24919848"
                 # ]}
 
         except:
@@ -65,10 +69,10 @@ class WebsocketsSpider(Spider):
     all_competitions = {x[1]: {"competition_name_es": x[2], "competition_url_id": x[0] } for x in all_competitions if x[4] == "Versus"}
     match_filter_enabled = True
 
-    async def keep_alive(self, interval=5):
+    async def keep_alive(self, interval=10):
         while True:
             try:
-                ping = await self.ws.send("")
+                ping = await self.ws.send("\n")
                 print("PING sent at", datetime.datetime.now())
                 await asyncio.sleep(interval)
             except Exception as e:
@@ -79,10 +83,12 @@ class WebsocketsSpider(Spider):
 
         context_info = random.choice(self.context_infos)
         proxy = Proxy.from_url(proxy_prefix_http+context_info.get("proxy_ip")+proxy_suffix)
+        ssl_context = ssl.create_default_context(cafile=certifi.where())
         async with proxy_connect(
             'wss://sportswidget.versus.es/api/websocket',
             proxy=proxy,
-            user_agent_header=context_info.get("user_agent")
+            user_agent_header=context_info.get("user_agent"),
+            ssl=ssl_context
         ) as self.ws:
             connect_message = """CONNECT
 protocol-version:1.5
@@ -102,33 +108,37 @@ destination:/user/request-response
 \x00""")
             message = await self.ws.recv()
             if self.debug:
-                print(f"Subscribed to API")
+                print(f"Subscribed to API {message}")
 
             keep_alive_task = asyncio.create_task(self.keep_alive())
 
             for competition in self.competitions:
                 item = ScrapersItem()
-                competition_id = competition["competition_url_id"].split("/")[-1]
+                url = competition["competition_url_id"]
+                competiton_id_element = re.search(r'/competitions/(\d+)', url)
+                if competiton_id_element:
+                    competition_id = competiton_id_element.group(1)
+                else:
+                    # Fallback or error handling
+                    competition_id = url.rstrip('/').split('/')[-1]
                 await self.ws.send(f"""SUBSCRIBE
 id:/api/eventgroups/{competition_id}-all-match-events
 locale:es
 destination:/api/eventgroups/{competition_id}-all-match-events
 
 \x00""")
-                await asyncio.sleep(0.1)
+                await asyncio.sleep(1.0)
                 match_ids = await self.ws.recv()
+
                 try:
                     match_ids = re.search(r'\{.*\}', match_ids, re.DOTALL).group()
                     match_ids = json.loads(match_ids)
                 except Exception as e:
                     continue
                 try:
-                    print("match_ids", match_ids)
                     match_ids = [event['id'] for group in match_ids['groups'] for event in group['events']]
-
                 except KeyError:
                     print(f"error in match_ids for {competition['competition_id']} - {competition['competition_url_id']}")
-                    match_ids = []
                     continue
                 matches_details = []
                 for match_id in match_ids:
@@ -138,7 +148,7 @@ locale:es
 destination:/api/events/{match_id}
 
 \x00""")
-                    await asyncio.sleep(0.1)
+                    await asyncio.sleep(1.0)
                     try:
                         match_details = await self.ws.recv()
                         match_details = re.search(r'\{.*\}', match_details, re.DOTALL).group()
@@ -163,13 +173,22 @@ destination:/api/events/{match_id}
                     debug=self.debug
                 )
                 try:
+
                     if len(match_infos) > 0:
-                        match_infos = Helpers().normalize_team_names(
+                        match_infos = Normalize().name_of_teams(
                             match_infos=match_infos,
                             competition_id=competition["competition_id"],
                             bookie_id=competition["bookie_id"],
                             debug=self.debug
                         )
+                        # Legacy
+                        # else:
+                        #     match_infos = Helpers().normalize_team_names(
+                        #         match_infos=match_infos,
+                        #         competition_id=competition["competition_id"],
+                        #         bookie_id=competition["bookie_id"],
+                        #         debug=False
+                        #     )
                         if competition["competition_id"] in self.map_matches.keys():
                             item["data_dict"] = {
                                 "map_matches": self.map_matches[competition["competition_id"]],
@@ -230,11 +249,13 @@ destination:/api/events/{match_id}
         )
         matches_details_and_urls = {k: [v for v in lst if v['to_delete'] != 1] for k, lst in
                                     matches_details_and_urls.items() if any(v['to_delete'] != 1 for v in lst)}
+        ssl_context = ssl.create_default_context(cafile=certifi.where())
 
         async with proxy_connect(
             'wss://sportswidget.versus.es/api/websocket',
             proxy=proxy,
-            user_agent_header=context_info.get("user_agent")
+            user_agent_header=context_info.get("user_agent"),
+            ssl=ssl_context
         ) as self.ws:
             connect_message = """CONNECT
 protocol-version:1.5
@@ -274,7 +295,7 @@ locale:es
 destination:/api/marketgroup/{data['match_url_id'].split('/')[-1]}{suffix}
 
 \x00""")
-                        await asyncio.sleep(0.1)  # small delay so the broker registers the subscription
+                        await asyncio.sleep(1.0)
 
                         # First frame
                         raw = await self.ws.recv()

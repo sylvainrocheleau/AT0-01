@@ -1,4 +1,5 @@
 import random
+import dateparser
 import scrapy
 import requests
 import datetime
@@ -14,6 +15,7 @@ from ..items import ScrapersItem
 from ..settings import proxy_prefix, proxy_suffix, LOCAL_USERS
 from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables, list_of_markets_V2, normalize_odds_variables_temp
 from ..utilities import Helpers, Connect
+from ..normalization import Normalize
 
 
 def list_spliter(a_list=list, chunk_size=int):
@@ -33,7 +35,7 @@ class TwoStepsJsonSpider(scrapy.Spider):
     name = "BetfairExchange"
     number_of_runs = 0
     max_number_of_runs = 10
-    time_between_runs = 5*60
+    time_between_runs = 4*60
     pipeline_type = ["exchange_match_odds"] # "exchange_tables"
     match_url = str
     comp_url = str
@@ -71,10 +73,10 @@ class TwoStepsJsonSpider(scrapy.Spider):
 
             if os.environ["USER"] in LOCAL_USERS:
                 # NO FILTERS
-                pass
+                # pass
                 # FILTER BY COMPETITION
-                # self.map_competitions_urls = {key: value for key, value in self.map_competitions_urls.items()
-                #                               if value["competition_id"] == "Ligue1Francesa"}
+                self.map_competitions_urls = {key: value for key, value in self.map_competitions_urls.items()
+                                              if value["competition_id"] == "CONMEBOL-CopaLibertadores"}
         except:
             pass
 
@@ -118,8 +120,8 @@ class TwoStepsJsonSpider(scrapy.Spider):
             # TODO add errback
             # errback=self.errback,
             meta={
-                # "proxy": self.proxy_ip,
-                "proxy": "http://0ef225b8366548fb84767f6bf5e74653:@api.zyte.com:8011/",
+                "proxy": self.proxy_ip,
+                # "proxy": "http://0ef225b8366548fb84767f6bf5e74653:@api.zyte.com:8011/",
             }
         )
 
@@ -150,6 +152,10 @@ class TwoStepsJsonSpider(scrapy.Spider):
                     "http": self.proxy_ip.replace("https://", "http://"),
                     "https": self.proxy_ip.replace("https://", "http://"),
                 }
+                # proxies = {
+                #     "http": "http://0ef225b8366548fb84767f6bf5e74653:@api.zyte.com:8011/",
+                #     # "https": "https://0ef225b8366548fb84767f6bf5e74653:@api.zyte.com:8011/",
+                # }
                 url = f"https://ips.betfair.es/inplayservice/v1/eventDetails?alt=json&eventIds={chunked_list}&locale=es&productType=EXCHANGE&regionCode=UK"
                 try:
                     matches_response = requests.get(url, proxies=proxies)
@@ -157,13 +163,13 @@ class TwoStepsJsonSpider(scrapy.Spider):
                     try:
                         matches_jsonresponse = json.loads(matches_response.text)
                     except JSONDecodeError as e:
-                        Helpers().insert_log(level="WARNING", type="NETWORK", error=e,message=traceback.format_exc())
+                        Helpers().insert_log(level="CRITICAL", type="NETWORK", error=e,message=traceback.format_exc())
                         continue
                 except (ProxyError, ConnectionError, Timeout) as e:
-                    Helpers().insert_log(level="WARNING", type="NETWORK",error=e,message=traceback.format_exc())
+                    Helpers().insert_log(level="CRITICAL", type="NETWORK",error=e,message=traceback.format_exc())
                     continue
                 except RequestException as e:
-                    Helpers().insert_log(level="WARNING", type="NETWORK",error=e,message=traceback.format_exc())
+                    Helpers().insert_log(level="CRITICAL", type="NETWORK",error=e,message=traceback.format_exc())
                     continue
                 for data in matches_jsonresponse:
                     if data["competitionName"] == "NBA":
@@ -200,12 +206,21 @@ class TwoStepsJsonSpider(scrapy.Spider):
                     if self.debug:
                         print(f"Normalize matches for {self.map_competitions_urls[data['competitionId']]['competition_id']}")
 
-                    match_infos = Helpers().normalize_team_names(
+                    match_infos = Normalize().name_of_teams(
                         match_infos=match_infos,
                         competition_id=self.map_competitions_urls[data['competitionId']]['competition_id'],
                         bookie_id=self.name,
                         debug=self.debug
                     )
+
+                    # Legacy normalisation
+                    # match_infos = Helpers().normalize_team_names(
+                    #     match_infos=match_infos,
+                    #     competition_id=self.map_competitions_urls[data['competitionId']]['competition_id'],
+                    #     bookie_id=self.name,
+                    #     debug=self.debug
+                    # )
+
                     # TEMP TEST FOR TIME COMPARISON
                     temp_connection = Connect().to_db(db="ATO_production", table=None)
                     temp_cursor = temp_connection.cursor()
@@ -222,8 +237,33 @@ class TwoStepsJsonSpider(scrapy.Spider):
                             pass
                     temp_connection.close()
                     if len(match_infos[0]["match_id"]) > 0:
+                        error = None
                         competiton_id = self.map_competitions_urls[data['competitionId']]['competition_id']
-                        if match_infos[0]["match_id"] in self.map_matches[competiton_id]:
+                        match_id = match_infos[0]["match_id"]
+                        day_before = dateparser.parse(match_id[0:5], date_formats=['%d-%m']) - datetime.timedelta(days=1)
+                        day_after = dateparser.parse(match_id[0:5], date_formats=['%d-%m']) + datetime.timedelta(days=1)
+                        day_after = day_after.strftime("%d-%m")
+                        day_before = day_before.strftime("%d-%m")
+                        match_id_plus_one_day = day_after + match_id[5:]
+                        match_id_minus_one_day = day_before + match_id[5:]
+                        if match_id in self.map_matches[competiton_id]:
+                            match_id = match_id
+                        elif match_id_plus_one_day in self.map_matches[competiton_id]:
+                            match_id = match_id_plus_one_day
+                            error = (f"/BetfairExchange.py comp:{competiton_id}; "
+                                     f"match_id plus one day {match_infos[0]['match_id']} VS {match_id_plus_one_day}")
+                            if self.debug:
+                             print(error)
+                            Helpers().insert_log(level="INFO", type="CODE", error=error,message=None)
+                        elif match_id_minus_one_day in self.map_matches[competiton_id]:
+                            match_id = match_id_minus_one_day
+                            error = (f"/BetfairExchange.py comp:{competiton_id}; "
+                                     f"match_id minus one day {match_infos[0]['match_id']} VS {match_id_minus_one_day}")
+                            if self.debug:
+                             print(error)
+                            Helpers().insert_log(level="INFO", type="CODE", error=error,message=None)
+
+                        if match_id in self.map_matches[competiton_id]:
                             self.events[str(data["eventId"])] = {
                                 "exchange_name": self.name,
                                 "competition_id": competiton_id,
@@ -241,7 +281,7 @@ class TwoStepsJsonSpider(scrapy.Spider):
                                 "market_ids": [],
                                 "odds": [],
                                 "url": url,
-                                "match_id": match_infos[0]["match_id"],
+                                "match_id": match_id,
                             }
                         else:
                             error = (f"/BetfairExchange.py "
@@ -249,25 +289,28 @@ class TwoStepsJsonSpider(scrapy.Spider):
                                      f"match_id does not exists {match_infos[0]['match_id']}")
                             if self.debug:
                                 print(error)
-                            Helpers().insert_log(level="INFOS", type="CODE", error=error,message=None)
+                            Helpers().insert_log(level="INFO", type="CODE", error=error,message=None)
                     else:
                         error = (f"/BetfairExchange.py "
                                    f"comp:{self.map_competitions_urls[data['competitionId']]['competition_id']}; "
                                    f"match_id is empty for {home_team} vs {away_team}")
                         print(error)
-                        Helpers().insert_log(level="CRITICAL", type="CODE", error=error, message=None)
+                        Helpers().insert_log(level="WARNING", type="CODE", error=error, message=None)
 
             # GETS MARKET IDS
             event_ids = [int(key) for key in self.events.keys()]
-            for chunked_list in list_spliter(event_ids, 10):
-                url = f"https://ero.betfair.es/www/sports/exchange/readonly/v1/byevent?currencyCode=EUR&locale=es&eventIds={chunked_list}&rollupLimit=10&rollupModel=STAKE&types=EVENT,RUNNER_DESCRIPTION"
-                # print("url", url, event_ids)
+            for chunked_list in list_spliter(event_ids, 1):
+                url = f"https://ero.betfair.es/www/sports/exchange/readonly/v1/byevent?currencyCode=EUR&eventIds={chunked_list}&locale=es&rollupLimit=10&rollupModel=STAKE&types=MARKET_STATE,EVENT,MARKET_DESCRIPTION"
                 context_info = random.choice(self.context_infos)
                 self.proxy_ip = proxy_prefix + context_info["proxy_ip"] + proxy_suffix
                 proxies = {
                     "http": self.proxy_ip.replace("https://", "http://"),
                     "https": self.proxy_ip.replace("https://", "http://"),
                 }
+                # proxies = {
+                #     "http": "http://0ef225b8366548fb84767f6bf5e74653:@api.zyte.com:8011/",
+                #     # "https": "https://0ef225b8366548fb84767f6bf5e74653:@api.zyte.com:8011/",
+                # }
                 try:
                     response = requests.post(url, proxies=proxies)
                     response.raise_for_status()
@@ -277,10 +320,10 @@ class TwoStepsJsonSpider(scrapy.Spider):
                         Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
                         continue
                 except (ProxyError, ConnectionError, Timeout) as e:
-                    Helpers().insert_log(level="WARNING", type="NETWORK", error=e, message=traceback.format_exc())
+                    Helpers().insert_log(level="CRITICAL", type="NETWORK", error=e, message=traceback.format_exc())
                     continue
                 except RequestException as e:
-                    Helpers().insert_log(level="WARNING", type="NETWORK", error=e, message=traceback.format_exc())
+                    Helpers().insert_log(level="CRITICAL", type="NETWORK", error=e, message=traceback.format_exc())
                     continue
                 if "eventTypes" in jsonresponse:
                     for data in jsonresponse["eventTypes"]:
@@ -307,6 +350,10 @@ class TwoStepsJsonSpider(scrapy.Spider):
                         "http": self.proxy_ip.replace("https://", "http://"),
                         "https": self.proxy_ip.replace("https://", "http://"),
                     }
+                    # proxies = {
+                    #     "http": "http://0ef225b8366548fb84767f6bf5e74653:@api.zyte.com:8011/",
+                    #     # "https": "https://0ef225b8366548fb84767f6bf5e74653:@api.zyte.com:8011/",
+                    # }
                     try:
                         response = requests.post(url, proxies=proxies)
                         response.raise_for_status()
@@ -316,20 +363,17 @@ class TwoStepsJsonSpider(scrapy.Spider):
                             Helpers().insert_log(level="CRITICAL", type="CODE", error=e, message=traceback.format_exc())
                             continue
                     except (ProxyError, ConnectionError, Timeout) as e:
-                        Helpers().insert_log(level="WARNING", type="NETWORK", error=e, message=traceback.format_exc())
+                        Helpers().insert_log(level="CRITICAL", type="NETWORK", error=e, message=traceback.format_exc())
                         continue
                     except RequestException as e:
-                        Helpers().insert_log(level="WARNING", type="NETWORK", error=e, message=traceback.format_exc())
+                        Helpers().insert_log(level="CRITICAL", type="NETWORK", error=e, message=traceback.format_exc())
                         continue
                     for data in jsonresponse["eventTypes"]:
                         for data_02 in data["eventNodes"]:
                             event_id = data_02["eventId"]
-
-                            if "odds" in self.events[str(event_id)].keys():
+                            if "odds" not in self.events[str(event_id)].keys():
                                 self.events[str(event_id)]["odds"] = []
                             for data_03 in data_02["marketNodes"]:
-                                # if "10-10SWED-SWIT" == self.events[str(event_id)]["match_id"]:
-                                #     print("data_03 for 10-10SWED-SWIT", data_03)
                                 market = data_03["description"]["marketName"]
                                 if (
                                     (
@@ -342,20 +386,14 @@ class TwoStepsJsonSpider(scrapy.Spider):
                                         and market in list_of_markets_V2[self.name][self.events[str(event_id)]["sport_id"]]
                                     )
                                 ):
+                                    # if "27-01SVWE-TSGH" == self.events[str(event_id)]["match_id"]:
+                                    #     print("data_03 for 27-01SVWE-TSGH", data_03)
                                     for data_04 in data_03["runners"]:
                                         if "runnerName" not in data_04["description"].keys():
                                             continue
                                         result = data_04["description"]["runnerName"]
                                         try:
-                                            for data_05 in data_04["exchange"]["availableToLay"]:
-                                                # Bon
-                                                # if "10-10SWED-SWIT" == self.events[str(event_id)]["match_id"]:
-                                                #     print({
-                                                #         "Market": market,
-                                                #         "Result": result,
-                                                #         "Odds": data_05["price"],
-                                                #         "Size": int(data_05["size"]),
-                                                #     })
+                                            for data_05 in data_04.get("exchange", {}).get("availableToLay", []):
                                                 if "Otro " not in result:
                                                     self.events[str(event_id)]["odds"].append({
                                                         "Market": market,
@@ -364,7 +402,18 @@ class TwoStepsJsonSpider(scrapy.Spider):
                                                         "Size": int(data_05["size"]),
                                                     }
                                                     )
+                                                    # if "27-01SVWE-TSGH" == self.events[str(event_id)]["match_id"]:
+                                                        # print("data_05 for 27-01SVWE-TSGH",
+                                                        #       "event_id", event_id,
+                                                        #       {
+                                                        #         "Market": market,
+                                                        #         "Result": result,
+                                                        #         "Odds": data_05["price"],
+                                                        #         "Size": int(data_05["size"]),
+                                                        #       })
                                         except KeyError:
+                                            if self.debug:
+                                                print(traceback.format_exc())
                                             self.events[str(event_id)]["odds"].append({
                                                 "Market": market,
                                                 "Result": result,
@@ -372,34 +421,37 @@ class TwoStepsJsonSpider(scrapy.Spider):
                                                 "Size": 0.00,
                                             }
                                             )
-                                            # if self.debug:
-                                            #     print(traceback.format_exc())
                                             continue
                                 # else:
                                 #     print(data_03["runners"])
+                # if self.debug:
+                #     print(self.events["35167055"])
                 for key, value in self.events.items():
+                    # if self.debug and value["match_id"] == "27-01SVWE-TSGH":
+                    #     print("key", key, "value", value)
                     self.events[key]["odds"] = Helpers().build_ids(
-                        id_type="bet_id",
-                        data={
-                            "match_id": self.events[key]["match_id"],
-                            "odds": normalize_odds_variables_temp(
-                                odds=self.events[key]["odds"],
-                                sport=self.events[key]["sport"],
-                                home_team=self.events[key]["home_team"],
-                                away_team=self.events[key]["away_team"],
-                                orig_home_team=self.events[key]["orig_home_team"],
-                                orig_away_team=self.events[key]["orig_away_team"],
-                            )
+                    id_type="bet_id",
+                    data={
+                        "match_id": self.events[key]["match_id"],
+                        "odds": normalize_odds_variables_temp(
+                            odds=self.events[key]["odds"],
+                            sport=self.events[key]["sport"],
+                            home_team=self.events[key]["home_team"],
+                            away_team=self.events[key]["away_team"],
+                            orig_home_team=self.events[key]["orig_home_team"],
+                            orig_away_team=self.events[key]["orig_away_team"],
+                        )
                         }
                     )
-
+                # if self.debug:
+                #     print(self.events)
                 item["data_dict"] = self.events
                 item["pipeline_type"] = self.pipeline_type
                 if self.debug:
                     print(f"updating {len(item['data_dict'])} items data_dict")
-                    # print(item["data_dict"])
+                    print(item["data_dict"])
                 yield item
-                if time.time() - self.start_time > self.time_between_runs*self.max_number_of_runs+10:
+                if time.time() - self.start_time > 3600:
                     raise CloseSpider('Timeout reached')
                 elif self.debug:
                     raise CloseSpider('Debug mode, running only once')

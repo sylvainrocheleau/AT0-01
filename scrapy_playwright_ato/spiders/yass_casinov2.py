@@ -9,6 +9,7 @@ from ..items import ScrapersItem
 from ..settings import proxy_prefix, proxy_suffix, list_of_proxies, LOCAL_USERS
 from ..bookies_configurations import get_context_infos, bookie_config, normalize_odds_variables, list_of_markets_V2, normalize_odds_variables_temp
 from ..parsing_logic import parse_competition, parse_match
+from ..normalization import Normalize
 from ..utilities import Helpers
 
 
@@ -19,8 +20,8 @@ class OneStepJsonSpider(scrapy.Spider):
             if os.environ["USER"] in LOCAL_USERS:
                 self.debug = True
                 # NO FILTERS
-                self.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
-                                    if x["bookie_id"] == "YaassCasino"]
+                # self.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
+                #                     if x["bookie_id"] == "YaassCasino"]
                 # FILTER BY BOOKIE THAT HAVE ERRORS
                 # self.competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
                 #                 if x["bookie_id"] == "YaassCasino"]
@@ -29,17 +30,16 @@ class OneStepJsonSpider(scrapy.Spider):
                 # self.competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
                 #                 if x["bookie_id"] == "YaassCasino" and x["competition_id"] == "NBA"]
                 # FILTER BY COMPETITIONS
-                # self.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
-                #                 if x["bookie_id"] == "YaassCasino" and x["competition_id"] == "SerieABrasil"]
+                self.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
+                                if x["bookie_id"] == "YaassCasino" and x["competition_id"] == "SerieABrasil"]
                 # FILTER BY MATCH
                 self.match_filter = {"type": "bookie_id", "params": ["YaassCasino", 2]}
-                # self.match_filter = {"type": "bookie_id", "params": ["YaassCasino", 2]}
                 # self.match_filter = {"type": "match_url_id", "params": [
-                #     "https://sportsbook.betsson.es/#/sport/?type=0&region=20001&competition=756&sport=3&game=28278665"]}
+                #     "https://www.yaasscasino.es/apuestas/event/7b254f3a-0cb0-4adf-ab58-77b5b05ac582"]}
             else:
                 self.debug = False
         except:
-            print("PROCESSING COMPETITIONS WITH HTTP ERRORS OR NOT UPDATED (12 HOURS)")
+            print("PROCESSING ALL COMPETITIONS")
             self.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
                                  if x["bookie_id"] == "YaassCasino"]
             self.match_filter = {"type": "bookie_id", "params": ["YaassCasino", 2]}
@@ -48,7 +48,11 @@ class OneStepJsonSpider(scrapy.Spider):
     name = "YaassCasinov2"
     custom_settings = {
         "CONCURRENT_REQUESTS": 1,
-        "DOWNLOAD_DELAY": 3
+        "DOWNLOAD_DELAY": 3,
+        "RETRY_TIMES": 3,
+        "DOWNLOAD_FAIL_ON_DATALOSS": False,
+        "RETRY_HTTP_CODES": [500, 502, 503, 504, 520, 522, 524],
+        "HTTPERROR_ALLOWED_CODES": [500],
     }
     context_infos = get_context_infos(bookie_name="no_cookies_bookies")
     map_matches_urls = [x[0] for x in Helpers().load_matches_urls("YaassCasino")]
@@ -206,6 +210,7 @@ class OneStepJsonSpider(scrapy.Spider):
                     url="https://online-sportsbook.orenes.tech/offermanager/graphql",
                     method="POST",
                     body=request_body,
+                    errback=self.errback,
                     headers=self.header,
                     meta={
                         "proxy": proxy_prefix + context_info["proxy_ip"] + proxy_suffix,
@@ -214,6 +219,8 @@ class OneStepJsonSpider(scrapy.Spider):
                         "competition_url_id": data["competition_url_id"],
                         "bookie_id": data["bookie_id"],
                         "scraping_tool": data["scraping_tool"],
+                        "download_timeout": 60,
+                        "dont_retry": False,
                     },
                     callback=self.parse_match,
                 )
@@ -223,9 +230,29 @@ class OneStepJsonSpider(scrapy.Spider):
 
     def parse_match(self, response):
         item = ScrapersItem()
+        if response.status != 200:
+            print(f"Got {response.status} for {response.meta.get('competition_id')}, skipping")
+            item["data_dict"] = {
+                "map_matches": [],
+                "match_infos": [],
+                "comp_infos": [{
+                    "competition_url_id": response.meta.get("competition_url_id"),
+                    "http_status": response.status,
+                    "updated_date": Helpers().get_time_now("UTC"),
+                }],
+            }
+            item["pipeline_type"] = ["match_urls"]
+            yield item
+            return
+
+        try:
+            payload = json.loads(response.text)
+        except Exception as e:
+            print(f"Invalid/partial JSON for comp {response.meta.get('competition_id')}: {e}")
+            return
+
         matches_details_and_urls = Helpers().matches_details_and_urls(
             filter=self.match_filter_enabled,
-            # filter_data=self.match_filter
             filter_data={"type": "bookie_and_comp", "params": ["YaassCasino", response.meta.get("competition_id")]},
         )
         matches_details_and_urls = {k: [v for v in lst if v['to_delete'] != 1] for k, lst in
@@ -242,7 +269,7 @@ class OneStepJsonSpider(scrapy.Spider):
         )
         try:
             if len(match_infos) > 0:
-                match_infos = Helpers().normalize_team_names(
+                match_infos = Normalize().name_of_teams(
                     match_infos=match_infos,
                     competition_id=response.meta.get("competition_id"),
                     bookie_id=response.meta.get("bookie_id"),
@@ -427,3 +454,25 @@ class OneStepJsonSpider(scrapy.Spider):
             # print(response.meta["playwright_page"])
         except Exception as e:
             print(e)
+
+    def errback(self, failure):
+        request = failure.request
+        comp_id = request.meta.get("competition_id")
+        comp_url = request.meta.get("competition_url_id")
+
+        self.logger.warning(
+            f"Request failed for comp {comp_id}: {failure.type.__name__}"
+        )
+
+        item = ScrapersItem()
+        item["data_dict"] = {
+            "map_matches": [],
+            "match_infos": [],
+            "comp_infos": [{
+                "competition_url_id": comp_url,
+                "http_status": 1200,  # your custom timeout/connection failure code
+                "updated_date": Helpers().get_time_now("UTC"),
+            }],
+        }
+        item["pipeline_type"] = ["match_urls"]
+        return item

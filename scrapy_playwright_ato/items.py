@@ -20,5 +20,6 @@ class ScrapersItem(scrapy.Item):
     user_agent_hash = scrapy.Field()
     user_agent = scrapy.Field
     data_dict = scrapy.Field()
+    cookies_dict = scrapy.Field()
     pipeline_type = scrapy.Field()
     pass

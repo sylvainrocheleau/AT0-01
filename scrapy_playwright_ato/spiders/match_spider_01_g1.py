@@ -12,11 +12,12 @@ from scrapy.exceptions import DontCloseSpider
 from twisted.internet.error import DNSLookupError, TimeoutError, TCPTimedOutError
 from ..items import ScrapersItem
 from ..settings import get_custom_playwright_settings, get_custom_settings_for_zyte_api, LOCAL_USERS
-from ..bookies_configurations import get_context_infos, normalize_odds_variables, list_of_markets_V2, bookie_config, normalize_odds_variables_temp
+from ..bookies_configurations import get_context_infos, list_of_markets_V2, bookie_config, normalize_odds_variables_temp
 from ..parsing_logic import parse_match as parse_match_logic
 from ..utilities import Helpers
 
 class MetaSpider(scrapy.Spider):
+    # TODO move what need to be moved into init
     name = "match_spider_01_g1"
     if 'match_spider_01_g' in name:
         settings_used = "USING PLAYWRIGHT SETTINGS"
@@ -41,13 +42,14 @@ class MetaSpider(scrapy.Spider):
 
             # FILTER OPTIONS
             # match_filter = {}
-            # match_filter = {"type": "bookie_id", "params":["WilliamHill", 1]}
-            # match_filter = {"type": "bookie_and_comp", "params": ["Bwin", "Ligue1Francesa"]}
-            # match_filter = {"type": "comp", "params":["UEFAEuropaLeague"]}
+            # match_filter = {"type": "bookie_id", "params":["Monopoly", 1]}
+            # match_filter = {"type": "bookie_and_comp", "params": ["BetWay", "NBA"]}
+            # match_filter = {"type": "comp", "params":["Euroligamasculina"]}
             match_filter = {
                 "type": "match_url_id",
-                "params":['https://www.efbet.es/ES/sports#bo-navigation=282241.1,490464.1,490784.1&action=market-group-list&event=38332727.1']
+                "params":['https://www.marcaapuestas.es/apuestas/sports/soccer/events/29655813']
             }
+
     except:
         match_filter_enabled = False
         match_filter = {}
@@ -206,7 +208,8 @@ class MetaSpider(scrapy.Spider):
                         if data["scraping_tool"] == "playwright":
                             self.close_playwright = True
                         url, dont_filter, meta_request = Helpers().build_meta_request(meta_type="match", data=data, debug=self.debug)
-
+                        # if self.debug:
+                        #     print(url, meta_request)
                         yield scrapy.Request(
                             dont_filter=dont_filter,
                             url=url,
@@ -284,7 +287,7 @@ class MetaSpider(scrapy.Spider):
             }
         )
         # if self.debug:
-        #     print(odds)
+        #     print("Normalized odds", odds)
         if not odds:
             item["data_dict"] = {
                 "match_infos": [
@@ -298,13 +301,17 @@ class MetaSpider(scrapy.Spider):
             }
             item["pipeline_type"] = ["error_on_match_url"]
         else:
+            if response.meta.get("bookie_id") == "888Sport":
+                http_status = 200
+            else:
+                http_status = response.status
             item["data_dict"] = {
                 "match_id": response.meta.get("match_id"),
                 "bookie_id": response.meta.get("bookie_id"),
                 "odds": odds,
                 "updated_date": Helpers().get_time_now(country="UTC"),
                 "web_url": response.meta.get("web_url"),
-                "http_status": response.status,
+                "http_status": http_status,
                 "match_url_id": response.meta.get("url"),
             }
 
