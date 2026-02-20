@@ -297,13 +297,13 @@ class Watchdog:
         try:
             if os.environ.get("USER") in LOCAL_USERS:
                 watches_to_run = [
-                    'exchange whitout ganador'
+                    'outdated match url'
                 ]
             else:
                 watches_to_run = [
                     'check old cookies', 'dutcher with rating_qualifying_bets > 120',
                     'oddsmatcher with rating_qualifying_bets > 120', 'outdated match url', "allsport conflicts",
-                    "exchange whitout ganador"
+                    'exchange whitout ganador'
                 ]
         except KeyError:
             watches_to_run = [

@@ -1,6 +1,7 @@
 scrapy==2.12.0
-scrapy-playwright==0.0.43
-playwright==1.52.0
+scrapy-playwright==0.0.45
+playwright==1.57.0
+playwright-stealth==2.0.1
 scrapy-zyte-api==0.30.0
 scrapinghub-entrypoint-scrapy==0.17.5
 numpy==1.26.4
@@ -11,3 +12,5 @@ websockets==12.0
 websockets_proxy==0.1.2
 replace_accents==0.0.5
 mysql-connector-python==9.1.0
+rapidfuzz==3.14.3
+scrapy-camoufox==0.0.12

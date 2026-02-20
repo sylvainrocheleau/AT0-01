@@ -7,3 +7,4 @@ project.egg-info/
 /.venv/
 /scripts/__pycache__/
 /.idea/
+/scrapy_playwright_ato/PROJECT_ASSISTANT_CONTEXT.md
