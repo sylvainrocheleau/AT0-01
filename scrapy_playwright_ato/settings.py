@@ -11,7 +11,7 @@ SPIDER_MODULES = ["scrapy_playwright_ato.spiders"]
 NEWSPIDER_MODULE = "scrapy_playwright_ato.spiders"
 ROBOTSTXT_OBEY = False
 TELNETCONSOLE_ENABLED = False
-ZYTE_UNITS = 4
+ZYTE_UNITS = 6
 CONCURRENT_REQUESTS = math.floor(ZYTE_UNITS*2)
 CONCURRENT_REQUESTS_PER_DOMAIN = 2
 CONCURRENT_ITEMS = 1500
@@ -41,8 +41,8 @@ JOBDIR = ''
 LOCAL_USERS = ["sylvain","rickiel"]
 try:
     if os.environ["USER"] in LOCAL_USERS:
-        TEST_ENV = "server"
-        # TEST_ENV = "local"
+        # TEST_ENV = "server"
+        TEST_ENV = "local"
         PLAYWRIGHT_HEADLESS = False
 except KeyError:
     TEST_ENV = "server"
@@ -55,11 +55,20 @@ SQL_USER = "admin-ATO"
 SQL_PWD = "2#Roght905Dt"
 # SQL_PWD = "43&trdGhqLlM"
 list_of_proxies = [
-    "115.124.36.119", "185.106.126.109", "185.107.152.14", "185.105.15.160", "85.115.193.157",
-    "185.159.43.180", "185.166.172.76", "194.38.59.88", "185.118.52.126", "212.80.210.193"
+    "115.124.36.119", "185.105.15.160", "185.106.126.109", "185.107.152.14", "185.118.52.126", "185.159.43.180",
+    "185.166.172.76", "194.38.59.88", "212.80.210.193", "85.115.193.157",
+    # NEW IPS
+    # "185.105.12.217", "185.105.13.197", "185.105.13.53", "185.105.14.173", "185.105.14.98", "185.105.15.171",
+    # "185.105.15.43", "185.105.232.165", "185.105.232.232", "185.105.233.210", "185.105.233.89", "185.105.234.186",
+    # "185.105.234.187", "185.105.235.19", "185.105.235.77", "185.119.48.31", "185.119.48.50", "185.119.49.106",
+    # "185.119.49.189", "185.119.50.119", "185.119.50.217", "185.119.51.190", "185.119.51.86", "185.128.52.136",
+    # "185.128.52.191", "185.128.53.163", "185.128.53.219", "185.128.54.74", "185.128.55.122", "185.128.55.174",
+    # "185.159.40.52", "185.159.40.87", "185.159.41.57", "185.159.42.119", "185.159.42.3", "185.159.43.104",
+    # "185.159.43.99", "185.189.64.10", "185.189.64.141", "185.189.65.190", "185.189.65.249", "185.189.66.97",
+    # "185.189.67.2", "185.189.67.249", "217.67.173.60", "217.67.173.81", "217.67.174.159", "217.67.174.197",
+    # "217.67.175.2", "217.67.175.227",
 ]
 
-# replaced proxies: 46.226.144.182, 185.119.48.24, 185.212.86.69, 185.119.49.69
 soltia_user_name = "pY33k6KH6t"
 soltia_password = "eLHvfC5BZq"
 proxy_prefix_http = "http://pY33k6KH6t:eLHvfC5BZq@"
@@ -143,19 +152,6 @@ def should_abort_request(request):
         'fonts.googleapis.com', 'sportradar.com',
         #'www.bet777.es/_nuxt/',
 
-        # MarcaApuestas
-        #  'login.marcaapuestas.es/',
-        # 'cachesports.marcaapuestas.es/',
-        # 'marca/js/fragments/LiveInlineVideo.min.js','jwplayer/jwplayer.js', 'marca/js/CashOutPush.min.js',
-        # 'marca/js/fragments/StatscorePrematch.min.js',
-        # 'desktop/js/jquery-3.6.0.min.js', # causes a redirect to comp page
-        # 'desktop/js/jquery.cookie.js', #no redirect, no toggle
-        # 'marca/js/core.min.js', #no redirect, no toggle
-        # 'marca/js/front.min.js', #no redirect, no toggle
-        # 'marca/js/ExpandingFavourites.min.js', #no redirect, no toggle
-        # 'marca/js/fragments/SelectionsForEvent.min.js', #no redirect, no toggle
-
-
 
         # extensions
         '.woff2' '.woff',  '.ttf', '.webp', '.jpg', '.jpeg', '.gif', '.webm', '.mp4', '.mp3',
@@ -172,53 +168,61 @@ PLAYWRIGHT_ABORT_REQUEST = should_abort_request
 
 def get_custom_playwright_settings(browser, rotate_headers):
     custom_settings = {}
-    if browser == "Firefox":
+    # launch_options = {
+    #     "headless": PLAYWRIGHT_HEADLESS,
+    #     "timeout": 60 * 1000,
+    #     "args": ["--no-sandbox"],
+    # }
+    if browser == "Camoufox":
+        playwright_browser_type = "firefox"
+        custom_settings.update({
+            "CAMOUFOX_LAUNCH_OPTIONS":{
+                "os": "windows",
+                # "block_images": True,
+                "humanize": True,
+                "headless": PLAYWRIGHT_HEADLESS,
+                "timeout": 60 * 1000,
+                "args": ["--no-sandbox"],
+            },
+            "DOWNLOAD_HANDLERS": {
+                "http": "scrapy_camoufox.handler.ScrapyCamoufoxDownloadHandler",
+                "https": "scrapy_camoufox.handler.ScrapyCamoufoxDownloadHandler",
+            },
+            "CAMOUFOX_MAX_CONTEXTS": math.floor(ZYTE_UNITS / 2),
+            "CAMOUFOX_MAX_PAGES_PER_CONTEXT": 1,
+            "TWISTED_REACTOR": "twisted.internet.asyncioreactor.AsyncioSelectorReactor",
+            "CAMOUFOX_DEFAULT_NAVIGATION_TIMEOUT": 60 * 1000
+        })
         if rotate_headers is True:
             custom_settings.update({"PLAYWRIGHT_PROCESS_REQUEST_HEADERS": custom_headers_firefox})
-        playwright_browser_type = "firefox"
     elif browser == "Chrome":
+        playwright_browser_type = "chromium"
+        custom_settings.update({
+            "PLAYWRIGHT_LAUNCH_OPTIONS": {
+                "headless": PLAYWRIGHT_HEADLESS,
+                "timeout": 60 * 1000,
+                "args": ["--no-sandbox"],
+            },
+            "PLAYWRIGHT_MAX_CONTEXTS": math.floor(ZYTE_UNITS / 2),
+            "PLAYWRIGHT_MAX_PAGES_PER_CONTEXT": 1,
+            "COOKIES_DEBUG": False,
+            "USER_AGENT": None,
+            "DOWNLOADER_MIDDLEWARES": {
+                'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
+            },
+            "DOWNLOAD_HANDLERS": {
+                "http": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
+                "https": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
+            },
+            "TWISTED_REACTOR": "twisted.internet.asyncioreactor.AsyncioSelectorReactor",
+            "PLAYWRIGHT_DEFAULT_NAVIGATION_TIMEOUT": 60 * 1000,  # 25000, 7200
+            "PLAYWRIGHT_BROWSER_TYPE": playwright_browser_type,
+        },
+        )
         if rotate_headers is True:
             custom_settings.update({"PLAYWRIGHT_PROCESS_REQUEST_HEADERS": custom_headers_chrome})
-        playwright_browser_type = "chromium"
 
-    custom_settings.update(
-        {"PLAYWRIGHT_LAUNCH_OPTIONS":
-             {"headless": PLAYWRIGHT_HEADLESS,
-              # "executable_path": {
-              #     "chromium": "/ms-playwright/chromium/chrome-linux/chrome",
-                  # "firefox": "/ms-playwright/firefox/firefox/firefox",
-                  # "webkit": "/ms-playwright/webkit/pw_run.sh",
-              # }[playwright_browser_type],
-              "timeout": 60*1000, # 100*1000
-              "args": ["--no-sandbox"],
-              },
-         }
-    )
 
-    custom_settings.update({
-        # TODO: adapt this to the number of units
-        "PLAYWRIGHT_MAX_CONTEXTS": math.floor(ZYTE_UNITS/2),
-        # "PLAYWRIGHT_MAX_CONTEXTS": 10,
-        "PLAYWRIGHT_MAX_PAGES_PER_CONTEXT": 1,
-        "COOKIES_DEBUG": False,
-        "USER_AGENT": None,
-        "DOWNLOADER_MIDDLEWARES": {
-            'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
-    },
-        "DOWNLOAD_HANDLERS" : {
-            "http": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
-            "https": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
-        },
-        "TWISTED_REACTOR" : "twisted.internet.asyncioreactor.AsyncioSelectorReactor",
-        # "_browsers" : {
-        #     "chromium": "/ms-playwright/chromium/chrome-linux/chrome",
-            # "firefox": "/ms-playwright/firefox/firefox/firefox",
-            # "webkit": "/ms-playwright/webkit/pw_run.sh",
-        # },
-        "PLAYWRIGHT_DEFAULT_NAVIGATION_TIMEOUT" : 60*1000, # 25000, 7200
-        "PLAYWRIGHT_BROWSER_TYPE" : playwright_browser_type,
-    },
-    )
     return custom_settings
 
 def get_custom_settings_for_zyte_api():

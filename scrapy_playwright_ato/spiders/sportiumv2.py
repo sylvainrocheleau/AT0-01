@@ -37,13 +37,13 @@ class WebsocketsSpider(Spider):
                 # self.competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
                 #                 if x["bookie_id"] == "Sportium" and x["competition_id"] == "UEFAConferenceLeague"]
                 # FILTER BY COMPETITION
-                # self.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
-                #                 if x["bookie_id"] == "Sportium" and x["competition_id"] == "UEFAConferenceLeague"]
+                self.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
+                                if x["bookie_id"] == "Sportium" and x["competition_id"] == "NBA"]
 
                 # FILTER BY MATCH
                 self.match_filter = {"type": "bookie_and_comp", "params": ["Sportium", "NBA"]}
                 # self.match_filter = {"type": "match_url_id", "params": [
-                #     "https://www.sportium.es/apuestas/sports/soccer/events/17435924"]}
+                #     "https://www.sportium.es/apuestas/sports/soccer/events/17733196"]}
         except:
             print("PROCESSING COMPETITIONS WITH HTTP ERRORS OR NOT UPDATED (12 HOURS)")
             self.competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})

@@ -12,6 +12,22 @@ def remove_query_params(url):
     url_no_params = urlunparse(parsed._replace(query=""))
     return str(url_no_params)
 
+def clean_team_name(raw: str) -> str:
+    import html
+    if raw is None:
+        return ""
+    s = str(raw)
+    # Remove anything after the first '<' (likely HTML tag/fragment)
+    s = s.split('<', 1)[0]
+    # Unescape HTML entities (&nbsp;, &amp;, etc.)
+    s = html.unescape(s)
+    # Normalize non-breaking spaces to regular space
+    s = s.replace('\xa0', ' ')
+    # Collapse all whitespace (spaces, tabs, newlines) to a single space
+    s = re.sub(r"\s+", " ", s, flags=re.UNICODE)
+    # Trim
+    return s.strip()
+
 def build_match_infos(
     url: str, web_url: str, home_team: str, away_team: str, date: datetime,
     competition_id: str, bookie_id: str, sport_id: str
@@ -19,10 +35,10 @@ def build_match_infos(
     match_info = {
         "url": url,
         "web_url": Helpers().build_web_url(web_url),
-        "home_team": home_team.split(" <")[0].strip(),
+        "home_team": clean_team_name(home_team),
         "home_team_normalized": "",
         "home_team_status": "",
-        "away_team": away_team.split(" <")[0].strip(),
+        "away_team": clean_team_name(away_team),
         "away_team_normalized": "",
         "away_team_status": "",
         "date": date,
@@ -123,8 +139,8 @@ def parse_sport(response, bookie_id, sport_id, competiton_names_and_variants, de
             pass
         elif bookie_id == "DaznBet":
             pass
-        elif bookie_id == "EfBet":
-            pass
+        # elif bookie_id == "EfBet":
+        #     pass
         elif bookie_id == "KirolBet":
             try:
                 xpath_results = response.xpath("//span[@class='campeonato']").extract()
@@ -172,7 +188,7 @@ def parse_sport(response, bookie_id, sport_id, competiton_names_and_variants, de
                                 urls = xpath_result.xpath("//a[@href]/@href").extract()
                                 for url in urls:
                                     print("url 02: ", url)
-                                    url = "https://deportes.marcaapuestas.es/" + url
+                                    url = "https://www.marcaapuestas.es/" + url
                                     print(tournament_name, '>', comp_id, '>', url)
                                     tournaments_info.append(
                                         {
@@ -278,6 +294,8 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                             ".//li[contains(@class, 'dashboard-game-info-rival')]//span[not(@aria-hidden) and normalize-space()]/text()"
                         ).getall()
                         team_texts = [t.strip() for t in team_texts if t and t.strip()]
+                        if debug:
+                            print("team_texts", team_texts)
 
                         if len(team_texts) < 2:
                             if debug:
@@ -318,117 +336,103 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                 if debug:
                     print(traceback.format_exc())
                 Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
+        #     try:
+        #         json_responses = response.text.split("<pre>")[1]
+        #         json_responses = json_responses.split("</pre>")[0]
+        #         json_responses = json.loads(json_responses)
+        #
+        #         match_infos = []
+        #         for match in json_responses["Value"]:
+        #             try:
+        #                 # https://1xbet.es/line/es/football/127733-spain-la-liga/685889701-valencia-espanyol
+        #                 url = "https://1xbet.es/es/line/" + str(
+        #                     match["SE"] # football
+        #                     + "/" + str(match["LI"]) + "-" # comp code
+        #                     + match["LE"].replace(".", "").replace(" ", "-") + "/" # comp name
+        #                     + str(match["I"]) + "-" # match ID
+        #                     + match["O1E"].replace(" ", "-") + "-" + match["O2E"]).replace(" ", "-") # team names
+        #                 url = url.lower()
+        #                 home_team = match["O1"]
+        #                 away_team = match["O2"]
+        #                 date = datetime.datetime.fromtimestamp(match["S"])
+        #                 web_url = url
+        #                 if url not in map_matches_urls:
+        #                     match_info = build_match_infos(url, web_url, home_team, away_team, date,
+        #                                                    competition_id, bookie_id, sport_id)
+        #                     match_infos.append(match_info)
+        #                 else:
+        #                     if debug:
+        #                         print("match already in map_matches_urls", home_team, away_team)
+        #             except IndexError:
+        #                 # print(traceback.format_exc())
+        #                 continue
+        #             except:
+        #                 # print(traceback.format_exc())
+        #                 continue
+        #     except Exception as e:
+        #             if debug:
+        #                 print(traceback.format_exc())
+        #             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
+        elif bookie_id == "888Sport":
+            match_infos = []
+            xpath_results = response.xpath("//div[@class='sport-event-list__event']").extract()
+            for xpath_result in xpath_results:
+                xpath_result = Selector(xpath_result)
+                try:
+                    away_team = xpath_result.xpath("//span[@class='event-name__text event-name__text-away']/text()").extract()[0]
+                    home_team = xpath_result.xpath("//span[@class='event-name__text event-name__text-home']/text()").extract()[0]
+                    url = xpath_result.xpath("//a[contains (@class, 'event-description')]/@href").extract()[0]
+                    url = "https://www.888sport.es" + url
+                    web_url = url
+                    date = xpath_result.xpath("//time[@class='c-event-schedule__info-time']/@datetime").extract()[0]
+                    date = dateparser.parse(date,settings={"TIMEZONE": "UTC", "RETURN_AS_TIMEZONE_AWARE": False})
+                    if url not in map_matches_urls:
+                        match_info = build_match_infos(
+                            url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id)
+                        match_infos.append(match_info)
+                    else:
+                        if debug:
+                            print("match already in map_matches_urls", home_team, away_team)
+                except IndexError as e:
+                    print(traceback.format_exc())
+                    continue
+                except Exception as e:
+                    print(traceback.format_exc())
+                    continue
+
             # json_responses = response.text.split("<pre>")[1]
             # json_responses = json_responses.split("</pre>")[0]
             # json_responses = json.loads(json_responses)
             #
             # match_infos = []
-            # for data_01 in json_responses["Value"]:
-            #     for key, value in data_01.items():
-            #         if isinstance(value, list):
-            #             for data_02 in value:
-            #                 for key_02, value_02 in data_02.items():
-            #                     if key_02 == "G":
-            #                         for match in value_02:
-            #                             try:
-            #                                 url = "https://1xbet.es/line/es/" + str(
-            #                                     match["SE"] + "/" + str(match["LI"]) + "-"
-            #                                     + match["LE"].replace(".", "") + "/" + str(
-            #                                         match["MG"]) + "-" + match[
-            #                                         "O1E"] + "-" + match["O2E"]).replace(" ", "-")
-            #                                 home_team = match["O1"]
-            #                                 away_team = match["O2"]
-            #                                 date = datetime.datetime.fromtimestamp(match["S"])
-            #                                 web_url = url
-            #                                 if url not in map_matches_urls:
-            #                                     match_info = build_match_infos(url, web_url, home_team, away_team, date,
-            #                                                                    competition_id, bookie_id, sport_id)
-            #                                     match_infos.append(match_info)
-            #                                 else:
-            #                                     if debug:
-            #                                         print("match already in map_matches_urls", home_team, away_team)
-            #                             except IndexError:
-            #                                 continue
-            #                             except:
-            #                                 # print(traceback.format_exc())
-            #                                 continue
-        elif bookie_id == "888Sport":
-            json_responses = response.text.split("<pre>")[1]
-            json_responses = json_responses.split("</pre>")[0]
-            json_responses = json.loads(json_responses)
-
-            match_infos = []
-            url_prefix = "https://spectate-web.888sport.es/spectate/sportsbook/getEventData/"
-            if "events" in json_responses and isinstance(json_responses["events"], dict):
-                for key, value in json_responses["events"].items():
-                    try:
-                        url = url_prefix + value["sport_slug"] + "/" + value["category_slug"] + "/" + value[
-                            "tournament_slug"] + "/" + value["slug"] + "/" + key
-                        web_url = "https://www.888sport.es/" + value["sport_slug_i18n"] + "/" + value[
-                            "category_slug_i18n"] + "/" + value["tournament_slug_i18n"] + "/" + value[
-                                      "event_slug_i18n"] + "/" + "-e-" + key
-                        for key_02, value_02 in value["competitors"].items():
-                            if value_02["is_home_team"] is True:
-                                home_team = value_02["name"].strip()
-                            elif value_02["is_home_team"] is False:
-                                away_team = value_02["name"].strip()
-                        date = dateparser.parse(''.join(value["start_time"]))
-
-                        if url not in map_matches_urls:
-                            match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id,
-                                                           bookie_id, sport_id)
-                            match_infos.append(match_info)
-                        else:
-                            if debug:
-                                print("match already in map_matches_urls", home_team, away_team)
-                    except IndexError as e:
-                        continue
-                    except Exception as e:
-                        continue
-            # try:
-            #     xpath_results = response.xpath("//div[@class='LazyLoad__ComponentWrapper LazyLoad__ComponentWrapper--loaded']").extract()
-            #     match_infos = []
-            #     for xpath_result in xpath_results:
-            #         xpath_result = Selector(xpath_result)
-            #         day = xpath_result.xpath("//span[@class='schema-header__item']/text()").extract()[0]
-            #         xpath_result_02 = xpath_result.xpath("//div[@class='bet-card__body']").extract()
-            #         for xpath_result_02 in xpath_result_02:
-            #             try:
-            #                 xpath_result_02 = Selector(xpath_result_02)
-            #                 teams = xpath_result_02.xpath("//span[@class='partido']/a/text()").extract()
-            #                 if not isinstance(teams, list) or 'vs.' not in str(teams):
-            #                     if debug:
-            #                         print("teams is not a list or 'vs.' not in teams", teams)
-            #                     continue
-            #                 else:
-            #                     # if debug:
-            #                     #     print("teams", teams)
-            #                     pass
-            #                 home_team = teams[0].split(" vs. ")[0].strip()
-            #                 away_team = teams[0].split(" vs. ")[1].strip()
-            #                 url = xpath_result_02.xpath("//a[@class='partido']/a/@href").extract()[-1]
-            #                 url = "https://www.aupabet.es" + url
-            #                 web_url = url
-            #                 time = xpath_result_02.xpath("//time[@class='dateFecha']/@datetime").extract()[0]
-            #                 date = dateparser.parse(''.join(f"{time} {day}"))
-            #                 if url not in map_matches_urls:
-            #                     match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id,
-            #                                                    bookie_id, sport_id)
-            #                     match_infos.append(match_info)
-            #                 else:
-            #                     if debug:
-            #                         print("match already in map_matches_urls", home_team, away_team)
-            #             except IndexError as e:
+            # url_prefix = "https://spectate-web.888sport.es/spectate/sportsbook/getEventData/"
+            # if "events" in json_responses and isinstance(json_responses["events"], dict):
+            #     for key, value in json_responses["events"].items():
+            #         try:
+            #             # url = url_prefix + value["sport_slug"] + "/" + value["category_slug"] + "/" + value[
+            #             #     "tournament_slug"] + "/" + value["slug"] + "/" + key
+            #             url = "https://www.888sport.es/" + value["sport_slug_i18n"] + "/" + value[
+            #                 "category_slug_i18n"] + "/" + value["tournament_slug_i18n"] + "/" + value[
+            #                           "event_slug_i18n"] + "/" + "-e-" + key
+            #             web_url = url
+            #             for key_02, value_02 in value["competitors"].items():
+            #                 if value_02["is_home_team"] is True:
+            #                     home_team = value_02["name"].strip()
+            #                 elif value_02["is_home_team"] is False:
+            #                     away_team = value_02["name"].strip()
+            #             date = dateparser.parse(''.join(value["start_time"]))
+            #
+            #             if url not in map_matches_urls:
+            #                 match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id,
+            #                                                bookie_id, sport_id)
+            #                 match_infos.append(match_info)
+            #             else:
             #                 if debug:
-            #                     print(f"Error on {bookie_id} for {competition_id}")
-            #                     print(traceback.format_exc())
-            #                     print('xpath_result', xpath_result.xpath("//span[@class='partido']/a/@href").extract())
-            #                     print('teams', teams)
-            #                 continue
-            # except Exception as e:
-            #     if debug:
-            #         print(traceback.format_exc())
-            #     Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
+            #                     print("match already in map_matches_urls", home_team, away_team)
+            #         except IndexError as e:
+            #             continue
+            #         except Exception as e:
+            #             continue
 
         elif bookie_id == "AdmiralBet":
             import ast
@@ -496,7 +500,7 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
 
         elif bookie_id == "Bet777":
             try:
-                html_cleaner = re.compile("<.*?>")
+                # html_cleaner = re.compile("<.*?>")
                 xpath_results = response.xpath("//div[@class='flex flex-col w-full sm:flex-row ']").extract()
                 match_infos = []
                 for xpath_result in xpath_results:
@@ -540,7 +544,7 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
         elif bookie_id == "BetfairSportsbook":
             match_infos = []
             if response.url != "https://www.betfair.es/sport/football":
-                html_cleaner = re.compile("<.*?>")
+                # html_cleaner = re.compile("<.*?>")
                 xpath_results = response.xpath("//div[contains(@class, 'event-information')]").extract()
                 # xpath_results = response.xpath("//div[@class='avb-col avb-col-runners']").extract()
 
@@ -597,7 +601,8 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
         elif bookie_id == "BetWay":
             import ast
             # print(response.text)
-            if competition_id != 'UEFAConferenceLeague':
+            exception_competitions = [] # "UEFAConferenceLeague", "UEFAEuropaLeague"
+            if competition_id not in exception_competitions:
                 try:
                     matches = response.text.split("{\"@graph\":[")[1]
                     matches = "{\"@graph\":[" + matches.split("</script>")[0]
@@ -621,13 +626,13 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                         print(traceback.format_exc())
                     Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
 
-            if competition_id == 'UEFAConferenceLeague':
+            if competition_id in exception_competitions:
                 xpath_results = response.xpath("//div[@data-testid='table-sectionGroup']").extract()
                 # xpath_results = response.xpath("//a[@class='scoreboardInfoNames']").extract()
                 match_infos = []
                 for xpath_result in xpath_results:
                     xpath_result = Selector(xpath_result)
-                    day = xpath_result.xpath("//div[@data-testid='table-subheader-title']/text()").extract()[0]
+                    day = xpath_result.xpath("//span[@data-testid='table-header-title']/text()").extract()[0]
                     xpath_result_02 = xpath_result.xpath("//div[@data-testid='table-section']").extract()
                     for xpath_result_02 in xpath_result_02:
                         xpath_result_02 = Selector(xpath_result_02)
@@ -642,7 +647,7 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                             else:
                                 pass
                             web_url = url
-                            time = xpath_result_02.xpath("//span[@data-testid='event-table-time-period']/text()").extract()[0]
+                            time = xpath_result_02.xpath("//span[@data-testid='event-table-time-period']/text()").extract()
                             date = day + ", " + time
                             date = dateparser.parse(date, languages=["es"],
                                                     settings={"TIMEZONE": "UTC", "RETURN_AS_TIMEZONE_AWARE": False})
@@ -656,11 +661,38 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                                 if debug:
                                     print("match already in map_matches_urls", home_team, away_team)
                         except IndexError as e:
-                            # print("indexerror", e)
+                            if debug:
+                                print(traceback.format_exc())
                             continue
                         except Exception as e:
-                            # print("Exceptions", e)
+                            if debug:
+                                print(traceback.format_exc())
                             continue
+        elif bookie_id == "Botemania":
+            match_infos = []
+            jsonresponse = json.loads(response.text)
+            if "events" in jsonresponse:
+                for match in jsonresponse["events"]:
+                    try:
+                        home_team = match["event"]["homeName"].strip()
+                        away_team = match["event"]["awayName"].strip()
+                        # https://eu-offering-api.kambicdn.com/offering/v2018/botemaniaes/listView/basketball/euroleague/all/all/matches.json?lang=es_ES&market=ES&client_id=2&channel_id=1
+                        url = "https://eu1.offering-api.kambicdn.com/offering/v2018/botemaniaes/betoffer/event/" + str(
+                            match["event"]["id"]) + ".json?lang=es_ES&market=ES"
+                        # https://www.botemania.es/sports#event/1024182546
+                        web_url = "https://www.botemania.es/sports#event/" + str(match["event"]["id"])
+                        date = match["event"]["start"]
+                        date = dateparser.parse(''.join(date))
+                        if url not in map_matches_urls:
+                            match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id)
+                            match_infos.append(match_info)
+                        else:
+                            if debug:
+                                print("match already in map_matches_urls", home_team, away_team)
+                    except IndexError as e:
+                        continue
+                    except Exception as e:
+                        continue
         elif bookie_id == "Bwin":
             xpath_results = response.xpath("//div[@class='grid-event-wrapper image ng-star-inserted']").extract()
             match_infos = []
@@ -675,7 +707,7 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                            xpath_result.xpath("//a[contains(@class, 'grid-info-wrapper')]/@href").extract()[0])
                     web_url = url
                     date = xpath_result.xpath(
-                        "//ms-prematch-timer[@class='starting-time timer-badge ng-star-inserted']/text()").extract()[0]
+                        "//ms-prematch-timer[contains(@class, 'ng-star-inserted')]/text()").extract()[0]
                     date = date.strip().replace(" / ", " ")
                     date = dateparser.parse(
                         ''.join(date),
@@ -693,13 +725,13 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                             print("match already in map_matches_urls", home_team, away_team)
 
                 except IndexError as e:
-                    print(e)
+                    # print(traceback.format_exc())
                     continue
                 except Exception as e:
-                    print(e)
+                    # print(traceback.format_exc())
                     continue
         elif bookie_id == "CasinoBarcelona":
-            html_cleaner = re.compile("<.*?>")
+            # html_cleaner = re.compile("<.*?>")
             xpath_results = response.xpath("//div[@class='lines']").extract()
             match_infos = []
             for xpath_result in xpath_results:
@@ -879,7 +911,7 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                             away_team = xpath_result_02.xpath("//span[@class='text-ellipsis']/text()").extract()[1]
                             away_team = away_team.strip()
                             relative_url = xpath_result_02.xpath("//a/@href").extract()[0]
-                            url = "https://sb-pp-esfe.daznbet.es" + relative_url + "?tab=tiempo-regular"
+                            url = "https://sb-pp-esfe.daznbet.es" + relative_url + "?tab=creador-de-apuesta"
                             web_url = "https://www.daznbet.es/es-es/deportes" + relative_url
                             time = xpath_result_02.xpath("//span[@class='game-timer-text']/text()").extract()
                             date = dateparser.parse(
@@ -951,48 +983,49 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                         if debug:
                             print(traceback.format_exc())
                         continue
-        elif bookie_id == "EfBet":
-            match_infos = []
-            if sport_id == "1":
-                away_team_index = 2
-            else:
-                away_team_index = 1
-            xpath_results = response.xpath("//tr[@class='row1' or @class='row0']").extract()
-            url_prefix = competition_url_id+"&event="
-            for xpath_result in xpath_results:
-                try:
-                    xpath_result = Selector(xpath_result)
-                    home_team = xpath_result.xpath(
-                        "//a[@behavior.id='SelectionClick']/@behavior.selectionclick.selectionname").extract()[0].strip()
-                    away_team = \
-                        xpath_result.xpath(
-                            "//a[@behavior.id='SelectionClick']/@behavior.selectionclick.selectionname").extract()[away_team_index].strip()
-                    url = xpath_result.xpath("//a[@behavior.id='ShowEvent']/@behavior.showevent.idfoevent").extract()[0]
-                    url = url_prefix+url
-                    web_url = url
-                    date = xpath_result.xpath("//td[@class='date']/text()").extract()
-                    date = dateparser.parse(
-                        ''.join(date),
-                        languages=["es"],
-                        settings={
-                            'TIMEZONE': 'Europe/Madrid',
-                            'TO_TIMEZONE': 'UTC',
-                            'RETURN_AS_TIMEZONE_AWARE': False}
-                    )
-                    if url not in map_matches_urls:
-                        match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id)
-                        match_infos.append(match_info)
-                    else:
-                        if debug:
-                            print("match already in map_matches_urls", home_team, away_team)
-                except IndexError as e:
-                    # if debug:
-                    #     print("IndexError", e)
-                    continue
-                except Exception as e:
-                    # if debug:
-                    #     print("Exceptions", e)
-                    continue
+        # elif bookie_id == "EfBet":
+        #     match_infos = []
+        #     if sport_id == "1":
+        #         away_team_index = 2
+        #     else:
+        #         away_team_index = 1
+        #     xpath_results = response.xpath("//tr[@class='row1' or @class='row0']").extract()
+        #     url_prefix = competition_url_id+"&event="
+        #     for xpath_result in xpath_results:
+        #         try:
+        #             xpath_result = Selector(xpath_result)
+        #             home_team = xpath_result.xpath(
+        #                 "//a[@behavior.id='SelectionClick']/@behavior.selectionclick.selectionname").extract()[0].strip()
+        #             away_team = \
+        #                 xpath_result.xpath(
+        #                     "//a[@behavior.id='SelectionClick']/@behavior.selectionclick.selectionname").extract()[away_team_index].strip()
+        #             url = xpath_result.xpath("//a[@behavior.id='ShowEvent']/@behavior.showevent.idfoevent").extract()[0]
+        #             url = url_prefix+url
+        #             web_url = url
+        #             day = xpath_result.xpath("//td[@class='date']/text()").extract()[0]
+        #             time = xpath_result.xpath("//td[@class='date']/text()").extract()[1]
+        #             date = dateparser.parse(
+        #                 f"{day}, {time}",
+        #                 # languages=["es"],
+        #                 settings={
+        #                     'TIMEZONE': 'Europe/Madrid',
+        #                     'TO_TIMEZONE': 'UTC',
+        #                     'RETURN_AS_TIMEZONE_AWARE': False}
+        #             )
+        #             if url not in map_matches_urls:
+        #                 match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id)
+        #                 match_infos.append(match_info)
+        #             else:
+        #                 if debug:
+        #                     print("match already in map_matches_urls", home_team, away_team)
+        #         except IndexError as e:
+        #             # if debug:
+        #             #     print("IndexError", e)
+        #             continue
+        #         except Exception as e:
+        #             # if debug:
+        #             #     print("Exceptions", e)
+        #             continue
         elif bookie_id == "EnRacha":
             match_infos = []
             jsonresponse = json.loads(response.text)
@@ -1040,7 +1073,7 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                     except Exception as e:
                         continue
         elif bookie_id == "GoldenPark":
-            html_cleaner = re.compile("<.*?>")
+            # html_cleaner = re.compile("<.*?>")
             xpath_results = response.xpath("//div[@class='part-1']").extract()
             match_infos = []
             for xpath_result in xpath_results:
@@ -1176,7 +1209,7 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
         elif bookie_id == "Luckia":
             match_infos = []
 
-            xpath_results = response.xpath("//div[@class='lp-event event-layout ']").extract()
+            xpath_results = response.xpath("//div[contains(@class, 'lp-event event-layout ')]").extract()
             for xpath_result in xpath_results:
                 try:
                     xpath_result = Selector(xpath_result)
@@ -1189,7 +1222,15 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                     web_url = url
                     date = xpath_result.xpath("//span[@class='lp-event__extra-date event-header-date-date']/text()").extract()[
                         0].strip()
-                    date = dateparser.parse(''.join(date))
+                    print("raw date", date)
+                    date = dateparser.parse(
+                        ''.join(date),
+                        languages=["es"],
+                        settings={
+                            'TIMEZONE': 'Europe/Madrid',
+                            'TO_TIMEZONE': 'UTC',
+                            'RETURN_AS_TIMEZONE_AWARE': False}
+                    )
                     if url not in map_matches_urls:
                         match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id,
                                                        bookie_id, sport_id)
@@ -1198,65 +1239,25 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                         if debug:
                             print("match already in map_matches_urls", home_team, away_team)
                 except IndexError:
+                    if debug:
+                        print(traceback.format_exc())
                     continue
-        elif bookie_id == "MarathonBet":
-            match_infos = []
-            if response.url == competition_url_id:
-                xpath_results = response.xpath("//div[@class='bg coupon-row']").extract()
-                for xpath_result in xpath_results:
-                    try:
-                        xpath_result = Selector(xpath_result)
-                        try:
-                            home_team = \
-                                xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-name").extract()[0].split(
-                                    " @ ")[0]
-                            away_team = \
-                                xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-name").extract()[0].split(
-                                    " @ ")[1]
-                        except IndexError:
-                            home_team = \
-                            xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-name").extract()[0].split(
-                                " vs ")[0]
-                            away_team = \
-                            xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-name").extract()[0].split(
-                                " vs ")[1]
-
-                        home_team = home_team.strip()
-                        away_team = away_team.strip()
-                        url = xpath_result.xpath("//div[@class='bg coupon-row']/@data-event-path").extract()[0]
-                        url = "https://www.marathonbet.es/es/betting/" + url
-                        web_url = url
-                        date = xpath_result.xpath("//div[@class='score-and-time']").extract()[0]
-                        date = re.sub(html_cleaner, "", date)
-                        date = date.strip()
-                        date = dateparser.parse(''.join(date))
-                        if url not in map_matches_urls:
-                            match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id)
-                            match_infos.append(match_info)
-                        else:
-                            if debug:
-                                print("match already in map_matches_urls", home_team, away_team)
-                    except IndexError as e:
-                        continue
-                    except Exception as e:
-                        continue
         elif bookie_id == "MarcaApuestas":
             match_infos = []
-            xpath_results = response.xpath("//tr[contains(@class, 'mkt mkt_content mkt-')]").extract()
+            xpath_results = response.xpath("//div[@class='ta-FlexPane ta-EventListItem']").extract()
+
             for xpath_result in xpath_results:
                 # print(xpath_result)
                 try:
                     xpath_result = Selector(xpath_result)
-                    home_team = xpath_result.xpath("//span[@class='seln-name']/text()").extract()[0]
-                    away_team = xpath_result.xpath("//span[@class='seln-name']/text()").extract()[1]
-                    url = xpath_result.xpath("//a[@title='Nº de mercados']/@href").extract()[0]
-                    url = "https://deportes.marcaapuestas.es" + url
+                    home_team = xpath_result.xpath("//div[@class='ta-participantName']/text()").extract()[0]
+                    away_team = xpath_result.xpath("//div[@class='ta-participantName']/text()").extract()[1]
+                    url = xpath_result.xpath("//a[@class='ta-Button EventListItemDetails']/@href").extract()[0]
+                    url = "https://www.marcaapuestas.es" + url
                     web_url = url
-                    time = xpath_result.xpath("//span[@class='time']/text()").extract()[0]
-                    day = xpath_result.xpath("//span[@class='date']/text()").extract()[0]
-                    # date = dateparser.parse(time + " " + day)
+                    date = xpath_result.xpath("//div[@class='ta-Button']//text()").get()
                     date = dateparser.parse(
-                        time + " " + day,
+                        date,
                         languages=["es"],
                         settings={
                             'TIMEZONE': 'Europe/Madrid',
@@ -1270,7 +1271,34 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                         if debug:
                             print("match already in map_matches_urls", home_team, away_team)
                 except IndexError as e:
+                    if debug:
+                        print(traceback.format_exc())
                     continue
+
+        elif bookie_id == "Monopoly":
+            match_infos = []
+            jsonresponse = json.loads(response.text)
+            if "events" in jsonresponse:
+                for match in jsonresponse["events"]:
+                    try:
+                        home_team = match["event"]["homeName"].strip()
+                        away_team = match["event"]["awayName"].strip()
+                        # https://eu-offering-api.kambicdn.com/offering/v2018/botemaniaes/listView/basketball/euroleague/all/all/matches.json?lang=es_ES&market=ES&client_id=2&channel_id=1
+                        url = "https://eu1.offering-api.kambicdn.com/offering/v2018/monopolyes/betoffer/event/" + str(
+                            match["event"]["id"]) + ".json?lang=es_ES&market=ES"
+                        web_url = "https://www.monopolycasino.es/sports#event/" + str(match["event"]["id"])
+                        date = match["event"]["start"]
+                        date = dateparser.parse(''.join(date))
+                        if url not in map_matches_urls:
+                            match_info = build_match_infos(url, web_url, home_team, away_team, date, competition_id, bookie_id, sport_id)
+                            match_infos.append(match_info)
+                        else:
+                            if debug:
+                                print("match already in map_matches_urls", home_team, away_team)
+                    except IndexError as e:
+                        continue
+                    except Exception as e:
+                        continue
         elif bookie_id == "OlyBet":
             xpath_results = response.xpath("//div[@class='lines']").extract()
             match_infos = []
@@ -1284,9 +1312,12 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                     web_url = url
                     date = xpath_result.xpath("//div[(@class='date-event')]").extract()[0]
                     date = re.sub(html_cleaner, "@", date).split("@")
-                    date = [x.rstrip().lstrip() for x in date if len(x) >= 1]
+                    date = [x.rstrip().lstrip() for x in date if len(x) >= 2]
+                    date = ' '.join(date)
+                    date = re.sub(r'^\s*(lun\.|mar\.|mi[eé]\.|jue\.|vie\.|s[áa]b\.|dom\.)\s*', '', date,
+                                 flags=re.IGNORECASE)
                     date = dateparser.parse(
-                        ''.join(date),
+                        date,
                         languages=["es"],
                         settings={
                             'TIMEZONE': 'Europe/Madrid',
@@ -1339,7 +1370,7 @@ def parse_competition(response, bookie_id, competition_id, competition_url_id, s
                                 home_team = match["Competitors"][0]["Name"].strip()
                                 away_team = match["Competitors"][1]["Name"].strip()
                                 date = dateparser.parse(''.join(match["EventDate"]))
-                                comp_url = "https://www.paston.es/apuestas-deportivas.html#/sport/" + str(
+                                comp_url = "https://www.paston.es/apuestas-deportivas#/sport/" + str(
                                             match["SportId"]) + "/category/" + str(match["CategoryId"]) + "/championship/" + str(
                                             match["ChampId"])
                                 web_url = comp_url+ "/event/" + str(match["Id"])
@@ -1700,68 +1731,156 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
         except Exception as e:
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
     elif bookie_id == "888Sport":
+        def transform_over_under(
+            lst,
+            label_over="Mas de",
+            label_under="Menos de"
+        ):
+            if not lst:
+                return lst
+
+            # Helper to check if a value can be treated as a float
+            def is_float(s):
+                try:
+                    float(str(s).replace(',', '.'))
+                    return True
+                except (ValueError, TypeError):
+                    return False
+
+            # 1. Find the first index where three consecutive values are floats
+            start_index = -1
+            for i in range(len(lst) - 2):
+                if is_float(lst[i]) and is_float(lst[i + 1]) and is_float(lst[i + 2]):
+                    start_index = i
+                    break
+
+            # If no triple is found, return the list as is (or handle error)
+            if start_index == -1:
+                return lst
+
+            # 2. Extract the triple
+            threshold = lst[start_index]
+            over_odd = lst[start_index + 1]
+            under_odd = lst[start_index + 2]
+
+            # 3. Build the new list using the first item of the original list as the market name
+            # and then the formatted Over/Under results
+            out = [
+                lst[0],
+                f"{label_over} {threshold}", str(over_odd),
+                f"{label_under} {threshold}", str(under_odd)
+            ]
+
+            return out
         try:
             odds = []
-            json_responses = response.text.split("<pre>")[1]
-            json_responses = json_responses.split("</pre>")[0]
-            json_responses = json_responses.replace("""&gt;""", "")
-            json_responses = json.loads(json_responses)
-            market = json_responses["event"]["markets"]["markets_selections"]
-            for key, value in market.items():
-                if sport_id == "1":
-                    if "'market_name': '3-Way'" in str(value):
-                        for three_way_bet in value:
-                            odds.append(
-                                {
-                                    "Market": three_way_bet["market_name"],
-                                    "Result": three_way_bet["name"],
-                                    "Odds": three_way_bet["decimal_price"]
-                                }
-                            )
-                    elif (
-                        "'market_name': 'Total Goals Over/Under'" in str(value)
-                        or "'market_name': 'Correct Score'" in str(value)
+            selection_keys = response.xpath("//div[@data-testid='market-collapse-container']").extract()
+            for selection_key in selection_keys:
+                selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t", "")
+                clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
+                clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
+                if clean_selection_keys[0] in ["Total de goles - Por encima/debajo", "Puntos totales"]:
+                    clean_selection_keys = transform_over_under(clean_selection_keys)
+                for selection_key02 in clean_selection_keys:
+                    if clean_selection_keys[0] in list_of_markets:
+                        market = clean_selection_keys[0]
+                    else:
+                        market = "empty"
+                        continue
+                    if (
+                        selection_key02 != market
+                        and market in list_of_markets
+                        and re.search('[a-zA-Z]', selection_key02) is not None
+                        and selection_key02 != 'X'
+                        or ":" in selection_key02
                     ):
-                        for key_02, value_02 in value.items():
-                            if isinstance(value_02, dict):
-                                for key_03, value_03 in value_02.items():
-                                    # print(value_03["market_name"], value_03["name"], value_03["decimal_price"])
-                                    odds.append(
-                                        {
-                                            "Market": value_03["market_name"],
-                                            "Result": value_03["name"],
-                                            "Odds": value_03["decimal_price"]
-                                        }
-                                    )
-                elif sport_id == "2":
+                        result = selection_key02
+                        odd = "empty"
 
-                    if key == "gameLineMarket":
-                        for key_02, value_02 in value.items():
-                            if key_02 == "selections":
-                                for data in value_02:
-                                    for key_03, value_03 in data.items():
-                                        for money_line in value_03:
-                                            if "'market_name': 'Money Line'" in str(money_line):
-                                                odds.append(
-                                                    {
-                                                        "Market": money_line["market_name"],
-                                                        "Result": money_line["name"],
-                                                        "Odds": money_line["decimal_price"]
-                                                    }
-                                                )
-                    if key.isdigit() and "'market_name': 'Total Points'" in str(value):
-                        for key_02, value_02 in value["selections"].items():
-                            for key_03, value_03 in value_02.items():
-                                for total_points in value_03:
-                                    odds.append(
-                                        {
-                                            "Market": total_points["market_name"],
-                                            "Result": total_points["name"],
-                                            "Odds": total_points["decimal_price"]
-                                        }
-                                   )
+                    elif (
+                        re.search("[a-zA-Z]", selection_key02) is None
+                        and ":" not in selection_key02
+                        and market in list_of_markets
+                    ):
+                        odd = selection_key02
+                    try:
+                        if (
+                            market in list_of_markets
+                            and result != "empty"
+                            and odd != "empty"
+                        ):
+                            odds.append({"Market": market, "Result": result, "Odds": odd})
+                            result = "empty"
+                            odd = "empty"
+                    except UnboundLocalError:
+                        pass
+                    except NameError:
+                        continue
         except Exception as e:
+            print(traceback.format_exc())
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
+        # try:
+        #     odds = []
+        #     json_responses = response.text.split("<pre>")[1]
+        #     json_responses = json_responses.split("</pre>")[0]
+        #     json_responses = json_responses.replace("""&gt;""", "")
+        #     json_responses = json.loads(json_responses)
+        #     market = json_responses["event"]["markets"]["markets_selections"]
+        #     for key, value in market.items():
+        #         if sport_id == "1":
+        #             if "'market_name': '3-Way'" in str(value):
+        #                 for three_way_bet in value:
+        #                     odds.append(
+        #                         {
+        #                             "Market": three_way_bet["market_name"],
+        #                             "Result": three_way_bet["name"],
+        #                             "Odds": three_way_bet["decimal_price"]
+        #                         }
+        #                     )
+        #             elif (
+        #                 "'market_name': 'Total Goals Over/Under'" in str(value)
+        #                 or "'market_name': 'Correct Score'" in str(value)
+        #             ):
+        #                 for key_02, value_02 in value.items():
+        #                     if isinstance(value_02, dict):
+        #                         for key_03, value_03 in value_02.items():
+        #                             # print(value_03["market_name"], value_03["name"], value_03["decimal_price"])
+        #                             odds.append(
+        #                                 {
+        #                                     "Market": value_03["market_name"],
+        #                                     "Result": value_03["name"],
+        #                                     "Odds": value_03["decimal_price"]
+        #                                 }
+        #                             )
+        #         elif sport_id == "2":
+        #
+        #             if key == "gameLineMarket":
+        #                 for key_02, value_02 in value.items():
+        #                     if key_02 == "selections":
+        #                         for data in value_02:
+        #                             for key_03, value_03 in data.items():
+        #                                 for money_line in value_03:
+        #                                     if "'market_name': 'Money Line'" in str(money_line):
+        #                                         odds.append(
+        #                                             {
+        #                                                 "Market": money_line["market_name"],
+        #                                                 "Result": money_line["name"],
+        #                                                 "Odds": money_line["decimal_price"]
+        #                                             }
+        #                                         )
+        #             if key.isdigit() and "'market_name': 'Total Points'" in str(value):
+        #                 for key_02, value_02 in value["selections"].items():
+        #                     for key_03, value_03 in value_02.items():
+        #                         for total_points in value_03:
+        #                             odds.append(
+        #                                 {
+        #                                     "Market": total_points["market_name"],
+        #                                     "Result": total_points["name"],
+        #                                     "Odds": total_points["decimal_price"]
+        #                                 }
+        #                            )
+        # except Exception as e:
+        #     Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
     elif bookie_id == "AdmiralBet":
         try:
             html_cleaner = re.compile("<.*?>")
@@ -1771,8 +1890,8 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                 selection_key = selection_key.replace("  ", "").replace("\n", "")
                 clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
                 clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
-                if debug:
-                    print(f"clean selection keys {clean_selection_keys}")
+                # if debug:
+                #     print(f"clean selection keys {clean_selection_keys}")
                 for selection_key02 in clean_selection_keys:
                     # if debug:
                     #     print("select key2: ", selection_key02)
@@ -2070,7 +2189,7 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                         odds.append({"Market": clean_selection_keys[0], "Result": r, "Odds": o})
 
                 elif clean_selection_keys[0] == "Resultado correcto":
-                    result = [x for x in clean_selection_keys[1:] if "-" in x]
+                    result = [x for x in clean_selection_keys[1:] if re.match(r'^\d+\s*-\s*\d+$', x)]
                     odd = [x for x in clean_selection_keys[1:] if "." in x]
                     for r, o in zip(result, odd):
                         odds.append({"Market": clean_selection_keys[0], "Result": r, "Odds": o})
@@ -2145,93 +2264,69 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
     elif bookie_id == "BetWay":
         try:
-            selection_keys = response.xpath("//section[@data-testid='market-table-section']").extract()
+            # selection_keys = response.xpath("//section[@data-testid='market-table-section']").extract()
+            # "//ms-option-panel[contains(@class, 'option-panel')]").extract()
+            selection_keys = response.xpath("//section[contains(@data-testid, 'market-')]").extract()
             odds = []
             clean_selection_keys = []
             for selection_key in selection_keys:
-                pattern = re.compile(r'data-outcomename="([^"]*)"|>([^<]+)<')
-                raw_parts = pattern.findall(selection_key)
-                clean_selection_key = [part for tpl in raw_parts for part in tpl if part]
-                clean_selection_key = [data for data in clean_selection_key if data != 'Cash Out']
-                if clean_selection_key[0] == '1-X-2':
-                    winners = []
-                    winners.append(clean_selection_key[0])
-                    for data in clean_selection_key:
-                        if " " in data:
-                            try:
-                                if float(data.split(" ")[-1].replace(',', '.')):
-                                    result = data.split(" ")[:-1]
-                                    result = ' '.join(result)
-                                    winners.append(result)
-                            except ValueError:
-                                pass
-                        elif "," in data:
-                            try:
-                                odd = float(data.replace(',', '.'))
-                                winners.append(odd)
-                            except ValueError:
-                                pass
-                    clean_selection_keys.append(winners)
-                elif clean_selection_key[0] == 'Goles en total':
-                    total_goles = []
-                    total_goles.append(clean_selection_key[0])
-                    for data in clean_selection_key:
+                selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t","")
+                clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
+                clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
 
-                        if "Más de" in data or "Menos de" in data:
-                            continue
-                        elif data.startswith("O "):
-                            total_goles.append(data.replace('O ', 'Más de '))
-                        elif data.startswith("U "):
-                            total_goles.append(data.replace('U ', 'Menos de '))
-                        elif "," in data:
-                            try:
-                                odd = float(data.replace(',', '.'))
-                                total_goles.append(odd)
-                            except ValueError:
-                                print("ValueError in total_goles:", data)
-                                pass
-                        else:
-                            pass
-                    clean_selection_keys.append(total_goles)
-                elif clean_selection_key[0] == 'Resultado Exacto':
-                    exact_results = []
-                    exact_results.append(clean_selection_key[0])
-                    for data in clean_selection_key:
-                        if " " in data:
-                            try:
-                                if float(data.split(" ")[1].replace(',', '.')):
-                                    result = data.split(" ")[0]
-                                    exact_results.append(result)
-                                    odd = float(data.split(" ")[1].replace(',', '.'))
-                                    exact_results.append(odd)
-                            except ValueError:
-                                pass
-                    clean_selection_keys.append(exact_results)
-
-            for list_item in clean_selection_keys:
-                for selection_key02 in list_item:
-                    if list_item[0] in list_of_markets:
-                        market = list_item[0]
-                        # print("market", market)
-
+                # Additional cleaning for basketball
+                if sport_id == "2" and clean_selection_keys[0] == "Lineas de Juego":
+                    idx = [0, 4, 10, 5, -1]
+                    cast_to_float = {10, -1}
+                    clean_selection_keys = [
+                        # float(str(clean_selection_keys[i]).replace(',', '.')) if i in cast_to_float else clean_selection_keys[i]
+                        clean_selection_keys[i]
+                        for i in idx
+                    ]
+                # if debug:
+                #     print("clean_selection_keys", clean_selection_keys)
+                for selection_key02 in clean_selection_keys:
+                    if clean_selection_keys[0] in list_of_markets:
+                        market = clean_selection_keys[0]
                     else:
                         market = "empty"
-                        result = "empty"
-                        odd = "empty"
-
+                    if "Goles" not in market and "Puntos" not in market:
+                        mas_menos = "empty"
+                    elif (
+                        "Menos " in selection_key02
+                        or "Mas " in selection_key02
+                        or "Más " in selection_key02
+                        and market in list_of_markets
+                    ):
+                        mas_menos = selection_key02
+                    # else:
+                    #     mas_menos = "empty"
                     if (
                         selection_key02 != market
-                        and isinstance(selection_key02, str)
+                        and market in list_of_markets
+                        and re.search('[a-zA-Z]', selection_key02) is not None
+                        or ("-" in selection_key02 and "exacto" in market.lower())
                     ):
-                        result = selection_key02
 
-
+                        try:
+                            if mas_menos == "empty":
+                                result = selection_key02
+                            else:
+                                result = mas_menos + " " + selection_key02[2:]
+                        except UnboundLocalError:
+                            result = selection_key02
+                        # if ("Lineas de Juego" == market
+                        #     and (selection_key02.startswith("O ") or selection_key02.startswith("U "))
+                        # ):
+                        #     result = "empty"
+                        odd = "empty"
                     elif (
-                        isinstance(selection_key02, float)
+                        re.search("[a-zA-Z]", selection_key02) is None
+                        and "-" not in selection_key02
+                        and "," in selection_key02
+                        and market in list_of_markets
                     ):
-
                         odd = selection_key02
-                        # print("odd", odd)
                     try:
                         if (
                             market in list_of_markets
@@ -2243,10 +2338,38 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                             odd = "empty"
                     except UnboundLocalError:
                         pass
-                    except Exception as e:
-                        print("Error in processing selection_key02:", selection_key02)
-                        print(traceback.format_exc())
+                    except NameError:
                         continue
+
+        except Exception as e:
+            if debug:
+                print(traceback.format_exc())
+            Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
+    elif bookie_id == "Botemania":
+        try:
+            jsonresponse = json.loads(response.text)
+            odds = []
+            if jsonresponse["events"][0]["state"] == "NOT_STARTED":
+                for key, values in jsonresponse.items():
+                    if key == "betOffers":
+                        for field in values:
+                            if field["criterion"]["label"] in list_of_markets:
+                                for bet in field["outcomes"]:
+                                    try:
+                                        result = bet["label"] + " " + str(bet["line"] / 1000)
+                                    except KeyError:
+                                        result = bet["label"]
+
+                                    if bet["status"] == "OPEN":
+                                        odd = float(bet["odds"] / 1000)
+                                        odd = round(odd, 2)
+                                        odds.append(
+                                            {"Market": field["criterion"]["label"],
+                                             "Result": result,
+                                             "Odds": odd
+                                             }
+                                        )
+
         except Exception as e:
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
     elif bookie_id == "Bwin":
@@ -2256,11 +2379,10 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                 selection_keys = response.xpath("//ms-option-panel[@class='option-panel']").extract()
                 odds = []
                 for selection_key in selection_keys:
-                    selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t",
-                                                                                                                "")
+                    selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t","")
                     clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
                     clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
-                    stop_words = ["Tiempo reglamentario", "1ª parte", "2ª parte", "Más de", "Menos de", "Mostrar más"]
+                    stop_words = ["Handicap", "Tiempo reglamentario", "1ª parte", "2ª parte", "Más de", "Menos de", "Mostrar más"]
                     teams = []
                     for selection_key02 in clean_selection_keys:
                         if clean_selection_keys[0] in list_of_markets:
@@ -2308,50 +2430,64 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                             pass
                         except NameError:
                             continue
-                # print(odds)
             elif sport_id == "2":
                 selection_keys = response.xpath("//ms-option-panel[@class='option-panel']").extract()
                 odds = []
-                stop_words = ['Partido', '1ª parte', 'Hándicap', 'Total', 'Ganador', ]
+                stop_words = ['Handicap','Partido', '1ª parte', 'Hándicap', 'Total', 'Ganador', 'CA', 'Crea tu Apuesta',
+                              '¡Tu juego, tu apuesta! Selecciona las opciones con el icono "CA" y crea tu apuesta desde cualquier parte del sitio web.',
+                              '1er cuarto']
                 for selection_key in selection_keys:
                     selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t", "")
                     clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
                     clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
-
                     if "Líneas de juego" in clean_selection_keys[0]:
                         winners_list = [x for x in clean_selection_keys if x not in stop_words]
                         odds.append(
                             {"Market": "Partido", "Result": winners_list[1], "Odds": winners_list[6]})
                         odds.append(
                             {"Market": "Partido", "Result": winners_list[7], "Odds": winners_list[-1]})
-                    if "Total" in clean_selection_keys:
-                        for bet in clean_selection_keys:
-                            if "▲ " in bet or "▼ " in bet:
-                                result = bet.replace("▲ ", "Mas de ").replace("▼ ", "Menos de ")
+                    if "Totales" in clean_selection_keys:
+                        mas_menos = [x for x in clean_selection_keys if x not in stop_words]
+                        market = mas_menos[0]
+                        for selection_key02 in mas_menos:
+                            if (
+                                selection_key02 != market
+                                and selection_key02 not in stop_words
+                                and market in list_of_markets
+                                and re.search('[a-zA-Z]', selection_key02) is not None
+                                or "-" in selection_key02
+                            ):
+                                result = selection_key02
                                 odd = "empty"
-                            elif "." in bet:
-                                odd = bet
-                            else:
-                                odd = "empty"
-                                result = "empty"
+
+                            elif (
+                                re.search("[a-zA-Z]", selection_key02) is None
+                                and "-" not in selection_key02
+                                and "." in selection_key02
+                                and market in list_of_markets
+                            ):
+
+                                odd = selection_key02
                             try:
                                 if (
-                                    result != "empty"
+                                    market in list_of_markets
+                                    and result != "empty"
                                     and odd != "empty"
                                 ):
-                                    odds.append({"Market": "Total de goles", "Result": result, "Odds": odd})
+                                    odds.append({"Market": market, "Result": result, "Odds": odd})
                                     result = "empty"
                                     odd = "empty"
                             except UnboundLocalError:
                                 pass
+                            except NameError:
+                                continue
+
             elif sport_id == "3":
                 print("sport 3")
                 selection_keys = response.xpath("//ms-option-panel[contains(@class, 'option-panel')]").extract()
                 odds = []
                 for selection_key in selection_keys:
-                    selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace(
-                        "\t",
-                        "")
+                    selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t","")
                     clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
                     clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
                     stop_words = ["Tiempo reglamentario", "1ª parte", "2ª parte", "Más de", "Menos de",
@@ -2533,109 +2669,146 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
     elif bookie_id == "DaznBet":
         html_cleaner = re.compile("<.*?>")
-        try:
-            selection_keys = response.xpath("//div[@class='accordion-container ']").extract()
-            odds = []
-            for selection_key in selection_keys:
-                selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t", "")
-                clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
-                clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
-                count = 0
-                # print(clean_selection_keys)
-                if clean_selection_keys[0].lower() == "goles totales" or clean_selection_keys[0] == "puntos totales":
-                    del clean_selection_keys[1:3]
-                    for index, value in enumerate(clean_selection_keys):
-                        if "+" in value and count % 2 == 0:
-                            clean_selection_keys[index] = "Más de" + clean_selection_keys[index].replace("+", " ")
-                            count += 1
-                        elif "+" in value and count % 2 != 0:
-                            clean_selection_keys[index] = "Menos de" + clean_selection_keys[index].replace("+", " ")
-                            count += 1
-                for selection_key02 in clean_selection_keys:
-                    if clean_selection_keys[0] in list_of_markets:
-                        market = clean_selection_keys[0]
-                    else:
-                        market = "empty"
-                        result = "empty"
-                        # odd = "empty"
-                        continue
+        if sport_id == "1" or sport_id == "3":
+            try:
+                selection_keys = response.xpath("//div[@class='accordion-container ']").extract()
+                odds = []
+                for selection_key in selection_keys:
+                    selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t", "")
+                    clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
+                    clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
+                    if clean_selection_keys[0].lower() == "goles totales":
+                        clean_selection_keys = ["Goles Totales"]
+                        xpath_results = Selector(selection_key)
+                        mas_menos_data = xpath_results.xpath("//div[contains(@data-id, '-O')] | //div[contains(@data-id, '-U')]").extract()
+                        for mas_menos in mas_menos_data:
+                            mas_menos_result = None
 
-                    if (
-                        selection_key02 != market
-                        and market in list_of_markets
-                        and re.search('[a-zA-Z]', selection_key02) is not None
-                        or ":" in selection_key02
-                        or "+" in selection_key02
-                    ):
-                        result = selection_key02
-                        odd = "empty"
-                    elif (
-                        re.search("[a-zA-Z]", selection_key02) is None
-                        and "-" not in selection_key02
-                        and "+" not in selection_key02
-                        and "." in selection_key02
-                        and market in list_of_markets
-                    ):
-                        odd = selection_key02
-                    try:
-                        if (
-                            market in list_of_markets
-                            and result != "empty"
-                            and odd != "empty"
-                        ):
-                            odds.append({"Market": market, "Result": result, "Odds": odd})
+                            mas_menos = Selector(mas_menos)
+                            mas_menos_result_suffix = mas_menos.xpath("//span[@class='line-label']//text()").get()
+                            mas_menos_result_suffix = mas_menos_result_suffix.replace("+", " ")
+                            if mas_menos.xpath("//div/@data-id").get().endswith('-O'):
+                                mas_menos_result = "Mas de" + mas_menos_result_suffix
+                            elif mas_menos.xpath("//div/@data-id").get().endswith('-U'):
+                                mas_menos_result = "Menos de" + mas_menos_result_suffix
+
+                            mas_menos_odds = mas_menos.xpath(".//div[contains(@class, 'tile-data-value')]//span/text()").get()
+                            if mas_menos_result and mas_menos_odds:
+                                clean_selection_keys.append(mas_menos_result)
+                                clean_selection_keys.append(mas_menos_odds)
+
+
+                    # count = 0
+                    # if clean_selection_keys[0].lower() == "goles totales":
+                        # del clean_selection_keys[1:3]
+                        # for index, value in enumerate(clean_selection_keys):
+                        #     if "+" in value and count % 2 == 0:
+                        #         clean_selection_keys[index] = "Más de" + clean_selection_keys[index].replace("+", " ")
+                        #         count += 1
+                        #     elif "+" in value and count % 2 != 0:
+                        #         clean_selection_keys[index] = "Menos de" + clean_selection_keys[index].replace("+", " ")
+                        #         count += 1
+                    for selection_key02 in clean_selection_keys:
+                        if clean_selection_keys[0] in list_of_markets:
+                            market = clean_selection_keys[0]
+                        else:
+                            market = "empty"
                             result = "empty"
-                            odd = "empty"
-                    except UnboundLocalError:
-                        pass
-                    except NameError:
-                        continue
-        except Exception as e:
-            Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
-    elif bookie_id == "EfBet":
-        html_cleaner = re.compile("<.*?>")
-        selection_keys = response.xpath("//div[@class='container expanded infoLoaded']").extract()
-        odds = []
-        try:
-            for selection_key in selection_keys:
-                selection_key = selection_key.replace("  ", "").replace("\n", "").replace("...", "")
-                clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
-                clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) > 2]
-                for selection_key02 in clean_selection_keys:
-                    if clean_selection_keys[0] in list_of_markets:
-                        market = clean_selection_keys[0]
-                    else:
-                        market = "empty"
-                        continue
-                    if (
-                        (
-                            re.search('[a-zA-Z]', selection_key02) is not None
+                            # odd = "empty"
+                            continue
+
+                        if (
+                            selection_key02 != market
+                            and market in list_of_markets
+                            and re.search('[a-zA-Z]', selection_key02) is not None
                             or ":" in selection_key02
-                        )
-                        and "¿" not in selection_key02
-                        and market in list_of_markets
-                    ):
-                        result = selection_key02
-                    elif (
-                        re.search('[a-zA-Z]', selection_key02) is None
-                        and market in list_of_markets
-                    ):
-                        odd = selection_key02
-                    try:
-                        if (
-                            market in list_of_markets
-                            and result != "empty"
-                            and odd != "empty"
+                            or "+" in selection_key02
                         ):
-                            odds.append({"Market": market, "Result": result, "Odds": odd})
-                            result = "empty"
+                            result = selection_key02
                             odd = "empty"
-                    except UnboundLocalError as e:
-                        pass
-                    except NameError:
-                        pass
-        except Exception as e:
-            Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
+                        elif (
+                            re.search("[a-zA-Z]", selection_key02) is None
+                            and "-" not in selection_key02
+                            and "+" not in selection_key02
+                            and "." in selection_key02
+                            and market in list_of_markets
+                        ):
+                            odd = selection_key02
+                        try:
+                            if (
+                                market in list_of_markets
+                                and result != "empty"
+                                and odd != "empty"
+                            ):
+                                odds.append({"Market": market, "Result": result, "Odds": odd})
+                                result = "empty"
+                                odd = "empty"
+                        except UnboundLocalError:
+                            pass
+                        except NameError:
+                            continue
+            except Exception as e:
+                Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
+        elif sport_id == "2":
+            try:
+                selection_keys = response.xpath("//div[@class='accordion-container ']").extract()
+                odds = []
+                for selection_key in selection_keys:
+                    selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t","")
+                    clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
+                    clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
+                    count = 0
+                    if clean_selection_keys[0] == "Tiempo Regular (Incl. Tiempo Extra) - Puntos Totales":
+                        del clean_selection_keys[1:3]
+                        for index, value in enumerate(clean_selection_keys):
+                            if "+" in value and count % 2 == 0:
+                                clean_selection_keys[index] = "Más de" + clean_selection_keys[index].replace("+", " ")
+                                count += 1
+                            elif "+" in value and count % 2 != 0:
+                                clean_selection_keys[index] = "Menos de" + clean_selection_keys[index].replace("+", " ")
+                                count += 1
+                    for selection_key02 in clean_selection_keys:
+                        if clean_selection_keys[0] in list_of_markets:
+                            market = clean_selection_keys[0]
+                        else:
+                            market = "empty"
+                            result = "empty"
+                            # odd = "empty"
+                            continue
+
+                        if (
+                            selection_key02 != market
+                            and market in list_of_markets
+                            and re.search('[a-zA-Z]', selection_key02) is not None
+                            or ":" in selection_key02
+                            or "+" in selection_key02
+                        ):
+                            result = selection_key02
+                            odd = "empty"
+                        elif (
+                            re.search("[a-zA-Z]", selection_key02) is None
+                            and "-" not in selection_key02
+                            and "+" not in selection_key02
+                            and "." in selection_key02
+                            and market in list_of_markets
+                        ):
+                            odd = selection_key02
+                        try:
+                            if (
+                                market in list_of_markets
+                                and result != "empty"
+                                and odd != "empty"
+                            ):
+                                odds.append({"Market": market, "Result": result, "Odds": odd})
+                                result = "empty"
+                                odd = "empty"
+                        except UnboundLocalError:
+                            pass
+                        except NameError:
+                            continue
+            except Exception as e:
+                Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
+
     elif bookie_id == "EnRacha":
         try:
             jsonresponse = json.loads(response.text)
@@ -2691,7 +2864,7 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
         except Exception as e:
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
     elif bookie_id == "GoldenPark":
-        html_cleaner = re.compile("<.*?>")
+        # html_cleaner = re.compile("<.*?>")
         try:
             selection_keys = response.xpath("//div[@class='parent-container-event open']").extract()
             odds = []
@@ -2758,7 +2931,7 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
     elif bookie_id == "Juegging":
         try:
-            html_cleaner = re.compile("<.*?>")
+            # html_cleaner = re.compile("<.*?>")
             if sport_id == "1":
                 selection_keys = response.xpath("//ul[@sport-type=\"Mkt\"]").extract()
                 odds = []
@@ -3221,243 +3394,117 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
                 traceback.print_exc()
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
     elif bookie_id == "MarcaApuestas":
-        # This spider needs to make an extra request to get Resultado Exacto.
-        # Cliking on Resultado Exacto did not work, because for some odd reasons, when using Playwright, a match page is redirected
-        # to its comp page. The JS script ending with 'desktop/js/jquery-3.6.0.min.js' is responsible for redirection, but it
-        # is also the script that makes Resultado Exacto clickable.
-        import requests
-        import random
-        from scrapy_playwright_ato.settings import proxy_prefix, proxy_suffix, list_of_proxies, list_of_headers
-        odds = []
-        markets = response.xpath("//div[contains(@class, 'expander') and contains(@class, 'mkt')]")
-        for market in markets:
-            try:
-                market_name = market.xpath(".//span[contains(@class, 'mkt-name')]/text()").get()
-                if market_name is None:
+        def process_mas_menos(data):
+            # Index of the first float in the list
+            first_float_index = -1
+            for idx, item in enumerate(data):
+                try:
+                    # Try converting the string to a float
+                    float(item)
+                    first_float_index = idx
+                    break
+                except (ValueError, TypeError):
                     continue
-                market_name = market_name.strip()
-                if market_name in list_of_markets:
-                    # Footbal
-                    if market_name in ["Ganador (1X2)", "Ganador (1X2) - Cuotas Mejoradas"] and sport_id == "1":
-                        for bet in market.xpath(".//tbody//tr//td"):
 
-                            seln_name = bet.xpath(".//span[contains(@class,'seln-name')]/text()").get()
-                            price_dec = bet.xpath(
-                                ".//span[contains(@class,'price') and contains(@class,'dec')]/text()").get()
-                            if seln_name is not None:
-                                seln_name = seln_name.strip()
-                            if price_dec is not None:
-                                try:
-                                    odd = float(price_dec)
-                                except Exception:
-                                    odd = None
-                            else:
-                                odd = None
-                            if seln_name and odd:
-                                odds.append({"Market": market_name, "Result": seln_name, "Odds": odd})
-                            elif not seln_name and odd:
-                                odds.append({"Market": market_name, "Result": "Empate", "Odds": odd})
+            # If no float is found, return the original data
+            if first_float_index == -1:
+                return data
 
-                    # Basket
-                    elif market_name in ["Línea de Juego"] and sport_id == "2":
-                        for bet in market.xpath(".//tbody//tr"):
-                            result = bet.xpath(".//div[contains(@class,'team-name')]//a/text()").get()
-                            if result:
-                                result = result.strip()
-                            odd = bet.xpath(
-                                "(./td[contains(@class,'mkt-sort')])[last()]//span[contains(@class,'price') and contains(@class,'dec')]/text()"
-                            ).get()
-                            if result and odd:
-                                odd = odd.strip()
-                            odds.append({"Market": market_name, "Result": result, "Odds": odd})
+            # Use the dynamic index to capture all headers
+            result = data[:first_float_index]
 
-                    else:
-                        for bet in market.xpath(".//span[contains(@class,'seln')]/button[@name='add-to-slip']"):
-                            result = None
-                            seln_name = bet.xpath( ".//span[contains(@class,'seln-name')]/text()").get()
-                            seln_hcap = bet.xpath(".//span[contains(@class,'seln-hcap')]/text()").get()
-                            price_dec = bet.xpath(".//span[contains(@class,'price') and contains(@class,'dec')]/text()").get()
-                            if seln_name is not None:
-                                seln_name = seln_name.strip()
-                            if seln_hcap is not None:
-                                seln_hcap = seln_hcap.strip()
+            # Iterate through the data in chunks of 4 starting from the first float
+            for i in range(first_float_index, len(data), 4):
+                if i + 3 < len(data):
+                    # Transform '0.5' to 'Mas de 0.5'
+                    result.append(f"Mas de {data[i]}")
+                    result.append(data[i + 1])  # Odds
+                    # Transform the second '0.5' to 'Menos de 0.5'
+                    result.append(f"Menos de {data[i + 2]}")
+                    result.append(data[i + 3])  # Odds
+                else:
+                    # Append remaining items if the chunk is incomplete
+                    result.extend(data[i:])
 
-                            if price_dec is not None:
-                                try:
-                                    odd = float(price_dec)
-                                except Exception:
-                                    odd = None
-                            else:
-                                odd = None
-                            if (
-                                "Total" in market_name
-                                and seln_name
-                                and ("Menos" in seln_name or "Más" in seln_name)
-                            ):
-                                result = f"{seln_name} {seln_hcap}" if seln_hcap else seln_name
-                                odds.append({"Market": market_name, "Result": result, "Odds": odd})
-
-                            # Otherwise, if we have a selection name, use it
-                            elif seln_name:
-                                result = seln_name
-                                odds.append({"Market": market_name, "Result": result, "Odds": odd})
-
-                    # If improved market exists, remove the plain one
-                    if any(o.get("Market") == "Ganador (1X2) - Cuotas Mejoradas" for o in odds):
-                        odds = [o for o in odds if o.get("Market") != "Ganador (1X2)"]
-            except Exception as e:
+            return result
+        try:
+            selection_keys = response.xpath("//div[contains(@class, 'ta-FlexPane ta-ExpandableView ta-AggregatedMarket')]").extract()
+            odds = []
+            for selection_key in selection_keys:
+                selection_key = selection_key.replace("  ", "").replace("\n", "").replace("...", "")
+                clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")
+                clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) > 2]
+                # This version removes all types of whitespace and normalizes spaces
+                clean_selection_keys = [text.replace('\u200b', '').strip() for text in clean_selection_keys]
+                if clean_selection_keys[0] in ["Total Goles - Más/Menos", "Puntos Totales (Mas/Menos)"]:
+                    clean_selection_keys = process_mas_menos(clean_selection_keys)
                 if debug:
-                    print("Error in parsing odds:", e)
-                    traceback.print_exc()
-                Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
-        # selection_keys = response.xpath("//div[contains(@class, 'efav-section')]").extract()
-        # odds = []
-        # for selection_key in selection_keys:
-        #     # print(selection_key)
-        #     selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace(
-        #         "\t", "")
-        #     clean_selection_key = re.sub(html_cleaner, '@', selection_key).split("@")
-        #     clean_selection_keys = [x.rstrip().lstrip() for x in clean_selection_key if len(x) >= 1]
-        #     print(clean_selection_keys)
-
-        # markets = response.css('div.expander.mkt')
-        #
-        # for market in markets:
-        #     # if debug:
-        #     #     print("market css", market)
-        #     try:
-        #         if market.css('span.mkt-name::text').get() is not None:
-        #             market_name = market.css('span.mkt-name::text').get().strip()
-        #         else:
-        #             continue
-        #         if market_name in list_of_markets:
-        #             if debug:
-        #                 print("market name", market_name)
-        #             if market_name == "Línea de Juego" and sport_id == "1":
-        #                 for bet in market.css('tbody').css('tr'):
-        #                     if debug:
-        #                         print("css bet 1 ", bet)
-        #                     result = bet.css('div.team-name').css('a::text').get().strip()
-        #                     odd = bet.css('td.mkt-sort')[-1].css('span.price.dec::text').get().strip()
-        #                     odds.append({'Market': market_name, 'Result': result, 'Odds': odd})
-        #             if market_name == "Línea de Juego" and sport_id == "2":
-        #
-        #                 print("market css for basket linea de Juego", market)
-        #
-        #             else:
-        #                 # for bet in market.css('button[name="add-to-slip"]'):
-        #                 for bet in market.css('.seln > button[name="add-to-slip"]'):
-        #                     if debug:
-        #                         print("css bet 2", bet)
-        #                     # result = None
-        #
-        #                     if (
-        #                         "Total" in market_name
-        #                         and bet.css('span.seln-name::text').get() is not None
-        #                         and (
-        #                         "Menos" in bet.css('span.seln-name::text').get()
-        #                         or "Más" in bet.css('span.seln-name::text').get()
-        #                     )
-        #                     ):
-        #                         result = bet.css('span.seln-name::text').get() + " " + bet.css(
-        #                             'span.seln-hcap::text').get()
-        #                         odd = float(bet.css('span.price.dec::text').get())
-        #                         odds.append({"Market": market_name, "Result": result, "Odds": odd})
-        #
-        #                     elif bet.css('span.seln-name::text').get() is not None:
-        #                         result = bet.css('span.seln-name::text').get()
-        #                         odd = float(bet.css('span.price.dec::text').get())
-        #                         odds.append({"Market": market_name, "Result": result, "Odds": odd})
-        #                     if result is None and "Total" not in market_name:
-        #                         result = "draw"
-        #                         odd = float(bet.css('span.price.dec::text').get())
-        #                         odds.append({"Market": market_name, "Result": result, "Odds": odd})
-        #     except Exception as e:
-        #         if debug:
-        #             print("Error in parsing odds:", e)
-        #             traceback.print_exc()
-        #         Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
-        if sport_id == "1":
-            response_xpath = response.xpath(
-                "//div[contains(@class, 'expander expander-collapsed fetch-on-expand no-child-update efav-section')]").extract()
-            for selection_keys in response_xpath:
-                if (
-                    "Resultado Exacto" in selection_keys
-                    and "Mitad " not in selection_keys
-                ):
-                    url_suffix = selection_keys.split("data-fetch_url=\"")[1]
-                    url_suffix = url_suffix.split("\">")[0].replace("&amp;", "&")
-                    try:
-                        match_url = "https://deportes.marcaapuestas.es" + url_suffix
-                        proxy_ip = proxy_prefix + random.choice(list_of_proxies) + proxy_suffix
-
-                        reponse_resultado = requests.get(
-                            url=match_url,
-                            headers=random.choice(list_of_headers),
-                            proxies={
-                                "http": proxy_ip.replace("https://", "http://"),
-                                "https": proxy_ip.replace("https://", "http://"),
-                            }
+                    print(clean_selection_keys)
+                for selection_key02 in clean_selection_keys:
+                    if clean_selection_keys[0] in list_of_markets:
+                        market = clean_selection_keys[0]
+                    else:
+                        market = "empty"
+                        continue
+                    if (
+                        (
+                            re.search('[a-zA-Z]', selection_key02) is not None
+                            or "-" in selection_key02
                         )
-                        html = reponse_resultado.text
-                        html_cleaner = re.compile('<.*?>')
-                        for bet in html.split("\\n"):
-                            try:
-                                if "seln-sort" in bet:
-                                    result = re.sub(html_cleaner, "", bet)
-                                elif "price dec" in bet:
-                                    odd = re.sub(html_cleaner, "", bet)
-                                try:
-                                    if (
-                                        result != "empty"
-                                        and odd != "empty"
-                                    ):
+                        and market in list_of_markets
+                    ):
+                        result = selection_key02
+                    elif (
+                        re.search('[a-zA-Z]', selection_key02) is None
+                        and market in list_of_markets
+                    ):
+                        odd = selection_key02
+                    try:
+                        if (
+                            market in list_of_markets
+                            and result != "empty"
+                            and odd != "empty"
+                        ):
+                            odds.append({"Market": market, "Result": result, "Odds": odd})
+                            result = "empty"
+                            odd = "empty"
+                    except UnboundLocalError as e:
+                        pass
+                    except NameError:
+                        pass
+
+                # Check if "Ganador (1X2) - Cuotas Mejoradas" exists and remove Ganador (1X2) when it does
+                if any(o.get('Market') == 'Ganador (1X2) - Cuotas Mejoradas' for o in odds):
+                    odds = [o for o in odds if o.get('Market') != 'Ganador (1X2)']
+
+        except Exception as e:
+            Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
+
+    elif bookie_id == "Monopoly":
+        try:
+            jsonresponse = json.loads(response.text)
+            odds = []
+            if jsonresponse["events"][0]["state"] == "NOT_STARTED":
+                for key, values in jsonresponse.items():
+                    if key == "betOffers":
+                        for field in values:
+                            if field["criterion"]["label"] in list_of_markets:
+                                for bet in field["outcomes"]:
+                                    try:
+                                        result = bet["label"] + " " + str(bet["line"] / 1000)
+                                    except KeyError:
+                                        result = bet["label"]
+
+                                    if bet["status"] == "OPEN":
+                                        odd = float(bet["odds"] / 1000)
+                                        odd = round(odd, 2)
                                         odds.append(
-                                            {"Market": "Resultado Correcto",
+                                            {"Market": field["criterion"]["label"],
                                              "Result": result,
-                                             "Odds": odd,
+                                             "Odds": odd
                                              }
                                         )
-                                        result = "empty"
-                                        odd = "empty"
-                                except UnboundLocalError:
-                                    pass
-                            except Exception as e:
-                                # print(e)
-                                continue
 
-                    except Exception as e:
-                        if debug:
-                            print("Error in parsing odds:", e)
-                            traceback.print_exc()
-                        Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
-
-    elif bookie_id == "MarathonBet":
-        try:
-            if response.url == response.meta.get("url"):
-                selection_keys = response.xpath("//@data-selection-key").extract()
-                selection_keys = list(set(selection_keys))
-                odds = []
-                for selection_key in selection_keys:
-                    market_and_result = re.sub(r'^.*?@', '', selection_key)
-                    market = ''.join(i for i in market_and_result.split(".")[0] if not i.isdigit())
-                    result = market_and_result.replace(market_and_result.split(".")[0], "")
-                    if market + result in list_of_markets and result[1:] not in [x["Result"] for x in odds]:
-                        if sport_id == "2":
-                            result_switch = result[1:]
-                        elif result == ".HB_H" or result == ".3" or result == ".2":
-                            result_switch = ".HB_AWAY"
-                        elif result == ".HB_A" or result == ".1":
-                            result_switch = ".HB_H"
-                        else:
-                            result_switch = result[1:]
-                        odds.append(
-                            {"Market": market,
-                             "Result": result_switch,
-                             "Odds":
-                                 response.xpath("//span[@data-selection-key=\"" + selection_key + "\"]/text()").extract()[0]
-                             }
-                        )
         except Exception as e:
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
     elif bookie_id == "OlyBet":
@@ -3720,7 +3767,7 @@ def parse_match(bookie_id, response, sport_id, list_of_markets, home_team, away_
             selection_keys = response.xpath("//section[@class='event-container scrollable']").extract()
             odds = []
             results = []
-            stopwords = ["Añadir al cupón", "Empate"]
+            stopwords = ["Añadir al cupón"]
             for selection_key in selection_keys:
                 selection_key = selection_key.replace("  ", "").replace("\n", "").replace("\r", "").replace("\t", "")
                 clean_selection_key = re.sub(html_cleaner, "@", selection_key).split("@")

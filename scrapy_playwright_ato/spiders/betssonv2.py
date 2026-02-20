@@ -30,6 +30,9 @@ class WebsocketsSpider(Spider):
                 # NO FILTERS
                 # self.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
                 #                     if x["bookie_id"] == "Betsson"]
+                # FILTER BY COMPETITION
+                self.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
+                                    if x["bookie_id"] == "Betsson" and x["competition_id"] == "NBA"]
                 # FILTER BY BOOKIE THAT HAVE ERRORS
                 # self.competitions = [x for x in bookie_config(bookie={"output": "competitions_with_errors_or_not_updated"})
                 #                 if x["bookie_id"] == "Betsson"]

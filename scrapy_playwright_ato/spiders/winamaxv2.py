@@ -29,14 +29,15 @@ class TwoStepsSpider(scrapy.Spider):
                 debug = True
                 if spider.parser == "comp":
                     print("PROCESSING COMPETITIONS DEBUG MODE")
+                    # Argentina-PrimeraDivision, BundesligaAlemana
                     spider.competitions = [x for x in bookie_config(bookie={"output": "all_competitions"})
-                                if x["bookie_id"] == "WinaMax" and x["competition_id"] == "BundesligaAlemana"]
+                                if x["bookie_id"] == "WinaMax" and x["competition_id"] == "NBA"]
                 else:
                     print("PROCESSING MATCHES DEBUG MODE")
                     # spider.match_filter = {"type": "bookie_and_comp", "params": ["WinaMax", "MajorLeagueSoccerUSA"]}
-                    # spider.match_filter = {"type": "bookie_id", "params": ["WinaMax", 1]}
-                    spider.match_filter = {"type": "match_url_id", "params": [
-                        "https://www.winamax.es/apuestas-deportivas/match/61513782"]}
+                    spider.match_filter = {"type": "bookie_id", "params": ["WinaMax", 1]}
+                    # spider.match_filter = {"type": "match_url_id", "params": [
+                    #     "https://www.winamax.es/apuestas-deportivas/match/58053227"]}
                 return spider
         except:
             spider.debug = False
@@ -54,6 +55,8 @@ class TwoStepsSpider(scrapy.Spider):
     user_agent_hash = int
     close_playwright = True
     custom_settings = get_custom_playwright_settings(browser="Chrome", rotate_headers=False)
+    custom_settings["PLAYWRIGHT_LAUNCH_OPTIONS"]["timeout"] = 90 * 1000
+    custom_settings["PLAYWRIGHT_DEFAULT_NAVIGATION_TIMEOUT"] = 90 * 1000
     custom_settings.update({
         "CONCURRENT_REQUESTS_PER_DOMAIN": 2,
         "HTTPCACHE_ENABLED": False,
@@ -63,15 +66,19 @@ class TwoStepsSpider(scrapy.Spider):
 
     def should_block_request(self, request):
         strings_to_block = [
+            # static cdn
+            # 'operator-front-static-cdn.winamax.fr',
+
+            # external domain
             '.fontawesome.com',
             '.google.com', 'google.com', '.google-analytics.com', 'google-analytics.com',
-            '.googletagmanager.com', 'googletagmanager.com',
+            '.googletagmanager.com', 'googletagmanager.com', 'sentry.io',
             '.zdassets', '.facebook',
             '.amplitude', '.bing', '.taboola', '.zopim.com', '.mbstatic', '.newrelic',
             '.usabilla', '.cdnfonts.com', 'braze.eu', 'akstat.io', 'typekit.net', '.sportradar.com',
-            '.woff2', '.woff', '.ttf', '.webp', '.jpg', '.jpeg', '.gif', '.webm', '.mp4', '.mp3',
 
-            '.png', '.svg',
+            # file types
+            '.woff2', '.woff', '.ttf', '.webp', '.jpg', '.jpeg', '.gif', '.webm', '.mp4', '.mp3', '.png', '.svg',
         ]
         return (
             request.resource_type in ["font", "imageset", "media", "stylesheet"] or
@@ -160,7 +167,7 @@ class TwoStepsSpider(scrapy.Spider):
             print("### opening file response_body_match_requests.txt")
             f = open("response_body_match_requests.txt", "w")
             f2 = open("response_body_parse_match.txt", "w")
-        context_infos = get_context_infos(bookie_name="no_cookies_bookies")
+        context_infos = get_context_infos(bookie_name="WinaMax") or get_context_infos(bookie_name="no_cookies_bookies")
         self.context_infos = [x for x in context_infos if x["proxy_ip"]]
         if self.parser == "comp":
             for data in self.competitions:
@@ -184,6 +191,7 @@ class TwoStepsSpider(scrapy.Spider):
                                 "user_agent": context_info["user_agent"],
                                 "java_script_enabled": True,
                                 "ignore_https_errors": True,
+                                "service_workers": "block",
                                 "proxy": {
                                     "server": "http://"+context_info["proxy_ip"]+":58542/",
                                     "username": soltia_user_name,
@@ -237,6 +245,7 @@ class TwoStepsSpider(scrapy.Spider):
                                 "user_agent": context_info["user_agent"],
                                 "java_script_enabled": True,
                                 "ignore_https_errors": True,
+                                "service_workers": "block",
                                 "proxy": {
                                     "server": "http://" + context_info["proxy_ip"] + ":58542/",
                                     "username": soltia_user_name,
@@ -289,10 +298,10 @@ class TwoStepsSpider(scrapy.Spider):
         competition = response.meta.get("competition")
         list_of_markets = response.meta.get("list_of_markets")
         competition_url = response.meta.get("competition_url_id")
-        print("playwright_context_kwargs", response.meta.get("playwright_context_kwargs"))
+        page_crashed = False
         self.match_infos.update({competition_url: []})
         self.found_no_matches_count.update({competition_url: 0})
-        self.custom_timeout.update({competition_url: datetime.datetime.now() + datetime.timedelta(seconds=30)})
+        self.custom_timeout.update({competition_url: datetime.datetime.now() + datetime.timedelta(seconds=90)})
         print("Bookie_id", bookie_id)
         async def on_response(response):
             if "transport=polling" in response.url:
@@ -316,7 +325,9 @@ class TwoStepsSpider(scrapy.Spider):
                     if (
                         "[\"m\",{\"teasers\"" in response_body
                         or "[\"m\",{\"sports\"" in response_body
-                        or "[\"m\",{\"tournaments\"" in response_body):
+                        or "[\"m\",{\"tournaments\"" in response_body
+                        or "[\"m\",{\"matches\"" in response_body
+                    ):
                         self.matches_details = json_repair.repair_json(response_body, return_objects=True)
                         for data in self.matches_details:
                             if isinstance(data, dict):
@@ -356,6 +367,13 @@ class TwoStepsSpider(scrapy.Spider):
                                                     f.close()
                     else:
                         self.found_no_matches_count[competition_url] += 1
+                        if self.debug:
+                            f = open("response_body_match_requests.txt", "a")
+                            # f.write(f"Error getting response body from match_requests {competition_url}")
+                            f.write("\n")
+                            f.write(response_body[0:1000])
+                            f.write("\n")
+                            f.close()
 
                 except Error as e:
                     if self.debug:
@@ -396,8 +414,9 @@ class TwoStepsSpider(scrapy.Spider):
                         await page.reload()
                     except Error as e:
                         print(f"Page crashed during reload for {competition_url}: {e}")
+                        page_crashed = True
                         Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
-                        break  # Exit the loop if the page crashed
+                        break
                 if len(self.match_infos[competition_url]) == 0:
                     print(f"Waiting for 15 seconds for {competition_url}")
                     await asyncio.sleep(15)
@@ -407,8 +426,9 @@ class TwoStepsSpider(scrapy.Spider):
                         await page.reload()
                     except Error as e:
                         print(f"Page crashed during reload for {competition_url}: {e}")
+                        page_crashed = True
                         Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
-                        break  # Exit the loop if the page crashed
+                        break
         except Exception as e:
             print(traceback.format_exc())
             Helpers().insert_log(level="WARNING", type="CODE", error=e, message=traceback.format_exc())
@@ -422,6 +442,7 @@ class TwoStepsSpider(scrapy.Spider):
                 pass
 
         try:
+            report_status = 1200 if page_crashed else response.status
             if len(self.match_infos[competition_url]) > 0:
                 match_infos = Helpers().normalize_team_names(
                     match_infos=self.match_infos[competition_url],
@@ -436,7 +457,7 @@ class TwoStepsSpider(scrapy.Spider):
                         "comp_infos": [
                             {
                                 "competition_url_id": competition_url,
-                                "http_status": response.status,
+                                "http_status": report_status,
                                 "updated_date": Helpers().get_time_now("UTC")
                             },
                         ]
@@ -455,7 +476,7 @@ class TwoStepsSpider(scrapy.Spider):
                     "comp_infos": [
                         {
                             "competition_url_id": competition_url,
-                            "http_status": response.status,
+                            "http_status": report_status,
                             "updated_date": Helpers().get_time_now("UTC")
                         },
                     ]
@@ -480,9 +501,9 @@ class TwoStepsSpider(scrapy.Spider):
         bookie_id = response.meta.get("bookie_id")
         web_url = response.meta.get("web_url")
         match_url = response.meta.get("url")
-        # competition_url = response.meta.get("competition_url")
+        page_crashed = False
         self.found_no_odds_count.update({match_url: 0})
-        self.custom_timeout.update({match_url: datetime.datetime.now() + datetime.timedelta(seconds=30)})
+        self.custom_timeout.update({match_url: datetime.datetime.now() + datetime.timedelta(seconds=90)})
 
         self.odds.update({match_url: []})
         self.results.update({match_url: []})
@@ -497,15 +518,19 @@ class TwoStepsSpider(scrapy.Spider):
                         page.remove_listener("response", on_response)
                         return
                     elif datetime.datetime.now() > self.custom_timeout[match_url]:
-                        print(f"Exiting on_response: custom timeout reached for {match_url}")
+                        print(f"Exiting on_response: custom timeout reached for {match_url} "
+                              f"with {self.found_no_odds_count[match_url]} retries")
                         page.remove_listener("response", on_response)
                         return
-                    elif self.found_no_odds_count[match_url] > 7:
+                    elif self.found_no_odds_count[match_url] >= 20:
                         print(f"Exiting on_response: {self.found_no_odds_count[match_url]} retries for {match_url}")
                         page.remove_listener("response", on_response)
                         return
                     response_body = await response.text()
-                    if "[\"m\",{\"matches\"" in response_body:
+                    if "[\"m\",{\"matches\"" in response_body or "[\"m\",{\"teasers\"" in response_body:
+                        if self.debug:
+                            if "[\"m\",{\"teasers\"" in response_body:
+                                print("getting odds from teasers")
                         response_match = json_repair.repair_json(response_body, return_objects=True)
                         for data in response_match:
                             for matches in data:
@@ -528,7 +553,7 @@ class TwoStepsSpider(scrapy.Spider):
                             f = open("response_body_parse_match.txt", "a")
                             f.write(f"RAW ODDS POT {match_url}")
                             f.write("\n")
-                            f.write(response_body[0:1000])
+                            f.write(response_body)
                             f.write("\n")
                             f.close()
                         self.found_no_odds_count[match_url] += 1
@@ -566,32 +591,34 @@ class TwoStepsSpider(scrapy.Spider):
                 if len(self.odds[match_url]) == 0:
                     print(f"First reloading for {match_url}")
                     try:
-                        await page.reload()
+                        await page.goto(match_url, wait_until='domcontentloaded')
                     except Error as e:
                         print(f"Page crashed during reload for {match_url}: {e}")
+                        page_crashed = True
                         Helpers().insert_log(
                             level="ERROR",
                             type="PLAYWRIGHT",
                             error=f"Page crashed during reload for {match_url}",
                             message=str(e)
                         )
-                        break  # Exit the loop if the page crashed
+                        break
                 if len(self.odds[match_url]) == 0:
                     print(f"Waiting for 15 seconds for {match_url}")
                     await asyncio.sleep(15)
                 if len(self.odds[match_url]) == 0:
                     print(f"Second reload for {match_url}")
                     try:
-                        await page.reload()
+                        await page.goto(match_url, wait_until='domcontentloaded')
                     except Error as e:
                         print(f"Page crashed during reload for {match_url}: {e}")
+                        page_crashed = True
                         Helpers().insert_log(
                             level="ERROR",
                             type="PLAYWRIGHT",
                             error=f"Page crashed during reload for {match_url}",
                             message=str(e)
                         )
-                        break  # Exit the loop if the page crashed
+                        break
 
             if len(self.odds[match_url]) > 0:
                 odds = Helpers().build_ids(
@@ -609,7 +636,7 @@ class TwoStepsSpider(scrapy.Spider):
                     }
                 )
                 if self.debug:
-                    print(odds)
+                    print("odds: ", odds)
                 if not odds:
                     item["data_dict"] = {
                         "match_infos": [
@@ -623,13 +650,15 @@ class TwoStepsSpider(scrapy.Spider):
                     }
                     item["pipeline_type"] = ["error_on_match_url"]
                 else:
+                    report_status = 1200 if page_crashed else response.status
+
                     item["data_dict"] = {
                         "match_id": match_id,
                         "bookie_id": bookie_id,
                         "odds": odds,
                         "updated_date": Helpers().get_time_now(country="UTC"),
                         "web_url": web_url,
-                        "http_status": response.status,
+                        "http_status": report_status,
                         "match_url_id": match_url,
                     }
 
@@ -683,10 +712,9 @@ class TwoStepsSpider(scrapy.Spider):
         print("### err back triggered")
         if self.debug:
             try:
-                print("failed proxy_ip", failure.request.meta["proxy_ip"])
-                print("failed user_agent", failure.request.meta["user_agent"])
+                print("failed proxy_ip", failure.request.meta["playwright_context_kwargs"])
             except Exception:
-                print("Error while retrieving proxy ip and user_agent:")
+                print("Error while retrieving proxy ip ")
             # Fix: correctly access headers through the appropriate objects
             if hasattr(failure, 'value') and hasattr(failure.value, 'response'):
                 resp = getattr(getattr(failure, 'value', None), 'response', None)

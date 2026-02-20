@@ -34,7 +34,6 @@ class APISpider(scrapy.Spider):
         try:
             return response["seasons"][0]["id"]
         except Exception as e:
-            # TODO: add a log
             Helpers().insert_log(level="WARNING", type="CODE", error=response.meta.get("competition_id"), message=traceback.format_exc())
             print("ERROR on getting season for a comp", e, response)
 
@@ -43,32 +42,22 @@ class APISpider(scrapy.Spider):
         try:
             if os.environ["USER"] in LOCAL_USERS:
                 # No filters
-                list_of_competitions = bookie_config(bookie=["AllSportAPI"])
+                # list_of_competitions = bookie_config(bookie=["AllSportAPI"])
                 # Filter by active competitions
                 # list_of_competitions = [x for x in bookie_config(bookie=["AllSportAPI", "only_active"])]
                 # Filter by competition
-                # list_of_competitions = [x for x in bookie_config(bookie=["AllSportAPI"])
-                #                         if x["competition_id"] == "Argentina-PrimeraDivision"]
+                list_of_competitions = [x for x in bookie_config(bookie=["AllSportAPI"])
+                                        if x["competition_id"] == "NBA"]
                 # if self.debug:
                 #     print("list of competitions", list_of_competitions)
                 pass
             else:
                 list_of_competitions = bookie_config(bookie=["AllSportAPI"])
         except:
-            if (
-                0 <= Helpers().get_time_now("UTC").hour < 1
-                # or 10 <= Helpers().get_time_now("UTC").hour < 11
-            ):
-                print("PROCESSING ALL COMPETITIONS")
-                list_of_competitions = bookie_config(bookie=["AllSportAPI"])
-            else:
-                print("PROCESSING ONLY ACTIVE COMPETITIONS")
-                list_of_competitions = [x for x in bookie_config(bookie=["AllSportAPI", "only_active"])]
-        # self.data_dict = {}
+            print("PROCESSING ALL COMPETITIONS")
+            list_of_competitions = bookie_config(bookie=["AllSportAPI"])
 
         for data in list_of_competitions:
-            # if self.debug:
-            #     print(data)
             tournament_id = data["competition_url_id"]
             competition_id = data["competition_id"]
             if competition_id not in self.data_dict:
@@ -77,6 +66,7 @@ class APISpider(scrapy.Spider):
             try:
                 if data["sport_id"] == "1" or data["sport_id"] == "2":
                     season_id = self.get_season(tournament_id)
+                    # season_id = 84238
                     url = f"https://allsportsapi2.p.rapidapi.com/api/tournament/{tournament_id}/season/{season_id}/matches/next/{str(self.page_count[competition_id])}"
                     # if self.debug:
                     #     print("url", url)
@@ -156,7 +146,7 @@ class APISpider(scrapy.Spider):
                 # if self.debug:
                 #     print("data -id", data["id"], "for competition", response.meta.get("competition_id"))
                 try:
-                    if data["status"]["type"] == "notstarted":
+                    if data["status"]["type"] not in ["finished", "inprogress"]:
                         date = datetime.datetime.fromtimestamp(data["startTimestamp"], tz=datetime.timezone.utc).replace(tzinfo=None)
                         try:
                             home_team_short_name =  data["homeTeam"]["shortName"]
@@ -189,7 +179,8 @@ class APISpider(scrapy.Spider):
                             "bookie_id": self.name,
                             "sport_id": response.meta.get("sport_id"),
                             "competition_id": response.meta.get("competition_id"),
-                            "numerical_team_id": data["id"],
+                            # "event_id": data["id"],
+                            "event_status": data["status"]["type"],
                             "match_id": match_id,
                             "home_team": data["homeTeam"]["name"],
                             "home_team_id": data["homeTeam"]["id"],
@@ -252,6 +243,7 @@ class APISpider(scrapy.Spider):
                         item["data_dict"] = self.data_dict[competition_id]
                         yield item
                     if self.debug:
+                        print("data dict ", self.data_dict[competition_id])
                         print("emptying data_dict for", competition_id)
                     # Clean up the data for the completed competition
                     if competition_id in self.data_dict:

@@ -91,11 +91,11 @@ class Normalize:
         if debug:
             update_db = True
             home_away_prefixes = ["home_team", "away_team"]
-            type_report = "full_report"
-            use_fuzzy = 0 #0: never, 1: always, 2: only when not confirmed
+            type_report = None
+            use_fuzzy = 2 #0: never, 1: always, 2: only when not confirmed
             use_sequencer = 0 #0: never, 1: always, 2: only when not confirmed
             stats_records = []
-            include_bookie_teams = True
+            include_bookie_teams = True # include bookies teams in the list of teams to check?
         else:
             update_db = True
             home_away_prefixes = ["home_team", "away_team"]
@@ -124,13 +124,14 @@ class Normalize:
         update_query = """
             INSERT INTO ATO_production.V2_Teams
             (team_id, bookie_id, competition_id, sport_id, bookie_team_name, normalized_team_name,
-            normalized_short_name, status, source, numerical_team_id, update_date)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, UTC_TIMESTAMP())
+            normalized_short_name, country, status, source, numerical_team_id, update_date)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, UTC_TIMESTAMP())
             ON DUPLICATE KEY UPDATE
               normalized_team_name  = VALUES(normalized_team_name),
               normalized_short_name = VALUES(normalized_short_name),
+              country               = VALUES(country),
               status                = VALUES(status),
-              source               = VALUES(source),
+              source                = VALUES(source),
               numerical_team_id     = VALUES(numerical_team_id),
               update_date           = UTC_TIMESTAMP()
         """
@@ -234,7 +235,6 @@ class Normalize:
 
         if debug:
             print("number of results in DB", len(results))
-            print("number of results in DB", len(results))
             print("number of all_sport_teams", len(all_sport_teams))
             print("all_sport_short_to_id", len(all_sport_short_to_id))
             print("all_sport_normalized_to_id", len(all_sport_normalized_to_id))
@@ -252,6 +252,7 @@ class Normalize:
                 for away_or_home in home_away_prefixes:
                     team_to_check = match_info[away_or_home]
                     team_to_check_lower = (team_to_check or "").strip().casefold()
+                    # print("team_to_check lower", team_to_check_lower)
                     source = None
                     numerical_id = None
 
@@ -285,13 +286,16 @@ class Normalize:
                             source = "name of teams (team in bookies_teams)"
                             if team_to_check == "Inter Miami CF":
                                 print("match for", "Inter Miami CF", bookies_teams[team_to_check_lower])
+                        else:
+                            # print(f"No conditions applied so ignoring {team_to_check}")
+                            # continue
+                            source = "name of teams (no teams found)"
 
                         if (
-                            team_to_check_lower in bookies_tennis_doubles
-                            and (
-                                (match_info[f"{away_or_home}_status"] != "confirmed" and use_fuzzy == 2)
-                                or use_fuzzy == 1
-                        )
+                            len(bookies_tennis_doubles) > 0
+                            and (match_info[f"{away_or_home}_status"] != "confirmed" and use_fuzzy == 2)
+                            or use_fuzzy == 1
+
                         ):
                             # Compare both players (already cleaned and sorted at build time) using RapidFuzz
                             probe_players = bookies_tennis_doubles[team_to_check_lower].get(
@@ -345,11 +349,8 @@ class Normalize:
                                         fuz_t = all_sport_team["normalized_team_name"]
                                         fuz_k = best_candidate_key_fuz
                         if (
-                            team_to_check_lower in bookies_teams
-                        and (
                             (match_info[f"{away_or_home}_status"] != "confirmed" and use_fuzzy == 2)
                             or use_fuzzy == 1
-                        )
                         ):
                             # Token-based scorer over all candidates; skip self after scoring
                             results_rf = process.extract(
@@ -375,6 +376,7 @@ class Normalize:
                                 elif score >= 70:
                                     fuz_decision = "to_be_reviewed"
                                 else:
+                                    print("unmatched", team_to_check_lower, best_key, score)
                                     fuz_decision = "unmatched"
 
                                 numerical_id = bookies_teams[best_key]["numerical_team_id"]
@@ -386,11 +388,9 @@ class Normalize:
                                     fuz_k = best_key
 
                         if (
-                            team_to_check_lower in bookies_tennis_doubles
-                            and (
-                                (match_info[f"{away_or_home}_status"] != "confirmed" and use_sequencer == 2)
-                                or use_sequencer == 1
-                        )
+                            len(bookies_tennis_doubles) > 0
+                            and (match_info[f"{away_or_home}_status"] != "confirmed" and use_sequencer == 2)
+                            or use_sequencer == 1
                         ):
                             # Compare both players (already cleaned and sorted at build time) using SequenceMatcher
                             probe_players = bookies_tennis_doubles[team_to_check_lower].get(
@@ -453,11 +453,8 @@ class Normalize:
                                         seq_k = best_candidate_key_seq
 
                         if (
-                            team_to_check_lower in bookies_teams
-                            and (
-                                (match_info[f"{away_or_home}_status"] != "confirmed" and use_sequencer == 2)
-                                or use_sequencer == 1
-                        )
+                            (match_info[f"{away_or_home}_status"] != "confirmed" and use_sequencer == 2)
+                            or use_sequencer == 1
                         ):
                             sm = SequenceMatcher()
                             sm.set_seq2(team_to_check_lower)
@@ -480,6 +477,7 @@ class Normalize:
                             elif best_score >= 0.70:
                                 seq_decision = "to_be_reviewed"
                             else:
+                                print("unmatched", team_to_check_lower, best_key, best_score)
                                 seq_decision = "unmatched"
 
                             if best_key is not None:
@@ -514,16 +512,32 @@ class Normalize:
                                 "bookie_team_name": match_info[f"{away_or_home}"]
                             }
                         )
+                        # if match_info[f"{away_or_home}_status"] == "":
+                        #     update_ignored_values.append(
+                        #         (
+                        #             team_id,
+                        #             match_info["bookie_id"],
+                        #             match_info["competition_id"],
+                        #             match_info["sport_id"],
+                        #             match_info[f"{away_or_home}"],
+                        #             "unmatched",
+                        #             "name of teams (empty status)",
+                        #         )
+                        #     )
                         if match_info[f"{away_or_home}_status"] == "":
-                            update_ignored_values.append(
+                            update_values.append(
                                 (
                                     team_id,
                                     match_info["bookie_id"],
                                     match_info["competition_id"],
                                     match_info["sport_id"],
                                     match_info[f"{away_or_home}"],
+                                    None,
+                                    None,
+                                    None,
                                     "unmatched",
                                     "name of teams (empty status)",
+                                    None,
                                 )
                             )
 
@@ -556,6 +570,7 @@ class Normalize:
                                     match_info[f"{away_or_home}"],
                                     match_info[f"{away_or_home}_normalized"],
                                     all_sport_team["normalized_short_name"],
+                                    all_sport_team["country"],
                                     match_info[f"{away_or_home}_status"],
                                     source,
                                     numerical_id,
@@ -594,7 +609,8 @@ class Normalize:
                 cursor.executemany(update_query, update_values)
                 cursor.executemany(update_ignored_query, update_ignored_values)
                 connection.commit()
-                print("time to commit team names change", time.time() - now,)
+                if debug:
+                    print("time to commit team names change", time.time() - now,)
             else:
                 pass
                 print("No update to DB")
@@ -607,8 +623,8 @@ class Normalize:
         finally:
             # Print aggregated stats if in debug mode
             if debug:
-                # print("update_values", "\n", update_values)
-                # print("update_ignored or unmatched values", "\n", update_ignored_values)
+                print("update_values", "\n", update_values)
+                print("update_ignored or unmatched values", "\n", update_ignored_values)
                 if stats_records is not None:
                     try:
                         norm_stats(stats_records, type_report)

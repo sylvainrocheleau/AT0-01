@@ -129,6 +129,44 @@ class Helpers():
             cursor.close()
             connection.close()
 
+    def update_cookies_batch(self, cookies_dict):
+        import json
+        connection = Connect().to_db(db="ATO_production", table=None)
+        cursor = connection.cursor()
+
+        query = """
+                INSERT INTO ATO_production.V2_Cookies
+                (user_agent_hash, bookie, cookies, timestamp, next_update,
+                 valid_cookie)
+                VALUES (%s, %s, %s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE cookies        = VALUES(cookies),
+                                        timestamp      = VALUES(timestamp),
+                                        next_update    = VALUES(next_update),
+                                        valid_cookie   = VALUES(valid_cookie)
+                """
+
+        # Prepare the data list for executemany
+        data_list = []
+
+        for key, val in cookies_dict.items():
+            data_list.append((
+                key,
+                val["bookie_id"],
+                # val["browser_type"],
+                json.dumps(val["cookies"]),
+                # val["proxy_ip"],
+                val["timestamp"],
+                val["next_update"],
+                val["valid_cookie"],
+            ))
+
+        try:
+            cursor.executemany(query, data_list)
+            connection.commit()
+        finally:
+            cursor.close()
+            connection.close()
+
     def build_ids(self, id_type, data):
         from replace_accents import replace_accents_characters
         if id_type == "team_id":
@@ -137,7 +175,7 @@ class Helpers():
             team_id = replace_accents_characters(team_id)
             return team_id
         elif id_type == "match_id":
-            # date = data["date"].strftime('%d-%m@%H:%M')
+            # TODO: remove terms such as Deportivo and Real for soccer
             date = data["date"].strftime('%d-%m')
             teams = sorted(data["teams"])
             teams = [x.replace(" ", "") for x in teams]
@@ -216,16 +254,14 @@ class Helpers():
         params = numerical_ids
         cursor.execute(query_team_names, params)
         results = cursor.fetchall()
-        # if debug:
-        #     for r in results:
-        #         if r[2] != competition_id:
-        #             print(r)
         all_sport_infos = {
             result[7]: {
                 "normalized_team_name": result[4],
                 "normalized_short_name": result[5],
             }
             for result in results if "AllSportAPI" == result[1]}
+        # if debug:
+        #     print("all_sport_infos", all_sport_infos)
         full_team_ids_and_normalized = {x[0]:x[4] for x in results if bookie_id in x } # ex: 'Bwin_Argentina-PrimeraDivision_ArgentinosJrs': 'Argentinos Juniors
         full_team_ids_and_short_normalized = {x[0]: x[5] for x in results if bookie_id in x} # ex: 'Bwin_Argentina-PrimeraDivision_ArgentinosJrs': 'Argentinos Jrs.'
         full_team_ids_and_numerical = {x[0]: x[7] for x in results} # ex: '1XBet_Argentina-PrimeraDivision_ArgentinosJuniors': '453739'
@@ -322,7 +358,7 @@ class Helpers():
                     match_info["home_team_normalized"] = all_sport_info["normalized_team_name"]
                     match_info["home_team_status"] = "confirmed"
                     if debug:
-                        print("confirmed with normalized_team_name", full_team_ids_and_normalized[team_id_to_test])
+                        print("confirmed with normalized_team_name", full_team_ids_and_normalized[team_id_to_test], "AllSport=", all_sport_info["normalized_team_name"])
                     cursor.execute(
                         partial_update_query,
                         (
@@ -722,178 +758,6 @@ class Helpers():
         connection.close()
         return match_infos
 
-    def change_normalized_team_names_from_betfair_to_all_sport(self, competition_id, debug):
-        from difflib import SequenceMatcher
-        connection = Connect().to_db(db="ATO_production", table=None)
-        cursor = connection.cursor()
-        query_allsport_teams = """
-            SELECT vt.team_id, vt.bookie_id, vt.competition_id, vt.normalized_team_name, vt.normalized_short_name, vt.betfair_team_name, numerical_team_id
-            FROM ATO_production.V2_Teams vt
-            WHERE vt.bookie_id = 'AllSportAPI'
-            AND vt.competition_id = %s
-            # AND vt.betfair_team_name IS NULL
-        """
-        cursor.execute(query_allsport_teams, (competition_id,))
-        allsport_teams = cursor.fetchall()
-
-        allsport_team_names = {
-            x[0]: {
-                "lower_case_partial_id": x[0].replace(x[0].split("_")[0], "").lower(),
-                "lower_case_partial_short_id": Helpers().build_ids(
-                    id_type="team_id",
-                    data={
-                        "bookie_id": x[1],
-                        "competition_id": x[2],
-                        "bookie_team_name": x[4]
-                    }
-                ).replace(x[0].split("_")[0], "").lower(),
-                "bookie_id": x[1],
-                "competition_id": x[2],
-                "normalized_team_name": x[3],
-                "normalized_short_name": x[4],
-                "betfair_team_name": x[5],
-                "numerical_team_id": x[6],
-                "update": False
-            }
-            for x in allsport_teams}
-
-        query_team_names = """
-            SELECT team_id, bookie_id, competition_id, bookie_team_name, normalized_team_name,
-            normalized_short_name, betfair_team_name, numerical_team_id, update_date
-            FROM ATO_production.V2_Teams
-            WHERE bookie_id != 'AllSportAPI'
-            AND status = 'confirmed'
-            AND competition_id = %s
-        """
-        cursor.execute(query_team_names, (competition_id,))
-        team_names = cursor.fetchall()
-        # full_team_ids_and_normalized = {x[0]: x[4] for x in team_names}
-        partial_team_ids_and_normalized = {
-            x[0]: {
-                "lower_case_partial_id": x[0].replace(x[0].split("_")[0], "").lower(),
-                "bookie_id": x[1],
-                "competition_id": x[2],
-                "bookie_team_name": x[3],
-                "normalized_team_name": x[4],
-                "normalized_short_name": x[5],
-                "betfair_team_name": x[6],
-                "numerical_team_id": x[7],
-                "update": False
-            }
-            for x in team_names}
-
-        for allsport_team_id, allsport_team_data in allsport_team_names.items():
-            if allsport_team_data["betfair_team_name"] is None:
-                allsport_team_data["update"] = True
-            for team_id, team_data in partial_team_ids_and_normalized.items():
-                try:
-                    if team_data["normalized_short_name"] is None or team_data["numerical_team_id"] is None:
-                        if debug:
-                            print("missing data",
-                                  "normalized_short_name", team_data["normalized_short_name"],
-                                  "numerical_team_id", team_data["numerical_team_id"],
-                                  "on", team_id)
-                except Exception as e:
-                    print(e, "error on", team_id, team_data)
-                    if allsport_team_data["lower_case_partial_id"] == team_data["lower_case_partial_id"]:
-                        allsport_team_data["betfair_team_name"] = team_data["betfair_team_name"]
-                        team_data["update"] = True
-                        if debug:
-                            print(allsport_team_data["bookie_id"], allsport_team_data["competition_id"],
-                                  allsport_team_data["betfair_team_name"], "replaced by", team_data["betfair_team_name"],
-                                  "on lower_case_partial_id")
-                    elif allsport_team_data["lower_case_partial_short_id"] == team_data["lower_case_partial_id"]:
-                        allsport_team_data["betfair_team_name"] = team_data["betfair_team_name"]
-                        team_data["update"] = True
-                        if debug:
-                            print(allsport_team_data["bookie_id"], allsport_team_data["competition_id"],
-                                  allsport_team_data["betfair_team_name"], "replaced by", team_data["betfair_team_name"],
-                                  "lower_case_partial_short_id")
-
-                    elif allsport_team_data["normalized_team_name"] == team_data["bookie_team_name"]:
-                        allsport_team_data["betfair_team_name"] = team_data["betfair_team_name"]
-                        team_data["update"] = True
-                        if debug:
-                            print("allSPort betfair name", allsport_team_data["normalized_team_name"], "bookie", team_data["betfair_team_name"])
-
-                    elif SequenceMatcher(None, allsport_team_data["normalized_team_name"], team_data["bookie_team_name"]).ratio() > 0.9:
-                        allsport_team_data["betfair_team_name"] = team_data["betfair_team_name"]
-                        team_data["update"] = True
-                        if debug:
-                            print("sequence match", "original", allsport_team_data["normalized_team_name"], "normalized", team_data["bookie_team_name"])
-
-
-                    if (
-                        allsport_team_data["betfair_team_name"] is not None
-                        and allsport_team_data["betfair_team_name"] == team_data["betfair_team_name"]
-                    ):
-                        if debug:
-                            print(team_data["bookie_id"], team_data["competition_id"],
-                                  team_data["betfair_team_name"], "replaced by", allsport_team_data["normalized_team_name"])
-                        partial_team_ids_and_normalized[team_id] = ({"normalized_team_name": allsport_team_data["normalized_team_name"]})
-                        partial_team_ids_and_normalized[team_id] = ({"normalized_short_name": allsport_team_data["normalized_short_name"]})
-                        partial_team_ids_and_normalized[team_id] = ({"numerical_team_id": allsport_team_data["numerical_team_id"]})
-
-        # UPDATE ALL SPORT WITH Betfair team names
-        update_query_all_sport = """
-            UPDATE ATO_production.V2_Teams
-            SET betfair_team_name = %s, status = %s
-            WHERE team_id = %s
-        """
-        # print(allsport_team_names)
-        for allsport_team_id, allsport_team_data in allsport_team_names.items():
-            if allsport_team_data["update"] is True:
-                if debug:
-                    print("updating record", allsport_team_id)
-                # if allsport_team_data["betfair_team_name"] is None:
-                #     status = "unmatched"
-                # else:
-                status = "confirmed"
-                values = (
-                    allsport_team_data["betfair_team_name"],
-                    status,
-                    allsport_team_id,
-
-                )
-                if debug:
-                    print("allsport_team_names", values)
-                if not debug:
-                    print("saving to DB", allsport_team_id)
-                    cursor.execute(update_query_all_sport, values)
-                    connection.commit()
-            else:
-                pass
-                # print("skipping record", allsport_team_id)
-
-        # UPDATE all bookies WITH allsport team names
-        update_query_all_teams = """
-            UPDATE ATO_production.V2_Teams
-            SET normalized_team_name = %s, normalized_short_name = %s, numerical_team_id = %s, update_date = %s
-            WHERE team_id = %s
-        """
-        for team_id, team_data in partial_team_ids_and_normalized.items():
-            if team_data["update"] is True:
-                if debug:
-                    print("updating record", team_id)
-                values = (
-                    team_data["normalized_team_name"],
-                    team_data["normalized_short_name"],
-                    team_data["numerical_team_id"],
-                    Helpers().get_time_now("UTC"),
-                    team_id,
-                )
-                if debug:
-                    print(values)
-                if not debug:
-                    print("saving to DB", team_id)
-                    cursor.execute(update_query_all_teams, values)
-                    connection.commit()
-
-            else:
-                pass
-                # print("skipping record", team_id)
-        connection.close()
-
     def load_competitions(self):
         connection = Connect().to_db(db="ATO_production", table="V2_Competitions")
         cursor = connection.cursor()
@@ -1095,12 +959,64 @@ class Helpers():
         else:
             return datetime.datetime.now().replace(microsecond=0).replace(tzinfo=None)
 
+    @staticmethod
+    async def execute_page_methods(page, action_config, bookie_id):
+        """
+        Executes a playwright action based on a dictionary config.
+        Handles failures by logging and falling back to safe states.
+        """
+        method = action_config.get("method")
+        selector = action_config.get("selector")
+        timeout = action_config.get("timeout", 5000)
+        state = action_config.get("state", "visible")
+
+        try:
+            if method == "wait_for_selector":
+                await page.wait_for_selector(selector, state=state, timeout=timeout)
+
+            elif method == "click":
+                await page.click(selector, timeout=timeout, force=action_config.get("force", False))
+
+            elif method == "wait_for_load_state":
+                await page.wait_for_load_state(state=state, timeout=timeout)
+
+        except Exception as e:
+            # Log the failure
+            message = f"Selector Failed: {selector} | Bookie: {bookie_id}"
+            Helpers().insert_log(level="WARNING", type="XPATH", error=message, message=None)
+
+            # Fallback logic
+            if method == "wait_for_selector":
+                print(f"Fallback to wait_for_load_state for {bookie_id}")
+                await page.wait_for_load_state("networkidle", timeout=10000)
+
+
     def build_meta_request(self, meta_type, data, debug):
         import json
+        import random
         from urllib.parse import urlencode
         from scrapy_playwright.page import PageMethod
+        from scrapy_camoufox.page import PageMethod as CamoufoxPageMethod
         uppercase_alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÁÉÍÓÚÜÑ',
         lowercase_alpabet = 'abcdefghijklmnopqrstuvwxyzáéíóúüñ'
+        if data["scraping_tool"] == "playwright":
+            default_playwright_context = {
+                "user_agent": data["user_agent"],
+                "viewport": {"width": 1920, "height": 1080},
+                "timezone_id": "Europe/Madrid",
+                "locale": "es-ES",
+                "color_scheme": "light",
+                "device_scale_factor": 1.0,
+                "is_mobile": False,
+                "has_touch": False,
+                "java_script_enabled": bool(data["render_js"]),
+                "ignore_https_errors": False,
+                "proxy": {
+                    "server": "http://"+data["proxy_ip"]+":58542/",
+                    "username": soltia_user_name,
+                    "password": soltia_password,
+                },
+            }
         if meta_type == "sport":
             url = data["sport_url_id"]
             dont_filter = False
@@ -1143,37 +1059,86 @@ class Helpers():
                 url = 'https://proxy.scrapeops.io/v1/?' + urlencode(payload)
 
             elif data["scraping_tool"] == "playwright":
+                # Add Stealth Script as a PageMethod
+                from playwright_stealth import Stealth
+                stealth_script = Stealth().script_payload
+                page_methods = [
+                    PageMethod(method="add_init_script", script=stealth_script),
+                    # PageMethod("mouse", "wheel", 0, random.randint(100, 400))
+                ]
+                context_kwargs = default_playwright_context.copy()
+                if data.get("context_kwargs"):
+                    try:
+                        stored_kwargs = json.loads(data["context_kwargs"])
+                        context_kwargs.update(stored_kwargs)
+                    except Exception:
+                        pass
+                if data.get("use_cookies") == 1 and data.get("cookies"):
+                    context_kwargs["storage_state"] = {"cookies": json.loads(data["cookies"])}
+
                 meta_request.update(
                     {
                         "proxy_ip": data["proxy_ip"],
-                        # "user_agent": data["user_agent"],
+                        "user_agent": data["user_agent"],
                         "playwright": True,
                         "playwright_include_page": True,
                         "playwright_context": url,
-                        "playwright_context_kwargs":
-                            {
-                                "user_agent": data["user_agent"],
-                                "java_script_enabled": bool(data["render_js"]),
-                                "ignore_https_errors": True,
-                                "proxy": {
-                                    "server": "http://" + data["proxy_ip"] + ":58542/",
-                                    "username": soltia_user_name,
-                                    "password": soltia_password,
-                                },
-                            },
-                        "playwright_accept_request_predicate":
-                            {
-                                'activate': True,
-                                # 'position': 1
-                            },
+                        "playwright_context_kwargs": context_kwargs,
+                        # TLS Validation Headers
+                        "extra_http_headers": self.ua_to_client_hints(
+                            user_agent=data["user_agent"],
+                            cookies=data.get("cookies", "[]"),
+                            url=url
+                        ),
+                        "playwright_accept_request_predicate":{'activate': True},
+                        "playwright_page_methods": page_methods,
                     }
                 )
-                if data["use_cookies"] == 1:
+
+            elif data["scraping_tool"] == "camoufox":
+                page_methods = [
+                    CamoufoxPageMethod("mouse", "wheel", 0, random.randint(100, 400)),
+                    CamoufoxPageMethod("mouse", "move", random.randint(0, 1920), random.randint(0, 1080), steps=20),
+
+                ]
+                context_kwargs = {
+                    "ignore_https_errors": True,
+                    "java_script_enabled": bool(data.get("render_js", True)),
+                    "proxy": {
+                        "server": f"http://{data['proxy_ip']}:58542/",
+                        "username": soltia_user_name,
+                        "password": soltia_password,
+                    },
+                }
+
+                # Overlay stored environment settings from the DB
+                if data.get("context_kwargs"):
+                    stored_kwargs = json.loads(data["context_kwargs"])
+                    # map WebGL signals back into a tuple
+                    if "webgl_vendor" in stored_kwargs and "webgl_renderer" in stored_kwargs:
+                        context_kwargs["webgl_config"] = (
+                            stored_kwargs.pop("webgl_vendor"),
+                            stored_kwargs.pop("webgl_renderer")
+                        )
+
+                    context_kwargs.update(stored_kwargs)
+                # Ensure the User-Agent matches the session
+                context_kwargs["user_agent"] = data.get("user_agent")
+
+                meta_request.update({
+                    "camoufox": True,
+                    "proxy_ip": data["proxy_ip"],
+                    "camoufox_include_page": True,
+                    "playwright_context": url,
+                    "playwright_context_kwargs": context_kwargs,
+                    "playwright_accept_request_predicate": {"activate": True},
+                    "camoufox_page_methods": page_methods,
+                })
+                # Camoufox will always be used with cookies
+                if data.get("use_cookies") == 1 and data.get("cookies"):
                     meta_request["playwright_context_kwargs"].update(
                         {"storage_state": {"cookies": json.loads(data["cookies"])}}
                     )
-                    # print("cookies here", json.loads(data["cookies"]))
-                    # print("cookies type", type(json.loads(data["cookies"])))
 
             # pagemethods and addons for sports
             if data["bookie_id"] == "Bet777":
@@ -1183,10 +1148,6 @@ class Helpers():
                         selector="//div[@class=' text-gray-300 bg-gray-800 rounded-lg mt-5 pb-5']",
                         timeout=30000,
                     ),
-                    # PageMethod(
-                    #     method="wait_for_timeout",
-                    #     timeout=30000,
-                    # ),
                 ],
                 }
                 )
@@ -1240,180 +1201,258 @@ class Helpers():
                 url = 'https://proxy.scrapeops.io/v1/?' + urlencode(payload)
 
             elif data["scraping_tool"] == "playwright":
+                # Add Stealth Script as a PageMethod
+                from playwright_stealth import Stealth
+                stealth_script = Stealth().script_payload
+                page_methods = [
+                    PageMethod(method="add_init_script", script=stealth_script),
+                    PageMethod("mouse", "wheel", 0, random.randint(100, 400))
+                ]
+
+                context_kwargs = default_playwright_context.copy()
+                if data.get("context_kwargs"):
+                    try:
+                        stored_kwargs = json.loads(data["context_kwargs"])
+                        context_kwargs.update(stored_kwargs)
+                    except Exception:
+                        pass
+
+                if data.get("use_cookies") == 1 and data.get("cookies"):
+                    context_kwargs["storage_state"] = {"cookies": json.loads(data["cookies"])}
+
                 meta_request.update(
                     {
                         "proxy_ip": data["proxy_ip"],
-                        # "user_agent": data["user_agent"],
+                        "user_agent": data["user_agent"],
                         "playwright": True,
                         "playwright_include_page": True,
                         "playwright_context": url,
-                        "playwright_context_kwargs":
-                            {
-                                "user_agent": data["user_agent"],
-                                "locale": "es-ES",
-                                "timezone_id": "Europe/Madrid",
-                                "color_scheme": "light",
-                                "device_scale_factor": 1.0,
-                                "is_mobile": False,
-                                "has_touch": False,
-                                "java_script_enabled": bool(data["render_js"]),
-                                "ignore_https_errors": True,
-                                "proxy": {
-                                    "server": "http://"+data["proxy_ip"]+":58542/",
-                                    "username": soltia_user_name,
-                                    "password": soltia_password,
-                                },
-                            },
-                            "extra_http_headers": self.ua_to_client_hints(data["user_agent"],data["cookies"], url),
-                            "playwright_accept_request_predicate":
-                                {
-                                    'activate': True,
-                                    # 'position': 1
-                            },
+                        "playwright_context_kwargs": context_kwargs,
+                        # TLS Validation Headers
+                        "extra_http_headers": self.ua_to_client_hints(
+                            user_agent=data["user_agent"],
+                            cookies=data.get("cookies", "[]"),
+                            url=url
+                        ),
+                        "playwright_accept_request_predicate": {'activate': True},
+                        "playwright_page_methods": page_methods,
                     }
                 )
-                if data["use_cookies"] == 1:
-                    meta_request["playwright_context_kwargs"].update(
-                        {"storage_state": {"cookies": json.loads(data["cookies"])}}
-                    )
-                    # print("cookies here", json.loads(data["cookies"]))
-                    # print("cookies type", type(json.loads(data["cookies"])))
+
+            elif data["scraping_tool"] == "camoufox":
+                # 1. Setup deterministic seed if available in DB (context_kwargs)
+                stored_seed = data.get("context_kwargs")
+                if stored_seed is not None:
+                    try:
+                        random.seed(int(stored_seed))
+                    except (ValueError, TypeError):
+                        pass
+
+                # 2. Define standard Camoufox PageMethod
+                page_methods = [
+                    CamoufoxPageMethod(lambda page, x, y: page.mouse.move(x, y),
+                                       random.randint(0, 1920), random.randint(0, 1080)),
+                    CamoufoxPageMethod("wait_for_timeout", timeout=random.randint(1000, 2000)),
+                ]
+
+                # 3. Initialize context_kwargs from seed
+                context_kwargs = {
+                    "ignore_https_errors": True,
+                    "java_script_enabled": bool(data.get("render_js", True)),
+                    "proxy": {
+                        "server": f"http://{data['proxy_ip']}:58542/",
+                        "username": soltia_user_name,
+                        "password": soltia_password,
+                    },
+                    "user_agent": data.get("user_agent"),
+                }
+                # 4. Apply session cookies
+                if data.get("use_cookies") == 1 and data.get("cookies"):
+                    context_kwargs["storage_state"] = {"cookies": json.loads(data["cookies"])}
+
+                # 5. Build the meta_request
+                meta_request.update({
+                    # "handle_httpstatus_list": [404],
+                    "camoufox": True,
+                    "proxy_ip": data["proxy_ip"],
+                    "camoufox_include_page": True,
+                    "camoufox_context": url,
+                    "camoufox_context_kwargs": context_kwargs,
+                    "camoufox_page_methods": page_methods,
+                })
 
             # pagemethods and addons for competition
             if data["bookie_id"] == "1XBet":
-                meta_request["playwright_accept_request_predicate"] = {
-                    'activate': False
-                }
-                meta_request.update({"playwright_page_methods": [
-                    PageMethod(
-                        method="add_init_script",
-                        script=(
-                            "// Stealth tweaks for 1XBet\n"
-                            "Object.defineProperty(navigator, 'webdriver', {get: () => undefined});\n"
-                            "Object.defineProperty(navigator, 'languages', {get: () => ['es-ES','es','en']});\n"
-                            "Object.defineProperty(navigator, 'platform', {get: () => (function(ua){ ua=ua||''; if(ua.includes('Windows')) return 'Win32'; if(ua.includes('Macintosh')) return 'MacIntel'; if(ua.includes('Linux')) return 'Linux x86_64'; return navigator.platform; })(navigator.userAgent)});\n"
-                            "Object.defineProperty(navigator, 'hardwareConcurrency', {get: () => 8});\n"
-                            "Object.defineProperty(navigator, 'deviceMemory', {get: () => 8});\n"
-                            "Object.defineProperty(navigator, 'permissions', { value: { query: async () => ({ state: 'prompt' }) } });\n"
-                            "window.chrome = { runtime: {} };\n"
-                            "const getParameter = WebGLRenderingContext.prototype.getParameter;\n"
-                            "WebGLRenderingContext.prototype.getParameter = function(param){\n"
-                            "  if (param === 37445) return 'Intel Inc.';\n"
-                            "  if (param === 37446) return 'Intel Iris OpenGL Engine';\n"
-                            "  return getParameter.call(this, param);\n"
-                            "};\n"
-                            "Object.defineProperty(navigator, 'plugins', {get: () => [1,2,3]});\n"
-                        )
-                    ),
-                    PageMethod(method="wait_for_load_state", state="domcontentloaded"),
-                    PageMethod(
-                        method="wait_for_selector",
-                        selector="//li[contains(@class, 'dashboard-games__item')]",
-                    ),
-                ],
-                }
-                )
-                meta_request["playwright_context_kwargs"].update(
-                    {
-                        "bypass_csp": True,
-                        "service_workers": "allow",
-                    }
-                )
-            elif data["bookie_id"] == "888Sport":
-                pass
+                # Zyte proxy mode settings
                 # meta_request.update({"playwright_page_methods": [
                 #     PageMethod(
-                #         method="wait_for_timeout",
-                #         timeout=20000,
-                #     ),
-                # ],
+                #         method="wait_for_selector",
+                #         selector="//ul[contains(@class, 'dashboard-games')]"
+                #     )
+                # ]
                 # }
                 # )
 
+                # Playwright setting
+                # meta_request.update({"playwright_page_methods": [
+                #     PageMethod(
+                #         method="wait_for_selector",
+                #         selector="//ul[contains(@class, 'dashboard-games')]"
+                #     )
+                # ]
+                # }
+                # )
                 # meta_request["playwright_accept_request_predicate"] = {
                 #     'activate': False
                 # }
-                # meta_request.update({"playwright_page_methods": [
-                #     PageMethod(
-                #         method="add_init_script",
-                #         script=(
-                #             "// Stealth tweaks for 1XBet\n"
-                #             "Object.defineProperty(navigator, 'webdriver', {get: () => undefined});\n"
-                #             "Object.defineProperty(navigator, 'languages', {get: () => ['es-ES','es','en']});\n"
-                #             "Object.defineProperty(navigator, 'platform', {get: () => (function(ua){ ua=ua||''; if(ua.includes('Windows')) return 'Win32'; if(ua.includes('Macintosh')) return 'MacIntel'; if(ua.includes('Linux')) return 'Linux x86_64'; return navigator.platform; })(navigator.userAgent)});\n"
-                #             "Object.defineProperty(navigator, 'hardwareConcurrency', {get: () => 8});\n"
-                #             "Object.defineProperty(navigator, 'deviceMemory', {get: () => 8});\n"
-                #             "Object.defineProperty(navigator, 'permissions', { value: { query: async () => ({ state: 'prompt' }) } });\n"
-                #             "window.chrome = { runtime: {} };\n"
-                #             "const getParameter = WebGLRenderingContext.prototype.getParameter;\n"
-                #             "WebGLRenderingContext.prototype.getParameter = function(param){\n"
-                #             "  if (param === 37445) return 'Intel Inc.';\n"
-                #             "  if (param === 37446) return 'Intel Iris OpenGL Engine';\n"
-                #             "  return getParameter.call(this, param);\n"
-                #             "};\n"
-                #             "Object.defineProperty(navigator, 'plugins', {get: () => [1,2,3]});\n"
-                #         )
-                #     ),
-                #     PageMethod(method="wait_for_load_state", state="domcontentloaded"),
-                #     PageMethod(
-                #         method="wait_for_timeout",
-                #         timeout=10000,
-                #     ),
-                # ],
-                # }
-                # )
                 # meta_request["playwright_context_kwargs"].update(
                 #     {
+                #         #     "viewport": {
+                #         #     "width": 1920,
+                #         #     "height": 3200,
+                #         # },
                 #         "bypass_csp": True,
                 #         "service_workers": "allow",
                 #     }
                 # )
+
+                # Zyte API settings
+                meta_request.update({"zyte_api_automap": {
+                    "geolocation": "ES",
+                    "browserHtml": True,
+                    "session": {"id": str(uuid4())},
+                    "actions": [
+                        {
+                            "action": "waitForSelector",
+                            "selector": {
+                                "type": "xpath",
+                                "value": "//ul[contains(@class, 'dashboard-games')]",
+                                "state": "visible",
+                            }
+                        }
+                    ]
+                }
+                }
+                )
+
+            elif data["bookie_id"] == "888Sport":
+                # meta_request.update({
+                #     "handle_httpstatus_list": [404],
+                #     "playwright_page_methods": [
+                #         PageMethod(
+                #             method="wait_for_selector",
+                #             selector="//div[@class='sport-event-list__event']"
+                #         ),
+                #     ]
+                # }
+                # )
+                meta_request.update({
+                    "handle_httpstatus_list": [404],
+                    "playwright_page_methods": [
+                    PageMethod(
+                        Helpers.execute_page_methods,
+                        {
+                            "method":"wait_for_selector",
+                            "selector":"//div[@class='sport-event-list__event']"
+                        }
+                    , data["bookie_id"]),
+                    ]
+                }
+                )
+            elif data["bookie_id"] == "AdmiralBet":
+                meta_request.update({"playwright_page_methods": [
+                    PageMethod(
+                        Helpers.execute_page_methods,
+                        {
+                            "method":"wait_for_selector",
+                            "selector":"#sportsSportsGrid",
+                        }
+                    , data["bookie_id"]),
+                ],
+                }
+                )
+            elif data["bookie_id"] == "BetfairSportsbook":
+                meta_request.update({"playwright_page_methods": [
+                    PageMethod(
+                        Helpers.execute_page_methods,
+                        {
+                            "method":"wait_for_selector",
+                            "selector":"//li[@class='section']",
+                        }
+                    , data["bookie_id"]),
+                ],
+                }
+                )
             elif data["bookie_id"] == "BetWay":
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
-                        method="wait_for_selector",
-                        selector="//div[@data-testid='table-sectionGroup']",
-                    ),
+                        Helpers.execute_page_methods,
+                        {
+                            "method":"wait_for_selector",
+                            "selector":"//div[@data-testid='table-sectionGroup']",
+                        }
+                    , data["bookie_id"]),
                 ],
                 }
                 )
             elif data["bookie_id"] == "Bwin":
                 meta_request.update({"playwright_page_methods":[
                     PageMethod(
-                        method="wait_for_selector",
-                        selector="//div[@class='grid-event-wrapper image ng-star-inserted']",
-                    ),
+                        Helpers.execute_page_methods,
+                        {
+                            "method":"wait_for_selector",
+                            "selector":"//div[@class='grid-event-wrapper image ng-star-inserted']",
+                        }
+                    , data["bookie_id"]),
                 ]
                 }
-                )
-            elif data["bookie_id"] == "AdmiralBet":
-                meta_request.update({"playwright_page_methods":[
-                    PageMethod(
-                        method="wait_for_selector",
-                        selector="#sportsSportsGrid",
-                            ),
-                        ],
-                    }
                 )
             elif data["bookie_id"] == "Bet777":
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
-                        method="wait_for_selector",
-                        selector="//div[@class='flex flex-col bg-gray-800 rounded-lg mb-3 p-1']",
-                        # timeout=5000,
-                    ),
+                        Helpers.execute_page_methods,
+                        {
+                            "method":"wait_for_selector",
+                            "selector":"//div[@class='flex flex-col bg-gray-800 rounded-lg mb-3 p-1']",
+                        }
+                    , data["bookie_id"]),
+                ],
+                }
+                )
+            elif data["bookie_id"] == "CasinoBarcelona":
+                meta_request.update({"playwright_page_methods": [
+                    PageMethod(
+                        Helpers.execute_page_methods,
+                        {
+                            "method":"wait_for_selector",
+                            "selector":"//div[@class='container-list-lives']"
+                        }
+                    , data["bookie_id"])
+                ],
+                }
+                )
+            elif data["bookie_id"] == "CasinoGranMadrid":
+                meta_request.update({"playwright_page_methods": [
+                    PageMethod(method="wait_for_load_state", state="domcontentloaded")
                 ],
                 }
                 )
             elif data["bookie_id"] == "Codere":
-                pass
+                meta_request.update({"playwright_page_methods": [
+                    PageMethod(method="wait_for_load_state", state="domcontentloaded")
+                ],
+                }
+                )
             elif data["bookie_id"] == "DaznBet":
                 url = url.replace("https://www.daznbet.es/es-es/deportes/", "https://sb-pp-esfe.daznbet.es/")
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
-                        method="wait_for_selector",
-                        selector="//div[@class='main-container']",
-                    ),
+                        Helpers.execute_page_methods,
+                        {
+                            "method":"wait_for_selector",
+                            "selector":"//div[@class='main-container']",
+                        }
+                    , data["bookie_id"]),
                     PageMethod(
                         method="wait_for_timeout",
                         timeout=1000
@@ -1421,27 +1460,115 @@ class Helpers():
                 ],
                 }
                 )
-            elif data["bookie_id"] == "EfBet":
-                dont_filter = True
+
+            elif data["bookie_id"] == "GoldenPark":
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
-                        method="wait_for_selector",
-                        # selector="//div[@class='event-level']",
-                        selector="//tr[@class='row1']",
-                    ),
+                        Helpers.execute_page_methods,
+                        {
+                            "method":"wait_for_selector",
+                            "selector":"//div[@class='upcoming-events']",
+                        }
+                    , data["bookie_id"]),
                 ],
                 }
                 )
-            elif data["bookie_id"] == "MarathonBet":
+            elif data["bookie_id"] == "JokerBet":
+                meta_request.update({"playwright_page_methods": [
+                    PageMethod(method="wait_for_load_state", state="domcontentloaded")
+                ],
+                }
+                )
+            elif data["bookie_id"] == "Luckia":
+                # Playwright setting
+                # meta_request.update({"playwright_page_methods": [
+                #     PageMethod(
+                #         method="wait_for_selector",
+                #         selector="//div[@class='psk-event-list']")
+                # ],
+                # }
+                # )
+                # Zyte API settings
+                meta_request.update({"zyte_api_automap": {
+                    "geolocation": "ES",
+                    "browserHtml": True,
+                    "session": {"id": str(uuid4())},
+                    "actions": [
+                        {
+                            "action": "waitForSelector",
+                            "selector": {
+                                "type": "xpath",
+                                "value": "//ul[contains(@class, 'dashboard-game')]",
+                                "state": "visible",
+                            }
+                        }
+                    ]
+                }
+                }
+                )
+            elif data["bookie_id"] == "MarcaApuestas":
+                meta_request.update({
+                    "playwright_page_methods": [
+                        PageMethod(
+                            method="wait_for_load_state",
+                            state="networkidle",
+                            timeout=5000,
+                        ),
+                        PageMethod(
+                            method="wait_for_timeout",
+                            timeout=10000
+                        )
+                    ],
+                }
+                )
+                # meta_request.update({"playwright_page_methods": [
+                #     PageMethod(
+                #         Helpers.execute_page_methods,
+                #         {
+                #             "method":"wait_for_selector",
+                #             # "selector":"//div[@class='ta-FlexPane ta-EventListItems']"
+                #             "selector": "//div[@class='ta-FlexPane ta-EventListItem']"
+                #         }
+                #     , data["bookie_id"])
+                # ],
+                # }
+                # )
+            elif data["bookie_id"] == "OlyBet":
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
-                        method="wait_for_selector",
-                        selector="//div[@class='bg coupon-row']",
-                    ),
+                        Helpers.execute_page_methods,
+                        {
+                            "method":"wait_for_selector",
+                            "selector":"//div[@class='upcoming-events']",
+                        }
+                    , data["bookie_id"])
                 ],
+                }
+                )
+            elif data["bookie_id"] == "Paston":
+                meta_request.update({"playwright_page_methods": [
+                    PageMethod(method="wait_for_load_state", state="domcontentloaded")
+                ],
+                }
+                )
+            elif data["bookie_id"] == "PokerStars":
+                # "handle_httpstatus_list": [301],
+                meta_request.update({
+                    "handle_httpstatus_list": [301],
+                    "playwright_page_methods": [
+                        PageMethod(method="wait_for_load_state", state="domcontentloaded")
+                    ],
                 }
                 )
             elif data["bookie_id"] == "RetaBet":
+            #     meta_request.update({"playwright_page_methods": [
+            #         CamoufoxPageMethod(
+            #             method="wait_for_selector",
+            #             selector="//article[@class='module__list-events']",
+            #         ),
+            #     ],
+            #     }
+            #     )
                 meta_request.update({"zyte_api_automap": {
                         "geolocation": "ES",
                         "browserHtml": True,
@@ -1459,25 +1586,31 @@ class Helpers():
                     }
                 }
                 )
-            elif data["bookie_id"] == "Sportium":
-                meta_request.update({"playwright_page_methods": [
-                    PageMethod(
-                        method="wait_for_selector",
-                        selector="//div[@class='ta-FlexPane ta-EventListGroups']",
-                    ),
-                ],
-                }
-                )
-            elif data["bookie_id"] == "Versus":
-                meta_request.update({"playwright_page_methods": [
-                    PageMethod(
-                        method="wait_for_selector",
-                        selector="//div[@class='ta-FlexPane ta-EventListGroups']",
-                        timeout=40000,
-                    ),
-                ],
-                }
-                )
+            # elif data["bookie_id"] == "Sportium":
+            #     meta_request.update({"playwright_page_methods": [
+            #         PageMethod(
+            #             Helpers.execute_page_methods,
+            #             {
+            #                 "method":"wait_for_selector",
+            #                 "selector":"//div[@class='ta-FlexPane ta-EventListGroups']",
+            #             }
+            #         , data["bookie_id"]),
+            #     ],
+            #     }
+            #     )
+            # elif data["bookie_id"] == "Versus":
+            #     meta_request.update({"playwright_page_methods": [
+            #         PageMethod(
+            #             Helpers.execute_page_methods,
+            #             {
+            #                 "method":"wait_for_selector",
+            #                 "selector":"//div[@class='ta-FlexPane ta-EventListGroups']",
+            #                 "timeout":40000,
+            #             }
+            #         , data["bookie_id"]),
+            #     ],
+            #     }
+            #     )
             elif data["bookie_id"] == "WilliamHill":
                 meta_request.update(
                     {"header": {'Accept': '*/*', 'Connection': 'keep-alive',
@@ -1486,6 +1619,19 @@ class Helpers():
                            'Cache-Control': 'max-age=0', 'DNT': '1', 'Upgrade-Insecure-Requests': '1',
                            'Referer': 'https://google.com', 'Pragma': 'no-cache'},
                     },
+                )
+            elif data["bookie_id"] == "ZeBet":
+                meta_request.update({"playwright_page_methods": [
+                    PageMethod(
+                        Helpers.execute_page_methods,
+                        {
+                            "method":"wait_for_selector",
+                            "selector":"//div[@id='event']",
+                            "timeout":40000,
+                        }
+                    , data["bookie_id"]),
+                ],
+                }
                 )
         elif meta_type == "match":
             url = data["match_url_id"]
@@ -1504,7 +1650,6 @@ class Helpers():
                 bookie_id=data["bookie_id"],
                 date=data["date"],
                 scraping_tool=data["scraping_tool"],
-                # dutcher=False,
             )
             if data["scraping_tool"] == "requests":
                 meta_request.update(
@@ -1545,6 +1690,23 @@ class Helpers():
                 url = 'https://proxy.scrapeops.io/v1/?' + urlencode(payload)
 
             elif data["scraping_tool"] == "playwright":
+                # Add Stealth Script as a PageMethod
+                from playwright_stealth import Stealth
+                stealth_script = Stealth().script_payload
+                page_methods = [
+                    PageMethod(method="add_init_script", script=stealth_script),
+                    # PageMethod("mouse", "wheel", 0, random.randint(100, 400))
+                ]
+                context_kwargs = default_playwright_context.copy()
+                if data.get("context_kwargs"):
+                    try:
+                        stored_kwargs = json.loads(data["context_kwargs"])
+                        context_kwargs.update(stored_kwargs)
+                    except Exception:
+                        pass
+                if data.get("use_cookies") == 1 and data.get("cookies"):
+                    context_kwargs["storage_state"] = {"cookies": json.loads(data["cookies"])}
+
                 meta_request.update(
                     {
                         "proxy_ip": data["proxy_ip"],
@@ -1552,223 +1714,184 @@ class Helpers():
                         "playwright": True,
                         "playwright_include_page": True,
                         "playwright_context": url,
-                        "playwright_context_kwargs":
-                            {
-                                "user_agent": data["user_agent"],
-                                "timezone_id": "Europe/Madrid",
-                                "locale": "es-ES",
-                                "color_scheme": "light",
-                                "device_scale_factor": 1.0,
-                                "is_mobile": False,
-                                "has_touch": False,
-                                "java_script_enabled": bool(data["render_js"]),
-                                "ignore_https_errors": True,
-                                "proxy": {
-                                    "server": "http://" + data["proxy_ip"] + ":58542/",
-                                    "username": soltia_user_name,
-                                    "password": soltia_password,
-                                },
-                            },
-                        "extra_http_headers": self.ua_to_client_hints(data["user_agent"], data["cookies"], url),
-                        "playwright_accept_request_predicate":
-                            {
-                                'activate': True,
-                                # 'position': 1
-                            },
+                        "playwright_context_kwargs": context_kwargs,
+                        # TLS Validation Headers
+                        "extra_http_headers": self.ua_to_client_hints(
+                            user_agent=data["user_agent"],
+                            cookies=data.get("cookies", "[]"),
+                            url=url
+                        ),
+                        "playwright_accept_request_predicate":{'activate': True},
+                        "playwright_page_methods": page_methods,
                     }
                 )
-                if data["use_cookies"] == 1:
+            elif data["scraping_tool"] == "camoufox":
+                page_methods = [
+                    PageMethod("mouse", "wheel", 0, random.randint(100, 400)),
+                    PageMethod("mouse", "move", random.randint(0, 1920), random.randint(0, 1080), steps=20),
+                ]
+                context_kwargs = {
+                    "ignore_https_errors": True,
+                    "java_script_enabled": bool(data.get("render_js", True)),
+                    "proxy": {
+                        "server": f"http://{data['proxy_ip']}:58542/",
+                        "username": soltia_user_name,
+                        "password": soltia_password,
+                    },
+                }
+
+                # Overlay stored environment settings from the DB
+                if data.get("context_kwargs"):
+                    stored_kwargs = json.loads(data["context_kwargs"])
+                    # map WebGL signals back into a Camoufox tuple
+                    if "webgl_vendor" in stored_kwargs and "webgl_renderer" in stored_kwargs:
+                        context_kwargs["webgl_config"] = (
+                            stored_kwargs.pop("webgl_vendor"),
+                            stored_kwargs.pop("webgl_renderer")
+                        )
+
+                    context_kwargs.update(stored_kwargs)
+
+                # Ensure the User-Agent matches the session
+                context_kwargs["user_agent"] = data.get("user_agent")
+
+                meta_request.update({
+                    "camoufox": True,
+                    "proxy_ip": data["proxy_ip"],
+                    "playwright_include_page": True,
+                    "playwright_context": url,
+                    "playwright_context_kwargs": context_kwargs,
+                    "playwright_accept_request_predicate": {"activate": True},
+                    "playwright_page_methods": page_methods,
+                })
+                # Camoufox will always be used with cookies
+                if data.get("use_cookies") == 1 and data.get("cookies"):
                     meta_request["playwright_context_kwargs"].update(
                         {"storage_state": {"cookies": json.loads(data["cookies"])}}
                     )
 
             # pagemethods and addons for match
-            if data["bookie_id"] == "1XBet":
+            if data["bookie_id"] == "1XBet" and data["scraping_tool"] == "playwright":
+                if debug:
+                    print(f"Adding pagemethods for 1XBet match {data['match_id']}")
+                meta_request.update({"playwright_page_methods": [
+                    PageMethod(
+                        Helpers.execute_page_methods,
+                        {
+                            "method":"click",
+                            "selector":"//button[@data-qa='button-accept-all-cookies']",
+                            "timeout":15000
+                        }
+                    , data["bookie_id"]),
+                    PageMethod(
+                        Helpers.execute_page_methods,
+                        {
+                            "method":"wait_for_selector",
+                            "selector":"//div[@class='game-markets__groups']",
+                            "state":"visible",
+                            "timeout":15000,
+                        }
+                    , data["bookie_id"]),
+
+                ]
+                }
+                )
                 meta_request["playwright_accept_request_predicate"] = {
                     'activate': False
                 }
-                page_methods = [
-                    PageMethod(
-                        method="add_init_script",
-                        script=(
-                            "// Stealth tweaks for 1XBet\n"
-                            "Object.defineProperty(navigator, 'webdriver', {get: () => undefined});\n"
-                            "Object.defineProperty(navigator, 'languages', {get: () => ['es-ES','es','en']});\n"
-                            "Object.defineProperty(navigator, 'platform', {get: () => (function(ua){ ua=ua||''; if(ua.includes('Windows')) return 'Win32'; if(ua.includes('Macintosh')) return 'MacIntel'; if(ua.includes('Linux')) return 'Linux x86_64'; return navigator.platform; })(navigator.userAgent)});\n"
-                            "Object.defineProperty(navigator, 'hardwareConcurrency', {get: () => 8});\n"
-                            "Object.defineProperty(navigator, 'deviceMemory', {get: () => 8});\n"
-                            "Object.defineProperty(navigator, 'permissions', { value: { query: async () => ({ state: 'prompt' }) } });\n"
-                            "window.chrome = { runtime: {} };\n"
-                            "const getParameter = WebGLRenderingContext.prototype.getParameter;\n"
-                            "WebGLRenderingContext.prototype.getParameter = function(param){\n"
-                            "  if (param === 37445) return 'Intel Inc.';\n"
-                            "  if (param === 37446) return 'Intel Iris OpenGL Engine';\n"
-                            "  return getParameter.call(this, param);\n"
-                            "};\n"
-                            "Object.defineProperty(navigator, 'plugins', {get: () => [1,2,3]});\n"
-                        )
-                    ),
-                    # Network sensor to track API statuses
-                    PageMethod(
-                        method="add_init_script",
-                        script=(
-                            "(function(){"
-                            "  if (window._ateApi) return;"
-                            "  window._ateApi = {"
-                            "    targets: ["
-                            "      '/api/web/public/projects/v2/config',"
-                            "      '/api/web/public/client/v1/info',"
-                            "'/service/LineFeed/GetGameZip',"
-                            "    ],"
-                            "    seen: {}"
-                            "  };"
-                            "  const mark = (url, status) => {"
-                            "    try {"
-                            "      const t = window._ateApi.targets.find(x => url.endsWith(x));"
-                            "      if (t) window._ateApi.seen[t] = status;"
-                            "    } catch(e){}"
-                            "  };"
-                            "  const ofetch = window.fetch;"
-                            "  window.fetch = async function(...args){"
-                            "    const res = await ofetch.apply(this, args);"
-                            "    try { mark(res.url, res.status); } catch(e){}"
-                            "    return res;"
-                            "  };"
-                            "  const oOpen = XMLHttpRequest.prototype.open;"
-                            "  const oSend = XMLHttpRequest.prototype.send;"
-                            "  XMLHttpRequest.prototype.open = function(method, url, ...rest){"
-                            "    this.__ate_url = url;"
-                            "    return oOpen.call(this, method, url, ...rest);"
-                            "  };"
-                            "  XMLHttpRequest.prototype.send = function(...args){"
-                            "    this.addEventListener('load', function(){"
-                            "      try { mark(this.responseURL || this.__ate_url || '', this.status); } catch(e){}"
-                            "    });"
-                            "    return oSend.apply(this, args);"
-                            "  };"
-                            "})();"
-                        )
-                    ),
-                    PageMethod(
-                        method="evaluate",
-                        expression=(
-                            "console.log('[BROWSER] ua=', navigator.userAgent,"
-                            " ' platform=', navigator.platform,"
-                            " ' lang=', navigator.language,"
-                            " ' ch-platform=', (navigator.userAgentData && navigator.userAgentData.platform) || 'NA')"
-                        ),
-                    ),
-
-                    # Soft wait for both APIs to be 200 (adjust timeout as needed)
-                    # PageMethod(
-                    #     method="wait_for_function",
-                    #     expression=(
-                    #         "() => { const s = (window._ateApi && window._ateApi.seen) || {};"
-                    #         " return s['/service/LineFeed/GetGameZip'] === 200; }"
-                    #     ),
-                    #     timeout=10000,
-                    # ),
-                    # Generic stabilization before any per-bookie waits/clicks
-                    # PageMethod(method="wait_for_load_state", state="domcontentloaded"),
-                ]
-                # Cloudflare checks (always run to ensure clearance)
-                if data.get("use_cookies") != 1:
-                    page_methods += [
-                        PageMethod(method="wait_for_function", expression="document.title !== 'Just a moment...'", timeout=5000),
-                        PageMethod(method="wait_for_function", expression="document.cookie.includes('cf_clearance')", timeout=5000),
-                    ]
-                page_methods += [
-                    # Optional pre-selector diagnostic: readyState and early title snippet (moved to monitoring block)
-                    # Content-readiness fallback before selector waits
-                    # PageMethod(method="wait_for_function",
-                    #            expression="document.readyState === 'complete' || (document.body && document.body.innerText.length > 1500)",
-                    #            timeout=10000,
-                    #            ),
-                    PageMethod(
-                        method="wait_for_selector",
-                        selector="xpath=//div[contains(@class,'game-markets') or contains(@class,'groups') or contains(@class,'markets')]",
-                        state="visible",
-                        timeout=15000,
-                    ),
-                    # Secondary CSS union wait to catch variant containers
-                    # PageMethod(
-                    #     method="wait_for_selector",
-                    #     selector="xpath=//div[contains(@class,'game-markets') or contains(@class,'groups') or contains(@class,'markets')]",
-                    #     state="attached",
-                    #     timeout=12000,
-                    # ),
-                    # Trigger layout / lazy-load just in case
-                    # PageMethod(method="evaluate", expression="window.scrollTo(0, 1200)"),
-                    # PageMethod(method="wait_for_timeout", timeout=500),
-                    # Fallback: look for container via querySelector (short last resort)
-                    # PageMethod(
-                    #     method="wait_for_function",
-                    #     expression=(
-                    #         "() => document.querySelector(\"div.game-markets__groups, div[class*='game-view'], div[class*='markets']\") !== null"
-                    #     ),
-                    #     timeout=10000,
-                    # ),
-                    # Best-effort optional clicks that might not exist (non-blocking), after fallback readiness/containers
-                    # PageMethod(
-                    #     method="evaluate",
-                    #     expression=(
-                    #         "(function(){ try { const xpaths = [\"//*[normalize-space(text())='Resultado Exacto']\", \"//*[normalize-space(text())='Marcador correcto']\"]; for (const xp of xpaths){ const el=document.evaluate(xp, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue; if (el){ el.click(); break; } } } catch(e){} })();"
-                    #     ),
-                    # ),
-                    # PageMethod(method="wait_for_timeout", timeout=1000),
-                ]
-                # Monitoring / diagnostics PageMethods (grouped): console breadcrumbs only
-
-                monitor_methods = [
-                    PageMethod(method="evaluate", expression="console.log('ATE: API waits start')"),
-                    PageMethod(method="evaluate", expression="console.log('ATE: API waits end')"),
-                    PageMethod(method="evaluate", expression="console.log('ATE: INIT end')"),
-                    PageMethod(method="evaluate", expression="console.log('ATE: S1 domcontentloaded start')"),
-                    PageMethod(method="evaluate", expression="console.log('ATE: S1 domcontentloaded end')"),
-                    PageMethod(method="evaluate", expression="console.log('ATE: CF title check start')"),
-                    PageMethod(method="evaluate", expression="console.log('ATE: CF title check end')"),
-                    PageMethod(method="evaluate", expression="console.log('ATE: CF clearance check start')"),
-                    PageMethod(method="evaluate", expression="console.log('ATE: CF clearance check end')"),
-                    PageMethod(method="evaluate", expression="console.log('ATE: DIAG start')"),
-                    PageMethod(method="evaluate", expression=("console.log('ATE: before main wait, ready=', document.readyState, ' title=', (document.title||'').slice(0,80))")),
-                    PageMethod(method="evaluate", expression="console.log('ATE: DIAG end')"),
-                    PageMethod(method="evaluate", expression="console.log('ATE: READY start')"),
-                    PageMethod(method="evaluate", expression="console.log('ATE: READY end')"),
-                    PageMethod(method="evaluate", expression="console.log('ATE: SEL1 main XPath start')"),
-                    PageMethod(method="evaluate", expression="console.log('ATE: SEL1 main XPath end')"),
-                    PageMethod(method="evaluate", expression="console.log('ATE: SEL2 CSS union start')"),
-                    PageMethod(method="evaluate", expression="console.log('ATE: SEL2 CSS union end')"),
-                    PageMethod(method="evaluate", expression="console.log('ATE: SCROLL start')"),
-                    PageMethod(method="evaluate", expression="console.log('ATE: SCROLL end')"),
-                    PageMethod(method="evaluate", expression="console.log('ATE: WAIT small start')"),
-                    PageMethod(method="evaluate", expression="console.log('ATE: WAIT small end')"),
-                    PageMethod(method="evaluate", expression="console.log('ATE: FALLBACK presence start')"),
-                    PageMethod(method="evaluate", expression="console.log('ATE: FALLBACK presence end')"),
-                    PageMethod(method="evaluate", expression="console.log('ATE: CLICK optional start')"),
-                    PageMethod(method="evaluate", expression="console.log('ATE: CLICK optional end')"),
-                ]
-                page_methods += monitor_methods
-                meta_request.update({"playwright_page_methods": page_methods})
                 meta_request["playwright_context_kwargs"].update(
-                    {"viewport": {
-                        "width": 1920,
-                        "height": 3200,
-                    },
+                    {
+                    #     "viewport": {
+                    #     "width": 1920,
+                    #     "height": 3200,
+                    # },
                         "bypass_csp": True,
                         "service_workers": "allow",
                     }
                 )
+            elif data["bookie_id"] == "1XBet" and data["scraping_tool"] == "zyte_api":
+                meta_request.update({"zyte_api_automap": {
+                    "geolocation": "ES",
+                    "browserHtml": True,
+                    "session": {"id": str(uuid4())},
+                    "actions": [
+                        {
+                            "action": "waitForSelector",
+                            "selector": {
+                                "type": "xpath",
+                                "value": "//div[contains(@class, 'game-markets ')]",
+                                "state": "visible",
+                            }
+                        }
+                    ]
+                }
+                }
+                )
+            elif data["bookie_id"] == "888Sport":
+                meta_request.update({
+                    "handle_httpstatus_list": [404],
+                    "playwright_page_methods": [
+                        # Ensure the markets exist in the DOM
+                        PageMethod(
+                            Helpers.execute_page_methods,
+                            {
+                                "method":"wait_for_selector",
+                                "selector":"//div[@data-testid='market-collapse-container']",
+                                "timeout":30000,
+                                "state":"attached",
+                            }
+                        , data["bookie_id"]),
+                        # One-shot click via evaluate (no Playwright auto-retries)
+                        PageMethod(
+                            method="evaluate",
+                            expression=(
+                                """
+                                (() => {
+                                  // Support ES/other locales
+                                  const xp = "(//*[normalize-space(text())='Marcador correcto' or normalize-space(text())='Resultado Exacto'])[1]";
+                                  const res = document.evaluate(xp, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+                                  const label = res.singleNodeValue;
+                                  if (!label) return 'not-found';
+
+                                  // Scroll into view so a real click is feasible
+                                  label.scrollIntoView({behavior:'instant', block:'center'});
+
+                                  // Find the 888Sport container + trigger
+                                  const container = label.closest("div[data-testid='market-collapse-container']");
+                                  const trigger = container?.querySelector("[data-testid='market-collapse-trigger']") || label;
+
+                                  // Only click if the market appears collapsed (per your HTML, class toggles)
+                                  const isCollapsed = !!(container && container.classList.contains('PreplayMarkets--collapsed'));
+                                  if (!isCollapsed) return 'already-open';
+
+                                  // Dispatch a single click (no retries)
+                                  trigger.dispatchEvent(new MouseEvent('click', {bubbles:true, cancelable:true, view:window}));
+                                  return 'clicked';
+                                })();
+                                """
+                            ),
+                        ),
+                        # Optional: small pause to let the collapse expand
+                        PageMethod(method="wait_for_timeout", timeout=700),
+                    ]
+                })
             elif data["bookie_id"] == "AdmiralBet":
                 if data["sport_id"] == "1":
                     meta_request.update(dict(playwright_page_methods = [
                         PageMethod(
-                            method="wait_for_selector",
-                            selector="//div[@class='d-flex w-100 px-2 px-lg-0 ng-star-inserted']",
-                        ),
+                            Helpers.execute_page_methods,
+                            {
+                                "method":"wait_for_selector",
+                                "selector":"//div[@class='d-flex w-100 px-2 px-lg-0 ng-star-inserted']",
+                            }
+                        , data["bookie_id"]),
                         PageMethod(
-                            method="click",
-                            selector="//button[@id='onetrust-reject-all-handler']"
-                        ),
+                            Helpers.execute_page_methods,
+                            {
+                                "method":"click",
+                                "selector":"//button[@id='onetrust-reject-all-handler']"
+                            }
+                        , data["bookie_id"]),
                         # PageMethod(
                         #     method="click",
                         #     selector="//asw-marketboard-market[.//span[normalize-space(text())='Resultado'] and .//*[contains(@class, 'market-collapsed-icon ng-star-inserted')]]",
@@ -1779,26 +1902,38 @@ class Helpers():
                 elif data["sport_id"] == "2":
                     meta_request.update(dict(playwright_page_methods=[
                         PageMethod(
-                            method="wait_for_selector",
-                            selector="//div[@class='d-flex w-100 px-2 px-lg-0 ng-star-inserted']",
-                        ),
+                            Helpers.execute_page_methods,
+                            {
+                                "method":"wait_for_selector",
+                                "selector":"//div[@class='d-flex w-100 px-2 px-lg-0 ng-star-inserted']",
+                            }
+                        , data["bookie_id"]),
                         PageMethod(
-                            method="click",
-                            selector="//button[@id='onetrust-reject-all-handler']"
-                        ),
+                            Helpers.execute_page_methods,
+                            {
+                                "method":"click",
+                                "selector":"//button[@id='onetrust-reject-all-handler']"
+                            }
+                        , data["bookie_id"]),
                     ],
                     )
                     )
                 elif data["sport_id"] == "3":
                     meta_request.update(dict(playwright_page_methods=[
                         PageMethod(
-                            method="wait_for_selector",
-                            selector="//div[@class='d-flex w-100 px-2 px-lg-0 ng-star-inserted']",
-                        ),
+                            Helpers.execute_page_methods,
+                            {
+                                "method":"wait_for_selector",
+                                "selector":"//div[@class='d-flex w-100 px-2 px-lg-0 ng-star-inserted']",
+                            }
+                        , data["bookie_id"]),
                         PageMethod(
-                            method="click",
-                            selector="//button[@id='onetrust-reject-all-handler']"
-                        ),
+                            Helpers.execute_page_methods,
+                            {
+                                "method":"click",
+                                "selector":"//button[@id='onetrust-reject-all-handler']"
+                            }
+                        , data["bookie_id"]),
                     ],
                     )
                     )
@@ -1806,13 +1941,19 @@ class Helpers():
                 if data["sport_id"] == "1":
                     meta_request.update(dict(playwright_page_methods=[
                         PageMethod(
-                            method="wait_for_selector",
-                            selector="//span[@class='text-xs sm:text-sm truncate w-full text-white']"
-                        ),
+                            Helpers.execute_page_methods,
+                            {
+                                "method":"wait_for_selector",
+                                "selector":"//span[@class='text-xs sm:text-sm truncate w-full text-white']"
+                            }
+                        , data["bookie_id"]),
                         PageMethod(
-                            method="click",
-                            selector="//*[text()='Marcador correcto']",
-                        ),
+                            Helpers.execute_page_methods,
+                            {
+                                "method":"click",
+                                "selector":"//*[text()='Marcador correcto']",
+                            }
+                        , data["bookie_id"]),
                         PageMethod(
                             method="wait_for_timeout",
                             timeout=1000
@@ -1823,87 +1964,153 @@ class Helpers():
                 else:
                     meta_request.update(dict(playwright_page_methods=[
                         PageMethod(
-                            method="wait_for_selector",
-                            selector="//span[@class='text-xs sm:text-sm truncate w-full text-white']"
-                        )
+                            Helpers.execute_page_methods,
+                            {
+                                "method":"wait_for_selector",
+                                "selector":"//span[@class='text-xs sm:text-sm truncate w-full text-white']"
+                            }
+                        , data["bookie_id"])
                     ]
                     )
                     )
             elif data["bookie_id"] == "BetWay":
+                meta_request.update({"playwright_page_methods": [
+                    PageMethod(
+                        Helpers.execute_page_methods,
+                        {
+                            "method":"wait_for_selector",
+                            "selector":"//section[contains(@data-testid, 'market-')]"
+                        }
+                    , data["bookie_id"]),
+                ]
+                }
+                )
                 if data["sport_id"] == "1":
-                    meta_request.update({"playwright_page_methods":[
+                    meta_request.update({"playwright_page_methods": [
                         PageMethod(
-                            method="wait_for_selector",
-                            selector="//section[@data-testid='market-table-section']"
-                        ),
-                        PageMethod(
-                            method="click",
-                            selector="//*[text()='Resultado Exacto']",
-                            force=True,
-                            timeout=2000
-                        )
+                            Helpers.execute_page_methods,
+                            {
+                                "method":"click",
+                                "selector":"//*[text()='Resultado Exacto']",
+                                "force":True,
+                                "timeout":15000
+                            }
+                        , data["bookie_id"])
                     ]
                     }
                     )
+                if data["sport_id"] == "2":
+                    meta_request.update({
+                        "playwright_page_methods": [
+                            PageMethod(
+                                Helpers.execute_page_methods,
+                                {
+                                    "method":"click",
+                                    "selector":"//*[text()='Otros Puntos totales']",
+                                    "force":True,
+                                    "timeout": 5000,
+                                }
+                            , data["bookie_id"])
+                        ]
+                    })
             elif data["bookie_id"] == "Bwin":
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
-                        method="wait_for_selector",
-                        selector="//ms-option-panel[@class='option-panel']",
-                    ),
+                        Helpers.execute_page_methods,
+                        {
+                            "method":"wait_for_selector",
+                            "selector":"//ms-option-panel[@class='option-panel']",
+                        }
+                    , data["bookie_id"]),
                 ]
                 }
                 )
                 if data["sport_id"] == "1":
                     meta_request.update({"playwright_page_methods":[
                         PageMethod(
-                            method="click",
-                            selector="//div[@slot='title' and normalize-space(.)='Marcador exacto']",
-                        ),
+                            Helpers.execute_page_methods,
+                            {
+                                "method":"click",
+                                "selector":"//div[@slot='title' and normalize-space(.)='Marcador exacto']",
+                            }
+                        , data["bookie_id"]),
+                    ]})
+                if data["sport_id"] == "2":
+                    meta_request.update({"playwright_page_methods":[
+                        PageMethod(
+                            Helpers.execute_page_methods,
+                            {
+                                "method":"click",
+                                "selector":"//div[@slot='title' and normalize-space(.)='Totales']",
+                            }
+                        , data["bookie_id"]),
+                        PageMethod(
+                            method="wait_for_timeout",
+                            timeout=1000
+                        )
                     ]})
             elif data["bookie_id"] == "Bet777":
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
-                        method="wait_for_selector",
-                        selector="//div[@class='mt-0']",
-                    ),
+                        Helpers.execute_page_methods,
+                        {
+                            "method":"wait_for_selector",
+                            "selector":"//div[@class='mt-0']",
+                        }
+                    , data["bookie_id"]),
+                ],
+                }
+                )
+            elif data["bookie_id"] == "CasinoGranMadrid":
+                meta_request.update({"playwright_page_methods": [
+                    PageMethod(method="wait_for_load_state", state="domcontentloaded")
                 ],
                 }
                 )
             elif data["bookie_id"] == "CasinoBarcelona":
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
-                        method="wait_for_selector",
-                        selector="//div[@class='parent-container-event open']",
-                        # timeout=40000
-                    ),
-                    ]
+                        Helpers.execute_page_methods,
+                        {
+                            "method":"wait_for_selector",
+                            "selector":"//div[contains(@class, 'container-event-questions')]"
+                        }
+                    , data["bookie_id"])
+                ],
                 }
                 )
             elif data["bookie_id"] == "Casumo":
                 pass
             elif data["bookie_id"] == "Codere":
-                pass
+                meta_request.update({"playwright_page_methods": [
+                    PageMethod(method="wait_for_load_state", state="domcontentloaded")
+                ],
+                }
+                )
             elif data["bookie_id"] == "DaznBet":
                 if data["sport_id"] == "1":
                     meta_request.update({"playwright_page_methods":[
                         PageMethod(
-                            method="wait_for_selector",
-                            selector="//div[@class='accordion-container ']",
-                            # timeout=40000
-                        ),
+                            Helpers.execute_page_methods,
+                            {
+                                "method":"wait_for_selector",
+                                "selector":"//div[@class='accordion-container ']",
+                            }
+                        , data["bookie_id"]),
                         PageMethod(
-                            method="click",
-                            # selector=f"//*[translate(normalize-space(), {uppercase_alphabet} , {lowercase_alpabet}) = 'goles totales']",
-                            selector="//*[translate(normalize-space(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZÁÉÍÓÚÜÑ', 'abcdefghijklmnopqrstuvwxyzáéíóúüñ') = 'goles totales']",
-                            # timeout=40000
-                        ),
+                            Helpers.execute_page_methods,
+                            {
+                                "method":"click",
+                                "selector":"//*[translate(normalize-space(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZÁÉÍÓÚÜÑ', 'abcdefghijklmnopqrstuvwxyzáéíóúüñ') = 'goles totales']",
+                            }
+                        , data["bookie_id"]),
                         PageMethod(
-                            method="click",
-                            # selector=f"//*[translate(normalize-space(), {uppercase_alphabet} , {lowercase_alpabet}) = 'marcador exacto']",
-                            selector="//*[translate(normalize-space(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZÁÉÍÓÚÜÑ', 'abcdefghijklmnopqrstuvwxyzáéíóúüñ') = 'marcador exacto']",
-                            # timeout=40000
-                        ),
+                            Helpers.execute_page_methods,
+                            {
+                                "method":"click",
+                                "selector":"//*[translate(normalize-space(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZÁÉÍÓÚÜÑ', 'abcdefghijklmnopqrstuvwxyzáéíóúüñ') = 'marcador exacto']",
+                            }
+                        , data["bookie_id"]),
                         PageMethod(
                             method='wait_for_timeout',
                             timeout=1000
@@ -1915,10 +2122,12 @@ class Helpers():
                     meta_request.update({"playwright_page_methods":[
 
                         PageMethod(
-                            method="wait_for_selector",
-                            selector="//div[@class='accordion-container ']",
-                            # timeout=40000
-                        ),
+                            Helpers.execute_page_methods,
+                            {
+                                "method":"wait_for_selector",
+                                "selector":"//div[@class='accordion-container ']",
+                            }
+                        , data["bookie_id"]),
                         # PageMethod(
                         #     method="click",
                         #     selector="//*[translate(normalize-space(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZÁÉÍÓÚÜÑ', 'abcdefghijklmnopqrstuvwxyzáéíóúüñ') = 'puntos totales']",
@@ -1931,10 +2140,12 @@ class Helpers():
                 elif data["sport_id"] == "3":
                     meta_request.update({"playwright_page_methods": [
                         PageMethod(
-                            method="wait_for_selector",
-                            selector="//div[@class='accordion-container ']",
-                            # timeout=40000
-                        ),
+                            Helpers.execute_page_methods,
+                            {
+                                "method":"wait_for_selector",
+                                "selector":"//div[@class='accordion-container ']",
+                            }
+                        , data["bookie_id"]),
 
                         # PageMethod(
                         #     method="click",
@@ -1944,190 +2155,256 @@ class Helpers():
                     ],
                     }
                     )
-            elif data["bookie_id"] == "EfBet":
-                if data["sport_id"] == "1":
-                    repeated_clicks = [
-                        PageMethod(
-                            "evaluate",
-                            expression="""
-                                const element = document.evaluate("//div[contains(@class, 'container')]", document, null,
-                                XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-                                if (element) {
-                                    element.click();
-                                }
-                            """
-                        )
-                        for _ in range(15)
-                    ]
 
-                    page_methods = [
-                        PageMethod("click", selector="//*[text()='Todos']"),
-                        *repeated_clicks,
-                        PageMethod(
-                            "evaluate",
-                            expression="""
-                                const element = document.evaluate("//*[text()='Resultado Exacto (0:0)']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-                                if (element) {
-                                    element.click();
-                                }
-                            """
-                        ),
-                        PageMethod("wait_for_timeout", timeout=2000)
-                    ]
-                    meta_request.update({"playwright_page_methods": page_methods})
-
-                elif data["sport_id"] == "2":
-                    meta_request.update({"playwright_page_methods":[
-                        PageMethod(
-                            method="click",
-                            selector="//div[@class='container']",
-                        ),
-                        PageMethod(
-                            method="click",
-                            selector="//div[@class='container']",
-                        ),
-                        PageMethod(
-                            method="click",
-                            selector="//div[@class='container']",
-                        ),
-                        PageMethod(
-                            method="click",
-                            selector="//div[@class='container']",
-                        ),
-                        PageMethod(
-                            method="click",
-                            selector="//div[@class='container']",
-                        ),
-                        PageMethod(
-                            method="click",
-                            selector="//div[@class='container']",
-                        ),
-                        PageMethod(
-                            method="click",
-                            selector="//div[@class='container']",
-                        ),
-                        PageMethod(
-                            method="click",
-                            selector="//div[@class='container']",
-                        ),
-                        PageMethod(
-                            method="wait_for_timeout",
-                            timeout=2000
-                        )
-                    ]
-                    }
-                    )
-            elif data["bookie_id"] == "MarathonBet":
-                meta_request.update({"playwright_page_methods": [
-                    PageMethod(
-                        method="wait_for_selector",
-                        selector="//div[@class='bg coupon-row']",
-                    ),
-                    PageMethod(
-                        method= 'wait_for_timeout',
-                        timeout=5000
-                    )
+            elif data["bookie_id"] == "JokerBet":
+                meta_request.update({
+                    "playwright_page_methods": [
+                    PageMethod(method="wait_for_load_state", state="domcontentloaded")
                 ],
                 }
                 )
-            # elif data["bookie_id"] == "MarcaApuestas":
-            #     if data["sport_id"] == "3":
-            #         meta_request.update(dict(playwright_page_methods=[
-            #             # PageMethod(
-            #             #     method="wait_for_selector",
-            #             #     selector="//div[@class='d-flex w-100 px-2 px-lg-0 ng-star-inserted']",
-            #             # ),
-            #             PageMethod(
-            #                 method="wait_for_selector",
-            #                 selector="//ul[@class='types expander-content']"
-            #             ),
-            #             # cliquer sur le premier tournoi dispo
+            elif data["bookie_id"] == "Luckia":
+                # Zyte API settings
+                meta_request.update({"zyte_api_automap": {
+                    "geolocation": "ES",
+                    "browserHtml": True,
+                    "session": {"id": str(uuid4())},
+                    "actions": [
+                        {
+                            "action": "waitForSelector",
+                            "selector": {
+                                "type": "xpath",
+                                "value": "//div[@class='lp-offers__content']",
+                                "state": "visible",
+                            }
+                        }
+                    ]
+                }
+                }
+                )
+            elif data["bookie_id"] == "MarcaApuestas":
+                if data["sport_id"] == "1":
+                    meta_request.update({"playwright_page_methods": [
+                        PageMethod(
+                            Helpers.execute_page_methods,
+                            {
+                                "method": "click",
+                                "selector": "//div[@class='ta-ItemText' and text()='Todo']",
+                                "timeout": 15000
+                            }
+                            , data["bookie_id"]
+                        ),
+                        PageMethod(
+                            Helpers.execute_page_methods,
+                            {
+                                "method":"click",
+                                "selector":"//*[text()='Resultado Exacto']",
+                                "timeout": 15000
+                            }
+                        , data["bookie_id"]
+                        ),
+                        PageMethod(
+                            Helpers.execute_page_methods,
+                            {
+                                "method": "click",
+                                "selector":"//*[text()[contains(.,'Lista')]]",
+                                "timeout": 15000
+                            }
+                            , data["bookie_id"]
+                        ),
+                    ],
+                    }
+                    )
+                if data["sport_id"] == "2":
+                    meta_request.update({"playwright_page_methods": [
+                        PageMethod(
+                            Helpers.execute_page_methods,
+                            {
+                                "method": "click",
+                                # "selector": "//*[text()='']",
+                                "selector": "//*[text()[contains(.,'Todos los mercados (')]]",
+                                "timeout": 15000
+                            }
+                            , data["bookie_id"]
+                        ),
+                        PageMethod(
+                            Helpers.execute_page_methods,
+                            {
+                                "method": "wait_for_selector",
+                                "selector": "//*[text()[contains(.,'Línea de Dinero')]]",
+                                # "selector": "//div[contains(@class, 'ta-FlexPane ta-ExpandableView ta-AggregatedMarket')]",
+                                "timeout": 15000
+                            }
+                            , data["bookie_id"]
+                        ),
+                        PageMethod(
+                            Helpers.execute_page_methods,
+                            {
+                                "method": "wait_for_selector",
+                                "selector": "//*[text()[contains(.,'Puntos Totales (Mas/Menos)')]]",
+                                # "selector": "//div[contains(@class, 'ta-FlexPane ta-ExpandableView ta-AggregatedMarket')]",
+                                "timeout": 15000
+                            }
+                            , data["bookie_id"]
+                        ),
+                        PageMethod(
+                            Helpers.execute_page_methods,
+                            {
+                                "method": "wait_for_load_state",
+                                "state": "networkidle",
+                                # "selector": "//div[contains(@class, 'ta-FlexPane ta-ExpandableView ta-AggregatedMarket')]",
+                                "timeout": 15000
+                            }
+                            , data["bookie_id"]
+                        ),
+                    ],
+                    }
+                    )
+
+
+            elif data["bookie_id"] == "OlyBet":
+                meta_request.update({"playwright_page_methods": [
+                    PageMethod(
+                        Helpers.execute_page_methods,
+                        {
+                            "method":"wait_for_selector",
+                            "selector":"//div[@class='markets']",
+                        }
+                    , data["bookie_id"])
+                ],
+                }
+                )
+            elif data["bookie_id"] == "Paston":
+                meta_request.update({"playwright_page_methods": [
+                    PageMethod(method="wait_for_load_state", state="domcontentloaded")
+                ],
+                }
+                )
+            elif data["bookie_id"] == "PokerStars":
+                # "handle_httpstatus_list": [301],
+                meta_request.update({
+                    "handle_httpstatus_list": [301],
+                    "playwright_page_methods": [
+                        PageMethod(method="wait_for_load_state", state="domcontentloaded")
+                    ],
+                }
+                )
+
+            elif data["bookie_id"] == "RetaBet" and data["scraping_tool"] == "camoufox":
+                meta_request.update({"playwright_page_methods": [
+                    PageMethod(
+                        method="wait_for_timeout",
+                        timeout=10000,
+                    ),
+                    PageMethod(
+                        Helpers.execute_page_methods,
+                        {
+                            "method":"wait_for_selector",
+                            "selector":"//div[@class='jbcont detail__bets-wrapper']",
+                        }
+                    , data["bookie_id"])
+                ],
+                }
+                )
+            elif data["bookie_id"] == "RetaBet" and data["scraping_tool"] == "zyte_api":
+                # reference for action
+                # https://docs.zyte.com/zyte-api/usage/reference.html#operation/extract/request/actions
+                meta_request.update({"zyte_api_automap": {
+                    "geolocation": "ES",
+                    "browserHtml": True,
+                    "screenshot": True,
+                    "session": {"id": str(uuid4())},
+                    "actions": [
+                        # 1. Wait for the initial content (Known to work)
+                        {
+                            "action": "waitForSelector",
+                            "selector": {
+                                "type": "xpath",
+                                "value": "//div[contains(@class, 'bets-wrapper')]",
+                                "state": "visible"
+                            },
+                            "timeout": 15,
+                            "onError": "continue"
+                        },
+                        # 2. Short pause for stability (in seconds)
+                        # {
+                        #     "action": "waitForTimeout",
+                        #     "timeout": 2,
+                        #     "onError": "continue"
+                        # },
+                        # 3. Combined Click (Auto-scrolls)
+                        # {
+                        #     "action": "click",
+                        #     "selector": {
+                        #         "type": "xpath",
+                        #         # Target the button container with the 'jalb' class
+                        #         "value": "(//div[contains(@class, 'jalb')])[1]",
+                        #         "state": "visible"
+                        #     },
+                        #     "timeout": 5,
+                        #     "onError": "continue"
+                        # }
+                    ]
+                }})
+            # elif data["bookie_id"] == "Sportium":
+            #     if data["sport_id"] == "1":
+            #         meta_request.update({"playwright_page_methods": [
             #             PageMethod(
             #                 method="click",
-            #                 selector="//ul[@class='types expander-content']//a"
-            #             )
-            #         ],))
-            elif data["bookie_id"] == "RetaBet":
-                meta_request.update({"zyte_api_automap": {
-                        "geolocation": "ES",
-                        "browserHtml": True,
-                        "session": {"id": str(uuid4())},
-                        "actions":[
-                            {
-                                "action": "waitForSelector",
-                                "selector": {
-                                    "type": "xpath",
-                                    "value": "//div[@class='bets__wrapper jbgroup jgroup']",
-                                    "state": "visible",
-                                }
-                            },
-                            # {
-                            #     "action": "click",
-                            #     "selector": {
-                            #         "type": "xpath",
-                            #         "value":
-                            #     }
-                            # }
-                        ]
-                }
-                }
-                )
-            elif data["bookie_id"] == "Sportium":
-                if data["sport_id"] == "1":
-                    meta_request.update({"playwright_page_methods": [
-                        PageMethod(
-                            method="click",
-                            selector="//*[text()[contains(.,'Todos')]]"
-                        ),
-                        PageMethod(
-                            method="wait_for_selector",
-                            selector="//div[@class='headerText']"
-                        ),
-                    PageMethod(
-                        method="click",
-                        selector="//*[text()='Lista']",
-                    ),
-                    PageMethod(
-                        method="click",
-                        selector="//*[text()='Goles Totales - Más/Menos']"
-                    ),
-                    PageMethod(
-                        method="click",
-                        selector="//*[text()='Todo']"
-                    ),
-                    ],
-                    }
-                    )
-                elif data["sport_id"] == "2":
-                    meta_request.update({"playwright_page_methods": [
-                        PageMethod(
-                            method="click",
-                            selector="//*[text()[contains(.,'Todos (')]]",
-                        ),
-                        PageMethod(
-                            method="wait_for_selector",
-                            selector="//div[@class='headerText' and normalize-space(text())='Puntos Totales (Prórroga Incl.)']"
-                        ),
-                    ],
-                    }
-                    )
-            elif data["bookie_id"] == "Versus":
-                meta_request.update({"playwright_page_methods": [
-                    PageMethod(
-                        method="wait_for_selector",
-                        selector="//div[@class='ta-FlexPane ta-EventListGroups']",
-                        timeout=40000,
-                    ),
-                ],
-                }
-                )
+            #                 selector="//*[text()[contains(.,'Todos')]]"
+            #             ),
+            #             PageMethod(
+            #                 method="wait_for_selector",
+            #                 selector="//div[@class='headerText']"
+            #             ),
+            #         PageMethod(
+            #             method="click",
+            #             selector="//*[text()='Lista']",
+            #         ),
+            #         PageMethod(
+            #             method="click",
+            #             selector="//*[text()='Goles Totales - Más/Menos']"
+            #         ),
+            #         PageMethod(
+            #             method="click",
+            #             selector="//*[text()='Todo']"
+            #         ),
+            #         ],
+            #         }
+            #         )
+            #     elif data["sport_id"] == "2":
+            #         meta_request.update({"playwright_page_methods": [
+            #             PageMethod(
+            #                 method="click",
+            #                 selector="//*[text()[contains(.,'Todos (')]]",
+            #             ),
+            #             PageMethod(
+            #                 method="wait_for_selector",
+            #                 selector="//div[@class='headerText' and normalize-space(text())='Puntos Totales (Prórroga Incl.)']"
+            #             ),
+            #         ],
+            #         }
+            #         )
+            # elif data["bookie_id"] == "Versus":
+            #     meta_request.update({"playwright_page_methods": [
+            #         PageMethod(
+            #             method="wait_for_selector",
+            #             selector="//div[@class='ta-FlexPane ta-EventListGroups']",
+            #             timeout=40000,
+            #         ),
+            #     ],
+            #     }
+            #     )
             elif data["bookie_id"] == "WilliamHill":
                 meta_request.update(
                     {"playwright_page_methods": [
                         PageMethod(
-                            method="wait_for_selector",
-                            selector= "//section[@class='event-container scrollable']"
-                    ),
+                            Helpers.execute_page_methods,
+                            {
+                                "method":"wait_for_selector",
+                                "selector": "//section[@class='event-container scrollable']"
+                            }
+                        , data["bookie_id"]),
                 ],
                         "header": {
                             'Accept': '*/*', 'Connection': 'keep-alive',
@@ -2140,10 +2417,13 @@ class Helpers():
             elif data["bookie_id"] == "ZeBet":
                 meta_request.update({"playwright_page_methods": [
                     PageMethod(
-                        method="wait_for_selector",
-                        selector="//section[@id='event-top-bets']",
-                        timeout=40000,
-                    ),
+                        Helpers.execute_page_methods,
+                        {
+                            "method":"wait_for_selector",
+                            "selector":"//section[@id='event-top-bets']",
+                            "timeout":40000,
+                        }
+                    , data["bookie_id"]),
                 ],
                 }
                 )
@@ -2487,6 +2767,10 @@ class Helpers():
         else:
             web_url = "https://href.li/?" + url
             return web_url
+
+    def build_hash(self, proxy_ip, bookie_id):
+        import hashlib
+        return int(hashlib.md5(str(proxy_ip + bookie_id).encode('utf-8')).hexdigest()[:8], 16)
 
 if __name__ == "__main__":
     print("main from utilities")

@@ -107,14 +107,19 @@ list_of_markets_V2 = {
                 "Menos/Más juegos " + str(x) + ",5" for x in tennis_intervals
             ],
 },
+"Botemania": {
+    "1": ["Resultado Final", "Tiempo reglamentario", "Total de goles", "Resultado Correcto", ],
+    "2": ["Prórroga incluida", "Total de puntos - Prórroga incluida", ],
+    "3": ["Cuotas del partido", "Total de juegos"],
+},
 "Bwin": {
     "1": ['Resultado del partido', 'Total de goles', 'Marcador exacto'],
-    "2": ["Ganador", "Total"],
+    "2": ["Ganador", "Totales"],
     "3": ["¿Ganador del partido (1-2)?", "¿Cuántos juegos se disputarán en el partido?"],
 },
 "BetWay": {
-    "1": ["1-X-2",  "Goles en total", "Resultado Exacto"],
-    "2": ["Ganador del partido", "Vencedor del partido", "Puntos totales"],
+    "1": ["1-X-2", "Goles en total", "Resultado Exacto"],
+    "2": ["Ganador del partido", "Vencedor del partido", "Puntos Totales (Mas/Menos)"],
     "3": ["Ganador del Partido", "Juegos en total"],
 },
 "CasinoGranMadrid" : {
@@ -183,13 +188,19 @@ list_of_markets_V2 = {
     "3": ["Cuotas del partido", "Total de juegos"],
 },
 "MarcaApuestas": {
-    "1": ["Ganador (1X2)", "Total Goles - Más/Menos", "Resultado Exacto"],
-    "2": ["Línea de Juego", "Total Puntos - Adicional (Incluida Prórroga)"],
+    "1": ["Ganador (1X2)", "Ganador (1X2) - Cuotas Mejoradas", "Total Goles - Más/Menos", "Resultado Exacto"],
+    "2": ["Línea de Dinero", "Puntos Totales (Mas/Menos)"],
+    "3": ["Cuotas del partido", "Total de juegos"],
+},
+"Monopoly": {
+    "1": ["Resultado Final", "Tiempo reglamentario", "Total de goles", "Resultado Correcto", ],
+    "2": ["Prórroga incluida", "Total de puntos - Prórroga incluida", ],
     "3": ["Cuotas del partido", "Total de juegos"],
 },
 "888Sport": {
-    "1": ["3-Way", "Total Goals Over/Under", "Correct Score"],
-    "2": ["Money Line", "Total Points"],
+    # "1": ["3-Way", "Total Goals Over/Under", "Correct Score"],
+    "1": ["Ganador del partido", "Total de goles - Por encima/debajo", "Marcador correcto"],
+    "2": ["Ganador", "Puntos totales"],
     "3": ["Cuotas del partido", "Total de juegos"],
 },
 "Bet777": {
@@ -253,7 +264,8 @@ list_of_markets_V2 = {
 },
 "DaznBet": {
     "1": ["1X2", "Goles Totales", "Marcador Exacto"],
-    "2": ["Ganador Sin Empate (Tiempo Regular)", "Puntos Totales"],
+    # "2": ["Ganador Sin Empate (Tiempo Regular)", "Puntos Totales"],
+    "2": ["Tiempo Regular (Incl. Tiempo Extra) - Ganador", "Tiempo Regular (Incl. Tiempo Extra) - Puntos Totales"],
     "3": ["Ganador", "Juegos Totales"],
 },
 "Versus": {
@@ -277,8 +289,53 @@ def get_context_infos(bookie_name):
     from scrapy_playwright_ato.utilities import Connect, Helpers
     connection = Connect().to_db(db="ATO_production", table=None)
     cursor = connection.cursor()
+    # LEGACY CODE
+    # if isinstance(bookie_name, list):
+    #     query = """
+    #         SELECT user_agent_hash, bookie, browser_type, cookies, proxy_ip, timestamp, user_agent
+    #         FROM ATO_production.V2_Cookies
+    #     """
+    #     cursor.execute(query)
+    #     context_infos = []
+    #     contexts = cursor.fetchall()
+    #     for context in contexts:
+    #         context_infos.append(
+    #             {
+    #                 "user_agent_hash": context[0],
+    #                 "bookie_id": context[1],
+    #                 "browser_type": context[2],
+    #                 "cookies": context[3],
+    #                 "proxy_ip": context[4],
+    #                 "timestamp": context[5],
+    #                 "user_agent": context[6],
+    #             }
+    #         )
+    # else:
+    #     query = """
+    #         SELECT user_agent_hash, bookie, browser_type, cookies, proxy_ip, timestamp, user_agent
+    #         FROM ATO_production.V2_Cookies WHERE bookie = %s
+    #     """
+    #     cursor.execute(query, (bookie_name,))
+    #     context_infos = []
+    #     contexts = cursor.fetchall()
+    #     for context in contexts:
+    #         context_infos.append(
+    #             {
+    #                 "user_agent_hash": context[0],
+    #                 "bookie_id": context[1],
+    #                 "browser_type": context[2],
+    #                 "cookies": context[3],
+    #                 "proxy_ip": context[4],
+    #                 "timestamp": context[5],
+    #                 "user_agent": context[6],
+    #             }
+    #         )
     if isinstance(bookie_name, list):
-        query = "SELECT * FROM ATO_production.V2_Cookies"
+        query = """
+            SELECT user_agent_hash, bookie, browser_type, cookies, context_kwargs, proxy_ip, timestamp, user_agent
+            FROM ATO_production.V2_Cookies WHERE valid_cookie = 1
+
+        """
         cursor.execute(query)
         context_infos = []
         contexts = cursor.fetchall()
@@ -289,13 +346,17 @@ def get_context_infos(bookie_name):
                     "bookie_id":context[1],
                     "browser_type":context[2],
                     "cookies":context[3],
-                    "proxy_ip":context[4],
-                    "timestamp":context[5],
-                    "user_agent":context[6],
+                    "context_kwargs": context[4],
+                    "proxy_ip":context[5],
+                    "timestamp":context[6],
+                    "user_agent":context[7],
                 }
             )
     else:
-        query = "SELECT * FROM ATO_production.V2_Cookies WHERE bookie = %s"
+        query = """
+            SELECT user_agent_hash, bookie, browser_type, cookies, context_kwargs, proxy_ip, timestamp, user_agent
+            FROM ATO_production.V2_Cookies WHERE bookie = %s AND valid_cookie = 1
+        """
         cursor.execute(query, (bookie_name,))
         context_infos = []
         contexts = cursor.fetchall()
@@ -306,9 +367,10 @@ def get_context_infos(bookie_name):
                     "bookie_id": context[1],
                     "browser_type": context[2],
                     "cookies": context[3],
-                    "proxy_ip": context[4],
-                    "timestamp": context[5],
-                    "user_agent": context[6],
+                    "context_kwargs": context[4],
+                    "proxy_ip": context[5],
+                    "timestamp": context[6],
+                    "user_agent": context[7],
                 }
             )
     # print(context_infos)
@@ -576,12 +638,13 @@ def normalize_odds_variables(odds, sport, home_team, away_team):
 
     # Keywords to look for
     winners_keywords = [
-        "Partido", "partido", "Match_Result", "Match Result", "Ganador", "1x2", "1X2", "1-2", "Normal_Time_Result", "1-X-2",
+        "Partido", "partido", "Match_Result", "Match Result", "Ganador", "1x2", "1X2", "1-2", "1-X-2",
         "Prórroga incluida", "Oferta básica", "Money Line", "Winner", "3-Way", "Local", "ganará", "Línea de Juego",
-        "Apuestas a ganador", "Cuotas de partido", "Tiempo reglamentario", "Vencedor del partido",
-        "Resultado final", "Resultado Final", "¿Quién ganará el partido?",
+        "Apuestas a ganador", "Cuotas de partido", "Tiempo reglamentario", "Vencedor del partido", "Normal_Time_Result",
+        "Resultado final", "Resultado Final", "¿Quién ganará el partido?", "Victoria sin empate", "Ganador del partido",
         "Resultado Del Partido - Cuotas Mejoradas", "Victoria sin empate (en caso de empate se anula la apuesta)",
-        "Victoria sin empate", "Match Winner", "Ganador Sin Empate (Tiempo Regular)", "Ganador del partido",
+        "Match Winner", "Ganador Sin Empate (Tiempo Regular)", "Ganador del partido", "Ganador (1X2) - Cuotas Mejoradas",
+        "Lineas de Juego", "Línea de Dinero",
     ]
     not_winners_keywords = ["Puntos", "puntos", "Menos", "menos", "Goals"]
     home_team_keywords = ["1", "HB_H", ".HB_H", "home", "Local", "W1"]
@@ -732,13 +795,14 @@ def normalize_odds_variables_temp(odds, sport, home_team, away_team, orig_home_t
 
     # Keywords to look for
     winners_keywords = [
-        "Partido", "partido", "Match_Result", "Match Result", "Ganador", "1x2", "1X2", "1-2", "Normal_Time_Result", "1-X-2",
+        "Partido", "partido", "Match_Result", "Match Result", "Ganador", "1x2", "1X2", "1-2", "Normal_Time_Result",
         "Prórroga incluida", "Oferta básica", "Money Line", "Winner", "3-Way", "Local", "ganará", "Línea de Juego",
         "Apuestas a ganador", "Cuotas de partido", "Tiempo reglamentario", "Vencedor del partido",
-        "Resultado final", "Resultado Final", "¿Quién ganará el partido?",
+        "Resultado final", "Resultado Final", "¿Quién ganará el partido?", "1-X-2",
         "Resultado Del Partido - Cuotas Mejoradas", "Ganador del partido - Cuotas mejoradas",
         "Victoria sin empate (en caso de empate se anula la apuesta)", "Victoria sin empate", "Match Winner",
-        "Ganador Sin Empate (Tiempo Regular)"
+        "Ganador Sin Empate (Tiempo Regular)", "Tiempo Regular (Incl. Tiempo Extra) - Ganador", "Victorias del equipo",
+        "Lineas de Juego",
     ]
     not_winners_keywords = ["Puntos", "puntos", "Menos", "menos", "Goals"]
     home_team_keywords = ["1", "HB_H", ".HB_H", "home", "Local", "W1"]
