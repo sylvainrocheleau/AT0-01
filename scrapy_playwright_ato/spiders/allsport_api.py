@@ -1,3 +1,9 @@
+"""AllSport API spider.
+
+Scrapes upcoming events from the AllSport API (RapidAPI) and yields a
+ScrapersItem containing normalized event data per competition.
+"""
+
 import scrapy
 import requests
 import datetime
@@ -12,7 +18,30 @@ from ..bookies_configurations import bookie_config
 from ..utilities import Helpers, Connect
 
 class APISpider(scrapy.Spider):
+    """Scrapy spider that pulls events from the AllSport API.
+
+    The spider:
+    - Selects competitions from `bookie_config`.
+    - Builds API requests depending on sport type.
+    - Normalizes event data into a dictionary keyed by provider event id.
+    - Updates the competition URL status in the database.
+    - Yields a `ScrapersItem` when a competition (or tennis date range) is complete.
+
+    Attributes:
+        name: Scrapy spider name (bookie/provider identifier).
+        pipeline_type: Pipeline modes to run downstream.
+        page_count: Pagination counter per competition_id.
+        data_dict: Accumulated normalized event data per competition_id.
+        next_page: Pagination flag per competition_id.
+        max_tennis_date: Max days range for tennis event scraping.
+    """
+
     def __init__(self, *args, **kwargs):
+        """Initialize the spider and set debug mode for local users.
+
+        Debug mode is enabled when the current OS user is in `LOCAL_USERS`.
+        """
+
         super().__init__(*args, **kwargs)
         try:
             if os.environ["USER"] in LOCAL_USERS:
@@ -26,7 +55,19 @@ class APISpider(scrapy.Spider):
     next_page = {}
     max_tennis_date = 10
 
-    def get_season(self, tournament_id):
+    def get_season(self, tournament_id: int) -> int | None:
+        """Get the first season id for a tournament from the AllSport API.
+
+        Args:
+            tournament_id: Tournament identifier used by the AllSport API.
+
+        Returns:
+            The season id if present, otherwise None.
+
+        Notes:
+            On failure, this method logs a warning and returns None.
+        """
+
         url = f"https://allsportsapi2.p.rapidapi.com/api/tournament/{tournament_id}/seasons"
         headers = {"x-rapidapi-key": ALL_SPORTS_API_KEY, "x-rapidapi-host": "allsportsapi2.p.rapidapi.com"}
         response = requests.get(url, headers=headers)
@@ -38,6 +79,16 @@ class APISpider(scrapy.Spider):
             print("ERROR on getting season for a comp", e, response)
 
     def start_requests(self):
+        """Create initial API requests for configured competitions.
+
+                Competitions are loaded via `bookie_config`. For sport_id "1" and "2",
+                the spider paginates using the `/matches/next/{page}` endpoint. For
+                sport_id "3" (tennis), it requests events for a date range.
+
+                Yields:
+                    scrapy.Request: Requests to the AllSport API with metadata needed by `parse`.
+                """
+
         # FILTERS
         try:
             if os.environ["USER"] in LOCAL_USERS:
@@ -113,6 +164,22 @@ class APISpider(scrapy.Spider):
                 print("error from request to Allsport", e)
 
     def parse(self, response, **kwargs):
+        """Parse an AllSport API response and accumulate normalized event data.
+
+               This method:
+               - Parses JSON from the response.
+               - Updates `V2_Competitions_Urls` with HTTP status and updated_date.
+               - Extracts non-finished/non-inprogress events into `self.data_dict`.
+               - Continues pagination when `hasNextPage` is true.
+               - Yields a `ScrapersItem` when scraping for a competition is complete.
+
+               Args:
+                   response: Scrapy response containing JSON payload from AllSport API.
+
+               Yields:
+                   ScrapersItem: Item containing `pipeline_type` and a competition data dictionary.
+               """
+
         item = ScrapersItem()
         competition_id = response.meta.get("competition_id")
         try:
